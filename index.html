@@ -1064,7 +1064,7 @@ html.reading{overflow:hidden}
   async function openReader(e){
     if (open) return; open = true; lastFocus = document.activeElement;
     await load(); build();
-    const cell = e && e.target.closest && e.target.closest('.cell'), n = cell ? +cell.dataset.n : 1;   // 칸을 누르면 그 장면에서 펼친다
+    const n = 1;   // 대지 어디를 눌러도 첫 장부터 펼친다
     proof.classList.add('peel');
     reader.classList.add('snap'); setClip(rectInset()); reader.style.setProperty('--cround', '2px');
     reader.hidden = false; reader.scrollTop = n > 1 && items[n - 1] ? items[n - 1].offsetTop - 56 : 0; document.documentElement.classList.add('reading');
@@ -1073,7 +1073,7 @@ html.reading{overflow:hidden}
   }
   function closeReader(){
     if (!open) return; open = false;
-    const done = () => { reader.hidden = true; document.documentElement.classList.remove('reading'); proof.classList.remove('peel'); items.forEach(v => v.tagName === 'VIDEO' && v.pause()); lastFocus && lastFocus.focus({ preventScroll: true }); };
+    const done = () => { reader.hidden = true; document.documentElement.classList.remove('reading'); proof.classList.remove('peel'); items.forEach(v => v.tagName === 'VIDEO' && v.pause()); lastFocus && lastFocus.focus({ preventScroll: true, focusVisible: false }); };
     if (reduce) return done();
     setClip(rectInset()); reader.style.setProperty('--cround', '2px');
     reader.addEventListener('transitionend', done, { once: true });
