@@ -154,20 +154,44 @@ h1 span{display:block;color:var(--soft)}
    그 위에 테이프로 붙인 교정지 한 장(명함과 같은 빛·같은 그림자). 누르면 테이프가 떨어지며 화면 가득 펼쳐져 원본을 풀폭으로 읽는다 ── */
 .cs{position:relative}
 .cs-stage{position:relative;height:100vh;min-height:680px;max-width:1440px;margin:0 auto;overflow:hidden}
-.proof{position:absolute;left:50%;top:max(96px,11vh);z-index:5;width:min(520px,78vw);height:min(73vh,700px);margin-left:calc(min(520px,78vw) / -2);
-  padding:0;border:0;background:none;cursor:zoom-in;transform:rotate(-1.2deg);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
-.proof:hover{transform:rotate(-.6deg) translateY(-6px)}
+.proof{position:absolute;left:50%;top:max(92px,11vh);z-index:5;width:min(860px,66vw);margin-left:calc(min(860px,66vw) / -2);
+  padding:0;border:0;background:none;cursor:zoom-in;--ey:0px;--er:0deg;--lift:0px;--tilt:0deg;
+  transform:translateY(calc(var(--ey) + var(--lift))) rotate(calc(-.8deg + var(--er) + var(--tilt)));transition:--lift .45s,--tilt .45s}
+.proof:hover{--lift:-6px;--tilt:.4deg}
+@property --lift{syntax:'<length>';inherits:false;initial-value:0px}
+@property --tilt{syntax:'<angle>';inherits:false;initial-value:0deg}
 .proof:focus-visible{outline:2px solid var(--dot);outline-offset:8px}
-.sheet{position:absolute;inset:0;background:#fff;padding:20px 30px 0;overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:0 1px 2px rgba(34,42,92,.08),0 0 0 .5px rgba(34,42,92,.06),14px 22px 48px rgba(34,42,92,.10),14px 22px 20px rgba(34,42,92,.08);
-  transition:box-shadow .45s}
+/* 인쇄 대지: 여러 장면을 한 장에 앉힌 교정지. 종이는 벽보다 아주 조금 따뜻하고, 오른쪽 아래 모서리가 들떠 그늘이 진다 */
+.sheet{position:relative;display:block;background:#fbfaf7;padding:clamp(14px,1.8vw,24px) clamp(16px,2.2vw,30px);
+  box-shadow:0 1px 2px rgba(34,42,92,.08),0 0 0 .5px rgba(34,42,92,.06),14px 22px 48px rgba(34,42,92,.10),14px 22px 20px rgba(34,42,92,.08);transition:box-shadow .45s}
+.sheet::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0) 72%,rgba(34,42,92,.05) 92%,rgba(255,255,255,.5) 100%),
+    radial-gradient(120% 80% at 10% 0%,rgba(255,255,255,.5),rgba(255,255,255,0) 60%)}
 .proof:hover .sheet{box-shadow:0 1px 2px rgba(34,42,92,.08),0 0 0 .5px rgba(34,42,92,.06),18px 30px 60px rgba(34,42,92,.12),16px 26px 24px rgba(34,42,92,.08)}
-.slug{display:flex;justify-content:space-between;gap:12px;flex:none;margin-bottom:12px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;overflow:hidden}
-.pv{position:relative;flex:1;min-height:0;overflow:hidden;background:#242320}
-.pv>*{display:block;width:100%;height:auto}
+.slug{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.slug.top{margin-bottom:clamp(12px,1.6vw,20px)}
+.slug.bot{margin-top:clamp(16px,2vw,24px)}
+.cbar{display:flex;height:7px}
+.cbar i{width:11px;background:var(--c)}
+.reg{width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 .75px var(--ink);position:relative;flex:none}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--ink)}
+.reg::before{left:50%;top:-4px;bottom:-4px;width:.75px;margin-left:-.375px}
+.reg::after{top:50%;left:-4px;right:-4px;height:.75px;margin-top:-.375px}
+.imp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2vw,26px) clamp(12px,1.6vw,20px)}
+/* 칸: 4:3, 네 모서리 바깥에 재단선 */
+.cell{position:relative;aspect-ratio:4/3;background:#242320;--tk:rgba(13,14,18,.45)}
+.cell>img,.cell>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 50%)}
+.cell::after{content:"";position:absolute;inset:-8px;pointer-events:none;background:
+  linear-gradient(var(--tk),var(--tk)) 0 8px/5px .75px no-repeat,linear-gradient(var(--tk),var(--tk)) 8px 0/.75px 5px no-repeat,
+  linear-gradient(var(--tk),var(--tk)) 100% 8px/5px .75px no-repeat,linear-gradient(var(--tk),var(--tk)) calc(100% - 8px) 0/.75px 5px no-repeat,
+  linear-gradient(var(--tk),var(--tk)) 0 calc(100% - 8px)/5px .75px no-repeat,linear-gradient(var(--tk),var(--tk)) 8px 100%/.75px 5px no-repeat,
+  linear-gradient(var(--tk),var(--tk)) 100% calc(100% - 8px)/5px .75px no-repeat,linear-gradient(var(--tk),var(--tk)) calc(100% - 8px) 100%/.75px 5px no-repeat}
+.cell b{position:absolute;left:0;bottom:-15px;font-weight:400;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
 .tape{position:absolute;z-index:6;height:auto;pointer-events:none;user-select:none;-webkit-user-drag:none;transition:transform .22s ease-in,opacity .22s ease-in}
-.tape.l{width:86px;left:-30px;top:-16px;transform:rotate(-36deg)}
-.tape.r{width:78px;right:-28px;top:-14px;transform:rotate(31deg)}
+.tape.l{width:96px;left:-34px;top:-18px;transform:rotate(-36deg)}
+.tape.r{width:86px;right:-30px;top:-16px;transform:rotate(31deg)}
+.proof:not(.stuck) .tape.l{transform:rotate(-48deg) translate(-18px,-22px) scale(1.15);opacity:0}
+.proof:not(.stuck) .tape.r{transform:rotate(44deg) translate(18px,-22px) scale(1.15);opacity:0}
 .proof.peel .tape.l{transform:rotate(-58deg) translate(-26px,-30px);opacity:0}
 .proof.peel .tape.r{transform:rotate(52deg) translate(26px,-30px);opacity:0}
 /* 펼친 화면: 교정지 자리에서 화면 가득 열린다(clip-path), 원본을 화면 폭 그대로 */
@@ -195,9 +219,10 @@ h1 span{display:block;color:var(--soft)}
 .rd-end button:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
 html.reading{overflow:hidden}
 @media (max-width:820px){
-  .proof{top:max(96px,13svh);height:min(62svh,560px);width:84vw;margin-left:-42vw}
-  .sheet{padding:12px 12px 0}
-  .slug span:last-child{display:none}
+  .proof{top:max(96px,22svh);width:90vw;margin-left:-45vw}
+  .imp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .imp .cell:nth-child(n+5){display:none}
+  .slug .opt{display:none}
   .tape.l{width:62px;left:-20px;top:-12px}
   .tape.r{width:56px;right:-18px;top:-10px}
   .rd-bar{gap:12px;height:52px}
@@ -382,8 +407,12 @@ html.reading{overflow:hidden}
   <div class="cs-stage">
     <div class="tbar"><span class="ey"><i></i>Case study · bewhysee</span><span>Concept project · 2026</span></div>
     <button class="proof" id="proof" type="button" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog">
-      <img class="tape l" src="case/tape_1.webp" alt="" width="86" height="40" draggable="false"><img class="tape r" src="case/tape_3.webp" alt="" width="78" height="46" draggable="false">
-      <span class="sheet"><span class="slug"><span>bewhysee — BYC rebranding · proof 06</span><span>2800 × 56820 px</span></span><span class="pv" id="pv"></span></span>
+      <img class="tape l" src="case/tape_1.webp" alt="" width="96" height="45" draggable="false"><img class="tape r" src="case/tape_3.webp" alt="" width="86" height="50" draggable="false">
+      <span class="sheet">
+        <span class="slug top"><span>bewhysee — BYC rebranding</span><span class="opt">proof 06 · 6 up</span><span>2026.10.20</span></span>
+        <span class="imp" id="imp"><span class="cell" data-n="1" style="--op:50% 45%"><b>cut 01 · cover</b></span><span class="cell" data-n="9" style="--op:50% 40%"><b>cut 09 · wordmark</b></span><span class="cell" data-n="14" style="--op:50% 52%"><b>cut 14 · care label</b></span><span class="cell" data-n="16" style="--op:50% 42%"><b>cut 16 · the cut</b></span><span class="cell" data-n="13" style="--op:50% 50%"><b>cut 13 · materials</b></span><span class="cell" data-n="20" style="--op:50% 22%"><b>cut 20 · out of home</b></span></span>
+        <span class="slug bot"><span class="cbar"><i style="--c:#00a3e0"></i><i style="--c:#e4007c"></i><i style="--c:#ffe600"></i><i style="--c:#242320"></i><i style="--c:#cd1b23"></i><i style="--c:#f1eee8"></i></span><span class="reg"></span><span class="opt">2800 px · RGB · 27 cuts</span><span>Chanjun Kwon · sheet 1 / 1</span></span>
+      </span>
     </button>
     <div class="tfoot">
       <p class="tmeta"><span>BYC rebranding · 27 cuts</span><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
@@ -499,9 +528,18 @@ html.reading{overflow:hidden}
   const deal = () => {
     if (dealt) return; dealt = true; dealtAt = performance.now();
     const spots = scatterSpots();
-    order.slice().reverse().forEach((c, k) => tossTo(c, spots[c.i], k * 55));
+    order.slice().reverse().forEach((c, k) => { c.home = null; tossTo(c, spots[c.i], k * 55); });
   };
-  const checkDeal = () => { if (!dealt && table.getBoundingClientRect().top < innerHeight * 0.5) deal(); };
+  // 되감기: 위로 올라가 테이블이 화면 아래로 빠지면 카드가 다시 한 벌로 모이고, 내려오면 다시 쏟아진다
+  const regather = () => {
+    dealt = false; dealtAt = 0;
+    order.slice().reverse().forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: TW / 2 - k * 1.2, y: TH * 0.62 + k * 1.6, r: (k ? c.j1 * 3 : 0) * Math.PI / 180 }; });
+  };
+  const checkDeal = () => {
+    const top = table.getBoundingClientRect().top;
+    if (!dealt && top < innerHeight * 0.5) deal();
+    else if (dealt && !sorted && !drag && top > innerHeight * 0.92) regather();
+  };
   // 글 없이 알려 주기: 쏟아진 뒤 아무도 만지지 않으면 맨 위 카드가 살짝 뒤집혀 뒷면 끝을 보여 주고 돌아온다(처음 만질 때까지 최대 3번)
   let touched = false, hints = 0, nextHint = 0;
   const idleHint = now => {
@@ -957,38 +995,61 @@ html.reading{overflow:hidden}
   // 사례 연구: 벽의 교정지에는 첫 두 장면만 보이고, 누르면 테이프가 떨어지며 그 자리에서 화면 가득 펼쳐진다(clip-path).
   // 펼친 화면은 manifest 순서대로 원본 조각과 루프 영상을 화면 폭 그대로 잇고, 영상은 보일 때만 재생한다
   const sec = document.getElementById('cases'); if (!sec) return;
-  const base = sec.dataset.src, proof = document.getElementById('proof'), pv = document.getElementById('pv');
+  const base = sec.dataset.src, proof = document.getElementById('proof');
   const reader = document.getElementById('reader'), art = document.getElementById('rdArt'), cutEl = document.getElementById('rdCut');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let list = null, built = false, items = [];
+  const hi = () => (devicePixelRatio || 1) * innerWidth > 1700;
   const make = (m, lazy) => {
     let el;
     if (m.type === 'video') {
       el = document.createElement('video'); el.muted = true; el.loop = true; el.playsInline = true; el.preload = 'none';
       el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
-      if (m.poster) el.poster = base + m.poster;
-      if (lazy) el.dataset.src = base + m.file; else el.src = base + m.file;
-    } else { el = new Image(); el.decoding = 'async'; el.alt = ''; if (lazy) el.loading = 'lazy'; el.src = base + m.file; }
+      const pst = m.poster2x && hi() ? m.poster2x : m.poster; if (pst) el.poster = base + pst;
+      // HEVC 원본 해상도 판을 먼저(맥·아이폰·하드웨어 HEVC 크롬), 못 틀면 H.264 판
+      const srcs = []; if (m.hevc) srcs.push([m.hevc, 'video/mp4; codecs="hvc1"']); srcs.push([m.file, 'video/mp4']);
+      srcs.forEach(([f, t]) => { const so = document.createElement('source'); so.type = t; if (lazy) so.dataset.src = base + f; else so.src = base + f; el.appendChild(so); });
+      if (lazy) el.dataset.lazy = '1';
+    } else {
+      el = new Image(); el.decoding = 'async'; el.alt = ''; if (lazy) el.loading = 'lazy';
+      if (m.file2x) { el.srcset = `${base + m.file} ${m.w}w, ${base + m.file2x} ${m.w2x || 2800}w`; el.sizes = '100vw'; }
+      el.src = base + m.file;
+    }
     el.width = m.w; el.height = m.h; el.style.aspectRatio = `${m.w} / ${m.h}`;
     return el;
   };
+  const arm = v => { if (v.dataset.lazy) { v.querySelectorAll('source').forEach(so => { so.src = so.dataset.src; }); delete v.dataset.lazy; v.load(); } };
   const watch = (root, els) => {
     const io = new IntersectionObserver(es => es.forEach(e => {
       const v = e.target; if (v.tagName !== 'VIDEO') return;
-      if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; if (!reduce) v.play().catch(() => {}); } else v.pause();
+      if (e.isIntersecting) { arm(v); if (!reduce) v.play().catch(() => {}); } else v.pause();
     }), { root, rootMargin: '300px 0px' });
     els.forEach(el => io.observe(el));
   };
   async function load(){
     if (list) return list;
     try { const man = await (await fetch(base + 'manifest.json')).json(); list = Array.isArray(man) ? man : man.items; } catch { return null; }
-    // 벽의 교정지: 첫 두 장면
-    const pvEls = list.slice(0, 2).map(m => make(m, m.type === 'video')); pvEls.forEach(el => pv.appendChild(el)); watch(null, pvEls);
+    // 인쇄 대지: 칸마다 해당 장면(작은 칸이라 1600 판)
+    const pvEls = [...document.querySelectorAll('#imp .cell')].map(c => {
+      const m = list[+c.dataset.n - 1]; const el = make({ ...m, hevc: null, file2x: null, poster2x: null }, m.type === 'video');
+      el.style.aspectRatio = ''; c.prepend(el); return el;
+    });
+    watch(null, pvEls);
     document.getElementById('rdTot').textContent = String(list.length).padStart(2, '0');
     return list;
   }
   const near = () => { if (!list && sec.getBoundingClientRect().top < innerHeight * 2.5) load(); };
-  addEventListener('scroll', near, { passive: true }); near();
+  // 등장과 되감기: 구역이 올라오는 만큼 대지가 아래에서 올라와 기울기를 잡고, 다 오면 테이프가 붙는다. 위로 올리면 그대로 거꾸로
+  const settle = () => {
+    const r = sec.getBoundingClientRect(), p = reduce ? 1 : Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * 0.85)));
+    const e = 1 - Math.pow(1 - p, 3);
+    proof.style.setProperty('--ey', ((1 - e) * 140).toFixed(1) + 'px');
+    proof.style.setProperty('--er', ((1 - e) * -4).toFixed(2) + 'deg');
+    proof.classList.toggle('stuck', p > 0.92);
+  };
+  let ticking = false;
+  addEventListener('scroll', () => { near(); if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; settle(); }); } }, { passive: true });
+  addEventListener('resize', settle); near(); settle();
 
   function build(){
     if (built || !list) return; built = true;
@@ -1000,12 +1061,13 @@ html.reading{overflow:hidden}
   };
   const setClip = c => { reader.style.setProperty('--ct', c.t + 'px'); reader.style.setProperty('--cr', c.r + 'px'); reader.style.setProperty('--cb', c.b + 'px'); reader.style.setProperty('--cl', c.l + 'px'); };
   let lastFocus = null, open = false;
-  async function openReader(){
+  async function openReader(e){
     if (open) return; open = true; lastFocus = document.activeElement;
     await load(); build();
+    const cell = e && e.target.closest && e.target.closest('.cell'), n = cell ? +cell.dataset.n : 1;   // 칸을 누르면 그 장면에서 펼친다
     proof.classList.add('peel');
     reader.classList.add('snap'); setClip(rectInset()); reader.style.setProperty('--cround', '2px');
-    reader.hidden = false; reader.scrollTop = 0; document.documentElement.classList.add('reading');
+    reader.hidden = false; reader.scrollTop = n > 1 && items[n - 1] ? items[n - 1].offsetTop - 56 : 0; document.documentElement.classList.add('reading');
     reader.getBoundingClientRect();
     setTimeout(() => { reader.classList.remove('snap'); setClip({ t: 0, r: 0, b: 0, l: 0 }); reader.style.setProperty('--cround', '0px'); document.getElementById('rdX').focus({ preventScroll: true }); }, reduce ? 0 : 200);
   }
