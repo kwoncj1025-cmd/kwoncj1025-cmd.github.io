@@ -155,31 +155,43 @@ h1 span{display:block;color:var(--soft)}
 :root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12)}
 body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
 .cs{position:relative;color:var(--nt-ink)}
-.cs-in{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:clamp(32px,4vw,64px);max-width:1360px;margin:0 auto;
-  padding-block:clamp(120px,16vh,180px) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
-.cs-side{position:sticky;top:clamp(40px,7vh,72px);align-self:start;display:flex;flex-direction:column;gap:28px;min-width:0}
-.cs-ey{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+/* 짜임(A안): 작업은 화면 폭 전체를 쓰고, 글은 작업 위아래 띠에만 둔다. 띠는 화면을 넷으로 나눈 격자를 따른다
+   (1칸 의뢰·연도, 2칸 범위, 3~4칸 설명). 선·상자 없이 칸의 자리만으로 위계를 나눈다 */
+.cs-in{padding-block:clamp(120px,16vh,180px) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
+.cs-head,.cs-foot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);align-items:start}
+.cs-head{row-gap:clamp(40px,6vh,64px);padding-bottom:clamp(56px,9vh,96px)}
+.cs-ey{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 .cs-ey span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
 .cs-ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
-.cs-name{margin:0;font:500 clamp(52px,5.6vw,76px)/.9 var(--f-disp);letter-spacing:-.035em;color:var(--soft)}
-.cs-lede{margin:0;font-size:15px;line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:30em}
+.cs-name{grid-column:1/-1;margin:0;font:500 clamp(64px,8.4vw,132px)/.86 var(--f-disp);letter-spacing:-.04em;color:var(--soft)}
+.cs-dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+.cs-dl dt{color:var(--nt-3);margin-bottom:6px}
+.cs-dl dd{margin:0}
+.cs-text{grid-column:3/-1;display:flex;flex-direction:column;gap:14px;min-width:0}
+.cs-lede{margin:0;font-size:clamp(16px,1.25vw,19px);line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:34em}
 .cs-lede b{font-weight:500;color:var(--nt-ink)}
-.cs-ko{margin:-14px 0 0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
-.cs-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--nt-line);
-  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
-.cs-meta a{color:var(--nt-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px}
-.cs-meta a svg{width:11px;height:11px}
-.cs-meta a:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
-/* 색인: 27컷 번호. 지금 화면 가운데에 있는 컷만 밝아진다. 누르면 그 컷으로 내려간다 */
-.cs-idx{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px 0;margin:0;padding:0;list-style:none}
+.cs-ko{margin:0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
+.cs-text a,.cs-foot a{align-self:flex-start;margin-top:6px;color:var(--nt-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.cs-text a svg,.cs-foot a svg{width:11px;height:11px}
+.cs-text a:focus-visible,.cs-foot a:focus-visible,.cs-foot button:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+/* 색인 막대: 작업 위에 붙어 함께 내려온다. 27컷 번호 중 지금 화면 가운데에 있는 컷만 밝아지고, 누르면 그 컷으로 내려간다 */
+.cs-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:24px;margin-bottom:clamp(10px,1vw,16px);padding-block:10px;
+  background:color-mix(in oklab,var(--nt) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.cs-idx{flex:1;display:grid;grid-template-columns:repeat(27,minmax(0,1fr));margin:0;padding:0;list-style:none;min-width:0}
 .cs-idx button{width:100%;padding:6px 0;border:0;background:none;font:400 11px var(--f-en);font-variant-numeric:tabular-nums;letter-spacing:.02em;
   color:var(--nt-3);text-align:left;cursor:pointer;transition:color .25s}
 .cs-idx button:hover{color:var(--nt-2)}
 .cs-idx button.on{color:var(--nt-ink)}
 .cs-idx button:focus-visible{outline:2px solid var(--soft);outline-offset:1px}
-.cs-hint{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+.cs-hint{margin:0;flex:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+/* 끝 띠: 같은 격자. 분량·크레딧·펼쳐 보기·원본 */
+.cs-foot{margin-top:clamp(56px,9vh,96px);padding-top:16px;border-top:1px solid var(--nt-line)}
+.cs-foot .cs-dl{grid-column:auto}
+.cs-foot .cs-go{grid-column:3/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.cs-foot button{margin:0;padding:0;border:0;background:none;color:var(--nt-ink);font:400 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.cs-foot a{margin-top:0}
 /* 3단: 각 단은 원본 랜딩의 연속 구간. 조각 사이 틈 없이 이어 붙이고, 단 사이만 띄운다 */
-.cs-wall{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,1.6vw,22px);align-items:start;cursor:zoom-in}
+.cs-wall{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1vw,16px);align-items:start;cursor:zoom-in}
 .cs-col{display:flex;flex-direction:column;min-width:0}
 .cs-col>img,.cs-col>video{display:block;width:100%;height:auto;background:#242320}
 .cs-col .cap{display:flex;justify-content:space-between;padding-top:10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
@@ -237,13 +249,17 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .rd-end button:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
 /* 뒤 페이지는 잠그지 않는다(html을 잠그면 스크롤 위치가 맨 위로 튄다). 펼친 화면은 전체를 덮고 overscroll-behavior로 스크롤이 새지 않게 한다 */
 /* 지면이 끝난 뒤의 맺음 줄도 밤색 위에서 읽히게 */
-.cs~.foot-note{color:var(--nt-3)}
+.cs~.foot-note{color:var(--nt-3);max-width:none;padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
 .cs~.foot-note a{color:var(--nt-ink)}
 @media (max-width:900px){
-  .cs-in{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:96px 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-  .cs-side{position:relative;top:0}
-  .cs-idx,.cs-hint{display:none}
-  .cs-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .cs-in{padding-block:96px 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .cs-head,.cs-foot{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
+  .cs-head{row-gap:32px;padding-bottom:48px}
+  .cs-name{font-size:clamp(56px,17vw,96px)}
+  .cs-text,.cs-foot .cs-go{grid-column:1/-1}
+  .cs-bar{display:none}
+  .cs-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cs~.foot-note{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
   .rd-bar{gap:12px;height:52px}
   .rd-bar .cut{display:none}
   .rd-bar a{margin-left:auto}
@@ -435,16 +451,24 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 </section>
 <section class="cs" id="cases" aria-label="사례 연구" data-src="case/bewhysee/">
   <div class="cs-in">
-    <aside class="cs-side">
-      <p class="cs-ey"><span><i></i>Case study</span><span>Concept project · 2026</span></p>
+    <header class="cs-head">
+      <p class="cs-ey"><span><i></i>Case study</span></p>
       <h2 class="cs-name">bewhysee</h2>
-      <p class="cs-lede">A concept rebrand for <b>BYC</b>, a Korean innerwear label since 1946. The new name is the old one, read out loud: be, why, see.</p>
-      <p class="cs-ko" lang="ko">보이지 않는 옷이 보이는 이유가 된다.</p>
-      <ol class="cs-idx" id="csIdx" aria-label="컷 색인"></ol>
-      <p class="cs-hint">Hold the loupe still. Some cuts show their reason.</p>
-      <p class="cs-meta"><span>27 cuts · 2800 px</span><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
-    </aside>
+      <dl class="cs-dl"><dt>Client</dt><dd>BYC, since 1946</dd><dd>Concept project · 2026</dd></dl>
+      <dl class="cs-dl"><dt>Scope</dt><dd>Naming</dd><dd>Brand architecture</dd><dd>Identity system</dd><dd>Labels &amp; packaging</dd><dd>Online</dd></dl>
+      <div class="cs-text">
+        <p class="cs-lede">A concept rebrand for <b>BYC</b>, a Korean innerwear label since 1946. The new name is the old one, read out loud: be, why, see.</p>
+        <p class="cs-ko" lang="ko">보이지 않는 옷이 보이는 이유가 된다.</p>
+        <a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">View on Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </header>
+    <div class="cs-bar"><ol class="cs-idx" id="csIdx" aria-label="컷 색인"></ol><p class="cs-hint">Hold the loupe still. Some cuts show their reason.</p></div>
     <div class="cs-wall" id="csWall" role="button" tabindex="0" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
+    <footer class="cs-foot">
+      <dl class="cs-dl"><dt>Format</dt><dd>27 cuts · 2800 px</dd><dd>One landing, cut in order</dd></dl>
+      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
+      <div class="cs-go"><button type="button" id="csOpen">Open full case</button><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    </footer>
   </div>
   <div class="loupe-sh" id="loupeSh" aria-hidden="true"></div>
   <div class="loupe" id="loupe" aria-hidden="true"><canvas width="680" height="680"></canvas><span class="lp-meta" id="lpMeta"></span><p class="lp-why" id="lpWhy"><b>reason</b><span></span></p></div>
@@ -1388,6 +1412,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     reader.addEventListener('transitionend', done, { once: true });
   }
   wall.addEventListener('click', openReader);
+  document.getElementById('csOpen').addEventListener('click', openReader);
   wall.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openReader(); } });
   document.getElementById('rdX').addEventListener('click', closeReader);
   document.getElementById('rdBack').addEventListener('click', closeReader);
