@@ -1,0 +1,293 @@
+[
+  {
+    "n": 1,
+    "type": "video",
+    "file": "01.mp4",
+    "poster": "01_poster.webp",
+    "w": 1600,
+    "h": 1000,
+    "duration": 6.0,
+    "bytes": 2155316,
+    "posterBytes": 41652,
+    "note": "01 cover 히어로(11차 동료 1, 대표님 통과) · 판 전체"
+  },
+  {
+    "n": 2,
+    "type": "image",
+    "file": "02.webp",
+    "w": 1600,
+    "h": 832,
+    "bytes": 18468,
+    "note": "정지판 y 2480~3520 (p02)"
+  },
+  {
+    "n": 3,
+    "type": "video",
+    "file": "03.mp4",
+    "poster": "03_poster.webp",
+    "w": 1600,
+    "h": 928,
+    "duration": 6.0,
+    "bytes": 735770,
+    "posterBytes": 29118,
+    "note": "03 overview 연표(11차 동료 3, 대표님 통과) · 판 전체"
+  },
+  {
+    "n": 4,
+    "type": "image",
+    "file": "04.webp",
+    "w": 1600,
+    "h": 3232,
+    "bytes": 89160,
+    "note": "정지판 y 4680~8720 (p04 p05 p06 p07)"
+  },
+  {
+    "n": 5,
+    "type": "video",
+    "file": "05.mp4",
+    "poster": "05_poster.webp",
+    "w": 1600,
+    "h": 608,
+    "duration": 6.0,
+    "bytes": 252672,
+    "posterBytes": 12240,
+    "note": "07 idea · 가안(a) · 위·아래 정지 조각 + 가운데 영상"
+  },
+  {
+    "n": 6,
+    "type": "image",
+    "file": "06.webp",
+    "w": 1600,
+    "h": 3168,
+    "bytes": 94162,
+    "note": "정지판 y 9480~13440 (p07 p08a p08b p08c p08e)"
+  },
+  {
+    "n": 7,
+    "type": "video",
+    "file": "07.mp4",
+    "poster": "07_poster.webp",
+    "w": 1600,
+    "h": 800,
+    "duration": 7.0,
+    "bytes": 144456,
+    "posterBytes": 10976,
+    "note": "08e the dig 상표 변천(11차 동료 3, 대표님 통과) · 움직이는 구간만"
+  },
+  {
+    "n": 8,
+    "type": "image",
+    "file": "08.webp",
+    "w": 1600,
+    "h": 637,
+    "bytes": 9564,
+    "note": "정지판 y 14440~15236 (p08e p09)"
+  },
+  {
+    "n": 9,
+    "type": "video",
+    "file": "09.mp4",
+    "poster": "09_poster.webp",
+    "w": 1600,
+    "h": 1090,
+    "duration": 7.0,
+    "bytes": 930450,
+    "posterBytes": 37498,
+    "note": "09 wordmark 작도(11차 동료 2 재설계, 대표님 통과) · 작도 구간 + 사다리 치수선(모듈 954@1400 예외)"
+  },
+  {
+    "n": 10,
+    "type": "image",
+    "file": "10.webp",
+    "w": 1600,
+    "h": 2272,
+    "bytes": 89842,
+    "note": "정지판 y 16600~19440 (p09 p10)"
+  },
+  {
+    "n": 11,
+    "type": "video",
+    "file": "11.mp4",
+    "poster": "11_poster.webp",
+    "w": 1600,
+    "h": 832,
+    "duration": 7.0,
+    "bytes": 510231,
+    "posterBytes": 19338,
+    "note": "11 the line · 현행안 · 판 전체"
+  },
+  {
+    "n": 12,
+    "type": "image",
+    "file": "12.webp",
+    "w": 1600,
+    "h": 1760,
+    "bytes": 55858,
+    "note": "정지판 y 20480~22680 (p12 p13)"
+  },
+  {
+    "n": 13,
+    "type": "video",
+    "file": "13.mp4",
+    "poster": "13_poster.webp",
+    "w": 1600,
+    "h": 608,
+    "duration": 5.0,
+    "bytes": 632797,
+    "posterBytes": 29448,
+    "note": "13 materials 직조(10-19 동료 2 p13_weave, 12차 S4) · 도식 구간만(sub 200,760)"
+  },
+  {
+    "n": 14,
+    "type": "image",
+    "file": "14.webp",
+    "w": 1600,
+    "h": 1504,
+    "bytes": 562492,
+    "note": "정지판 y 23440~25320 (p13 p14)"
+  },
+  {
+    "n": 15,
+    "type": "image",
+    "file": "15.webp",
+    "w": 1600,
+    "h": 2024,
+    "bytes": 123824,
+    "note": "정지판 y 25320~27850 (p15 p16)"
+  },
+  {
+    "n": 16,
+    "type": "video",
+    "file": "16.mp4",
+    "poster": "16_poster.webp",
+    "w": 1600,
+    "h": 2166,
+    "duration": 7.0,
+    "bytes": 2622587,
+    "posterBytes": 63630,
+    "note": "16 the cut · L안 라인(11차 동료 3, 대표님 판정 16 = L) · 장 경계 밴드 아래부터(sub 50)"
+  },
+  {
+    "n": 17,
+    "type": "image",
+    "file": "17.webp",
+    "w": 1600,
+    "h": 3552,
+    "bytes": 372884,
+    "note": "정지판 y 30560~35000 (p17)"
+  },
+  {
+    "n": 18,
+    "type": "image",
+    "file": "18.webp",
+    "w": 1600,
+    "h": 2260,
+    "bytes": 42114,
+    "note": "정지판 y 35000~37825 (p17)"
+  },
+  {
+    "n": 19,
+    "type": "image",
+    "file": "19.webp",
+    "w": 1600,
+    "h": 3058,
+    "bytes": 348000,
+    "note": "정지판 y 37825~41648 (p17 p18)"
+  },
+  {
+    "n": 20,
+    "type": "video",
+    "file": "20.mp4",
+    "poster": "20_poster.webp",
+    "w": 1600,
+    "h": 3126,
+    "duration": 5.6,
+    "bytes": 2451131,
+    "posterBytes": 278640,
+    "note": "12차 풀블리드 재조판 뒤 재촬영(동료 2 최종, 판 안 y 48~3955 자름 없음, 5470, md5 0ab48cf7a301)"
+  },
+  {
+    "n": 21,
+    "type": "video",
+    "file": "21.mp4",
+    "poster": "21_poster.webp",
+    "w": 1600,
+    "h": 1300,
+    "duration": 6.0,
+    "bytes": 2410643,
+    "posterBytes": 58760,
+    "note": "12차 새 배치 재촬영(동료 2 rec v15, 판 전체 1625, 2276, md5 89a1a84ab990)"
+  },
+  {
+    "n": 22,
+    "type": "video",
+    "file": "22.mp4",
+    "poster": "22_poster.webp",
+    "w": 1600,
+    "h": 2080,
+    "duration": 6.0,
+    "bytes": 2241272,
+    "posterBytes": 56542,
+    "note": "12차 풀블리드 재조판 뒤 재촬영(동료 2, 10-20)"
+  },
+  {
+    "n": 23,
+    "type": "video",
+    "file": "23.mp4",
+    "poster": "23_poster.webp",
+    "w": 1600,
+    "h": 1184,
+    "duration": 6.0,
+    "bytes": 842344,
+    "posterBytes": 27570,
+    "note": "합격 목업(9차)"
+  },
+  {
+    "n": 24,
+    "type": "video",
+    "file": "24.mp4",
+    "poster": "24_poster.webp",
+    "w": 1600,
+    "h": 1440,
+    "duration": 6.0,
+    "bytes": 2207064,
+    "posterBytes": 51372,
+    "note": "합격 목업(9차) · 위 절반 · 알려진 차이(9차 합격본의 분할선, 영상↔영상 사이라 정지 조각 없음)"
+  },
+  {
+    "n": 25,
+    "type": "video",
+    "file": "25.mp4",
+    "poster": "25_poster.webp",
+    "w": 1600,
+    "h": 1440,
+    "duration": 6.0,
+    "bytes": 1511547,
+    "posterBytes": 40666,
+    "note": "합격 목업(9차) · 아래 절반 · 알려진 차이(9차 합격본의 분할선)"
+  },
+  {
+    "n": 26,
+    "type": "video",
+    "file": "26.mp4",
+    "poster": "26_poster.webp",
+    "w": 1600,
+    "h": 608,
+    "duration": 6.0,
+    "bytes": 363632,
+    "posterBytes": 17118,
+    "note": "20 after · 판 그대로"
+  },
+  {
+    "n": 27,
+    "type": "video",
+    "file": "27.mp4",
+    "poster": "27_poster.webp",
+    "w": 1600,
+    "h": 960,
+    "duration": 7.0,
+    "bytes": 413860,
+    "posterBytes": 17374,
+    "note": "21 outro(S7 p21 v1) · 판 전체"
+  }
+]

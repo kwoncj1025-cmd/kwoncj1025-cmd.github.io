@@ -1,0 +1,32 @@
+{
+ "scale": 2,
+ "tapes": {
+  "tape_1": {
+   "w": 261,
+   "h": 122,
+   "css": [
+    130.5,
+    61.0
+   ],
+   "src": "mood_board19.psd Tape2"
+  },
+  "tape_2": {
+   "w": 241,
+   "h": 122,
+   "css": [
+    120.5,
+    61.0
+   ],
+   "src": "mood_board19.psd Tape1"
+  },
+  "tape_3": {
+   "w": 205,
+   "h": 122,
+   "css": [
+    102.5,
+    61.0
+   ],
+   "src": "mood_board19.psd Tape4"
+  }
+ }
+}

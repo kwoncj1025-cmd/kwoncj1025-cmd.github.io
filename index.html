@@ -150,55 +150,70 @@ h1 span{display:block;color:var(--soft)}
 .tmeta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
 .tmark{margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
-/* ── 사례 연구(비핸스): 어두운 띠로 면을 바꾼다. 주인공은 페이지 자체 — 큰 창에 비핸스 본문을 그대로 흘리고,
-   옆 세로 띠(전체 페이지 축소본)가 지금 위치를 보여 주며 잡아 끌면 그 자리로 간다. 아래는 같은 문법의 워드마크 ── */
-.cs{--cs-bg:#0e0f13;--cs-ink:#eef0f6;--cs-ink-2:#a3a7b8;--cs-ink-3:#6f7386;--cs-line:rgba(238,240,246,.1);
-  background:var(--cs-bg);color:var(--cs-ink);position:relative;overflow:hidden;
+/* ── 사례 연구: 벽에 걸린 교정지. 첫 화면의 「벽 앞에 걸린 물건」 문법을 종이로 잇는다.
+   원본 페이지(정지 조각 + 루프 영상)를 흰 여백 테두리 안에 이어 붙이고, 여백에는 실제 교정지의 재단선·맞춤 표시·색 막대·파일 정보.
+   종이는 벽에서 조금 떠 있어 스크롤하면 그림자가 종이보다 늦게 따라온다. 왼쪽은 미술관 작품 라벨 ── */
+.cs{--wall:#eceef2;--cs-ink-3:#8a8d9c;background:var(--wall);position:relative;overflow-x:clip;
   padding:calc(28px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(32px,env(safe-area-inset-left,0px))}
-.cs-in{max-width:1376px;margin:0 auto}
 .cs-head{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.08em;color:var(--cs-ink-3);text-transform:uppercase}
 .cs-head .ey{display:flex;align-items:center;gap:8px}
 .cs-head .ey i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
-.cs-head a{color:var(--cs-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px}
-.cs-head a:focus-visible,.cs-go:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.cs-body{margin-top:56px;display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr) auto;gap:40px;align-items:start}
-.cs-meta{display:grid;gap:22px;position:sticky;top:40px}
-.cs-t{margin:0;font-family:var(--f-disp);font-weight:500;font-size:44px;line-height:1;letter-spacing:-.035em}
-.cs-s{margin:10px 0 0;font-family:var(--f-ko);font-size:14px;line-height:1.55;color:var(--cs-ink-2);word-break:keep-all;text-wrap:pretty}
-.cs-dl{margin:0;display:grid;border-top:1px solid var(--cs-line)}
-.cs-dl div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--cs-line);font-size:13px;line-height:1.45}
-.cs-dl dt{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--cs-ink-3);padding-top:2px}
-.cs-dl dd{margin:0;color:var(--cs-ink)}
-.cs-go{justify-self:start;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px 0 18px;border-radius:999px;background:var(--cs-ink);color:var(--cs-bg);text-decoration:none;font-size:13px;font-weight:500}
-.cs-go svg{width:12px;height:12px}
-.cs-win{position:relative;height:min(80vh,780px);border-radius:14px;background:#000;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;cursor:grab;
-  box-shadow:0 0 0 1px var(--cs-line),0 40px 80px -40px rgba(0,0,0,.8)}
-.cs-win::-webkit-scrollbar{display:none}
-.cs-win.grab{cursor:grabbing;user-select:none}
-.cs-win:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.cs-page{position:relative}
-.cs-page img{display:block;width:100%;height:auto;-webkit-user-drag:none;user-select:none;pointer-events:none}
-.cs-film{position:absolute;left:0;right:0;display:grid;place-items:center;border:0;padding:0;margin:0;background:transparent;cursor:pointer;color:#fff}
-.cs-film b{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .25s}
-.cs-film b svg{width:18px;height:18px;margin-left:3px;fill:#0e0f13}
-.cs-film:hover b{transform:scale(1.08)}
-.cs-film:focus-visible{outline:2px solid var(--dot);outline-offset:-4px}
-.cs-film iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-/* 세로 띠: 흐리게 깔린 전체 페이지 위에 지금 보이는 구간만 밝게 */
-.cs-spine{position:relative;width:40px;height:min(80vh,780px);border-radius:6px;overflow:hidden;cursor:ns-resize;touch-action:none;background:#000}
-.cs-spine>img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:fill;opacity:.32;pointer-events:none}
-.cs-vp{position:absolute;left:0;right:0;top:0;overflow:hidden;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.55);will-change:transform}
-.cs-vp img{position:absolute;left:0;top:0;width:100%;pointer-events:none}
-.cs-foot{margin-top:72px}
+.cs-body{margin-top:88px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,760px) minmax(0,1fr);gap:48px;align-items:start}
+/* 작품 라벨: 벽에 붙은 작은 카드. 스크롤해도 눈높이에 머물며 지금 장면(cut)을 알려 준다 */
+.wl{justify-self:end;position:sticky;top:96px;width:min(240px,100%);display:grid;gap:14px;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.wl-t{margin:0;font-family:var(--f-disp);font-weight:500;font-size:28px;line-height:1;letter-spacing:-.03em;color:var(--ink)}
+.wl-s{margin:-6px 0 0;color:var(--ink)}
+.wl p{margin:0}
+.wl-ko{font-family:var(--f-ko);font-size:12.5px;word-break:keep-all;text-wrap:pretty}
+.wl-cut{display:flex;align-items:baseline;gap:8px;padding-top:12px;border-top:1px solid var(--line);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--cs-ink-3)}
+.wl-cut b{font-family:var(--f-disp);font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;text-transform:none}
+.wl a{justify-self:start;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:12.5px}
+.wl a svg{width:11px;height:11px}
+.wl a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
+/* 교정지 */
+.proof{position:relative}
+.tape{position:absolute;z-index:3;height:auto;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:50% 50%}
+/* 위 두 모서리를 비스듬히 가로지르는 마스킹 테이프(목업 실사). 조각과 각도를 다르게 해 손으로 붙인 티를 낸다 */
+.tape.l{width:92px;left:-34px;top:-14px;transform:rotate(-36deg)}
+.tape.r{width:84px;right:-30px;top:-12px;transform:rotate(31deg)}
+.psh{position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(34,42,92,.12);filter:blur(20px);transform:translate(14px,calc(18px + var(--py,0px)));will-change:transform;pointer-events:none}
+.sheet{position:relative;background:#fff;padding:30px 34px 26px;box-shadow:0 1px 2px rgba(34,42,92,.08),0 0 0 .5px rgba(34,42,92,.06)}
+.slug{display:flex;justify-content:space-between;gap:12px;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cs-ink-3);white-space:nowrap;overflow:hidden}
+.slug.top{margin-bottom:16px}
+.slug.bot{margin-top:16px;align-items:center}
+.cbar{display:flex;height:8px}
+.cbar i{width:12px;background:var(--c)}
+.reg{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 .75px var(--ink);position:relative}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--ink)}
+.reg::before{left:50%;top:-4px;bottom:-4px;width:.75px;margin-left:-.375px}
+.reg::after{top:50%;left:-4px;right:-4px;height:.75px;margin-top:-.375px}
+.art{position:relative;background:#f1eee8}
+.art>*{display:block;width:100%;height:auto}
+.art video{object-fit:cover;background:#242320}
+/* 재단선: 그림 네 모서리 바깥에 짧은 선 */
+.cm{position:absolute;width:14px;height:14px;pointer-events:none}
+.cm::before,.cm::after{content:"";position:absolute;background:var(--cs-ink-3)}
+.cm::before{width:12px;height:.75px}.cm::after{width:.75px;height:12px}
+.cm.tl{left:-18px;top:-18px}.cm.tl::before{left:0;bottom:4px}.cm.tl::after{right:4px;top:0}
+.cm.tr{right:-18px;top:-18px}.cm.tr::before{right:0;bottom:4px}.cm.tr::after{left:4px;top:0}
+.cm.bl{left:-18px;bottom:-18px}.cm.bl::before{left:0;top:4px}.cm.bl::after{right:4px;bottom:0}
+.cm.br{right:-18px;bottom:-18px}.cm.br::before{right:0;top:4px}.cm.br::after{left:4px;bottom:0}
+.cs-foot{margin-top:96px}
 .cs-mark{margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
+@media (max-width:1100px){
+  .cs-body{grid-template-columns:minmax(0,1fr);gap:36px;margin-top:40px}
+  .wl{position:static;justify-self:start;width:100%;max-width:520px}
+  .wl-cut{display:none}
+}
 @media (max-width:820px){
   .cs{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .cs-body{grid-template-columns:minmax(0,1fr);gap:28px;margin-top:36px}
-  .cs-meta{position:static}
-  .cs-t{font-size:36px}
-  .cs-win{height:72svh;cursor:auto}
-  .cs-spine{display:none}
-  .cs-foot{margin-top:48px}
+  .sheet{padding:18px 14px 16px}
+  .slug{font-size:7.5px}
+  .slug.top span:last-child{display:none}
+  .tape.l{width:64px;left:-22px;top:-10px}
+  .tape.r{width:58px;right:-20px;top:-8px}
+  .cm{display:none}
+  .cs-foot{margin-top:56px}
 }
 
 .sort{pointer-events:auto;border:0;background:var(--ink);color:#fff;width:36px;height:36px;padding:0;border-radius:50%;display:inline-grid;place-items:center;cursor:pointer;transition:transform .2s}
@@ -373,24 +388,29 @@ h1 span{display:block;color:var(--soft)}
     <div class="pile" id="pile"></div>
   </div>
 </section>
-<section class="cs" id="cases" aria-label="비핸스 사례 연구" data-src="behance/257308573/">
-  <div class="cs-in">
-    <div class="cs-head"><span class="ey"><i></i>Case study · Behance</span><span>Concept project · 2026</span></div>
-    <div class="cs-body">
-      <aside class="cs-meta">
-        <div><h3 class="cs-t">bewhysee</h3><p class="cs-s">BYC를 다시 그린 콘셉트 리브랜딩. 이름, 글자, 패키지, 모션까지 한 벌로 만들었습니다.</p></div>
-        <dl class="cs-dl">
-          <div><dt>Client</dt><dd>BYC (concept)</dd></div>
-          <div><dt>Scope</dt><dd>Brand identity · Logo · Typography · Packaging · Motion</dd></div>
-          <div><dt>Pages</dt><dd id="csCount">27 modules</dd></div>
-        </dl>
-        <a class="cs-go" href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">View on Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </aside>
-      <div class="cs-win" id="csWin" tabindex="0" aria-label="bewhysee 사례 페이지. 끌거나 스크롤해서 넘겨 보세요"><div class="cs-page" id="csPage"></div></div>
-      <div class="cs-spine" id="csSpine" aria-hidden="true"><img alt=""><span class="cs-vp" id="csVp"><img alt=""></span></div>
+<section class="cs" id="cases" aria-label="사례 연구" data-src="case/bewhysee/">
+  <div class="cs-head"><span class="ey"><i></i>Case study</span><span>Concept project · 2026</span></div>
+  <div class="cs-body">
+    <aside class="wl">
+      <p class="wl-t">bewhysee</p>
+      <p class="wl-s">BYC rebranding</p>
+      <p>2026 · Concept project<br>Brand identity, logo, typography, packaging, motion</p>
+      <p class="wl-ko">80년 된 속옷 브랜드 BYC의 이름을 소리 나는 대로 적어 새 이름으로 삼았습니다. 보이지 않는 옷이 보이는 이유가 된다는 문장에서 출발했습니다.</p>
+      <p class="wl-cut">cut <b id="wlCut">01</b> / <span id="wlTotal">27</span></p>
+      <a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance에서 보기 <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </aside>
+    <div class="proof" id="proof">
+      <img class="tape l" src="case/tape_1.webp" alt="" width="92" height="43" draggable="false"><img class="tape r" src="case/tape_3.webp" alt="" width="84" height="50" draggable="false">
+      <div class="psh" aria-hidden="true"></div>
+      <div class="sheet">
+        <div class="slug top"><span>bewhysee — BYC rebranding · proof 06</span><span>2026.10.20</span><span>2800 × 56820 px · RGB</span></div>
+        <div class="art" id="art"><span class="cm tl"></span><span class="cm tr"></span><span class="cm bl"></span><span class="cm br"></span></div>
+        <div class="slug bot"><span class="cbar"><i style="--c:#00a3e0"></i><i style="--c:#e4007c"></i><i style="--c:#ffe600"></i><i style="--c:#242320"></i><i style="--c:#cd1b23"></i><i style="--c:#f1eee8"></i></span><span class="reg"></span><span>Chanjun Kwon · 1 / 1</span></div>
+      </div>
     </div>
-    <div class="cs-foot"><p class="cs-mark" aria-hidden="true">Case Studies</p></div>
+    <div></div>
   </div>
+  <div class="cs-foot"><p class="cs-mark" aria-hidden="true">Case Studies</p></div>
 </section>
 <footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
 
@@ -649,7 +669,7 @@ h1 span{display:block;color:var(--soft)}
 
   const N = 16, G = 0.55, GC = 1.1, STRAP_W0 = 44, STEP = 1000 / 120;   // 120Hz 고정 계산 + 화면 보간
   const CY = 286, ICM = 22900;            // 카드 무게중심(고리 기준 아래로 px)과 관성
-  let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [], KS = 1, STRAP_W = STRAP_W0;   // KS: 명함 축소율(모바일 .74)
+  let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [], KS = 1, STRAP_W = STRAP_W0, CT = 70.8;   // KS: 명함 축소율(모바일 .74)
   let phi = 0, om = 0, tw = 0, vtw = 0, flip = 0, flipT = 0, vflip = 0;   // phi: 화면 기준 시계 방향 회전
   let piv = { x: 0, y: 0, vx: 0, vy: 0 }, axS = 0, ayS = 0, vxS = 0;
   let drag = null, press = null, t0 = performance.now();
@@ -681,6 +701,7 @@ h1 span{display:block;color:var(--soft)}
     const nAX = sr.left - r.left + sr.width / 2, nAY = sr.top - r.top - 14;
     if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
     KS = parseFloat(getComputedStyle(card.parentElement).scale) || 1; STRAP_W = STRAP_W0 * KS;
+    CT = parseFloat(getComputedStyle(card.parentElement).top) || 70.8;
     W = r.width; H = r.height; AX = nAX; AY = nAY; SH = sr.height; dpr = Math.min(2, devicePixelRatio || 1);
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     seg0 = Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / (N - 1))); if (!drag) seg = seg0;
@@ -829,9 +850,37 @@ h1 span{display:block;color:var(--soft)}
   window.__cardState = () => ({ phi, flip });
   function snapshot(){ return { e: pts.map(p => [p.x, p.y]), phi, tw, flip, om }; }
 
-  function drawStrap(P){
+  // 벽 그림자: 화면 왼쪽 위 바깥의 점광원이 명함과 목줄을 뒤쪽 벽에 비춘다. 광원에서 멀수록 그림자가 벌어져(SK) 흔들릴 때 명함과 다른 각도로 움직인다.
+  // 모양은 화면 밖(-OFF)에 그리고 그림자만 화면 안으로 옮겨 흐림을 준다(canvas filter 없이 모든 브라우저에서 같은 결과)
+  const SH_SK = 0.045, SH_OX = 14, SH_OY = 22, SH_OFF = 30000;
+  function drawShadow(P, ph, ry){
+    const lx = W * 0.12, ly = -H * 0.9, k = 1 + SH_SK;
+    const tx = dpr * (SH_OX - lx * SH_SK) - SH_OFF, ty = dpr * (SH_OY - ly * SH_SK);
+    ctx.save();
+    ctx.shadowOffsetX = SH_OFF; ctx.shadowColor = 'rgba(34,42,92,.11)';
+    // 목줄: 휘어진 줄 그대로
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
+    ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]);
+    for (let i = 1; i < N; i++) ctx.lineTo(P[i][0], P[i][1]);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.lineWidth = STRAP_W * 0.8 * dpr * k; ctx.lineJoin = 'round'; ctx.lineCap = 'butt'; ctx.strokeStyle = '#000';
+    ctx.shadowBlur = 10 * dpr; ctx.stroke();
+    // 명함: 줄 끝에 매달려 phi만큼 돌고, Y축으로 비틀린 만큼 폭이 준다(뒤집히는 순간엔 선처럼)
+    const E = P[N - 1], cw = Math.max(0.02, Math.abs(Math.cos(ry * Math.PI / 180)));
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
+    ctx.translate(E[0], E[1]); ctx.rotate(ph); ctx.scale(cw, 1);
+    ctx.beginPath(); ctx.roundRect(-150 * KS, CT - 4 * KS, 300 * KS, 434 * KS, 22 * KS);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#000';
+    ctx.shadowColor = 'rgba(34,42,92,.10)'; ctx.shadowBlur = 48 * dpr; ctx.fill();   // 넓은 반그늘
+    ctx.shadowColor = 'rgba(34,42,92,.10)'; ctx.shadowBlur = 20 * dpr; ctx.fill();   // 본그늘
+    ctx.restore();
+  }
+
+  function drawStrap(P, ph = 0, ry = 0){
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
+    drawShadow(P, ph, ry);
     const w = STRAP_W / 2;
     for (let i = 0; i < N; i++) {   // 꼭짓점마다 양옆 가장자리(앞뒤 구간 방향의 평균에 수직)
       const p = P[i], q = P[Math.min(N - 1, i + 1)], o = P[Math.max(0, i - 1)];
@@ -901,7 +950,7 @@ h1 span{display:block;color:var(--soft)}
       f.style.setProperty('--sy', `${20 + rxv * 3}%`);
       f.style.setProperty('--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
     });
-    drawStrap(P);
+    drawStrap(P, ph, ryv);
   }
 
   let acc = 0, last = performance.now();
@@ -921,78 +970,54 @@ h1 span{display:block;color:var(--soft)}
 </script>
 <script>
 (() => {
-  // 사례 연구 창: meta.json의 긴 이미지 조각을 차례로 깔고, 영상 모듈 자리에 재생 단추를 얹는다.
-  // 마우스는 잡아 끌면 관성으로 넘어가고(첫 화면의 잡는 손맛), 휠·터치는 기본 스크롤 그대로. 세로 띠는 위치 표시 겸 빨리 감기
+  // 교정지: manifest 순서대로 정지 조각(img)과 루프 영상(video)을 이어 붙인다. 영상은 화면 가까이 오면 불러오고, 보일 때만 재생한다.
+  // 종이 그림자는 스크롤 위치에 따라 종이보다 늦게 움직여(--py) 종이가 벽에서 떠 있음을 보여 준다
   const sec = document.getElementById('cases'); if (!sec) return;
-  const base = sec.dataset.src, win = document.getElementById('csWin'), page = document.getElementById('csPage');
-  const spine = document.getElementById('csSpine'), vp = document.getElementById('csVp');
+  const base = sec.dataset.src, art = document.getElementById('art'), proof = document.getElementById('proof');
+  const cutEl = document.getElementById('wlCut'), totEl = document.getElementById('wlTotal');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const onPages = /github\.io$/.test(location.hostname);   // 비핸스·Vimeo 임베드는 배포 주소에서만 허용된다
-  let meta = null, started = false;
-  const PLAY = '<b><svg viewBox="0 0 16 16"><path d="M4 2.5v11l9.5-5.5z"/></svg></b>';
+  let items = [], started = false;
   async function start(){
     if (started) return; started = true;
-    try { meta = await (await fetch(base + 'meta.json')).json(); } catch { started = false; return; }
-    const L = meta.long, T = L.totalHeight;
-    page.style.aspectRatio = `${L.width} / ${T}`;
-    L.tiles.forEach(t => { const im = new Image(); im.src = base + t.file; im.alt = ''; im.decoding = 'async'; im.width = L.width; im.height = t.height; page.appendChild(im); });
-    const films = (meta.modules || []).filter(m => m.type === 'vimeo' && m.height);
-    films.forEach(m => {
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'cs-film'; b.innerHTML = PLAY;
-      b.style.top = (m.y / T * 100) + '%'; b.style.height = (m.height / T * 100) + '%';
-      b.setAttribute('aria-label', '영상 재생');
-      b.addEventListener('click', () => {
-        if (moved) return;
-        if (onPages && m.vimeo) { b.innerHTML = `<iframe src="https://player.vimeo.com/video/${m.vimeo}?autoplay=1&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="영상"></iframe>`; b.style.cursor = 'default'; }
-        else window.open(m.url, '_blank', 'noopener');
-      });
-      page.appendChild(b);
+    let man; try { man = await (await fetch(base + 'manifest.json')).json(); } catch { started = false; return; }
+    const list = Array.isArray(man) ? man : man.items;
+    totEl.textContent = String(list.length).padStart(2, '0');
+    list.forEach(m => {
+      let el;
+      if (m.type === 'video') {
+        el = document.createElement('video');
+        el.muted = true; el.loop = true; el.playsInline = true; el.preload = 'none';
+        el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
+        if (m.poster) el.poster = base + m.poster;
+        el.dataset.src = base + m.file;
+      } else {
+        el = new Image(); el.decoding = 'async'; el.loading = 'lazy'; el.alt = ''; el.src = base + m.file;
+      }
+      el.width = m.w; el.height = m.h; el.style.aspectRatio = `${m.w} / ${m.h}`;
+      art.appendChild(el); items.push(el);
     });
-    document.getElementById('csCount').textContent = `${(meta.modules || []).length} modules · ${films.length} films`;
-    const S = meta.strip; spine.querySelector('img').src = vp.querySelector('img').src = base + S.file;
-    sync();
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      const v = e.target; if (v.tagName !== 'VIDEO') return;
+      if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; if (!reduce) v.play().catch(() => {}); }
+      else v.pause();
+    }), { rootMargin: '300px 0px' });
+    items.forEach(el => io.observe(el));
+    tick();
   }
-  const near = () => { if (!started && sec.getBoundingClientRect().top < innerHeight * 2) start(); };
-  addEventListener('scroll', near, { passive: true }); near();
-
-  // 세로 띠: 띠 높이에 맞춰 폭을 정하고, 보이는 구간 상자를 옮긴다
-  function sync(){
-    if (!meta || spine.offsetParent === null) return;
-    const H = spine.clientHeight, S = meta.strip;
-    spine.style.width = Math.max(28, Math.round(H * S.width / S.height)) + 'px';
-    const sh = win.scrollHeight || 1, k = H / sh;
-    const h = Math.max(10, win.clientHeight * k), y = win.scrollTop * k;
-    vp.style.height = h + 'px'; vp.style.transform = `translateY(${y}px)`;
-    const im = vp.firstElementChild; im.style.height = H + 'px'; im.style.transform = `translateY(${-y}px)`;
+  const near = () => { if (!started && sec.getBoundingClientRect().top < innerHeight * 2.5) start(); };
+  function tick(){
+    const r = proof.getBoundingClientRect();
+    // 그림자 시차: 종이 가운데가 화면 가운데에서 멀수록 그림자가 반대로 조금 밀린다
+    proof.style.setProperty('--py', Math.max(-8, Math.min(8, (r.top - innerHeight * 0.3) * -0.01)).toFixed(1) + 'px');
+    if (items.length) {
+      const mid = innerHeight * 0.45; let k = 0;
+      for (let i = 0; i < items.length; i++) { if (items[i].getBoundingClientRect().top <= mid) k = i; else break; }
+      const t = String(k + 1).padStart(2, '0'); if (cutEl.textContent !== t) cutEl.textContent = t;
+    }
   }
-  win.addEventListener('scroll', sync, { passive: true }); addEventListener('resize', sync);
-  new ResizeObserver(sync).observe(page);
-  const scrub = e => { const r = spine.getBoundingClientRect(); const f = (e.clientY - r.top) / r.height; win.scrollTop = f * win.scrollHeight - win.clientHeight / 2; };
-  spine.addEventListener('pointerdown', e => { spine.setPointerCapture(e.pointerId); vel = 0; scrub(e); spine.onpointermove = scrub; });
-  spine.addEventListener('pointerup', () => { spine.onpointermove = null; });
-
-  // 마우스로 잡아 끌기 + 놓으면 관성
-  let drag = null, vel = 0, moved = false, raf = 0;
-  win.addEventListener('pointerdown', e => {
-    if (e.pointerType !== 'mouse' || e.button) return;
-    if (e.target.closest('iframe')) return;
-    drag = { y: e.clientY, s: win.scrollTop, t: performance.now() }; vel = 0; moved = false; cancelAnimationFrame(raf);
-  });
-  addEventListener('pointermove', e => {
-    if (!drag) return;
-    const dy = e.clientY - drag.y;
-    if (!moved && Math.abs(dy) > 4) { moved = true; win.classList.add('grab'); try { win.setPointerCapture(e.pointerId); } catch {} }
-    if (!moved) return;
-    const now = performance.now(), prev = win.scrollTop;
-    win.scrollTop = drag.s - dy;
-    vel = (win.scrollTop - prev) / Math.max(1, now - drag.t) * 16; drag.t = now;
-  });
-  addEventListener('pointerup', () => {
-    if (!drag) return; drag = null; win.classList.remove('grab');
-    if (moved && !reduce) { const glide = () => { vel *= 0.94; win.scrollTop += vel; if (Math.abs(vel) > 0.3) raf = requestAnimationFrame(glide); }; raf = requestAnimationFrame(glide); }
-    setTimeout(() => { moved = false; }, 0);
-  });
-  win.addEventListener('wheel', () => { vel = 0; cancelAnimationFrame(raf); }, { passive: true });
+  addEventListener('scroll', () => { near(); if (started) tick(); }, { passive: true });
+  addEventListener('resize', () => started && tick());
+  near();
 })();
 </script>
 
