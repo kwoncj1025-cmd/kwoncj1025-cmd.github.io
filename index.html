@@ -202,6 +202,28 @@ h1 span{display:block;color:var(--soft)}
   .stage{min-height:740px}
 }
 @media (prefers-reduced-motion:reduce){.go{transition:none}}
+/* ── B안 구도: 명함이 화면 가운데에서 내려오고, 아래에 이름을 화면 폭 가득 깐다. 글은 네 구석으로 ── */
+.page{display:block;position:relative;max-width:none;min-height:0;padding:0}
+.stage{min-height:max(700px,100vh)}
+.copy{position:absolute;inset:0;z-index:1;pointer-events:none;padding:0;align-self:auto;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;
+  padding:calc(32px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) 64px max(32px,env(safe-area-inset-left,0px))}
+.copy .eyebrow{grid-column:1;grid-row:1}
+.copy h1{grid-column:1;grid-row:2;margin-top:18px;font-size:clamp(30px,3vw,44px);line-height:1.05;letter-spacing:-.03em;max-width:12em}
+.copy .intro{grid-column:2;grid-row:1 / 3;align-self:start;justify-self:end;margin-top:0;max-width:300px;font-size:13.5px}
+.copy .meta{grid-column:2;grid-row:4;justify-self:end;margin:0 0 10px}
+.copy .mark{grid-column:1 / -1;grid-row:5;margin:0;font-family:var(--f-disp);font-weight:500;font-size:14vw;line-height:.78;letter-spacing:-.055em;
+  color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
+@media (max-width:820px){
+  .stage{min-height:max(640px,100svh)}
+  .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto auto;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:56px}
+  .copy h1{grid-row:2;margin-top:14px;font-size:30px}
+  .copy .intro{grid-column:1;grid-row:4;justify-self:start;max-width:none;margin-bottom:10px;font-size:13px}
+  .copy .meta{grid-column:1;grid-row:5;justify-self:start}
+  .copy .mark{grid-row:6}
+  .copy .intro{display:none}   /* 소개는 명함 뒷면과 아래 작업이 대신한다 */
+  .card3d{scale:.78;transform-origin:150px 0}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+}
 </style>
 
 <div class="hero" id="hero">
@@ -246,6 +268,7 @@ h1 span{display:block;color:var(--soft)}
     <h1>Meet the designer<span>behind the work.</span></h1>
     <p class="intro">브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준입니다. 작업은 인스타그램에 모아 두었습니다.</p>
     <p class="meta"><i></i>Available for new projects</p>
+    <p class="mark" aria-hidden="true">Chanjun Kwon</p>
   </section>
 
   <section class="stage" id="stage" aria-label="권찬준 사원증">
@@ -265,6 +288,13 @@ h1 span{display:block;color:var(--soft)}
 </section>
 <footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener">instagram.com/chanjun.kwon ↗</a></span></footer>
 
+<script>
+(() => {
+  const mark = document.querySelector('.copy .mark');
+  const fit = () => { mark.style.fontSize = '100px'; const w = mark.scrollWidth, avail = mark.parentElement.clientWidth - parseFloat(getComputedStyle(mark.parentElement).paddingLeft) * 2; mark.style.fontSize = (100 * avail / w).toFixed(2) + 'px'; };
+  fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
 <script>
 (() => {
   const ITEMS = [{"c": "DeqOA8QT1Lq", "t": "bewhysee — Concept Rebrand", "s": "Brand Identity · Packaging · Campaign · Web", "d": "Oct 19, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegYwaPzQjM", "t": "OURZ\\ — First Address in Korea", "s": "Brand identity · motion", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegI_tnTouO", "t": "Monthlens — Interactive Landing Template", "s": "Web Design · Interaction · Chat UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegIk8mzAt-", "t": "Monthlens — Landing Page Template", "s": "Web Design · Landing Page · Dark UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Def2RmSzCky", "t": "BizCopilot — Brand Identity Concept", "s": "Brand Identity · Brand Story · Design System", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeerEJ0zFCp", "t": "BeCanvas — Behance projects as canvas", "s": "Chrome extension · design and build", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ded7nqRTNGB", "t": "Bible Typing — Web Design & Build", "s": "Web Design · Typography · Themes", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedwSsDTXzT", "t": "A dashboard for looking busy at work", "s": "Web dashboard · UI design · Front-end", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedZAVnTInU", "t": "Picketing — Design System Concept", "s": "Colour · Typography · Layout · Components", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedSsqXzPoc", "t": "Picketing — Brand Renewal", "s": "Brand Identity · Character · Design System · Web", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebPl7vzX5A", "t": "알트먼 형, 혹시 작년 12월에 내 폴더 뒤져 봤어?", "s": "파란색. 눈 두 개. 입 없음. 짧은 팔.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebJVSZigkG", "t": "척모드가 업그레이드됐습니다.", "s": "이제 화면에 보이는 건 전부 눌려요.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeaT8hCCaYm", "t": "픽켓팅 디자인 시스템", "s": "Logo · Colour · Typography", "d": "Oct 12, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ddg7YGwkwm_", "t": "전라남도 영암 F1 사업 1조 288억.", "s": "논 한가운데 서킷만 덩그러니.", "d": "Sep 20, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdV2wdUk5HR", "t": "토스에 얼굴이 있다면.", "s": "이름은 토비.", "d": "Sep 16, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdPNAD7Ezct", "t": "디자인은 문제를 풀어내는 일,", "s": "이번 문제는 게임.", "d": "Sep 13, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "Dc-AJVQzOZl", "t": "일하는 척. 바쁜 척. 주소는 척모드 닷컴.", "s": "chuckmode.com 하나 켜 두면 끝납니다.", "d": "Sep 07, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DcvS6oPk-Ra", "t": "소리 내어 읽어보세요.", "s": "1946년입니다. 그때부터 80년 동안 한국에서 가장 많이", "d": "Sep 01, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DcIc61UPya-", "t": "“이게 비전공자의 브랜딩 결과물이라고요?😲”", "s": "DIAD 브랜딩 17기 권찬준님의 거주 호스피탈리티 플랫폼 ‘OURZI’ 브랜딩입니다.", "d": "Aug 17, 2026", "k": "Reel", "r": "9/16", "o": "dgodwonchan"}];
