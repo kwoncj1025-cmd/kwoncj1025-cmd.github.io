@@ -452,6 +452,9 @@ html.stage-on body .web-info .wi-ey>span:last-child{visibility:hidden}
 html.stage-on .web-dim{display:block;position:fixed;z-index:45;pointer-events:none;visibility:hidden;opacity:0;box-shadow:0 0 0 200vmax rgba(6,7,16,.5)}
 /* 쓰는 동안에는 화면(뷰포트의 88%)이 위아래 6%만 남기므로 상태 글을 화면 위 띠로 올린다 */
 @media (min-width:821px){html.stage-on .web-guide[aria-pressed="true"]{top:10px}}
+/* 불러오는 동안의 화면은 꺼진 맥 화면(검정). 문서가 뜨면 짧게 켜진다 */
+html.stage-on .mb-pane iframe{transition:opacity .35s ease-out}
+html.stage-on .mb-pane iframe.is-loading{opacity:0}
 /* 맥북 실물 부품(card-drop W2, 11 4절). 골격·크기·자리는 stage.css와 scene-web.js(deploy-prep)가 정하고, 여기서는 그 위에 힌지·면 그림만 얹는다.
    부품 그림(10-21 조율 지정 v09.psd, 은색 16형 CG): 덮개 안쪽·몸체 앞면 띠 = v09에서 그대로(정면이라 정사영), 키보드면 = MACBOOK-MOCKUP-013을 정사영으로 편 뒤
    알루미늄만 은색으로 다시 칠함(v09는 키보드면이 스치는 각도라 펼 수 없다. 키보드 우물은 실물처럼 검정).
@@ -1514,7 +1517,7 @@ window.ticker = (() => {
   const gateDeg = t => t < 0.20 ? 16 * (1 - (1 - cl((t - 0.12) / 0.05)) ** 3) : 16 * (1 - cl((t - 0.20) / 0.035)) ** 2;
 
   // 책상 위 명함 자세(hero 층 좌표: x 오른쪽, z 시청자 쪽). 사용자가 S1에서 옮기거나 뒤집으면 여기 남고, 착지 경로의 끝이 된다
-  const desk = { x: 0, z: 0, b: 186 * Math.PI / 180, f: 0, ft: 0, vf: 0, vx: 0, vz: 0, moved: false, ck: 0, fk: 0 };
+  const desk = { x: 0, z: 0, b: 186 * Math.PI / 180, f: 0, ft: 0, vf: 0, vx: 0, vz: 0, moved: false, ck: 0, fk: 0, vk: 1 };
   const geo = () => {
     const tb = document.querySelector('#work .table'), Wd = Stage.world && Stage.world.dims;
     const Hw = heroLayer.parentElement.offsetHeight || innerHeight, Dt = (Wd && Wd.Dt) || innerHeight;
@@ -1581,8 +1584,11 @@ window.ticker = (() => {
       el.style.transform = `translate3d(${(sx + dz * Math.sin(q.b)).toFixed(2)}px,${(q.floor + 1).toFixed(2)}px,${(sz + dz * Math.cos(q.b)).toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(90deg) scale(${(KS * q.sc * k).toFixed(4)},${(KS * q.sc * k * lf / Hc).toFixed(4)}) translate(-150px,-215px)`;
       el.style.opacity = (o * fin * dk).toFixed(3);
     };
-    put(shS, 1 + hc / 520, 0.26 / (1 + hc / 110), 8);
-    put(shC, 0.985, 0.42 * cl(1 - hc / 26), 2);
+    put(shS, 1 + hc / 520, 0.26 * desk.vk / (1 + hc / 110), 8);
+    put(shC, 0.985, 0.42 * desk.vk * cl(1 - hc / 26), 2);
+    // 맥북 구간: 화면 빛이 닿지 않는 책상 저편이라 명함은 어둠에 잠긴다(desk.vk). 3D 층(card3d)은 그대로 두고 잎 면만 흐린다
+    const vk = desk.vk < 1 ? desk.vk.toFixed(3) : '';
+    if (card3d.dataset.vk !== vk) { card3d.dataset.vk = vk; faces.forEach(fc => { fc.style.opacity = vk; }); card3d.style.visibility = desk.vk < 0.01 ? 'hidden' : ''; }
     // 유리 반사: 넘어지는 동안 빛줄기가 한 번 지나간다
     const sw = Math.sin(Math.PI * sa);
     faces.forEach(fc => {
@@ -1919,6 +1925,8 @@ window.ticker = (() => {
     desk: {
       corner(k){ k = cl(k); if (k !== desk.ck) { desk.ck = k; wakeBadge(); } },   // 카드를 모을 때 앞 오른쪽 귀퉁이로 밀려남
       face(k){ k = cl(k); if (k !== desk.fk) { desk.fk = k; wakeBadge(); } },     // 맺음: 앞면(얼굴)으로 넘어감
+      // 맥북 구간: 어둠에 잠김(0)과 드러남(1). 1로 돌아오면 그 자리에서 면을 되살린다(고리에 걸린 동안은 carryFrame이 돌지 않는다)
+      show(k){ k = cl(k); if (k === desk.vk) return; desk.vk = k; if (k === 1) { card3d.dataset.vk = ''; faces.forEach(fc => { fc.style.opacity = ''; }); card3d.style.visibility = ''; } wakeBadge(); },
       get pose(){ return { x: desk.x, z: desk.z, b: desk.b, f: desk.f, ck: desk.ck, fk: desk.fk }; },
       // 귀퉁이에 밀려난 명함 가운데의 세계 좌표(08 1절 축: 원점 = 모서리 가운데, x 오른쪽, z 시청자 쪽). 맺음 카메라가 이 점을 겨눈다
       get cornerAt(){ const g = geo(), k = desk.ck; desk.ck = 1; const t = target(g); desk.ck = k; return { x: t.x - (heroLayer.offsetWidth || innerWidth) / 2, z: t.z }; },
@@ -2391,7 +2399,7 @@ window.ticker = (() => {
   const narrow = () => innerWidth <= 820;
   // at: 그 서비스가 화면에 온전히 떠 있는 진행값(station 번호와 같다. 바이블타이핑은 맥북 앞(10)에서 이미 켜져 있다)
   const services = [
-    { id: 'bible', at: 10.6, name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
+    { id: 'bible', at: 10.6, pre: 1.6, name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
       line: 'A quiet place to type the King James Bible, one verse a day.', role: 'Product · Design · Build', year: '2026' },
     { id: 'chuck', at: 12, name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/', external: true,
       line: 'A website that keeps you looking busy at your desk.', role: 'Product · Design · Build', year: '2026' },
@@ -2419,6 +2427,8 @@ window.ticker = (() => {
     f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads');
     f.setAttribute('allow', 'clipboard-write');
     f.referrerPolicy = 'strict-origin-when-cross-origin';
+    // 불러오는 동안은 하얀 칸이 아니라 꺼진 맥 화면(검정): 문서가 다 뜰 때까지 iframe을 감춰 두고, 뜨면 켜진다
+    f.classList.add('is-loading'); f.addEventListener('load', () => { if (f.src !== 'about:blank') f.classList.remove('is-loading'); }, { once: true });
     f.src = urlOf(x.sv); x.pane.appendChild(f); x.frame = f;
   }
   function unmount(x){
@@ -2433,7 +2443,8 @@ window.ticker = (() => {
   let lastKey = '', curIdx = 0;
   function update(p){
     // 불러 두기·비우기: 정거장과의 거리 < 1.0
-    panes.forEach(x => { const d = Math.abs(p - x.sv.at); if (d < 1.0 && p > 8.6) mount(x); else unmount(x); });
+    // 바이블타이핑은 맥북이 드러나기 전(종이가 빠지기 시작할 때, p 9.0)부터 불러 둔다: 정거장에 닿을 때 이미 떠 있게
+    panes.forEach(x => { const d = p - x.sv.at, pre = x.sv.pre || 1.0; if (d > -pre && d < 1.0 && p > 8.6) mount(x); else unmount(x); });
     const s = sOf(p), i0 = Math.floor(s), f = s - i0, s2 = i0 + springOut(f);
     const key = s2.toFixed(4); if (key !== lastKey) { lastKey = key; strip.style.transform = `translate3d(calc(${(-s2).toFixed(4)} * (100% + var(--gap))),0,0)`; }
     const idx = Math.min(services.length - 1, Math.round(s));
@@ -2558,11 +2569,14 @@ window.ticker = (() => {
     const s = Stage.state;
     if (s.p > 1 + 1e-3 && Hero.t < 1) Hero.carry(1);
     // 명함은 끝까지 이 장면 주인의 물건이다(06 13절): 카드를 모을 때(p 1.04~1.15) 앞 오른쪽 귀퉁이로 밀려나고,
-    // 맺음 구간(마지막 정거장 앞 1, 11 표 0.75~0.95)에서 덮개가 닫힌 뒤 앞면(얼굴)으로 넘어가 처음 사람으로 돌아온다. 둘 다 p의 순수 함수
+    // 맺음 구간(마지막 정거장 앞 1, 11 표 0.75~0.95)에서 화면이 잠든 뒤 앞면(얼굴)으로 넘어가 처음 사람으로 돌아온다.
+    // 맥북 구간(맥북 앞 정거장 0.5 앞 → 맺음 구간 시작)에는 화면 빛이 닿지 않는 책상 저편이라 어둠에 잠겼다가, 카메라가 물러나며(맺음 0~0.3) 드러난다.
+    // 낮은 카메라에서는 책상 면이 보이지 않아, 저편의 명함이 허공에 뜬 흰 조각으로 읽혔다(10-21 조율 검수). 모두 p의 순수 함수
     const ease = Stage.world ? Stage.world.ease : (u => Math.max(0, Math.min(1, u)));
-    const end = Stage.config.stations.length - 1;
+    const end = Stage.config.stations.length - 1, web = Stage.config.stations.findIndex(x => x.name === 'web');
     Hero.desk.corner(ease((s.p - 1.04) / 0.11));
     Hero.desk.face(ease((s.p - (end - 0.25)) / 0.2));
+    if (web > 0) Hero.desk.show(1 - ease((s.p - (web - 0.5)) / 0.25) + ease((s.p - (end - 1)) / 0.3));
   });
 })();
 </script>
