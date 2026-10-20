@@ -438,6 +438,20 @@ html.stage-off .web-list li{display:flex;flex-direction:column;gap:4px;font-size
 html.stage-off .web-list a{color:var(--nt-ink);text-decoration:none;font:500 clamp(22px,2.4vw,32px)/1.1 var(--f-disp);letter-spacing:-.02em}
 /* 맥북은 그 구간에 다가갈 때(scene-web wake)만 그린다. 그 전에는 부품 그림(macbook/*.webp)도 받지 않는다(첫 화면 요청 수) */
 html.stage-on .mb:not(.mb-on){display:none}
+/* 사용 안내(web-live.js): 오른쪽 위 상태 글. 글 격자의 눈썹 글(.wi-ey)과 같은 글자·자리. 알약 버튼 없이 글자만 */
+.web-guide,.web-dim{display:none}
+html.stage-on .web-guide{display:block;position:fixed;z-index:46;top:clamp(28px,5vh,44px);right:max(32px,env(safe-area-inset-right,0px));margin:0;padding:6px 0;border:0;background:none;
+  font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2);cursor:pointer}
+html.stage-on .web-guide[hidden]{display:none}
+html.stage-on .web-guide:hover,html.stage-on .web-guide[aria-pressed="true"]{color:var(--nt-ink)}
+html.stage-on .web-guide:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+@media (max-width:820px){html.stage-on .web-guide{top:20px;right:20px}}
+/* 글 격자 안의 옛 안내(오른쪽 눈썹)는 이 상태 글로 대신한다 */
+html.stage-on body .web-info .wi-ey>span:last-child{visibility:hidden}
+/* 쓰는 동안 화면 밖을 살짝 어둡게: 화면 자리에 놓인 빈 상자의 바깥 그림자. 누르기는 그대로 통과한다(밖을 누르면 나가기) */
+html.stage-on .web-dim{display:block;position:fixed;z-index:45;pointer-events:none;visibility:hidden;opacity:0;box-shadow:0 0 0 200vmax rgba(6,7,16,.5)}
+/* 쓰는 동안에는 화면(뷰포트의 88%)이 위아래 6%만 남기므로 상태 글을 화면 위 띠로 올린다 */
+@media (min-width:821px){html.stage-on .web-guide[aria-pressed="true"]{top:10px}}
 /* 맥북 실물 부품(card-drop W2, 11 4절). 골격·크기·자리는 stage.css와 scene-web.js(deploy-prep)가 정하고, 여기서는 그 위에 힌지·면 그림만 얹는다.
    부품 그림(10-21 조율 지정 v09.psd, 은색 16형 CG): 덮개 안쪽·몸체 앞면 띠 = v09에서 그대로(정면이라 정사영), 키보드면 = MACBOOK-MOCKUP-013을 정사영으로 편 뒤
    알루미늄만 은색으로 다시 칠함(v09는 키보드면이 스치는 각도라 펼 수 없다. 키보드 우물은 실물처럼 검정).
@@ -450,12 +464,12 @@ html.stage-on .mb .mb-base{transform:none;background:none;box-shadow:none;border
 html.stage-on .mb .mb-deck,html.stage-on .mb .mb-fr,html.stage-on .mb .mb-sh,html.stage-on .mb .mb-kl{position:absolute;display:block;pointer-events:none}
 html.stage-on .mb .mb-deck{inset:0;transform:translateZ(var(--t));border-radius:calc(var(--rd) * .5) calc(var(--rd) * .5) var(--rd) var(--rd);overflow:hidden;
   background:var(--alu) url(macbook/deck.webp) 0 0/100% 100% no-repeat;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
-/* 소등한 방이라 몸체는 스스로 밝지 않다: 방 빛(어두운 남보라)에 눌려 있다가, 화면 빛이 닿는 만큼(힌지 쪽 → 앞쪽으로 옅게)만 은색이 살아난다.
+/* 소등한 방이라 몸체는 스스로 밝지 않다: 방 빛에 눌려 있다가(곱하는 색은 회색 기를 남긴 무채색 쪽: 남보라로 물들면 알루미늄이 아니다), 화면 빛이 닿는 만큼(힌지 쪽 → 앞쪽으로 옅게)만 은색이 살아난다.
    그래야 방에서 가장 밝은 면이 화면이다 */
 html.stage-on .mb .mb-deck::after{content:"";position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply;pointer-events:none;
-  background:linear-gradient(color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 92%),rgb(58,62,104)),
-    color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 38%),rgb(50,54,94)) 45%,rgb(40,44,82) 92%)}
-html.stage-on .mb .mb-fr::after{content:"";position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply;pointer-events:none;background:rgba(48,52,92,.86)}
+  background:linear-gradient(color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 92%),rgb(92,94,104)),
+    color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 38%),rgb(72,74,84)) 45%,rgb(54,56,66) 92%)}
+html.stage-on .mb .mb-fr::after{content:"";position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply;pointer-events:none;background:rgba(66,68,80,.86)}
 /* 화면 빛이 키보드면에 떨어진다: 힌지 쪽이 가장 밝고 앞으로 갈수록 옅다(빛이 비스듬히 닿는 사다리꼴) */
 html.stage-on .mb .mb-kl{inset:0;z-index:2;border-radius:inherit;mix-blend-mode:screen;opacity:calc(var(--light,0) * var(--on,1) * var(--gk));
   background:linear-gradient(rgba(var(--glow),.10),rgba(var(--glow),0) 30%)}
@@ -2437,6 +2451,22 @@ window.ticker = (() => {
     const a = info.querySelector('.wi-go'); a.href = sv.url.startsWith('http') ? sv.url : new URL(sv.url, location.href).href;
   }
 
+  // 사용 안내(대표님 결정): 오른쪽 위 글이 상태를 따라 바뀌고, 쓰는 동안 이 글을 눌러도 나간다. 라벨과 같은 글자이고 알약 버튼은 쓰지 않는다.
+  // 쓰는 동안에는 화면 밖(베젤·책상·설명 글)이 살짝 어두워진다: 무대 위 고정 층에 화면 자리만 뚫은 그림자(조상 opacity를 쓰지 않는다)
+  const TOUCH = matchMedia('(hover: none), (pointer: coarse), (max-width: 820px)');   // 글 격자의 터치 문구와 같은 기준
+  const guide = document.createElement('button'); guide.type = 'button'; guide.className = 'web-guide'; guide.hidden = true;
+  const dim = document.createElement('div'); dim.className = 'web-dim'; dim.setAttribute('aria-hidden', 'true');
+  document.body.append(dim, guide);
+  const guideText = () => { guide.textContent = using ? (TOUCH.matches ? '사용 중 · 나가기' : '사용 중 · 나가기 Esc') : '화면을 눌러 써 보기'; guide.setAttribute('aria-pressed', using ? 'true' : 'false'); };
+  guide.addEventListener('click', e => { e.stopPropagation(); using ? exitUse() : enterUse(); });
+  let dimKey = '';
+  function placeDim(){
+    const k = useK.v; if (k <= 0.001) { if (dimKey !== '0') { dimKey = '0'; dim.style.opacity = '0'; dim.style.visibility = 'hidden'; } return; }
+    const r = mb.querySelector('.mb-screen').getBoundingClientRect(), key = [r.left, r.top, r.width, r.height, k].map(v => v.toFixed(1)).join();
+    if (key === dimKey) return; dimKey = key;
+    Object.assign(dim.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', opacity: k.toFixed(3), visibility: 'visible' });
+  }
+
   // 사용 중
   let using = null, hold = 0;
   const useK = { v: 0, to: 0, t0: 0, from: 0, dur: 600 };
@@ -2454,14 +2484,14 @@ window.ticker = (() => {
     if (ARTIFACT && x.sv.external) { window.open(x.sv.url, '_blank', 'noopener'); return; }
     if (!x.frame) mount(x);
     using = x; hold = Stage.hold('web');
-    x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using');
+    x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using'); guideText();
     animUse(1, 600);
     setTimeout(() => { if (using === x && x.frame) x.frame.focus(); }, 60);
   }
   function exitUse(){
     const x = using; if (!x) return; using = null;
     x.pane.inert = true; if (x.frame) x.frame.tabIndex = -1;
-    mb.classList.remove('using'); document.documentElement.classList.remove('web-using');
+    mb.classList.remove('using'); document.documentElement.classList.remove('web-using'); guideText();
     hit.focus({ preventScroll: true });
     if (hold) { Stage.release(hold); hold = 0; }
     animUse(0, 450);
@@ -2470,12 +2500,19 @@ window.ticker = (() => {
   hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterUse(); } });
   bezel.addEventListener('click', e => { if (using && !e.target.closest('.mb-screen')) { e.stopPropagation(); exitUse(); } });
   // 화면 밖 아무 곳: iframe 안 클릭은 부모에 오지 않으므로, 부모가 받는 클릭은 모두 「밖」이다
-  addEventListener('pointerdown', e => { if (using && !e.target.closest('.mb-screen')) exitUse(); }, true);
+  addEventListener('pointerdown', e => { if (using && !e.target.closest('.mb-screen, .web-guide')) exitUse(); }, true);
   addEventListener('keydown', e => { if (using && e.key === 'Escape') { e.preventDefault(); exitUse(); } });
 
   Stage.web = { services, panes, update, enterUse, exitUse, get using(){ return !!using; }, get useK(){ return useK.v; }, get index(){ return curIdx; } };
-  let lp = NaN;
-  Stage.ticker.add(() => { const p = Stage.state.p; if (p !== lp) { lp = p; update(p); } });
+  // 안내 글은 화면이 보이는 동안(맥북이 드러난 뒤 ~ 맺음 전)과 쓰는 동안 보인다
+  let lp = NaN, gShow = null;
+  guideText();
+  Stage.ticker.add(() => {
+    const p = Stage.state.p; if (p !== lp) { lp = p; update(p); }
+    const show = !!using || (p >= 9.6 && p <= 14.25);
+    if (show !== gShow) { gShow = show; guide.hidden = !show; }
+    placeDim();
+  });
 })();
 </script>
 <script>
@@ -2606,7 +2643,7 @@ window.ticker = (() => {
   // 장면 web (주인 deploy-prep, 카메라 경로 수치는 card-drop 11 표). 진행값 구간 [9, 15]. 13 합의안.
   //  p 9~10   마지막 교정지가 빠지고(첫 0.15, world.js), 카메라가 옆으로 미끄러지며 고개를 든다(θ 90→22, 0.10~0.75).
   //           바라보는 점이 θ보다 앞서 0.55에 맥북에 닿는다. 교정지 오른쪽 옆에 처음부터 있던 열린 맥북이 드러난다
-  //  p 10~11  각도를 그대로 두고 거리만 줄여(0.12~0.80) 화면 속으로: 베젤 안쪽이 뷰포트의 96%, iframe 합성 배율 1
+  //  p 10~11  각도를 그대로 두고 거리만 줄여(0.12~0.80) 화면 속으로: 화면이 뷰포트의 88%(375급 92%), iframe 합성 배율 1
   //  p 11~12  베젤과 키보드 윗줄이 보이는 거리로 물러나고(0~0.4) 기기 안 데스크톱 전환으로 척모드(0.4~0.8, web-live.js)
   //  p 12~14  같은 거리에서 Monthlens 인터랙티브 → 다크
   //  p 14~15  물러나며 θ 22→55, 맥북과 명함이 한 화면(0~0.35). 덮개가 닫히며 화면 빛이 꺼지고(0.35~0.75), 명함이 앞면으로(0.75~0.95, scene-hero)
@@ -2623,7 +2660,8 @@ window.ticker = (() => {
 
   function measure(){
     // 화면(iframe) 크기 = 화면 속 정거장에서 뷰포트의 96%(375급은 92%)를 배율 1로 채우는 크기. 16:10
-    const fill = W.mobile ? 0.92 : 0.96;
+    // 88%: 화면 속에서도 위쪽에 상태 글(「사용 중 · 나가기 Esc」)이 서비스 화면과 겹치지 않을 띠가 남는다(13의 96%에서 줄임, 배율 1은 그대로)
+    const fill = W.mobile ? 0.92 : 0.88;
     G.Wi = Math.round(fill * Math.min(W.Wd, 1.6 * W.H)); G.Hi = Math.round(G.Wi / 1.6);
     G.bz = Math.round(G.Wi * 0.0148); G.chin = Math.round(G.Wi * 0.0412);   // 베젤·턱: v09.psd(은색 16형) 실측 비율(card-drop W2)
     G.lidW = G.Wi + 2 * G.bz; G.lidH = G.Hi + G.bz + G.chin; G.baseD = Math.round(G.lidW * 0.69);
