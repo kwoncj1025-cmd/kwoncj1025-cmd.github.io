@@ -127,7 +127,7 @@ h1 span{display:block;color:var(--soft)}
 
 /* ── 작업: 카드 테이블. 들어오면 덱이 쏟아지고, 아무 카드나 잡아 던지며, 누르면 명함처럼 뒤집혀 뒷면에 작업 정보가 나온다 ── */
 .work{position:relative}
-.table{position:relative;height:100vh;min-height:640px;max-width:1440px;margin:0 auto;overflow:hidden;transition:height .7s cubic-bezier(.2,.7,.2,1)}
+.table{position:relative;height:100vh;min-height:640px;max-width:1440px;margin:0 auto;overflow:hidden}
 .tbar{position:absolute;left:0;right:0;top:0;z-index:40;pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
   padding:calc(28px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) 0 max(32px,env(safe-area-inset-left,0px));
   font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
@@ -376,17 +376,17 @@ h1 span{display:block;color:var(--soft)}
   const scatterSpots = () => {
     const cols = mobile ? 3 : Math.max(4, Math.round(TW / (cw * 1.15))), rows = Math.ceil(N / cols);
     // 워드마크 띠는 비워 두고(윗부분에만 살짝 걸치게) 그 위에 흩는다. 첫 화면에서 명함이 이름에 걸친 것과 같은 관계
-    const gx = (TW - cw * 0.7) / cols, gy = Math.max(ch * 0.32, (TH - BAR - FOOT * 0.62 - ch * 0.55) / rows);
+    const gx = (TW - cw * 0.7) / cols, gy = Math.max(ch * 0.3, (TH - BAR - FOOT - ch * 0.75) / rows), yMax = TH - FOOT - ch * 0.5 - 6;
     return cards.map((c, i) => {
       const col = i % cols, row = Math.floor(i / cols);
-      return { x: cw * 0.35 + gx * (col + 0.5) + (rnd(i, 1) - 0.5) * gx * 0.7, y: BAR + ch * 0.3 + gy * (row + 0.5) + (rnd(i, 2) - 0.5) * gy * 0.6,
+      return { x: cw * 0.35 + gx * (col + 0.5) + (rnd(i, 1) - 0.5) * gx * 0.7, y: Math.min(yMax, BAR + ch * 0.3 + gy * (row + 0.5) + (rnd(i, 2) - 0.5) * gy * 0.6),
                r: (rnd(i, 3) - 0.5) * 0.5 };
     });
   };
   const gridSpots = () => {
     const gap = mobile ? 14 : 28, cols = Math.max(2, Math.floor((TW - 48 + gap) / (cw + gap))), w = cols * cw + (cols - 1) * gap;
     const x0 = (TW - w) / 2 + cw / 2;
-    return { h: BAR + 24 + Math.ceil(N / cols) * (ch + gap) + 40,
+    return { h: BAR + 24 + Math.ceil(N / cols) * (ch + gap) + FOOT + 8,
              at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cw + gap), y: BAR + 24 + ch / 2 + Math.floor(i / cols) * (ch + gap), r: 0 })) };
   };
 
@@ -519,7 +519,8 @@ h1 span{display:block;color:var(--soft)}
           if (c.x < mx) { c.x = mx; c.vr += c.vy * 0.0015; c.vx = Math.abs(c.vx) * 0.35; }
           if (c.x > TW - mx) { c.x = TW - mx; c.vr -= c.vy * 0.0015; c.vx = -Math.abs(c.vx) * 0.35; }
           if (c.y < my) { c.y = my; c.vr -= c.vx * 0.0015; c.vy = Math.abs(c.vy) * 0.35; }
-          if (c.y > TH - my) { c.y = TH - my; c.vr += c.vx * 0.0015; c.vy = -Math.abs(c.vy) * 0.35; }
+          const yb = TH - FOOT - ch * 0.5 - 6;                       // 아래 워드마크 띠는 카드가 들어가지 않는 바닥
+          if (c.y > yb) { c.y = yb; c.vr += c.vx * 0.0015; c.vy = -Math.abs(c.vy) * 0.35; }
         }
         if (c.toss && Math.hypot(c.vx, c.vy) < 0.05) c.toss = 0;
       }
