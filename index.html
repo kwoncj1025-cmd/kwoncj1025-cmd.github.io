@@ -125,70 +125,76 @@ h1 span{display:block;color:var(--soft)}
 .still .page{grid-template-columns:minmax(0,1fr)}
 .still .stage{min-height:760px}
 
-/* ── 작업: 카드 테이블. 19장 중 아무 카드나 잡아 어디로든 던진다. 미끄러지다 멈추고 가장자리에서 튕긴다 ── */
+/* ── 작업: 카드 테이블. 들어오면 덱이 쏟아지고, 아무 카드나 잡아 던지며, 누르면 명함처럼 뒤집혀 뒷면에 작업 정보가 나온다 ── */
 .work{position:relative}
-.table{position:relative;height:100vh;min-height:640px;overflow:hidden;
-  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;max-width:1360px;margin:0 auto;
-  padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
-.tell{position:relative;z-index:1;pointer-events:none;min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;padding-block:calc(56px + env(safe-area-inset-top,0px)) calc(48px + env(safe-area-inset-bottom,0px))}
-.tell .top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line);
+.table{position:relative;height:100vh;min-height:640px;max-width:1440px;margin:0 auto;overflow:hidden;transition:height .7s cubic-bezier(.2,.7,.2,1)}
+.tbar{position:absolute;left:0;right:0;top:0;z-index:40;pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:calc(28px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) 0 max(32px,env(safe-area-inset-left,0px));
   font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
-.tell .top b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
-.tell .now{display:grid}
-.tell .now>*{grid-area:1/1}
-.tell .cap{transition:opacity .35s,transform .45s cubic-bezier(.2,.7,.2,1)}
-.tell .cap.out{opacity:0;transform:translateY(-14px)}
-.tell .cap.in{opacity:0;transform:translateY(18px);transition:none}
-.tell h3{font-family:var(--f-disp);font-weight:500;font-size:clamp(34px,4.6vw,64px);line-height:1.02;letter-spacing:-.035em;text-wrap:balance;word-break:keep-all}
-.tell h3.ko{font-family:var(--f-ko);font-weight:700;letter-spacing:-.045em;line-height:1.12}
-.tell .sub{margin-top:18px;max-width:380px;font-family:var(--f-ko);font-size:14px;line-height:1.7;color:var(--ink-2);word-break:keep-all}
-.tell .meta{margin-top:26px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
-.tell .meta a{color:var(--ink);text-decoration:none;pointer-events:auto}
-.tell .meta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.tell .foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:var(--f-ko);font-size:12.5px;color:var(--ink-3);position:relative;z-index:30}
-.gather{pointer-events:auto;border:0;background:none;padding:0;font:500 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);cursor:pointer;border-bottom:1px solid currentColor}
-.gather:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.pile{position:absolute;inset:0;z-index:3;pointer-events:none;perspective:1600px;--cw:min(330px,25vw,40vh)}
-.pc{position:absolute;left:0;top:0;width:var(--cw);
-  display:block;border-radius:22px;padding:8px;text-decoration:none;color:inherit;transform-origin:50% 50%;will-change:transform;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
-  background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(242,243,248,.9) 46%,rgba(233,236,246,.94));
-  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(13,14,18,.05),0 18px 40px -22px rgba(40,46,80,.32),0 36px 70px -46px rgba(40,46,80,.24)}
+.tbar .r{display:flex;align-items:center;gap:22px}
+.tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
+.sort{pointer-events:auto;border:0;background:var(--ink);color:#fff;font:500 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:9px 14px;cursor:pointer}
+.sort:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
+.pile{position:absolute;inset:0;z-index:3;perspective:1600px;--cw:min(214px,16.5vw,31vh)}
+.pc{position:absolute;left:0;top:0;width:var(--cw);transform-style:preserve-3d;will-change:transform;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;outline:none}
 .pc.held{cursor:grabbing}
-
-.pc::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
+@media (pointer:coarse){.pc{touch-action:pan-y}}   /* 터치: 세로로 밀면 페이지가 내려가고, 옆·대각선으로 밀면 카드를 던진다 */
+.pc:focus-visible .front,.pc:focus-visible .back{outline:2px solid var(--dot);outline-offset:3px}
+.flip{position:relative;transform-style:preserve-3d}
+.f{border-radius:18px;padding:7px;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;
+  background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(242,243,248,.9) 46%,rgba(233,236,246,.94));
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(13,14,18,.05),0 14px 30px -18px rgba(40,46,80,.34),0 30px 60px -40px rgba(40,46,80,.24)}
+.f::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
   background:conic-gradient(from var(--rim,0deg),#c9f1ff,#e7d4ff,#ffe1f0,#fff3c8,#d2ffe8,#c9f1ff);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:var(--rimO,.35)}
-.pc::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;z-index:2;
+.f::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;z-index:2;
   background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.7) 48%,rgba(255,255,255,0) 60%);
   transform:translateX(var(--shine,0%));opacity:var(--glint,.25)}
-.pc .im{border-radius:15px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#e9ecf5}
-.pc img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-.pc:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
-.pc .sh{position:absolute;inset:8px;border-radius:15px;background:#0d0e12;opacity:0;pointer-events:none;z-index:1}
+.front .im{border-radius:12px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#e9ecf5}
+.front img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.front .sh{position:absolute;inset:7px;border-radius:12px;background:#0d0e12;opacity:0;pointer-events:none;z-index:1}
+/* 스크롤 신호: 첫 화면 아래 가장자리에 다음 구역의 카드가 반쯤 보이며 오르내린다. 누르면 그 구역으로 */
+.peek{position:fixed;left:50%;bottom:0;z-index:20;display:flex;align-items:flex-end;border:0;background:none;padding:0 0 env(safe-area-inset-bottom,0px);cursor:pointer;
+  transform:translate(-50%,46%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
+.peek i{display:block;width:58px;aspect-ratio:4/5;border-radius:10px;border:4px solid rgba(255,255,255,.95);background:#e9ecf5 center/cover no-repeat;
+  box-shadow:0 10px 24px -10px rgba(40,46,80,.45),0 0 0 1px rgba(160,170,210,.35);animation:bob 2.6s ease-in-out infinite}
+.peek i:nth-child(1){transform:rotate(-9deg);margin-right:-18px;animation-delay:.15s}
+.peek i:nth-child(2){position:relative;z-index:1;margin-bottom:10px}
+.peek i:nth-child(3){transform:rotate(9deg);margin-left:-18px;animation-delay:.3s}
+.peek:hover{transform:translate(-50%,30%)}
+.peek.gone{opacity:0;transform:translate(-50%,110%);pointer-events:none}
+.peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
+@keyframes bob{50%{translate:0 -9px}}
+@media (prefers-reduced-motion:reduce){.peek i{animation:none}}
+/* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
+.back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
+.back .row{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
+.back .row b{font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.back h4{margin:14px 2px 0;font-family:var(--f-disp);font-weight:500;font-size:calc(var(--cw) * .092);line-height:1.12;letter-spacing:-.025em;word-break:keep-all;text-wrap:balance}
+.back h4.ko{font-family:var(--f-ko);font-weight:700;letter-spacing:-.04em;line-height:1.25;font-size:calc(var(--cw) * .082)}
+.back .sub{margin:8px 2px 0;font-family:var(--f-ko);font-size:11.5px;line-height:1.55;color:var(--ink-2);word-break:keep-all}
+.back .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:10px 2px 0;border-top:1px solid var(--line);font-size:8.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
+.back .ft a{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;pointer-events:none}
+.back .ft a svg{width:11px;height:11px}
+.pc.flipped .back .ft a{pointer-events:auto}
+.back .ft a:focus-visible{outline:2px solid var(--dot);outline-offset:2px}
 .foot-note{max-width:1240px;margin:0 auto;padding:40px max(24px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px));
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
 .foot-note a{color:var(--ink);text-decoration:none}
 @media (max-width:820px){
-  .table{height:100svh;min-height:560px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto;align-items:stretch;
-    padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-  .tell{display:contents}
-  .tell .top{grid-row:1;padding-top:calc(20px + env(safe-area-inset-top,0px));align-self:start}
-  .tell .foot{grid-row:4;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));font-size:12px}
-  .tell .now{grid-row:3;padding-bottom:14px}
-  .tell h3{font-size:28px}
-  .tell .sub{margin-top:10px;font-size:13px}
-  .tell .meta{margin-top:14px}
-  .tell .foot span{display:none}
-  .pile{--cw:min(44vw,210px,30svh)}
-  .pc{border-radius:18px;padding:6px}
-  .pc .im{border-radius:12px}
-  .pc .sh{inset:6px;border-radius:12px}
+  .table{height:100svh;min-height:560px}
+  .tbar{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .tbar .hint{display:none}
+  .pile{--cw:min(36vw,170px,24svh)}
+  .back{padding:12px 10px 9px}
+  .back .sub{display:none}
+  .back .row{font-size:7.5px}
 }
 @media (prefers-reduced-motion:reduce){
-  .table{height:auto;display:block;padding-block:72px}
-  .tell .foot{display:none}
-  .pile{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:24px;margin-top:24px;perspective:none;pointer-events:auto}
-  .pc{position:relative;width:auto;transform:none!important;cursor:pointer}
+  .table{height:auto;padding:96px max(24px,env(safe-area-inset-right,0px)) 48px max(24px,env(safe-area-inset-left,0px))}
+  .tbar .hint{display:none}
+  .pile{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:24px;perspective:none;--cw:auto}
+  .pc{position:relative;transform:none!important;cursor:pointer}
 }
 @media (max-width:820px){
   .page{grid-template-columns:minmax(0,1fr)}
@@ -243,23 +249,16 @@ h1 span{display:block;color:var(--soft)}
   </section>
 
   <section class="stage" id="stage" aria-label="권찬준 사원증">
-    <p class="hint">Drag the badge · Click to flip</p>
   </section>
 </main>
 </div>
 
+<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i></button>
 <section class="work" id="work" aria-label="인스타그램 작업">
   <div class="table">
-    <div class="tell">
-      <p class="top"><span>Selected work · Instagram</span><b id="wNum">01 / 19</b></p>
-      <div class="now">
-        <div class="cap" id="wCap">
-          <h3 id="wT"></h3>
-          <p class="sub" id="wS"></p>
-          <p class="meta"><span id="wK"></span><span id="wD"></span><a id="wA" href="#" target="_blank" rel="noopener">Open on Instagram ↗</a></p>
-        </div>
-      </div>
-      <p class="foot"><span>아무 카드나 잡아 던져 보세요. 누르면 맨 위로 올라오고, 원본은 위 링크로 열립니다.</span><button class="gather" id="gather" type="button">다시 모으기</button></p>
+    <div class="tbar">
+      <span>Selected work · 19 posts</span>
+      <span class="r"><button class="sort" id="sort" type="button" aria-pressed="false">Sort</button></span>
     </div>
     <div class="pile" id="pile"></div>
   </div>
@@ -271,83 +270,140 @@ h1 span{display:block;color:var(--soft)}
   const ITEMS = [{"c": "DeqOA8QT1Lq", "t": "bewhysee — Concept Rebrand", "s": "Brand Identity · Packaging · Campaign · Web", "d": "Oct 19, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegYwaPzQjM", "t": "OURZ\\ — First Address in Korea", "s": "Brand identity · motion", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegI_tnTouO", "t": "Monthlens — Interactive Landing Template", "s": "Web Design · Interaction · Chat UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegIk8mzAt-", "t": "Monthlens — Landing Page Template", "s": "Web Design · Landing Page · Dark UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Def2RmSzCky", "t": "BizCopilot — Brand Identity Concept", "s": "Brand Identity · Brand Story · Design System", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeerEJ0zFCp", "t": "BeCanvas — Behance projects as canvas", "s": "Chrome extension · design and build", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ded7nqRTNGB", "t": "Bible Typing — Web Design & Build", "s": "Web Design · Typography · Themes", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedwSsDTXzT", "t": "A dashboard for looking busy at work", "s": "Web dashboard · UI design · Front-end", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedZAVnTInU", "t": "Picketing — Design System Concept", "s": "Colour · Typography · Layout · Components", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedSsqXzPoc", "t": "Picketing — Brand Renewal", "s": "Brand Identity · Character · Design System · Web", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebPl7vzX5A", "t": "알트먼 형, 혹시 작년 12월에 내 폴더 뒤져 봤어?", "s": "파란색. 눈 두 개. 입 없음. 짧은 팔.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebJVSZigkG", "t": "척모드가 업그레이드됐습니다.", "s": "이제 화면에 보이는 건 전부 눌려요.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeaT8hCCaYm", "t": "픽켓팅 디자인 시스템", "s": "Logo · Colour · Typography", "d": "Oct 12, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ddg7YGwkwm_", "t": "전라남도 영암 F1 사업 1조 288억.", "s": "논 한가운데 서킷만 덩그러니.", "d": "Sep 20, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdV2wdUk5HR", "t": "토스에 얼굴이 있다면.", "s": "이름은 토비.", "d": "Sep 16, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdPNAD7Ezct", "t": "디자인은 문제를 풀어내는 일,", "s": "이번 문제는 게임.", "d": "Sep 13, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "Dc-AJVQzOZl", "t": "일하는 척. 바쁜 척. 주소는 척모드 닷컴.", "s": "chuckmode.com 하나 켜 두면 끝납니다.", "d": "Sep 07, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DcvS6oPk-Ra", "t": "소리 내어 읽어보세요.", "s": "1946년입니다. 그때부터 80년 동안 한국에서 가장 많이", "d": "Sep 01, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DcIc61UPya-", "t": "“이게 비전공자의 브랜딩 결과물이라고요?😲”", "s": "DIAD 브랜딩 17기 권찬준님의 거주 호스피탈리티 플랫폼 ‘OURZI’ 브랜딩입니다.", "d": "Aug 17, 2026", "k": "Reel", "r": "9/16", "o": "dgodwonchan"}];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (document.documentElement.classList.contains('still')) return;
-  const work = document.getElementById('work'), table = work.querySelector('.table'), pile = document.getElementById('pile');
-  const wNum = document.getElementById('wNum'), wCap = document.getElementById('wCap'), wT = document.getElementById('wT'),
-        wS = document.getElementById('wS'), wK = document.getElementById('wK'), wD = document.getElementById('wD'), wA = document.getElementById('wA');
+  const work = document.getElementById('work'), table = work.querySelector('.table'), pile = document.getElementById('pile'), sortBtn = document.getElementById('sort');
+  const peek = document.getElementById('peek');
+  [...peek.children].forEach((el, k) => { el.style.backgroundImage = `url(work/${ITEMS[k].c}.webp)`; });
+  const peekState = () => peek.classList.toggle('gone', scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
+  addEventListener('scroll', peekState, { passive: true }); peekState();
+  peek.addEventListener('click', () => work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
   const hasKo = s => /[가-힣]/.test(s), pad = n => String(n).padStart(2, '0');
-  const link = it => `https://www.instagram.com/p/${it.c}/`;
-  // 카드는 링크가 아니다. 던지다가 원본이 열리지 않게, 원본은 왼쪽 제목 옆 링크로만 연다
+  const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const ARROW = '<svg viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  // 카드 앞면은 커버, 뒷면은 명함 뒷면과 같은 문법의 작업 정보. 카드 자체는 링크가 아니고, 뒷면의 화살표만 원본을 연다
   const cards = ITEMS.map((it, i) => {
     const el = document.createElement('div');
     el.className = 'pc'; el.tabIndex = 0; el.setAttribute('role', 'button');
-    el.setAttribute('aria-label', `${it.t} — 맨 위로 올리기`);
-    el.innerHTML = `<div class="im"><img src="work/${it.c}.webp" alt="" loading="eager" decoding="async" draggable="false"></div><span class="sh"></span>`;
+    el.setAttribute('aria-label', `${it.t} — 눌러서 뒤집기`);
+    el.innerHTML = `<div class="flip">
+      <div class="f front"><div class="im"><img src="work/${it.c}.webp" alt="" loading="eager" decoding="async" draggable="false"></div><span class="sh"></span></div>
+      <div class="f back" aria-hidden="true">
+        <p class="row"><span>${it.k}${it.o !== 'chanjun.kwon' ? ' · @' + esc(it.o) : ''}</span><b>${pad(i + 1)} / ${N}</b></p>
+        <h4 class="${hasKo(it.t) ? 'ko' : ''}">${esc(it.t)}</h4>
+        <p class="sub">${esc(it.s)}</p>
+        <p class="ft"><span>${it.d}</span><a href="https://www.instagram.com/p/${it.c}/" target="_blank" rel="noopener" tabindex="-1" aria-label="${esc(it.t)} 인스타그램에서 열기">${ARROW}</a></p>
+      </div></div>`;
     pile.appendChild(el);
-    return { el, sh: el.querySelector('.sh'), i, j1: ((i * 37) % 11 - 5) / 5, j2: ((i * 53) % 9 - 4) / 4,
-             x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0, lift: 0 };
+    return { el, flipEl: el.firstElementChild, sh: el.querySelector('.sh'), back: el.querySelector('.back'), link: el.querySelector('.ft a'), i,
+             j1: ((i * 37) % 11 - 5) / 5, j2: ((i * 53) % 9 - 4) / 4,
+             x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0, lift: 0, fl: 0, flT: 0, flV: 0, peekT: 0, hov: 0, hside: 1 };
   });
-  let order = cards.slice().reverse();               // 뒤에 있을수록 위. 처음엔 01번이 맨 위
-
-  let cur = -1;
-  function setCap(i){
-    if (i === cur) return; const first = cur < 0; cur = i; const it = ITEMS[i];
-    const fill = () => {
-      wT.textContent = it.t; wT.classList.toggle('ko', hasKo(it.t)); wS.textContent = it.s;
-      wK.textContent = it.k + (it.o !== 'chanjun.kwon' ? ' · @' + it.o : ''); wD.textContent = it.d; wA.href = link(it);
-      wNum.textContent = `${pad(i + 1)} / ${N}`;
-    };
-    if (first || reduce) { fill(); return; }
-    wCap.classList.add('out'); clearTimeout(setCap.t);
-    setCap.t = setTimeout(() => { fill(); wCap.classList.remove('out'); wCap.classList.add('in'); void wCap.offsetWidth; wCap.classList.remove('in'); }, 180);
-  }
-  const raise = c => { order = order.filter(o => o !== c); order.push(c); order.forEach((o, k) => { o.el.style.zIndex = k + 1; }); setCap(c.i); };
-  setCap(0);
-  cards.forEach(c => c.el.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); raise(c); } }));
-  if (reduce) { cards.forEach(c => c.el.addEventListener('click', () => raise(c))); return; }
-
-  // 테이블 크기와 덱이 놓이는 자리
-  let TW = 0, TH = 0, cw = 300, ch = 390, mobile = false;
-  const home = (c, k) => {                            // k: 위에서부터 몇 번째인지
-    const hx = mobile ? TW * 0.5 : TW * 0.68, hy = mobile ? TH * 0.42 : TH * 0.5;
-    return { x: hx - k * 1.2 + c.j2 * 3, y: hy + k * 1.6 + c.j1 * 2, r: (k ? c.j1 * 3.5 : 0) * Math.PI / 180 };
+  let order = cards.slice().reverse();               // 뒤에 있을수록 위
+  const restack = () => order.forEach((o, k) => { o.el.style.zIndex = k + 1; });
+  const raise = c => { order = order.filter(o => o !== c); order.push(c); restack(); };
+  const setFlip = (c, on) => {
+    c.flT = on ? 180 : 0; c.el.classList.toggle('flipped', on);
+    c.back.setAttribute('aria-hidden', on ? 'false' : 'true'); c.link.tabIndex = on ? 0 : -1;
+    if (reduce) { c.fl = c.flT; c.flipEl.style.transform = `rotateY(${c.fl}deg)`; }
   };
+  cards.forEach(c => c.el.addEventListener('keydown', ev => {
+    if (ev.target !== c.el) return;
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); raise(c); setFlip(c, !c.flT); }
+  }));
+  if (reduce) { cards.forEach(c => c.el.addEventListener('click', ev => { if (!ev.target.closest('a')) setFlip(c, !c.flT); })); sortBtn.hidden = true; return; }
+
+  // 테이블 크기
+  let TW = 0, TH = 0, cw = 200, ch = 260, mobile = false, BAR = 80;
   const measure = () => {
-    const rect = table.getBoundingClientRect(); TW = rect.width; TH = rect.height; mobile = innerWidth <= 820;
+    mobile = innerWidth <= 820; BAR = mobile ? 64 : 84;
     cw = cards[0].el.offsetWidth || cw; ch = cards[0].el.offsetHeight || ch;
+    TW = table.clientWidth; TH = table.clientHeight;
   };
+  // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
+  const rnd = (i, s) => { const x = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return x - Math.floor(x); };
+  const scatterSpots = () => {
+    const cols = mobile ? 3 : Math.max(4, Math.round(TW / (cw * 1.15))), rows = Math.ceil(N / cols);
+    const gx = (TW - cw * 0.7) / cols, gy = (TH - BAR - ch * 0.55) / rows;
+    return cards.map((c, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      return { x: cw * 0.35 + gx * (col + 0.5) + (rnd(i, 1) - 0.5) * gx * 0.7, y: BAR + ch * 0.3 + gy * (row + 0.5) + (rnd(i, 2) - 0.5) * gy * 0.6,
+               r: (rnd(i, 3) - 0.5) * 0.5 };
+    });
+  };
+  const gridSpots = () => {
+    const gap = mobile ? 14 : 28, cols = Math.max(2, Math.floor((TW - 48 + gap) / (cw + gap))), w = cols * cw + (cols - 1) * gap;
+    const x0 = (TW - w) / 2 + cw / 2;
+    return { h: BAR + 24 + Math.ceil(N / cols) * (ch + gap) + 40,
+             at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cw + gap), y: BAR + 24 + ch / 2 + Math.floor(i / cols) * (ch + gap), r: 0 })) };
+  };
+
+  // 처음엔 테이블 아래 가운데에 한 벌로 쌓여 있다가, 화면에 들어오면 흩은 자리로 던져진다
   measure();
-  order.slice().reverse().forEach((c, k) => Object.assign(c, home(c, k)));
-  order.forEach((o, k) => { o.el.style.zIndex = k + 1; });
+  order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = TH * 0.62 + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
+  restack();
+  const FR = 0.935, FRR = 0.88;
+  const tossTo = (c, s, delay) => setTimeout(() => {
+    // 마찰이 FR이면 처음 속도의 1/(1-FR)배를 미끄러진다. 그만큼 역산해 던지면 정한 자리에 멈춘다
+    c.vx = (s.x - c.x) * (1 - FR); c.vy = (s.y - c.y) * (1 - FR);
+    let dr = s.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = dr * (1 - FRR);
+    c.toss = 1;
+  }, delay);
+  let sorted = false, dealt = false, dealtAt = 0;
+  const deal = () => {
+    if (dealt) return; dealt = true; dealtAt = performance.now();
+    const spots = scatterSpots();
+    order.slice().reverse().forEach((c, k) => tossTo(c, spots[c.i], k * 55));
+  };
+  const checkDeal = () => { if (!dealt && table.getBoundingClientRect().top < innerHeight * 0.5) deal(); };
+  // 글 없이 알려 주기: 쏟아진 뒤 아무도 만지지 않으면 맨 위 카드가 살짝 뒤집혀 뒷면 끝을 보여 주고 돌아온다(처음 만질 때까지 최대 3번)
+  let touched = false, hints = 0, nextHint = 0;
+  const idleHint = now => {
+    if (touched || hints >= 3 || !dealtAt || now - dealtAt < 1900 || now < nextHint) return;
+    const c = order[order.length - 1]; if (c.flT) return;
+    c.peekT = 44; setTimeout(() => { c.peekT = 0; }, 560);
+    hints++; nextHint = now + 6500;
+  };
+
+  sortBtn.addEventListener('click', () => {
+    sorted = !sorted; dealt = true; touched = true;
+    sortBtn.textContent = sorted ? 'Scatter' : 'Sort'; sortBtn.setAttribute('aria-pressed', sorted);
+    if (sorted) {
+      const g = gridSpots(); table.style.height = g.h + 'px'; TH = g.h;
+      order = cards.slice().reverse(); restack();
+      cards.forEach((c, i) => { c.home = g.at[i]; setFlip(c, false); });
+    } else {
+      table.style.height = ''; measure();
+      const spots = scatterSpots();
+      cards.forEach((c, i) => { c.home = null; tossTo(c, spots[i], (N - i) * 30); });
+    }
+  });
   addEventListener('resize', () => {
     const ow = TW, oh = TH; measure();
-    if (ow && oh) cards.forEach(c => { c.x *= TW / ow; c.y *= TH / oh; });
+    if (sorted) { const g = gridSpots(); table.style.height = g.h + 'px'; TH = g.h; cards.forEach((c, i) => { c.home = g.at[i]; }); }
+    else if (ow && oh) cards.forEach(c => { c.x *= TW / ow; c.y *= TH / oh; });
   });
   if (document.fonts) document.fonts.ready.then(measure);
 
-  // 다시 모으기: 지금 쌓인 순서 그대로 한 벌로 끌어모은다
-  let gatherT = 0;
-  document.getElementById('gather').addEventListener('click', () => { gatherT = performance.now(); });
-
-  // 잡기: 잡은 점이 손을 따라오고, 카드는 그 점을 축으로 끌려가며 돈다(명함과 같은 원리)
+  // 잡기: 잡은 점이 손을 따라오고, 카드는 그 점을 축으로 끌려가며 돈다(명함과 같은 원리). 끌지 않고 누르면 뒤집힌다
   let drag = null;
+  const local = ev => { const r = table.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
   cards.forEach(c => {
     c.el.addEventListener('pointerdown', ev => {
-      if (ev.button > 0) return;
+      if (ev.button > 0 || ev.target.closest('a')) return;
       ev.preventDefault();
-      const rect = table.getBoundingClientRect(), px = ev.clientX - rect.left, py = ev.clientY - rect.top;
-      const dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
+      const [px, py] = local(ev), dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
       drag = { c, id: ev.pointerId, lx: dx * co - dy * si, ly: dx * si + dy * co, px, py, x0: px, y0: py, vx: 0, vy: 0, vr: 0, t: performance.now(), moved: false };
-      c.vx = c.vy = c.vr = 0; c.el.classList.add('held');
-      c.el.setPointerCapture(ev.pointerId); raise(c); gatherT = 0;
+      c.vx = c.vy = c.vr = 0; c.toss = 0; c.home = null; c.el.classList.add('held'); touched = true;
+      c.el.setPointerCapture(ev.pointerId); raise(c);
     });
     c.el.addEventListener('pointermove', ev => {
       if (!drag || drag.c !== c || ev.pointerId !== drag.id) return;
-      const rect = table.getBoundingClientRect(), px = ev.clientX - rect.left, py = ev.clientY - rect.top;
-      const now = performance.now(), dt = Math.max(4, now - drag.t) / 16.67;
-      // 잡은 점까지의 팔 길이로 회전을 만든다: 가장자리를 잡을수록 많이 돈다. 큰 이동은 잘게 나눠 계산해 튀지 않게 한다
+      const [px, py] = local(ev), now = performance.now(), dt = Math.max(4, now - drag.t) / 16.67;
+      if (!drag.moved && Math.hypot(px - drag.x0, py - drag.y0) < 6) return;
+      drag.moved = true;
+      // 큰 이동은 잘게 나눠 계산해 튀지 않게 하고, 한 번에 도는 각도에 상한을 둔다
       const steps = Math.max(1, Math.ceil(Math.hypot(px - drag.px, py - drag.py) / 10));
-      const x0 = c.x, y0 = c.y; let dr = 0, qx = drag.px, qy = drag.py, nx = c.x, ny = c.y;
+      let dr = 0, qx = drag.px, qy = drag.py, nx = c.x, ny = c.y;
       for (let n = 1; n <= steps; n++) {
         const tx = drag.px + (px - drag.px) * n / steps, ty = drag.py + (py - drag.py) * n / steps, mx = tx - qx, my = ty - qy;
         const co = Math.cos(c.r), si = Math.sin(c.r), ax = drag.lx * co - drag.ly * si, ay = drag.lx * si + drag.ly * co;
@@ -356,60 +412,67 @@ h1 span{display:block;color:var(--soft)}
         const co2 = Math.cos(c.r), si2 = Math.sin(c.r);
         nx = tx - (drag.lx * co2 - drag.ly * si2); ny = ty - (drag.lx * si2 + drag.ly * co2);
       }
-      c.x = x0; c.y = y0;
       drag.vx = drag.vx * 0.5 + ((nx - c.x) / dt) * 0.5; drag.vy = drag.vy * 0.5 + ((ny - c.y) / dt) * 0.5; drag.vr = drag.vr * 0.5 + (dr / dt) * 0.5;
       c.x = nx; c.y = ny; drag.px = px; drag.py = py; drag.t = now;
-      if (Math.hypot(px - drag.x0, py - drag.y0) > 6) drag.moved = true;
     });
     const end = ev => {
       if (!drag || drag.c !== c || ev.pointerId !== drag.id) return;
       const d0 = drag; drag = null; c.el.classList.remove('held');
+      if (!d0.moved) { setFlip(c, !c.flT); c.flV += 0; c.kick = 1; return; }   // 누름: 뒤집기
       if (performance.now() - d0.t > 90) { d0.vx *= 0.3; d0.vy *= 0.3; d0.vr *= 0.3; }   // 멈췄다 놓으면 그 자리에
-      const sp = Math.hypot(d0.vx, d0.vy), cap = sp > 55 ? 55 / sp : 1;   // 아무리 세게 던져도 화면을 몇 번씩 가로지르지 않게
+      const sp = Math.hypot(d0.vx, d0.vy), cap = sp > 55 ? 55 / sp : 1;          // 아무리 세게 던져도 화면을 몇 번씩 가로지르지 않게
       c.vx = d0.vx * cap; c.vy = d0.vy * cap; c.vr = Math.max(-0.12, Math.min(0.12, d0.vr));
     };
     c.el.addEventListener('pointerup', end); c.el.addEventListener('pointercancel', end);
     c.el.addEventListener('dragstart', ev => ev.preventDefault());
+    c.el.addEventListener('pointermove', ev => { if (ev.pointerType !== 'mouse') return; const [px] = local(ev); c.hov = 1; c.hside = px < c.x ? -1 : 1; });
+    c.el.addEventListener('pointerleave', () => { c.hov = 0; });
   });
 
   let last = performance.now();
   function frame(now){
     const dt = Math.min(2.5, (now - last) / 16.67); last = now;
-    const g = gatherT ? Math.min(1, (now - gatherT) / 900) : 0;
+    checkDeal(); idleHint(now);
     const top = order.length - 1;
     order.forEach((c, k) => {
-      const held = drag && drag.c === c;
-      if (gatherT && !held) {
-        // 모으기: 위쪽 카드부터 조금씩 늦게 덱 자리로 스프링
-        const h = home(c, top - k), kk = 0.08 * Math.min(1, g * 1.6 + (k / N) * 0.4);
+      const held = drag && drag.c === c && drag.moved;
+      if (c.home && !held) {
+        // 정렬: 번호 자리로 스프링
+        const h = c.home, kk = 0.07;
         c.vx = (c.vx + (h.x - c.x) * kk) * 0.78; c.vy = (c.vy + (h.y - c.y) * kk) * 0.78;
         let dr = h.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = (c.vr + dr * kk) * 0.78;
       }
       if (!held) {
         c.x += c.vx * dt; c.y += c.vy * dt; c.r += c.vr * dt;
-        const fr = Math.pow(0.935, dt), frr = Math.pow(0.88, dt);   // 테이블 위 마찰
-        c.vx *= fr; c.vy *= fr; c.vr *= frr;
-        // 가장자리: 카드가 5분의 1쯤 넘어가면 튕겨 돌아오고, 맞은 방향만큼 돈다
-        const mx = cw * 0.3, my = ch * 0.3;
-        if (c.x < mx) { c.x = mx; c.vr += c.vy * 0.0015; c.vx = Math.abs(c.vx) * 0.35; }
-        if (c.x > TW - mx) { c.x = TW - mx; c.vr -= c.vy * 0.0015; c.vx = -Math.abs(c.vx) * 0.35; }
-        if (c.y < my) { c.y = my; c.vr -= c.vx * 0.0015; c.vy = Math.abs(c.vy) * 0.35; }
-        if (c.y > TH - my) { c.y = TH - my; c.vr += c.vx * 0.0015; c.vy = -Math.abs(c.vy) * 0.35; }
+        if (!c.home) { const fr = Math.pow(FR, dt); c.vx *= fr; c.vy *= fr; c.vr *= Math.pow(FRR, dt); }
+        if (!c.home && !c.toss) {
+          // 가장자리: 카드가 조금 넘어가면 튕겨 돌아오고, 맞은 방향만큼 돈다
+          const mx = cw * 0.3, my = ch * 0.3;
+          if (c.x < mx) { c.x = mx; c.vr += c.vy * 0.0015; c.vx = Math.abs(c.vx) * 0.35; }
+          if (c.x > TW - mx) { c.x = TW - mx; c.vr -= c.vy * 0.0015; c.vx = -Math.abs(c.vx) * 0.35; }
+          if (c.y < my) { c.y = my; c.vr -= c.vx * 0.0015; c.vy = Math.abs(c.vy) * 0.35; }
+          if (c.y > TH - my) { c.y = TH - my; c.vr += c.vx * 0.0015; c.vy = -Math.abs(c.vy) * 0.35; }
+        }
+        if (c.toss && Math.hypot(c.vx, c.vy) < 0.05) c.toss = 0;
       }
+      // 뒤집기: 스프링으로 넘어가며 살짝 들린다(명함 뒤집기와 같은 감)
+      const hoverPeek = c.hov && !held ? 13 * c.hside * (c.flT ? -1 : 1) : 0;
+      c.flV = (c.flV + (c.flT + hoverPeek + c.peekT - c.fl) * 0.06) * 0.74; c.fl += c.flV;
+      const flipLift = Math.sin(Math.min(Math.PI, Math.abs(c.fl) / 180 * Math.PI));
       // 움직이는 속도만큼 유리판이 기울고, 손에 든 카드는 들려 그림자가 커진다
       const vx = held ? drag.vx : c.vx, vy = held ? drag.vy : c.vy;
       c.tx += (Math.max(-16, Math.min(16, vx * 0.9)) - c.tx) * 0.2;
       c.ty += (Math.max(-16, Math.min(16, -vy * 0.9)) - c.ty) * 0.2;
-      c.lift += ((held ? 1 : Math.min(1, Math.hypot(c.vx, c.vy) / 30)) - c.lift) * 0.15;
+      c.lift += ((held ? 1 : Math.max(flipLift * 0.8, c.hov * 0.35, Math.min(1, Math.hypot(c.vx, c.vy) / 30))) - c.lift) * 0.15;
       const st = c.el.style;
-      st.transform = `translate3d(${(c.x - cw / 2).toFixed(1)}px,${(c.y - ch / 2).toFixed(1)}px,${(c.lift * 40).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${(1 + c.lift * 0.04).toFixed(4)})`;
-      c.sh.style.opacity = (k === top ? 0 : Math.min(0.12, (top - k) * 0.012)).toFixed(3);
-      st.setProperty('--rim', `${(c.r * 57 + c.tx * 8 + 210).toFixed(1)}deg`);
-      st.setProperty('--rimO', (k === top ? 0.55 + c.lift * 0.35 : 0.3 + c.lift * 0.4).toFixed(3));
-      st.setProperty('--shine', `${(c.tx * -5 + c.r * 40).toFixed(1)}%`);
+      st.transform = `translate3d(${(c.x - cw / 2).toFixed(1)}px,${(c.y - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${(1 + c.lift * 0.05).toFixed(4)})`;
+      c.flipEl.style.transform = `rotateY(${c.fl.toFixed(2)}deg)`;
+      c.sh.style.opacity = (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3);
+      st.setProperty('--rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`);
+      st.setProperty('--rimO', (0.35 + c.lift * 0.45).toFixed(3));
+      st.setProperty('--shine', `${(c.tx * -5 + c.r * 40 + c.fl * 0.3).toFixed(1)}%`);
       st.setProperty('--glint', (0.2 + c.lift * 0.35).toFixed(3));
     });
-    if (gatherT && g >= 1 && cards.every(c => Math.abs(c.vx) + Math.abs(c.vy) < 0.05)) gatherT = 0;
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -437,6 +500,13 @@ h1 span{display:block;color:var(--soft)}
   // intro 동안 감쇠를 약하게 시작해 SWING 스텝(약 3초)에 걸쳐 평소 값으로 올린다
   let intro = !reduce && !still, swingT = 0;
   const SWING = 380;
+  // 손대기 전까지의 힌트: 흔들림이 멈추면 보이지 않는 손이 카드 아래를 옆으로 살짝 밀고, 이어서 Y축으로 살짝 뒤집었다 돌려 놓는다
+  let touched = reduce || still, nudgeN = 0, idleT = 0, peekT = 0, peekDir = 1;
+  const NUDGE_FIRST = 180, NUDGE_GAP = 840, NUDGE_MAX = 3, NUDGE_OM = 0.0045, NUDGE_V = 0.6;
+  const PEEK = 30, PEEK_AT = 42, PEEK_HOLD = 50, MAG_PULL = 0.03, MAG_TILT = 0.00006;
+  // 커서 자석(데스크톱): 카드 밖 120px 안쪽에 커서가 오면 그쪽으로 아주 약하게 끌려 기운다
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce && !still;
+  let magT = 0, mag = 0;
 
   let AX = 0, AY = -14, SH = 600;
   const anchor = () => ({ x: AX, y: AY });
@@ -465,6 +535,7 @@ h1 span{display:block;color:var(--soft)}
 
   // 짧게 누르면 뒤집기, 4px 넘게 움직이면 잡은 자리 그대로 끌기
   card.addEventListener('pointerdown', e => {
+    touched = true; if (peekT) { peekT = 0; flipT = 0; }   // 한 번이라도 만지면 힌트는 영구히 멈춘다
     if (e.target.closest('button,a')) return;
     e.preventDefault();
     const P = local(e), A = pts[N - 1];
@@ -494,6 +565,18 @@ h1 span{display:block;color:var(--soft)}
     press = null; drag = null; card.classList.remove('grab');
   };
   card.addEventListener('pointerup', end); card.addEventListener('pointercancel', end);
+
+  if (fine) {
+    addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      const r = card.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2);
+      const ox = Math.max(r.left - e.clientX, 0, e.clientX - r.right), oy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+      const s = Math.max(0, 1 - Math.hypot(ox, oy) / 120);
+      magT = s * Math.max(-1, Math.min(1, dx / 220));
+    });
+    document.documentElement.addEventListener('mouseleave', () => { magT = 0; });
+    addEventListener('blur', () => { magT = 0; });
+  }
 
   document.getElementById('toBack').addEventListener('click', () => { flipT = 180; vtw += 4; });
   document.getElementById('toFront').addEventListener('click', () => { flipT = 0; vtw -= 4; });
@@ -547,6 +630,12 @@ h1 span{display:block;color:var(--soft)}
       E.y += G * 0.25 * 1.6;                          // 카드 무게
       seg += (seg0 - seg) * 0.035;                     // 늘어난 줄이 천천히 되돌아옴
       if (!reduce) E.x += Math.sin(t * 0.8) * 0.012;
+      mag += (magT - mag) * 0.04; E.x += mag * MAG_PULL;   // 커서 쪽으로 아주 약하게 끌림
+      if (!touched && !intro && nudgeN < NUDGE_MAX && ++idleT >= (nudgeN ? NUDGE_GAP : NUDGE_FIRST)) {
+        idleT = 0; nudgeN++; peekDir = nudgeN % 2 ? 1 : -1;
+        om -= peekDir * NUDGE_OM; E.px -= peekDir * NUDGE_V;   // 보이지 않는 손이 카드 아래쪽을 옆으로 살짝 밀었다 놓음
+        if (flipT === 0) peekT = 1;
+      }
       solveRope(false);
       piv.x = E.x; piv.y = E.y;
     }
@@ -559,12 +648,15 @@ h1 span{display:block;color:var(--soft)}
     const r2 = rx * rx + ry * ry;
     const torque = rx * (GC * 0.25 - ayS * 0.6) + ry * axS * 0.6;
     om += torque / (r2 + ICM) * 1.0;
+    if (!drag) om -= mag * MAG_TILT;                  // 자석: 카드 아래쪽이 커서 쪽으로 살짝 기운다
     om *= drag ? 0.982 : intro ? 0.974 : 0.986;     // 첫 흔들림: 카드는 줄보다 살짝 늦게 따라 돌되 따로 크게 놀지 않게
     om = Math.max(-0.05, Math.min(0.05, om));
     phi += om; phi = Math.max(-1.2, Math.min(1.2, phi));
     // 비틀림(Y축)과 뒤집기
     vtw += -tw * 0.012 - vtw * 0.06 + vxS * 0.18;
     tw += vtw; tw = Math.max(-60, Math.min(60, tw));
+    if (peekT && ++peekT === PEEK_AT) flipT = PEEK * peekDir;          // 밀고 나서 Y축으로 살짝 뒤집어 뒷면 가장자리를 보여 줌
+    else if (peekT === PEEK_AT + PEEK_HOLD) { flipT = 0; peekT = 0; }   // 그리고 제자리로
     vflip += (flipT - flip) * 0.02 - vflip * 0.16; flip += vflip;
   }
 
