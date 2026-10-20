@@ -502,7 +502,7 @@ html.stage-on .mb .mb-chin{z-index:5;color:rgba(255,255,255,.22);font-size:max(9
 html.stage-on .mb .mb-back{display:none}
 
 /* 글 격자(card-drop W6, 11 6절): 카메라에 붙은 화면 층. 케이스 스터디 머리글과 같은 4칸 격자와 라벨 체계.
-   맥북이 가운데에서 오른쪽(2~4칸)을 차지하므로 글은 1칸에 아래로 모은다. 위 끝 띠는 왼쪽 눈썹 글, 오른쪽 써 보기 안내.
+   맥북이 가운데에서 오른쪽(2~4칸)을 차지하므로 글은 1칸에 아래로 모은다. 위 끝 띠는 왼쪽 눈썹 글(써 보기 안내는 deploy-prep의 .web-guide가 따로 맡는다).
    등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 lightOf와 같은 곡선으로 쓴다) */
 html.stage-on body .web-info{position:fixed;inset:0;left:0;right:0;bottom:0;width:auto;z-index:40;display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto 1fr auto;column-gap:clamp(16px,2vw,32px);row-gap:0;
@@ -510,8 +510,6 @@ html.stage-on body .web-info{position:fixed;inset:0;left:0;right:0;bottom:0;widt
   color:var(--nt-ink);pointer-events:none}
 html.stage-on body .web-info .wi-ey{grid-column:1/-1;grid-row:1;display:flex;justify-content:space-between;gap:12px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 html.stage-on body .web-info .wi-ey>span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
-html.stage-on body .web-info .wi-touch{display:none}
-@media (hover:none),(max-width:820px){html.stage-on body .web-info .wi-touch{display:inline}html.stage-on body .web-info .wi-mouse{display:none}}
 html.stage-on body .web-info .wi-body{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0}
 html.stage-on body .web-info .wi-name{margin:0 0 4px;font:500 clamp(40px,4.2vw,64px)/.9 var(--f-disp);letter-spacing:-.04em;color:var(--soft);text-wrap:balance}
 html.stage-on body .web-info .wi-ko{margin:0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
@@ -2354,7 +2352,7 @@ window.ticker = (() => {
   if (!info) { info = el('aside', 'web-info'); info.setAttribute('aria-live', 'polite'); info.style.visibility = 'hidden'; document.body.appendChild(info); }
   if (!info.querySelector('.wi-body')) {
     const arrow = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    info.innerHTML = `<p class="wi-ey"><span><i></i>Live service</span><span><span class="wi-mouse">Click the screen to use it</span><span class="wi-touch">Tap the screen to use it</span></span></p>` +
+    info.innerHTML = `<p class="wi-ey"><span><i></i>Live service</span></p>` +
       `<div class="wi-body"><h2 class="wi-name"></h2><p class="wi-ko" lang="ko"></p><p class="wi-line"></p>` +
       `<div class="wi-meta"><dl class="wi-dl"><dt>Scope</dt><dd class="wi-role"></dd></dl><dl class="wi-dl"><dt>Year</dt><dd class="wi-year"></dd></dl></div>` +
       `<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ${arrow}</a></div>`;
