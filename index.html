@@ -132,6 +132,20 @@ h1 span{display:block;color:var(--soft)}
 .still .page{grid-template-columns:minmax(0,1fr)}
 .still .stage{min-height:760px}
 
+/* 무대(scene-hero): 집게가 열리고 명함이 책상으로 떨어진다(hero.js가 만든다).
+   집게는 .ring과 같은 틀에서 뒤판·게이트·몸통 세 장을 겹치고, 게이트만 나사 축(clasp.json)으로 돈다 */
+.clasp{position:absolute;left:-27.6px;top:-3.3px;width:55.5px;height:85.5px;z-index:1;display:none;pointer-events:none;transform-origin:27.6px 3.3px;
+  filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.22))}
+.clasp img{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
+.clasp .gate{transform-origin:44.14% 56.14%}
+/* 고리를 떠난 명함과 책상 그림자는 hero 층 바로 아래(3D)에 둔다. 벽이 숨어도(다 숙인 뒤) 보이도록 visibility를 되살린다 */
+.carry{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;visibility:visible;pointer-events:none}
+.carry .card3d{pointer-events:auto}
+.carry .face{background-color:rgba(255,255,255,var(--op,0))}
+.dsh{position:absolute;left:0;top:0;width:300px;height:430px;border-radius:22px;transform-origin:0 0;background:rgb(30,36,76);opacity:0;pointer-events:none;will-change:transform,opacity}
+.dsh.s{filter:blur(22px)}
+.dsh.c{filter:blur(4px)}
+
 /* ── 작업: 카드 테이블. 들어오면 덱이 쏟아지고, 아무 카드나 잡아 던지며, 누르면 명함처럼 뒤집혀 뒷면에 작업 정보가 나온다 ── */
 .work{position:relative}
 .table{position:relative;height:100vh;min-height:640px;max-width:1440px;margin:0 auto;overflow:hidden}
@@ -351,10 +365,157 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   .copy .intro .ko{display:none}   /* 좁은 화면에선 영문 소개만 남긴다 */
   .copy .intro .en{font-size:13px}
   .card3d{top:52.4px;scale:.74;transform-origin:150px 0}
-  .ring{scale:.74}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+  .ring,.clasp{scale:.74}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+}
+/* 무대 골격: 문서 스크롤을 없애고 100dvh 무대 하나에 장면 층을 쌓는다.
+   stage-off(움직임 줄이기, GSAP 실패)에서는 무대 요소가 보통 블록이라 지금의 문서 스크롤 판이 그대로 보인다 */
+html.stage-on, html.stage-on body{height:100%;overflow:hidden;overscroll-behavior:none}
+html.stage-on body{position:fixed;inset:0;width:100%}
+/* 바탕은 투명: 톤 전환(사례 연구의 tone)이 body 배경색 한 곳에 쓰는 색이 그대로 비친다 */
+html.stage-on #stage-root{position:fixed;inset:0;height:100vh;height:100dvh;touch-action:none;
+  perspective:1200px;perspective-origin:50% 50%}
+@media (max-width:820px){html.stage-on #stage-root{perspective:820px}}   /* 08_공간설계 2절의 원근 P */
+/* 카메라 하나만 움직인다. 조상에는 opacity·filter·overflow·clip-path·mix-blend-mode를 걸지 않는다(3D 평면화 방지) */
+html.stage-on .stage-camera{position:absolute;inset:0;transform-style:preserve-3d}
+/* 두 면(08_공간설계 1절): 벽(첫 화면)과 책상(카드 테이블·교정지). 지금은 평면 그대로이고, 기울기는 장면이 준다 */
+html.stage-on .wall,html.stage-on .desk{position:absolute;left:0;right:0;transform-style:preserve-3d}
+html.stage-on .wall{top:-50%;height:100%}                      /* 세계 y∈[−H,0]: 원점(모서리)이 화면 가운데 */
+html.stage-on .desk{top:50%;transform-origin:50% 0;transform:rotateX(90deg)}   /* 모서리에서 시청자 쪽으로 뻗는 상판. 높이는 world.js */
+/* 빛웅덩이: 소등 뒤 교정지 주변 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
+.pool{display:none}
+html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;height:140vh;pointer-events:none;opacity:0;
+  background:radial-gradient(closest-side,rgba(52,60,118,.9),rgba(40,46,96,.55) 55%,rgba(34,42,92,0) 100%)}
+html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
+html.stage-held #stage-root{touch-action:auto}
+/* 맺음 줄: 책상에 인쇄된 작은 글(world.js가 맺음 화면 아래쪽에 놓는다) */
+html.stage-on .desk>.desk-sign{position:absolute;left:0;top:0;margin:0;padding:0;max-width:none;width:max-content;flex-wrap:nowrap;gap:28px;
+  font-size:10px;color:var(--nt-3);visibility:hidden}
+html.stage-on .desk>.desk-sign a{color:var(--nt-ink)}
+@media (max-width:820px){html.stage-on .desk>.desk-sign{flex-direction:column;align-items:center;gap:8px}}
+/* 교정지(13 합의안): 여러 장이 겹쳐 쌓이므로 종이마다 불투명한 면이 있다. 방보다 한 단계 밝아 가장자리가 실물 종이로 읽힌다 */
+html.stage-on .stage-layer.paper>.cs{background:color-mix(in oklab,var(--nt),#fff 3.5%)}
+/* 맥북(13 합의안, 구조·자리 deploy-prep / 부품 그림·힌지 다듬기 card-drop W2·W7). 크기·자리는 scene-web.js가 쓴다.
+   책상 면 위에 몸체(키보드면)가 눕고, 힌지(몸체 뒤 모서리)에서 덮개가 112° 열려 있다 */
+.mb,.web-info{display:none}
+html.stage-on .mb{display:block;position:absolute;height:0;transform-style:preserve-3d}
+html.stage-on .mb-base{position:absolute;left:0;top:0;transform:translateZ(2px);border-radius:0 0 14px 14px;
+  background:linear-gradient(#2a2c31,#1d1f23);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+html.stage-on .mb-lid{position:absolute;left:0;transform-origin:50% 100%;transform-style:preserve-3d}
+html.stage-on .mb-back,html.stage-on .mb-face{position:absolute;inset:0;border-radius:14px 14px 4px 4px;backface-visibility:hidden}
+html.stage-on .mb-back{transform:rotateY(180deg) translateZ(1px);background:linear-gradient(#3a3d43,#2b2d32)}
+html.stage-on .mb-face{background:#0b0b0d;box-shadow:inset 0 0 0 1px rgba(255,255,255,calc(.05 + .05 * var(--using,0)))}
+html.stage-on .mb.using{--using:1}
+/* 화면: iframe은 뷰포트 기준 크기(--wi×--hi)로 배치하고 배율 없이 그린다. 화면 속 정거장에서 합성 배율이 1이 된다 */
+html.stage-on .mb-screen{position:absolute;left:var(--bz);top:var(--bz);width:var(--wi);height:var(--hi);overflow:hidden;background:#000}
+html.stage-on .mb-strip{position:absolute;inset:0;display:flex;gap:var(--gap)}
+html.stage-on .mb-pane{position:relative;flex:none;width:100%;height:100%;background:#000}
+html.stage-on .mb-pane iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#fff}
+html.stage-on .mb-pane.is-link{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#111216;color:var(--nt-ink)}
+html.stage-on .mb-off-name{margin:0;font:500 clamp(32px,4vw,56px)/1 var(--f-disp);letter-spacing:-.03em}
+html.stage-on .mb-off-go{color:var(--nt-ink);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+html.stage-on .mb-hit{position:absolute;inset:0;margin:0;padding:0;border:0;background:transparent;cursor:pointer}
+html.stage-on .mb.using .mb-hit{display:none}
+html.stage-on .mb-chin{position:absolute;left:0;right:0;bottom:0;height:var(--chin);margin:0;display:flex;align-items:center;justify-content:center;
+  font:500 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.28)}
+/* 글 격자(카메라에 붙은 화면 층, 배치는 card-drop W6). 케이스 스터디 머리글과 같은 문법 */
+html.stage-on .web-info{display:grid;position:fixed;left:max(32px,env(safe-area-inset-left,0px));bottom:clamp(32px,7vh,72px);width:min(36vw,520px);z-index:40;
+  grid-template-columns:1fr 1fr;column-gap:24px;row-gap:22px;color:var(--nt-ink);pointer-events:none}
+html.stage-on .web-info a{pointer-events:auto}
+html.stage-on .wi-ey{grid-column:1/-1;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+html.stage-on .wi-ey span{display:flex;align-items:center;gap:8px}
+html.stage-on .wi-ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
+html.stage-on .wi-name{grid-column:1/-1;margin:0;font:500 clamp(40px,4.6vw,72px)/.9 var(--f-disp);letter-spacing:-.04em;color:var(--soft)}
+html.stage-on .wi-dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.06em;color:var(--nt-2)}
+html.stage-on .wi-dl dt{color:var(--nt-3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+html.stage-on .wi-dl dd{margin:0}
+html.stage-on .wi-go{color:var(--nt-ink);text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:820px){html.stage-on .web-info{width:auto;right:20px;left:20px;bottom:24px}}
+/* 움직임 줄이기·GSAP 실패(stage-off): 맥북 장면 대신 서비스 목록을 문서 흐름에 둔다. 무대에서는 쓰지 않는다 */
+.web-list{display:none}
+html.stage-off .web-list{display:block;padding:clamp(56px,9vh,96px) max(32px,env(safe-area-inset-left,0px));color:var(--nt-ink);background:var(--nt)}
+html.stage-off .web-list ul{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:18px}
+html.stage-off .web-list li{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--nt-2)}
+html.stage-off .web-list a{color:var(--nt-ink);text-decoration:none;font:500 clamp(22px,2.4vw,32px)/1.1 var(--f-disp);letter-spacing:-.02em}
+/* 맥북 실물 부품(card-drop W2, 11 4절). 골격·크기·자리는 stage.css와 scene-web.js(deploy-prep)가 정하고, 여기서는 그 위에 두께·힌지·면 그림만 얹는다.
+   부품 그림(10-21 조율 지정 v09.psd, 은색 16형 CG): 덮개 안쪽·몸체 앞면 띠 = v09에서 그대로(정면이라 정사영), 키보드면 = MACBOOK-MOCKUP-013을 정사영으로 편 뒤
+   알루미늄만 은색으로 다시 칠함(v09는 키보드면이 스치는 각도라 펼 수 없다. 키보드 우물은 실물처럼 검정).
+   덮개 바깥·옆면은 사진이 없어 무늬 없는 알루미늄 면으로 둔다(로고 없음). 세계 축: 책상 면 = 이 층의 평면, translateZ(+) = 책상 위로.
+   몸체 두께 --t(16형 실물 비율 약 3%), 덮개 두께 --lt. 덮개는 몸체 윗면 높이의 힌지(.mb-hinge)에서 돈다 */
+html.stage-on .mb{--t:calc(var(--wi,1000px) * .03);--lt:calc(var(--wi,1000px) * .011);--rd:calc(var(--wi,1000px) * .022);--alu:#c6c7ca;--alu-2:#9d9ea2;
+  --glow:238,240,248;--gk:1}
+/* 몸체: 윗면(키보드 사진)은 두께만큼 떠 있고, 앞·옆 띠가 책상까지 내려온다 */
+html.stage-on .mb .mb-base{transform:none;background:none;box-shadow:none;border-radius:0;transform-style:preserve-3d}
+html.stage-on .mb .mb-deck,html.stage-on .mb .mb-fr,html.stage-on .mb .mb-sl,html.stage-on .mb .mb-sr,html.stage-on .mb .mb-sh,html.stage-on .mb .mb-kl{position:absolute;display:block;pointer-events:none}
+html.stage-on .mb .mb-deck{inset:0;transform:translateZ(var(--t));border-radius:calc(var(--rd) * .5) calc(var(--rd) * .5) var(--rd) var(--rd);overflow:hidden;
+  background:var(--alu) url(macbook/deck.webp) 0 0/100% 100% no-repeat;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+/* 화면 빛이 키보드면에 떨어진다: 힌지 쪽이 가장 밝고 앞으로 갈수록 옅다(빛이 비스듬히 닿는 사다리꼴) */
+html.stage-on .mb .mb-kl{inset:0;border-radius:inherit;mix-blend-mode:screen;opacity:calc(var(--light,0) * var(--gk));
+  background:linear-gradient(rgba(var(--glow),.30),rgba(var(--glow),.10) 38%,rgba(var(--glow),0) 78%)}
+html.stage-on .mb .mb-fr{left:0;right:0;top:calc(100% - var(--t));height:var(--t);transform-origin:50% 100%;transform:rotateX(-90deg);
+  background:url(macbook/front.webp) 0 0/100% 100% no-repeat}
+html.stage-on .mb .mb-sl,html.stage-on .mb .mb-sr{top:calc(var(--rd) * .5);bottom:var(--rd);width:var(--t);background:linear-gradient(90deg,#8e8f93,#b9babd 40%,#a4a5a9)}
+html.stage-on .mb .mb-sl{left:0;transform-origin:0 50%;transform:rotateY(-90deg)}
+html.stage-on .mb .mb-sr{left:calc(100% - var(--t));transform-origin:100% 50%;transform:rotateY(90deg)}
+/* 책상에 지는 그림자: 몸체 바로 아래 짙은 접지 그림자 + 넓고 옅은 그림자 */
+html.stage-on .mb .mb-sh{inset:-2% -1.5% -3%;border-radius:var(--rd);transform:translateZ(.5px);background:rgba(4,5,14,.8);filter:blur(10px);
+  box-shadow:0 0 60px 30px rgba(4,5,14,.35)}
+/* 화면 빛웅덩이(08 4절, 11 1절): 흐린 원이 아니라 화면 사각형이 책상 앞쪽으로 비친 사다리꼴. 덮개가 닫힐수록 --light가 줄어 함께 좁아지다 꺼진다 */
+html.stage-on .mb .mb-pool{position:absolute;display:block;pointer-events:none;left:-30%;right:-30%;top:96%;height:110%;transform:translateZ(.3px);
+  clip-path:polygon(23% 0,77% 0,100% 100%,0 100%);filter:blur(28px);mix-blend-mode:screen;opacity:calc(var(--light,0) * var(--gk) * .55);
+  background:linear-gradient(rgba(var(--glow),.42),rgba(var(--glow),.14) 45%,rgba(var(--glow),0) 92%)}
+
+/* 덮개: 힌지는 몸체 윗면 높이. 앞면(.mb-face) = 베젤·화면, 뒷면(.mb-back) = 알루미늄, 그 사이 두께 띠 */
+html.stage-on .mb .mb-hinge{position:absolute;left:0;top:0;width:100%;height:0;transform:translateZ(var(--t));transform-style:preserve-3d}
+html.stage-on .mb .mb-face{background:#2b2b2b;border-radius:var(--rd) var(--rd) calc(var(--rd) * .3) calc(var(--rd) * .3);box-shadow:none}
+/* 베젤 사진(노치·테두리)은 화면 위에 얹는 틀이다. 가운데는 투명이라 화면이 그대로 보이고, 노치만 화면 위 끝을 가린다 */
+html.stage-on .mb .mb-face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
+  border-style:solid;border-width:calc(var(--bz) * 2.2) var(--bz) var(--chin) var(--bz);border-image:url(macbook/lid.webp) 51 23 64 23 stretch}
+html.stage-on .mb .mb-face::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,calc(.04 + .06 * var(--using,0)))}
+html.stage-on .mb .mb-screen{z-index:1}
+html.stage-on .mb .mb-chin{z-index:5;color:rgba(255,255,255,.22);font-size:max(9px,calc(var(--chin) * .26))}
+html.stage-on .mb .mb-back{transform:rotateY(180deg) translateZ(var(--lt));border-radius:var(--rd) var(--rd) calc(var(--rd) * .3) calc(var(--rd) * .3);
+  background:linear-gradient(170deg,#d4d5d8,#bfc0c3 45%,#acadb1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+html.stage-on .mb .mb-lt,html.stage-on .mb .mb-ll,html.stage-on .mb .mb-lr{position:absolute;display:block;pointer-events:none;background:linear-gradient(#b4b5b8,#8f9094)}
+html.stage-on .mb .mb-lt{left:var(--rd);right:var(--rd);top:calc(-1 * var(--lt));height:var(--lt);transform-origin:50% 100%;transform:rotateX(90deg)}
+html.stage-on .mb .mb-ll,html.stage-on .mb .mb-lr{top:var(--rd);bottom:0;width:var(--lt)}
+html.stage-on .mb .mb-ll{left:calc(-1 * var(--lt));transform-origin:100% 50%;transform:rotateY(-90deg)}
+html.stage-on .mb .mb-lr{left:100%;transform-origin:0 50%;transform:rotateY(90deg)}
+
+/* 글 격자(card-drop W6, 11 6절): 카메라에 붙은 화면 층. 케이스 스터디 머리글과 같은 4칸 격자와 라벨 체계.
+   맥북이 가운데에서 오른쪽(2~4칸)을 차지하므로 글은 1칸에 아래로 모은다. 위 끝 띠는 왼쪽 눈썹 글, 오른쪽 써 보기 안내.
+   등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 lightOf와 같은 곡선으로 쓴다) */
+html.stage-on body .web-info{position:fixed;inset:0;left:0;right:0;bottom:0;width:auto;z-index:40;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto 1fr auto;column-gap:clamp(16px,2vw,32px);row-gap:0;
+  padding:clamp(28px,5vh,44px) max(32px,env(safe-area-inset-right,0px)) clamp(32px,7vh,64px) max(32px,env(safe-area-inset-left,0px));
+  color:var(--nt-ink);pointer-events:none}
+html.stage-on body .web-info .wi-ey{grid-column:1/-1;grid-row:1;display:flex;justify-content:space-between;gap:12px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+html.stage-on body .web-info .wi-ey span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
+html.stage-on body .web-info .wi-touch{display:none}
+@media (hover:none){html.stage-on body .web-info .wi-touch{display:inline}html.stage-on body .web-info .wi-mouse{display:none}}
+html.stage-on body .web-info .wi-body{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0}
+html.stage-on body .web-info .wi-name{margin:0 0 4px;font:500 clamp(40px,4.2vw,64px)/.9 var(--f-disp);letter-spacing:-.04em;color:var(--soft);text-wrap:balance}
+html.stage-on body .web-info .wi-ko{margin:0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
+html.stage-on body .web-info .wi-line{margin:0;font-size:clamp(14px,1.05vw,16px);line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:22em}
+html.stage-on body .web-info .wi-meta{display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(16px,2vw,32px);width:100%;margin-top:10px}
+html.stage-on body .web-info .wi-dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+html.stage-on body .web-info .wi-dl dt{color:var(--nt-3);margin-bottom:6px}
+html.stage-on body .web-info .wi-dl dd{margin:0}
+html.stage-on body .web-info .wi-go{margin-top:6px;display:inline-flex;align-items:center;gap:7px;color:var(--nt-ink);text-decoration:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;pointer-events:auto}
+html.stage-on body .web-info .wi-go svg{width:11px;height:11px}
+html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+@media (max-width:820px){
+  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));padding:20px 20px 24px}
+  html.stage-on body .web-info .wi-body{grid-column:1/-1;gap:10px}
+  html.stage-on body .web-info .wi-name{font-size:36px}
+  html.stage-on body .web-info .wi-line{font-size:13.5px}
 }
 </style>
 
+<!-- 무대: 문서 스크롤 대신 진행값으로 장면을 넘긴다(회의/스크롤장면_2026-10-20/06_장면인터페이스.md). 움직임 줄이기면 보통 문서로 보인다 -->
+<div id="stage-root"><div class="stage-camera">
+<div class="wall">
+<div class="stage-layer" data-scene="hero">
 <div class="hero" id="hero">
     <canvas id="strap"></canvas>
   <div class="badge" id="badge">
@@ -406,8 +567,11 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   </section>
 </main>
 </div>
-
-<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i></button>
+</div>
+</div>
+<div class="desk">
+<div class="pool" aria-hidden="true"></div>
+<div class="stage-layer" data-scene="table">
 <section class="work" id="work" aria-label="인스타그램 작업">
   <div class="table">
     <div class="tbar">
@@ -421,7 +585,9 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     <div class="pile" id="pile"></div>
   </div>
 </section>
-<section class="cs" id="cases" aria-label="사례 연구" data-src="case/bewhysee/">
+</div>
+<div class="stage-layer paper" data-scene="cases" data-paper="bewhysee">
+<section class="cs" id="cases" aria-label="사례 연구 bewhysee" data-src="case/bewhysee/" data-cols="11,19|15" data-title="bewhysee · BYC rebranding" data-link="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" data-link-label="Behance">
   <div class="cs-in">
     <header class="cs-head">
       <p class="cs-ey"><span><i></i>Case study</span></p>
@@ -434,24 +600,408 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
         <a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">View on Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </header>
-    <div class="cs-bar"><ol class="cs-idx" id="csIdx" aria-label="컷 색인"></ol></div>
-    <div class="cs-wall" id="csWall" role="button" tabindex="0" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
+    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
+    <div class="cs-wall" role="button" tabindex="0" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
     <footer class="cs-foot">
       <dl class="cs-dl"><dt>Format</dt><dd>27 cuts · 2800 px</dd><dd>One landing, cut in order</dd></dl>
       <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
-      <div class="cs-go"><button type="button" id="csOpen">Open full case</button><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      <div class="cs-go"><button type="button" class="cs-open">Open full case</button><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
     </footer>
   </div>
 </section>
+</div>
+<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot">
+<section class="cs" id="bizcopilot" aria-label="사례 연구 BizCopilot" data-src="case/bizcopilot-c/" data-title="BizCopilot · Brand identity C">
+  <div class="cs-in">
+    <header class="cs-head">
+      <p class="cs-ey"><span><i></i>Case study</span></p>
+      <h2 class="cs-name">BizCopilot</h2>
+      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
+      <dl class="cs-dl"><dt>Scope</dt><dd>Brand identity</dd><dd>Landing redesign</dd><dd>Ad creative</dd></dl>
+      <div class="cs-text">
+        <p class="cs-lede">A brand identity concept for BizCopilot, a Korean business support service.</p>
+        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
+      </div>
+    </header>
+    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
+    <div class="cs-wall" role="button" tabindex="0" aria-label="BizCopilot 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
+    <footer class="cs-foot">
+      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
+      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
+    </footer>
+  </div>
+</section>
+</div>
+<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot-story">
+<section class="cs" id="bizcopilot-story" aria-label="사례 연구 Brand Story" data-src="case/bizcopilot-story/" data-title="BizCopilot · Brand Story">
+  <div class="cs-in">
+    <header class="cs-head">
+      <p class="cs-ey"><span><i></i>BizCopilot</span></p>
+      <h2 class="cs-name">Brand Story</h2>
+      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
+      <dl class="cs-dl"><dt>Scope</dt><dd>Brand story</dd></dl>
+      <div class="cs-text">
+        <p class="cs-lede">(카피 확인 필요)</p>
+        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
+      </div>
+    </header>
+    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
+    <div class="cs-wall" role="button" tabindex="0" aria-label="Brand Story 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
+    <footer class="cs-foot">
+      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
+      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
+    </footer>
+  </div>
+</section>
+</div>
+<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot-system">
+<section class="cs" id="bizcopilot-system" aria-label="사례 연구 Brand System" data-src="case/bizcopilot-system/" data-title="BizCopilot · Brand System">
+  <div class="cs-in">
+    <header class="cs-head">
+      <p class="cs-ey"><span><i></i>BizCopilot</span></p>
+      <h2 class="cs-name">Brand System</h2>
+      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
+      <dl class="cs-dl"><dt>Scope</dt><dd>Brand system</dd><dd>Guidelines</dd></dl>
+      <div class="cs-text">
+        <p class="cs-lede">(카피 확인 필요)</p>
+        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
+      </div>
+    </header>
+    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
+    <div class="cs-wall" role="button" tabindex="0" aria-label="Brand System 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
+    <footer class="cs-foot">
+      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
+      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
+    </footer>
+  </div>
+</section>
+<footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
+</div>
+<section class="web-list" aria-label="라이브 서비스">
+  <p class="cs-ey"><span><i></i>Live service</span></p>
+  <ul>
+    <li><a href="https://kingjesus.kr/" target="_blank" rel="noopener">Bible Typing ↗</a><span>A quiet place to type the King James Bible, one verse a day.</span></li>
+    <li><a href="https://chuckmode.com/" target="_blank" rel="noopener">CHUCK MODE ↗</a><span>A website that keeps you looking busy at your desk.</span></li>
+    <li><a href="web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html" target="_blank" rel="noopener">Monthlens · chat ↗</a><span>Interactive landing template: the page opens as a chat.</span></li>
+    <li><a href="web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html" target="_blank" rel="noopener">Monthlens · dark ↗</a><span>Landing page template: dark UI.</span></li>
+  </ul>
+</section>
+<div class="mb" aria-label="책상 위 맥북" style="visibility:hidden">
+  <div class="mb-base" aria-hidden="true"></div>
+  <div class="mb-lid">
+    <div class="mb-back" aria-hidden="true"></div>
+    <div class="mb-face">
+      <div class="mb-screen"><div class="mb-strip"></div><button class="mb-hit" type="button" aria-label="화면을 눌러 직접 써 보기"></button></div>
+      <p class="mb-chin" aria-hidden="true"></p>
+    </div>
+  </div>
+</div>
+</div>
+</div></div>
+
+<aside class="web-info" aria-live="polite" style="visibility:hidden">
+  <p class="wi-ey"><span><i></i>Live service</span></p>
+  <h2 class="wi-name"></h2>
+  <dl class="wi-dl"><dt>Service</dt><dd class="wi-ko"></dd><dd class="wi-line"></dd></dl>
+  <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
+</aside>
+<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i></button>
 <div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="bewhysee 사례 연구" hidden>
-  <div class="rd-bar"><span class="ey"><i></i>bewhysee · BYC rebranding</span><span class="cut">cut <b id="rdCut">01</b> / <span id="rdTot">27</span></span><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button class="rd-x" id="rdX" type="button" aria-label="닫기"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
+  <div class="rd-bar"><span class="ey" id="rdEy"><i></i>bewhysee · BYC rebranding</span><span class="cut">cut <b id="rdCut">01</b> / <span id="rdTot">27</span></span><a id="rdLink" href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button class="rd-x" id="rdX" type="button" aria-label="닫기"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
   <div class="rd-art" id="rdArt"></div>
   <div class="rd-end"><button type="button" id="rdBack">지면으로 돌아가기</button></div>
 </div>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-<footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/Observer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/Flip.min.js"></script>
 <script>
+// 무대 골격: 문서 스크롤 대신 휠·트랙패드·터치 입력을 진행값 p에 스크럽으로 적분한다. 입력이 p를 직접 쥐고, 자동 재생은 없다.
+// 장면은 Stage.add(name, { range, enter, leave, progress, wake, sleep })로 붙는다. 규칙은 회의/스크롤장면_2026-10-20/06_장면인터페이스.md
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gsap = window.gsap, Observer = window.Observer;
+
+  const config = {
+    // 정거장(13 합의안): 교정지 네 장은 각각 첫머리·끝, 그다음 맥북 앞 → 바이블타이핑 화면 속 → 척모드 → Monthlens 둘 → 맺음
+    stations: [
+      { name: 'hero', hash: '' },
+      { name: 'work', hash: 'work' },
+      { name: 'cases', hash: 'cases' },              // 교정지 1 bewhysee(기존 #cases 유지)
+      { name: 'casesEnd', hash: 'cases' },
+      { name: 'biz', hash: 'bizcopilot' },           // 교정지 2 BizCopilot C
+      { name: 'bizEnd', hash: 'bizcopilot' },
+      { name: 'story', hash: 'bizcopilot-story' },   // 교정지 3
+      { name: 'storyEnd', hash: 'bizcopilot-story' },
+      { name: 'system', hash: 'bizcopilot-system' }, // 교정지 4
+      { name: 'systemEnd', hash: 'bizcopilot-system' },
+      { name: 'web', hash: 'web' },                  // 맥북 앞(바이블타이핑이 켜진 화면)
+      { name: 'bible', hash: 'bible' },              // 바이블타이핑 화면 속(합성 배율 1)
+      { name: 'chuck', hash: 'chuck' },              // 베젤 거리, 기기 안 데스크톱 전환
+      { name: 'monthlens', hash: 'monthlens' },
+      { name: 'monthlensDark', hash: 'monthlens-dark' },
+      { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
+    ],
+    free: [[2, 3, 3], [4, 5, 3], [6, 7, 3], [8, 9, 3]],   // 교정지 구간 [시작, 끝, 화면 수]: 화면 수는 world.js가 교정지마다 다시 쓴다
+    // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수. 교정지 사이(앞 장이 빠지고 아래 장이 드러남)는 0.8장,
+    // 맥북 구간은 11 표(앞으로 2.5 · 화면 속 2 · 척모드 1.5 · Monthlens 각 1 · 맺음 2.5)
+    seg: [2.2, 2, null, 0.8, null, 0.8, null, 0.8, null, 2.5, 2, 1.5, 1, 1, 2.5],
+    follow: 11,              // p가 target을 따라오는 빠르기(1/초, 지수 보간). 120Hz에서 프레임당 약 0.09
+    snapIdleMs: 450,         // 입력이 이만큼 멈추면 스냅을 따진다
+    snapWithin: 0.12, snapMaxScreens: 0.25,   // 마지막 이동 방향 쪽 정거장이 0.12 안(그리고 화면 0.25장 안)이면 마저 붙는다. 되돌리는 쪽으로는 끌지 않는다
+    snapSec: 0.6,
+    goSec: [1.4, 2.0],       // 키보드·Stage.go: 거리에 비례한 이동 시간(정거장 하나 1.4초, 셋 이상 2초)
+    rubber: 0.2,             // 양 끝 고무줄 최대 넘침(진행값)
+    touchGlide: 0.32,        // 손가락을 뗄 때 속도를 이어 가는 시간(초). iOS는 관성 이벤트를 보내지 않는다
+    wake: 0.5,
+  };
+  const last = () => config.stations.length - 1;
+
+  // 쓸 수 없는 환경(움직임 줄이기, GSAP 로드 실패): 지금의 문서 스크롤 판을 그대로 둔다
+  if (reduce || !gsap || !Observer) {
+    root.classList.add('stage-off');
+    const noop = () => {};
+    window.Stage = { enabled: false, config, state: {}, add: noop, hold: () => 0, release: noop, on: noop, camera: { set: noop, P: () => 1200 }, tone: noop,
+      go: name => { const el = document.querySelector(`[data-station="${name}"]`); if (el) el.scrollIntoView(); },
+      ticker: gsap ? gsap.ticker : null };
+    return;
+  }
+  gsap.registerPlugin(Observer);
+  root.classList.add('stage-on');
+
+  const state = { p: 0, target: 0, v: 0, dir: 1, station: 'hero', settled: true, input: false };
+  let x = 0, target = 0, lastInput = -1e9, snapTimer = 0;
+  let tw = null;                                     // 진행 중인 이동 { from, to, t0, dur } (키보드·Stage.go·스냅·고무줄 되돌림)
+
+  const scenes = [];
+  const listeners = { settle: [], station: [] };
+  const emit = (k, ...a) => listeners[k].forEach(f => f(...a));
+  const holds = new Set(); let holdSeq = 0;
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const inFree = v => config.free.some(([a, b]) => v > a + 1e-4 && v < b - 1e-4);
+  const hashOf = v => { const z = config.free.find(([a, b]) => v > a + 1e-4 && v < b - 1e-4); return config.stations[z ? z[0] : Math.round(clamp(v, 0, last()))].hash; };
+  const easeIO = u => u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
+
+  // 구간 i([i, i+1])에서 진행값 1이 몇 px인가
+  const segPx = i => { i = clamp(i, 0, last() - 1); const f = config.free.find(z => z[0] === i); return (config.seg[i] == null && f ? f[2] : config.seg[i] || 1) * innerHeight; };
+
+  // 스크롤 px를 진행값에 적분한다. 구간 경계를 넘으면 다음 구간의 거리로 이어서 센다. 양 끝 너머는 고무줄(갈수록 무겁다)
+  function advance(t, px){
+    let guard = 8;
+    while (px && guard--) {
+      const dir = Math.sign(px);
+      if ((t <= 0 && dir < 0) || (t >= last() && dir > 0)) {
+        const over = t < 0 ? -t : t > last() ? t - last() : 0, len = segPx(dir < 0 ? 0 : last() - 1);
+        return t + (px / len) * Math.max(0, 1 - over / config.rubber) * 0.5;
+      }
+      const i = dir > 0 ? Math.floor(t + 1e-9) : Math.ceil(t - 1e-9) - 1, len = segPx(i);
+      const edge = dir > 0 ? i + 1 : i, room = (edge - t) * len;          // 이 구간 끝까지 남은 px(부호 포함)
+      if (Math.abs(px) <= Math.abs(room)) return t + px / len;
+      t = edge; px -= room;
+    }
+    return t;
+  }
+
+  function tween(to, dur){
+    tw = { from: target, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000 };
+  }
+  // 입력: 모든 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
+  function input(px){
+    if (holds.size || !px) return;
+    tw = null;
+    target = advance(target, px); state.dir = Math.sign(px);
+    lastInput = performance.now(); state.input = true;
+    clearTimeout(snapTimer); snapTimer = setTimeout(settleCheck, config.snapIdleMs);
+  }
+  // 손을 놓고 450ms: 끝 너머면 되돌리고, 가던 방향의 정거장이 가까우면 마저 붙고, 아니면 그 자리에 둔다(장면 중간 정지 허용).
+  // 반대 방향으로는 절대 끌지 않는다: 천천히 한 칸씩 굴리는 사람이 첫 장면에 붙잡히지 않게
+  function settleCheck(){
+    state.input = false;
+    if (target < 0 || target > last()) { tween(clamp(target, 0, last()), 0.5); return; }
+    const n = state.dir > 0 ? Math.ceil(target - 1e-9) : Math.floor(target + 1e-9), d = Math.abs(target - n);
+    const lim = Math.min(config.snapWithin, config.snapMaxScreens * innerHeight / segPx(state.dir > 0 ? n - 1 : n));
+    if (d > 1e-4 && d <= lim) tween(n, config.snapSec);
+  }
+  function go(to, { instant = false } = {}){
+    const i = typeof to === 'number' ? to : config.stations.findIndex(s => s.name === to);
+    if (i < 0) return;
+    clearTimeout(snapTimer); state.input = false;
+    const t = clamp(i, 0, last()); state.dir = Math.sign(t - x) || state.dir;
+    if (instant) { tw = null; x = target = t; return; }
+    const dist = Math.abs(t - x); if (dist < 1e-4) return;
+    tween(t, clamp(config.goSec[0] + (config.goSec[1] - config.goSec[0]) * (dist - 1) / 2, config.goSec[0], config.goSec[1]));
+  }
+
+  // 휠·트랙패드: 노치 휠 한 칸은 진행값의 작은 걸음(약 100px)이고, 트랙패드는 손과 관성이 그대로 p를 민다
+  let lastWheelT = 0;
+  function onWheel(e){
+    const now = performance.now(), gap = now - lastWheelT; lastWheelT = now;
+    const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
+    const notch = e.deltaMode === 1 || (gap > 60 && Math.abs(d) >= 50 && Number.isInteger(e.deltaY) && e.deltaY % 25 === 0);
+    input(notch ? d * config.notchGain : d);
+  }
+
+  // 터치(아이폰): 끌 수 있는 요소([data-stage-ignore]) 위에서 시작한 손가락은 무대 입력이 아니다.
+  // 손가락 이동을 그대로 적분하고, 뗄 때는 속도를 짧게 이어 간다
+  let touchIgnored = false, touchDown = false;
+  const obs = Observer.create({
+    target: window, type: 'wheel,touch', preventDefault: true, dragMinimum: 3, wheelSpeed: 1,
+    onWheel: self => onWheel(self.event),
+    onPress: self => { touchIgnored = !!(self.event.target.closest && self.event.target.closest('[data-stage-ignore]')); touchDown = !touchIgnored && !holds.size; },
+    onChangeY: self => { if (touchDown && /^(touch|pointer)/.test(self.event.type)) input(-self.deltaY); },
+    onRelease: self => {
+      if (!touchDown) return; touchDown = false;
+      const v = -self.velocityY; if (Math.abs(v) > 50) input(v * config.touchGlide);
+    },
+  });
+
+  // 키보드: 정거장 단위로 부드럽게 간다. 교정지 구간 안에서 화살표는 반 화면, PageUp/Down은 구간 끝으로
+  addEventListener('keydown', e => {
+    if (holds.size || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const k = e.key, base = tw ? tw.to : target;
+    let dir = 0, small = false;
+    if (k === 'ArrowDown') { dir = 1; small = true; } else if (k === 'ArrowUp') { dir = -1; small = true; }
+    else if (k === 'PageDown' || (k === ' ' && !e.shiftKey)) dir = 1;
+    else if (k === 'PageUp' || (k === ' ' && e.shiftKey)) dir = -1;
+    else if (k === 'Home') { e.preventDefault(); go(0); return; }
+    else if (k === 'End') { e.preventDefault(); go(last()); return; }
+    if (!dir) return;
+    e.preventDefault(); state.dir = dir;
+    const z = config.free.find(([a, b]) => inFree(base) || (Math.abs(base - a) < 1e-3 && dir > 0) || (Math.abs(base - b) < 1e-3 && dir < 0));
+    if (small && z) { clearTimeout(snapTimer); tween(clamp(advance(base, dir * 0.5 * innerHeight), z[0], z[1]), 0.5); return; }
+    if (z && inFree(base)) { go(dir > 0 ? z[1] : z[0]); return; }
+    go(dir > 0 ? Math.floor(base + 1e-3) + 1 : Math.ceil(base - 1e-3) - 1);
+  });
+
+  // 주소: 정착하면 replaceState, 처음 불러올 때와 사용자가 해시를 바꿀 때는 그 정거장으로
+  const stationOfHash = h => { h = (h || '').replace(/^#/, ''); return h ? config.stations.findIndex(s => s.hash === h) : 0; };
+  let lastHash = location.hash.replace(/^#/, '');
+  const writeHash = () => {
+    const h = hashOf(x); if (h === lastHash) return; lastHash = h;
+    history.replaceState(history.state, '', h ? '#' + h : location.pathname + location.search);
+  };
+  addEventListener('hashchange', () => { const i = stationOfHash(location.hash); lastHash = location.hash.replace(/^#/, ''); if (i >= 0) go(i); });
+  { const i = stationOfHash(location.hash); if (i > 0) { x = target = i; } }
+
+  // 장면 호출: wake → enter → progress → leave → sleep 순서. p가 그대로면 아무것도 하지 않는다
+  function dispatch(force){
+    const wakes = [], enters = [], prog = [], leaves = [], sleeps = [];
+    scenes.forEach(s => {
+      const [a, b] = s.range, near = x > a - config.wake && x < b + config.wake, inside = x >= a - 1e-3 && x <= b + 1e-3;
+      if (near && !s.awake) wakes.push(s); if (!near && s.awake) sleeps.push(s);
+      if (inside && !s.inside) enters.push(s); if (!inside && s.inside) leaves.push(s);
+      if (inside) prog.push(s);
+    });
+    wakes.forEach(s => { s.awake = true; s.hooks.wake && s.hooks.wake(); });
+    enters.forEach(s => { s.inside = true; s.hooks.enter && s.hooks.enter(state.dir); });
+    if (force || prog.length) prog.forEach(s => { const [a, b] = s.range; s.hooks.progress && s.hooks.progress(clamp((x - a) / (b - a), 0, 1), state); });
+    leaves.forEach(s => { s.inside = false; s.hooks.leave && s.hooks.leave(state.dir); });
+    sleeps.forEach(s => { s.awake = false; s.hooks.sleep && s.hooks.sleep(); });
+  }
+
+  // 매 프레임: 이동(tween)이 있으면 target을 이징으로 옮기고, p는 target을 프레임 독립 지수 보간으로 따라온다
+  let px = NaN, lastStation = '', wasMoving = false;
+  gsap.ticker.add((time, deltaMs) => {
+    const dt = Math.min(0.05, deltaMs / 1000), now = performance.now();
+    if (tw) {
+      const u = clamp((now - tw.t0) / tw.dur, 0, 1);
+      target = tw.from + (tw.to - tw.from) * easeIO(u);
+      x = target;                                    // 이징이 곧 움직임이다(지수 보간을 겹치지 않는다)
+      if (u >= 1) tw = null;
+    } else if (x !== target) {
+      const k = 1 - Math.exp(-config.follow * dt);
+      x += (target - x) * k;
+      if (Math.abs(target - x) < 1e-4) x = target;
+    }
+    const moving = x !== px;
+    state.v = moving && dt ? (x - (isNaN(px) ? x : px)) / dt : 0;
+    state.p = x; state.target = target;
+    state.settled = !tw && x === target && !state.input;
+    const st = config.stations[Math.round(clamp(x, 0, last()))].name;
+    if (st !== lastStation) { lastStation = st; state.station = st; emit('station', st); }
+    if (moving) { px = x; dispatch(false); wasMoving = true; }
+    if (state.settled && wasMoving) { wasMoving = false; writeHash(); emit('settle', state); }
+  });
+  gsap.ticker.lagSmoothing(500, 33);
+
+  // 카메라(08_공간설계 2절): 숙임 θ, 바라보는 점 T, 거리 d. 원근 P는 #stage-root의 perspective.
+  // 세계 원점(벽과 책상이 만나는 모서리 가운데)은 화면 가운데에 있고, 카메라 요소의 transform-origin도 화면 가운데다.
+  // 한 프레임에 여러 장면이 set을 부르면 마지막 것이 이긴다(장면 호출 순서 = 구간 시작 순서, 06 8절).
+  const camEl = document.querySelector('.stage-camera'), wallEl = document.querySelector('.stage-camera > .wall');
+  const camera = {
+    th: 0, Tx: 0, Ty: 0, Tz: 0, d: 0, setThisFrame: false, _css: '',
+    P(){ return innerWidth <= 820 ? 820 : 1200; },
+    set(c){
+      Object.assign(camera, c); camera.setThisFrame = true;
+      const P = camera.P(), d = camera.d || P;
+      const css = `translateZ(${(P - d).toFixed(2)}px) rotateX(${(-camera.th).toFixed(3)}deg) translate3d(${(-camera.Tx).toFixed(2)}px,${(-camera.Ty).toFixed(2)}px,${(-camera.Tz).toFixed(2)}px)`;
+      if (css !== camera._css && camEl) { camera._css = css; camEl.style.transform = css; }
+      // 다 숙이면 벽은 카메라 뒤로 넘어간다. 교정지부터는(p>2) 고개를 들어도 벽(첫 화면)은 이야기 밖이라 감춘다
+      if (wallEl) wallEl.style.visibility = camera.th > 86 || state.p > 2 ? 'hidden' : '';
+    },
+  };
+  // 조명(08 4절): 바탕 면의 밝기 dk(0 흰 방 → 1 밤색 방). 물건은 따라 어두워지지 않는다. body 배경색 한 곳에만 쓴다
+  let dkStr = '';
+  const tone = dk => {
+    state._toneSet = true;                       // 이 프레임에 누가 조명을 정했다(world.js의 기본값은 물러난다)
+    const s = Math.max(0, Math.min(1, dk)).toFixed(3); if (s === dkStr) return; dkStr = s; state.dk = +s;
+    document.body.style.backgroundColor = `color-mix(in oklab,var(--bg),var(--nt) ${(+s * 100).toFixed(1)}%)`;
+  };
+  state.dk = 0;
+
+  window.Stage = {
+    enabled: true, config, state, ticker: gsap.ticker, observer: obs, camera, tone,
+    add(name, hooks){
+      const s = { name, hooks, range: hooks.range, awake: false, inside: false };
+      scenes.push(s); scenes.sort((a, b) => a.range[0] - b.range[0]);
+      hooks.sleep && hooks.sleep();
+      dispatch(true); return s;
+    },
+    hold(reason = ''){ const tok = ++holdSeq; holds.add(tok); clearTimeout(snapTimer); state.input = false; obs.disable(); root.classList.add('stage-held'); holds.reason = reason; return tok; },
+    release(tok){ holds.delete(tok); if (!holds.size) { obs.enable(); root.classList.remove('stage-held'); } },
+    refresh(){ dispatch(true); },      // 치수가 바뀌었을 때 현재 p로 장면 progress를 다시 부른다(카메라·조명 다시 쓰기)
+    go, on(k, f){ (listeners[k] || (listeners[k] = [])).push(f); },
+  };
+})();
+</script>
+<script>
+// 화면 갱신 루프 하나(ticker). 구역마다 이름으로 등록하고, fn이 false를 돌려주면 그 구역은 잠든다.
+// 손대거나 화면에 들어오면 wake(이름)로 깨운다. 깨어난 첫 프레임에는 fn(now, true)로 알려 쌓인 시간을 버리게 한다.
+// 깨어 있는 구역도 한 번만 할 일(once)도 없으면 requestAnimationFrame 자체를 멈춰 CPU를 쓰지 않는다
+// GSAP가 불려 있으면(무대 통합 뒤) 같은 gsap.ticker에 붙고, 없으면 requestAnimationFrame을 직접 쓴다(06_장면인터페이스 7절)
+window.ticker = (() => {
+  const subs = new Map(); let raf = 0, onG = false, once = [];
+  const G = () => window.gsap && window.gsap.ticker;
+  const run = now => {
+    raf = 0;
+    const o = once; once = []; o.forEach(f => f(now));
+    let any = false;
+    subs.forEach(s => {
+      if (!s.awake) return;
+      const fresh = s.fresh; s.fresh = false;
+      if (s.fn(now, fresh) === false) s.awake = false; else any = true;
+    });
+    const more = any || once.length;
+    if (onG) { if (!more) { G().remove(gRun); onG = false; } }
+    else if (more) raf = requestAnimationFrame(run);
+  };
+  const gRun = () => run(performance.now());
+  const kick = () => {
+    if (G()) { if (!onG) { onG = true; G().add(gRun); } }
+    else if (!raf) raf = requestAnimationFrame(run);
+  };
+  return {
+    add(name, fn){ subs.set(name, { fn, awake: true, fresh: true }); kick(); },
+    wake(name){ const s = subs.get(name); if (!s) return; if (!s.awake) { s.awake = true; s.fresh = true; } kick(); },
+    sleep(name){ const s = subs.get(name); if (s) s.awake = false; },
+    awake(name){ const s = subs.get(name); return !!(s && s.awake); },
+    once(fn){ once.push(fn); kick(); }
+  };
+})();
 (() => {
   // 큰 워드마크(첫 화면 이름, 작업 구역 제목)를 실제 글자 폭으로 재서 좌우 여백 안에 꼭 맞춘다
   const marks = [...document.querySelectorAll('.copy .mark, .tfoot .tmark')];
@@ -469,10 +1019,12 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   if (document.documentElement.classList.contains('still')) return;
   const work = document.getElementById('work'), table = work.querySelector('.table'), pile = document.getElementById('pile'), sortBtn = document.getElementById('sort');
   const peek = document.getElementById('peek');
+  const STAGE = !!(window.Stage && Stage.enabled);   // 무대: 문서 스크롤 대신 장면이 나눠 주기·모으기를 부르고, 책상은 화면 한 장
   [...peek.children].forEach((el, k) => { el.style.backgroundImage = `url(work/${ITEMS[k].c}.webp)`; });
-  const peekState = () => peek.classList.toggle('gone', scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
+  const peekState = () => peek.classList.toggle('gone', STAGE ? Stage.state.p > 0.04 : scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
+  if (STAGE) { let pp = -1; Stage.ticker.add(() => { const p = Stage.state.p > 0.04; if (p !== pp) { pp = p; peekState(); } }); }
   addEventListener('scroll', peekState, { passive: true }); peekState();
-  peek.addEventListener('click', () => work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
+  peek.addEventListener('click', () => window.Stage && Stage.enabled ? Stage.go('work') : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
   const hasKo = s => /[가-힣]/.test(s), pad = n => String(n).padStart(2, '0');
   const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
@@ -480,7 +1032,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   // 카드 앞면은 커버, 뒷면은 명함 뒷면과 같은 문법의 작업 정보. 카드 자체는 링크가 아니고, 뒷면의 화살표만 원본을 연다
   const cards = ITEMS.map((it, i) => {
     const el = document.createElement('div');
-    el.className = 'pc'; el.tabIndex = 0; el.setAttribute('role', 'button');
+    el.className = 'pc'; el.tabIndex = 0; el.setAttribute('role', 'button'); el.dataset.stageIgnore = '';   // 카드 위에서 시작한 손가락은 무대 입력이 아니다
     el.setAttribute('aria-label', `${it.t} — 눌러서 뒤집기`);
     el.innerHTML = `<div class="flip">
       <div class="f front"><div class="im"><img src="work/${it.c}.webp" alt="" loading="eager" decoding="async" draggable="false"></div><span class="sh"></span></div>
@@ -498,8 +1050,9 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   let order = cards.slice().reverse();               // 뒤에 있을수록 위
   const restack = () => order.forEach((o, k) => { o.el.style.zIndex = k + 1; });
   const raise = c => { order = order.filter(o => o !== c); order.push(c); restack(); };
+  const wake = () => ticker.wake('cards');            // 카드가 움직일 일이 생기면 루프를 깨운다(멈춰 있으면 잠든다)
   const setFlip = (c, on) => {
-    c.flT = on ? 180 : 0; c.el.classList.toggle('flipped', on);
+    c.flT = on ? 180 : 0; c.el.classList.toggle('flipped', on); wake();
     c.back.setAttribute('aria-hidden', on ? 'false' : 'true'); c.link.tabIndex = on ? 0 : -1;
     if (reduce) { c.fl = c.flT; c.flipEl.style.transform = `rotateY(${c.fl}deg)`; }
   };
@@ -579,15 +1132,24 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     spots.zc = cards.slice().sort((a, b) => zk(a) - zk(b)); spots.seq = spots.zc.map(c => spots[c.i]);
     return spots;
   };
-  const gridSpots = () => {
-    const gap = mobile ? 14 : 28, cols = Math.max(2, Math.floor((TW - 48 + gap) / (cw + gap))), w = cols * cw + (cols - 1) * gap;
-    const x0 = (TW - w) / 2 + cw / 2;
-    return { h: BAR + 24 + Math.ceil(N / cols) * (ch + gap) + FOOT + 8,
-             at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cw + gap), y: BAR + 24 + ch / 2 + Math.floor(i / cols) * (ch + gap), r: 0 })) };
+  const gridSpots = (k = 1) => {
+    const cwk = cw * k, chk = ch * k;
+    const gap = (mobile ? 14 : 28) * k, cols = Math.max(2, Math.floor((TW - 48 + gap) / (cwk + gap))), w = cols * cwk + (cols - 1) * gap;
+    const x0 = (TW - w) / 2 + cwk / 2;
+    return { h: BAR + 24 + Math.ceil(N / cols) * (chk + gap) + FOOT + 8, k,
+             at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cwk + gap), y: BAR + 24 + chk / 2 + Math.floor(i / cols) * (chk + gap), r: 0 })) };
+  };
+  // 무대의 책상은 화면 한 장(모바일 1.2장)이라 길어질 수 없다. 정렬 격자가 넘치면 카드를 그만큼 줄여 한 장 안에 담는다
+  const DESK = () => Math.round(innerHeight * (innerWidth <= 820 ? 1.2 : 1));
+  let K = 1;
+  const sortedGrid = () => {
+    if (!STAGE) return gridSpots();
+    let g = gridSpots(1); for (let k = 0.98; g.h > DESK() && k > 0.4; k -= 0.02) g = gridSpots(k);
+    g.h = DESK(); return g;
   };
 
   // 흩은 상태도 화면보다 위아래로 넉넉하게(화면의 1.3배·모바일 1.7배, 정렬 격자보다 길지는 않게). 정렬과 높이 차이가 덜 나게 한다
-  const scatterH = () => { table.style.height = ''; measure(); const h = Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * (mobile ? 1.7 : 1.3))));
+  const scatterH = () => { table.style.height = ''; measure(); K = 1; const h = STAGE ? DESK() : Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * (mobile ? 1.7 : 1.3))));
     table.style.height = h + 'px'; TH = h; };
   // 처음엔 테이블 아래 가운데에 한 벌로 쌓여 있다가, 화면에 들어오면 흩은 자리로 던져진다
   scatterH();
@@ -598,7 +1160,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     // 마찰이 FR이면 처음 속도의 1/(1-FR)배를 미끄러진다. 그만큼 역산해 던지면 정한 자리에 멈춘다
     c.vx = (s.x - c.x) * (1 - FR); c.vy = (s.y - c.y) * (1 - FR);
     let dr = s.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = dr * (1 - FRR);
-    c.toss = 1;
+    c.toss = 1; wake();
   }, delay);
   let sorted = false, dealt = false, dealtAt = 0;
   // 나눠 주기: 한 벌의 맨 위 카드부터 한 장씩 집어 테이블에 놓는다. 집은 카드는 그 순간 맨 위로 올라오고,
@@ -619,6 +1181,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     order.slice().reverse().forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: TW / 2 - k * 1.2, y: TH * 0.62 + k * 1.6, r: (k ? c.j1 * 3 : 0) * Math.PI / 180 }; });
   };
   const checkDeal = () => {
+    if (STAGE) return;
     const top = table.getBoundingClientRect().top;
     if (!dealt && top < innerHeight * 0.5) deal();
     else if (dealt && !sorted && !drag && top > innerHeight * 0.92) regather();
@@ -628,15 +1191,22 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   const idleHint = now => {
     if (touched || hints >= 3 || !dealtAt || now - dealtAt < 1900 || now < nextHint) return;
     const c = order[order.length - 1]; if (c.flT) return;
-    c.peekT = 44; setTimeout(() => { c.peekT = 0; }, 560);
+    c.peekT = 44; setTimeout(() => { c.peekT = 0; wake(); }, 560);
     hints++; nextHint = now + 6500;
+  };
+  // 루프가 잠든 동안에도 다음 힌트 시각에는 깨어나도록 한 번만 예약한다
+  let hintTimer = 0;
+  const scheduleHint = now => {
+    if (touched || hints >= 3 || !dealtAt || hintTimer) return;
+    const due = Math.max(dealtAt + 1900, nextHint) - now;
+    hintTimer = setTimeout(() => { hintTimer = 0; wake(); }, Math.max(16, due + 16));
   };
 
   sortBtn.addEventListener('click', () => {
     sorted = !sorted; dealt = true; touched = true;
     sortBtn.ariaLabel = sortBtn.title = sorted ? 'Scatter' : 'Sort'; sortBtn.setAttribute('aria-pressed', sorted);
     if (sorted) {
-      const g = gridSpots(); table.style.height = g.h + 'px'; TH = g.h;
+      const g = sortedGrid(); table.style.height = g.h + 'px'; TH = g.h; K = g.k; wake();
       order = cards.slice().reverse(); restack();
       cards.forEach((c, i) => { c.home = g.at[i]; setFlip(c, false); });
     } else {
@@ -670,18 +1240,23 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   });
   addEventListener('resize', () => {
     const ow = TW, oh = TH; if (sorted) measure(); else scatterH();
-    if (sorted) { const g = gridSpots(); table.style.height = g.h + 'px'; TH = g.h; cards.forEach((c, i) => { c.home = g.at[i]; }); }
+    if (sorted) { const g = sortedGrid(); table.style.height = g.h + 'px'; TH = g.h; K = g.k; cards.forEach((c, i) => { c.home = g.at[i]; }); }
     else if (ow && oh) cards.forEach(c => { c.x *= TW / ow; c.y *= TH / oh; });
+    wake(); checkDeal(); peekState();
   });
-  if (document.fonts) document.fonts.ready.then(measure);
+  if (document.fonts) document.fonts.ready.then(() => { measure(); wake(); });
 
   // 잡기: 잡은 점이 손을 따라오고, 카드는 그 점을 축으로 끌려가며 돈다(명함과 같은 원리). 끌지 않고 누르면 뒤집힌다
-  let drag = null;
-  const local = ev => { const r = table.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
+  let drag = null, stageHold = 0;
+  // 쏟기·되감기는 스크롤 위치로만 정해지므로 매 프레임이 아니라 스크롤할 때 확인한다. 손이 테이블에 닿으면 루프를 깨운다
+  addEventListener('scroll', checkDeal, { passive: true });
+  ['pointerdown', 'pointermove', 'pointerleave'].forEach(t => table.addEventListener(t, wake, { capture: true, passive: true }));
+  const local = ev => { const r = table.getBoundingClientRect(); return [(ev.clientX - r.left) * TW / (r.width || TW), (ev.clientY - r.top) * TH / (r.height || TH)]; };   // 카메라 배율 보정
   cards.forEach(c => {
     c.el.addEventListener('pointerdown', ev => {
       if (ev.button > 0 || ev.target.closest('a')) return;
       ev.preventDefault();
+      if (window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
       const [px, py] = local(ev), dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
       drag = { c, id: ev.pointerId, lx: dx * co - dy * si, ly: dx * si + dy * co, px, py, x0: px, y0: py, vx: 0, vy: 0, vr: 0, t: performance.now(), moved: false };
       c.vx = c.vy = c.vr = 0; c.toss = 0; c.home = null; c.el.classList.add('held'); touched = true;
@@ -709,6 +1284,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     const end = ev => {
       if (!drag || drag.c !== c || ev.pointerId !== drag.id) return;
       const d0 = drag; drag = null; c.el.classList.remove('held');
+      if (stageHold) { Stage.release(stageHold); stageHold = 0; }
       if (!d0.moved) { setFlip(c, !c.flT); c.flV += 0; c.kick = 1; return; }   // 누름: 뒤집기
       if (performance.now() - d0.t > 90) { d0.vx *= 0.3; d0.vy *= 0.3; d0.vr *= 0.3; }   // 멈췄다 놓으면 그 자리에
       const sp = Math.hypot(d0.vx, d0.vy), cap = sp > 55 ? 55 / sp : 1;          // 아무리 세게 던져도 화면을 몇 번씩 가로지르지 않게
@@ -720,11 +1296,16 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     c.el.addEventListener('pointerleave', () => { c.hov = 0; });
   });
 
+  // 스타일은 값이 바뀔 때만 쓴다(같은 문자열을 다시 쓰면 rim·glint 그라데이션을 다시 칠하게 된다)
+  const put = (c, key, val, write) => { if (c[key] !== val) { c[key] = val; write(val); } };
+  const near0 = (v, e) => Math.abs(v) < e;
   let last = performance.now();
-  function frame(now){
+  function frame(now, fresh){
+    if (fresh) last = now - 16.67;                      // 잠들었던 시간은 버린다
     const dt = Math.min(2.5, (now - last) / 16.67); last = now;
-    checkDeal(); idleHint(now); peekState();
+    idleHint(now);
     const top = order.length - 1;
+    let busy = !!drag;
     order.forEach((c, k) => {
       const held = drag && drag.c === c && drag.moved;
       if (c.home && !held) {
@@ -753,21 +1334,41 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
       const flipLift = Math.sin(Math.min(Math.PI, Math.abs(c.fl) / 180 * Math.PI));
       // 움직이는 속도만큼 유리판이 기울고, 손에 든 카드는 들려 그림자가 커진다
       const vx = held ? drag.vx : c.vx, vy = held ? drag.vy : c.vy;
-      c.tx += (Math.max(-16, Math.min(16, vx * 0.9)) - c.tx) * 0.2;
-      c.ty += (Math.max(-16, Math.min(16, -vy * 0.9)) - c.ty) * 0.2;
-      c.lift += ((held ? 1 : Math.max(flipLift * 0.8, c.hov * 0.35, Math.min(1, Math.hypot(c.vx, c.vy) / 30))) - c.lift) * 0.15;
+      const txT = Math.max(-16, Math.min(16, vx * 0.9)), tyT = Math.max(-16, Math.min(16, -vy * 0.9));
+      const liftT = held ? 1 : Math.max(flipLift * 0.8, c.hov * 0.35, Math.min(1, Math.hypot(c.vx, c.vy) / 30));
+      c.tx += (txT - c.tx) * 0.2;
+      c.ty += (tyT - c.ty) * 0.2;
+      c.lift += (liftT - c.lift) * 0.15;
+      c.ks = c.ks == null ? K : c.ks + (K - c.ks) * 0.18;
+      // 이 카드가 아직 움직이는 중인가(위치·회전·뒤집기·기울기·들림 중 하나라도 자리를 찾는 중이면)
+      const h = c.home;
+      if (held || c.toss || !near0(c.vx, 0.02) || !near0(c.vy, 0.02) || !near0(c.vr, 1e-4) ||
+          (h && !held && (!near0(h.x - c.x, 0.05) || !near0(h.y - c.y, 0.05) || !near0(Math.atan2(Math.sin(h.r - c.r), Math.cos(h.r - c.r)), 1e-3))) ||
+          !near0(c.flT + hoverPeek + c.peekT - c.fl, 0.05) || !near0(c.flV, 0.02) ||
+          !near0(txT - c.tx, 0.01) || !near0(tyT - c.ty, 0.01) || !near0(liftT - c.lift, 0.002) || !near0(K - c.ks, 0.001)) busy = true;
       const st = c.el.style;
-      st.transform = `translate3d(${(c.x - cw / 2).toFixed(1)}px,${(c.y - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${(1 + c.lift * 0.05).toFixed(4)})`;
-      c.flipEl.style.transform = `rotateY(${c.fl.toFixed(2)}deg)`;
-      c.sh.style.opacity = (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3);
-      st.setProperty('--rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`);
-      st.setProperty('--rimO', (0.35 + c.lift * 0.45).toFixed(3));
-      st.setProperty('--shine', `${(c.tx * -5 + c.r * 40 + c.fl * 0.3).toFixed(1)}%`);
-      st.setProperty('--glint', (0.2 + c.lift * 0.35).toFixed(3));
+      put(c, '_tf', `translate3d(${(c.x - cw / 2).toFixed(1)}px,${(c.y - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${((1 + c.lift * 0.05) * c.ks).toFixed(4)})`, v => { st.transform = v; });
+      put(c, '_ff', `rotateY(${c.fl.toFixed(2)}deg)`, v => { c.flipEl.style.transform = v; });
+      put(c, '_so', (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3), v => { c.sh.style.opacity = v; });
+      put(c, '_rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`, v => st.setProperty('--rim', v));
+      put(c, '_rimO', (0.35 + c.lift * 0.45).toFixed(3), v => st.setProperty('--rimO', v));
+      put(c, '_shine', `${(c.tx * -5 + c.r * 40 + c.fl * 0.3).toFixed(1)}%`, v => st.setProperty('--shine', v));
+      put(c, '_glint', (0.2 + c.lift * 0.35).toFixed(3), v => st.setProperty('--glint', v));
     });
-    requestAnimationFrame(frame);
+    if (busy) return true;
+    scheduleHint(now);                                  // 모두 멈췄다: 잠들되, 남은 힌트 시각에는 다시 깨어난다
+    return false;
   }
-  requestAnimationFrame(frame);
+  ticker.add('cards', frame);
+  checkDeal();
+  // 장면(scene-hero·scene-table)이 부르는 손잡이. 모으기는 정렬도 풀고 모두 앞면으로 돌린다
+  window.Table = {
+    deal(){ if (sorted) return; deal(); wake(); },
+    gather(){ if (drag) return; if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
+      flipAllBtn.setAttribute('aria-pressed', 'false'); regather(); wake(); },
+    get dealt(){ return dealt; },
+    get pileAt(){ return { x: TW / 2, y: TH * 0.62 }; },        // 한 벌이 놓이는 자리(테이블 좌표)
+  };
 })();
 </script>
 
@@ -810,9 +1411,11 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   const anchor = () => ({ x: AX, y: AY });
   const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
 
+  // 첫 화면 좌표의 자리(카메라가 기울어 있어도 맞도록 화면 사각형 대신 배치 값으로 잰다)
+  const offs = (el, root) => { let x = 0, y = 0; for (let n = el; n && n !== root; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; };
   function resize(){
-    const r = hero.getBoundingClientRect(), sr = stage.getBoundingClientRect();
-    const nAX = sr.left - r.left + sr.width / 2, nAY = sr.top - r.top - 14;
+    const so = offs(stage, hero), r = { width: hero.offsetWidth, height: hero.offsetHeight }, sr = { width: stage.offsetWidth, height: stage.offsetHeight };
+    const nAX = so.x + sr.width / 2, nAY = so.y - 14;
     if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
     KS = parseFloat(getComputedStyle(card.parentElement).scale) || 1; STRAP_W = STRAP_W0 * KS;
     CT = parseFloat(getComputedStyle(card.parentElement).top) || 70.8;
@@ -834,10 +1437,13 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   const local = e => { const r = hero.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
 
   // 짧게 누르면 뒤집기, 4px 넘게 움직이면 잡은 자리 그대로 끌기
+  let stageHold = 0;
   card.addEventListener('pointerdown', e => {
     touched = true; if (peekT) { peekT = 0; flipT = 0; }   // 한 번이라도 만지면 힌트는 영구히 멈춘다
     if (e.target.closest('button,a')) return;
+    if (STG && ct > 0) { if (ct >= 0.999) deskDown(e); else e.preventDefault(); return; }   // 떨어지는 동안은 잡지 않고, 책상에 놓인 뒤에는 책상 위에서 끈다
     e.preventDefault();
+    if (window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('badge');   // 잡은 동안 무대 입력 멈춤
     const P = local(e), A = pts[N - 1];
     const g = rot(P.x - A.x, P.y - A.y, -phi);           // 카드 위 잡은 점(카드 좌표)
     press = { id: e.pointerId, sx: e.clientX, sy: e.clientY, g, P, moved: false };
@@ -855,6 +1461,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   });
   const end = e => {
     if (!press || (e && e.pointerId !== press.id)) return;
+    if (stageHold) { Stage.release(stageHold); stageHold = 0; }
     if (!press.moved && e && e.type === 'pointerup') { flipT = flipT ? 0 : 180; vtw += flipT ? 4 : -4; }
     if (drag) {   // 놓는 순간: 고리 기준으로 다시 매달리되 회전 속도는 이어간다
       const A = pts[N - 1]; piv.x = A.x; piv.y = A.y;
@@ -865,6 +1472,147 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     press = null; drag = null; card.classList.remove('grab');
   };
   card.addEventListener('pointerup', end); card.addEventListener('pointercancel', end);
+
+  // ── 무대(scene-hero, 08_공간설계 2·3절): 입력을 이어 가면 집게가 열리고, 명함이 풀려 책상 위 더미에 엎어져 떨어진다.
+  // 진행값 ct(0~1)는 scene-hero.js가 Hero.carry(t)로 넘긴다. 화면의 줄·명함 자세는 ct의 순수 함수라 되감기가 맞는다.
+  // 물리는 아래에서 그대로 돌되, ct가 커지면 화면에서는 곧게 늘어진 쉬는 자세로 섞여 들어간다(0.03~0.10)
+  const STG = !!(window.Stage && Stage.enabled) && !still;
+  const T_CARRY = 0.10;                        // 이때부터 명함은 고리를 떠나 세계 좌표(.carry)에서 그린다
+  const card3d = card.parentElement, swivel = card.querySelector('.swivel'), slotIs = [...card.querySelectorAll('.slot i')];
+  const heroLayer = hero.closest('.stage-layer');
+  let ct = 0, carryOn = false, clasp = null, gate = null, carry = null, shS = null, shC = null;
+  const cl = v => Math.max(0, Math.min(1, v)), ss = (a, b, v) => { const u = cl((v - a) / (b - a)); return u * u * (3 - 2 * u); };
+  if (STG) {
+    // 집게(방아쇠형 스냅 훅): 뒤판 → 게이트 → 몸통 순서로 겹쳐 swivel.webp와 같은 틀에 둔다. 게이트만 나사 축으로 돈다
+    clasp = document.createElement('div'); clasp.className = 'clasp'; clasp.setAttribute('aria-hidden', 'true');
+    clasp.innerHTML = ['back', 'gate', 'body'].map(k => `<img class="${k}" src="lanyard/clasp-${k}.webp" alt="" width="56" height="86" draggable="false">`).join('');
+    gate = clasp.querySelector('.gate'); hang.insertBefore(clasp, card3d);
+    carry = document.createElement('div'); carry.className = 'carry'; carry.style.display = 'none';
+    carry.innerHTML = '<i class="dsh s"></i><i class="dsh c"></i>'; [shS, shC] = carry.children;
+    heroLayer.appendChild(carry);
+  }
+  // 게이트: 엄지 받침이 눌리듯 0→16°(감속), 명함 구멍이 빠지는 동안 열려 있다가, 손을 뗀 스냅 훅처럼 빠르게 닫힌다
+  const gateDeg = t => t < 0.20 ? 16 * (1 - (1 - cl((t - 0.12) / 0.05)) ** 3) : 16 * (1 - cl((t - 0.20) / 0.035)) ** 2;
+
+  // 책상 위 명함 자세(hero 층 좌표: x 오른쪽, z 시청자 쪽). 사용자가 S1에서 옮기거나 뒤집으면 여기 남고, 착지 경로의 끝이 된다
+  const desk = { x: 0, z: 0, b: 186 * Math.PI / 180, f: 0, ft: 0, vf: 0, vx: 0, vz: 0, moved: false, ck: 0, fk: 0 };
+  const geo = () => {
+    const tb = document.querySelector('#work .table'), Wd = Stage.world && Stage.world.dims;
+    const Hw = heroLayer.parentElement.offsetHeight || innerHeight, Dt = (Wd && Wd.Dt) || innerHeight;
+    const tl = tb ? tb.offsetLeft : 0, TW = tb ? tb.clientWidth : innerWidth;
+    const pa = window.Table ? Table.pileAt : { x: TW / 2, y: Dt * 0.62 };
+    // 책상에 닿은 명함은 카드와 같은 크기 계열(폭 = 카드 폭의 1.04배)로 보인다(01 A안: 덱 맨 위의 한 장).
+    // 숙이는 동안(0.24~0.72) 서서히 줄어 원근으로 읽힌다
+    const pc = document.querySelector('#work .pc'), cw = pc ? pc.offsetWidth : 200, sd = Math.min(1, cw * 1.04 / (300 * KS));
+    const mk = tb && tb.querySelector('.tmark'), mTop = mk ? offs(mk, tb).y : Dt - 0.2 * innerHeight;
+    const hw = 150 * KS * sd, hh = 215 * KS * sd, zMax = mTop - hh * 1.12 - 10;   // 「Selected Work」 인쇄에 걸리지 않는 끝(기울기 여유 12%)
+    return { Hw, Dt, tl, TW, pa, sd, hw, hh, zMax };
+  };
+  const target = g => {
+    // 더미 위에 엎어져 멈춰 덱 맨 위의 한 장이 된다(08 1절: 더미 자리에서 살짝 오른쪽). 착지 충격으로 더미가 흩어지면 그 사이 한 장으로 남는다
+    if (!desk.moved) { desk.x = g.tl + g.pa.x + 0.02 * innerWidth; desk.z = Math.min(g.zMax, g.pa.y - 0.03 * g.Dt); }
+    const k = ss(0, 1, desk.ck), cx = Math.max(innerWidth * 0.14, g.tl + g.hw + 24), cz = Math.min(g.zMax, g.Dt - 0.34 * innerHeight);   // 카드를 모을 때 밀려나는 앞 왼쪽 귀퉁이
+    return { x: desk.x + (cx - desk.x) * k, z: desk.z + (cz - desk.z) * k, b: desk.b - 0.14 * k };
+  };
+  // ct에 대한 순수 함수: 고리에서 빠짐(0.15~0.20) → 자유 낙하(0.20~0.30) → 아래 모서리를 축으로 앞으로 엎어짐(0.30~0.46)
+  // → 책상 위를 미끄러지며 반 바퀴 돌아 더미 위에 멈춤(0.46~0.86, 회전은 0.40부터).
+  // 스크럽에서 정거장 스냅이 ±0.12 안에서만 붙으므로, 미끄러짐을 0.86까지 이어 손 밑에서 멈춘 구간이 생기지 않게 한다
+  function pose(t, g){
+    const sc = 1 + (g.sd - 1) * ss(0.24, 0.72, t), h = 215 * KS * sc, a0 = anchor(), floor = g.Hw - 1.5;
+    const sl = ss(0.15, 0.20, t);
+    const cx = a0.x + 5 * KS * sl, cy0 = a0.y + seg0 * (N - 1) + CT + 215 * KS + 4 * KS * sl;
+    const yb0 = cy0 + h, D = Math.max(0, floor - yb0);
+    const uA = cl((t - 0.20) / 0.10), yb = yb0 + D * uA * uA;
+    const uB = cl((t - 0.30) / 0.16), a = -Math.PI / 2 * uB * uB;
+    const zb = 1 + 22 * uA + 30 * uB;
+    let x = cx, y = yb - h * Math.cos(a), z = zb - h * Math.sin(a);
+    const tg = target(g), eC = 1 - (1 - cl((t - 0.46) / 0.40)) ** 3;
+    x += (tg.x - x) * eC; z += (tg.z - z) * eC;
+    const b = tg.b * (1 - (1 - cl((t - 0.40) / 0.46)) ** 2.4);
+    const f0 = desk.f + (Math.PI - desk.f) * ss(0, 1, desk.fk), f = f0 * ss(0.50, 0.86, t);
+    y -= (150 * KS * sc * Math.abs(Math.sin(f)) + (f ? 1 : 0)) * uB;       // 뒤집는 동안 긴 모서리가 책상을 뚫지 않게 든다
+    return { x, y, z, a, b, f, sl, yb, zb, floor, cy0, cx0: a0.x, h, sc };
+  }
+
+  function carryFrame(){
+    const on = ct >= T_CARRY;
+    if (on !== carryOn) {
+      carryOn = on;
+      if (on) { carry.appendChild(card3d); Object.assign(card3d.style, { left: '0px', top: '0px', scale: 'none', perspective: 'none', transformStyle: 'preserve-3d', transformOrigin: '0 0' }); card.style.transform = ''; }
+      else { hang.appendChild(card3d); ['left', 'top', 'scale', 'perspective', 'transformStyle', 'transformOrigin', 'transform'].forEach(k => { card3d.style[k] = ''; }); slotIs.forEach(i => { i.style.transform = i.style.visibility = ''; }); }
+      clasp.style.display = on ? 'block' : ''; swivel.style.visibility = on ? 'hidden' : ''; carry.style.display = on ? '' : 'none';
+    }
+    gate.style.transform = on ? `rotate(${gateDeg(ct).toFixed(2)}deg)` : '';
+    if (!on) return null;
+    const g = geo(), q = pose(ct, g);
+    card3d.style.setProperty('--op', ss(T_CARRY, 0.3, ct).toFixed(3));   // 유리 면이 책상 위 카드를 비치지 않게 서서히 불투명해진다(흰 벽 앞에서는 같은 모습)
+    card3d.style.transform = `translate3d(${q.x.toFixed(2)}px,${q.y.toFixed(2)}px,${q.z.toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(${q.a.toFixed(4)}rad) rotateY(${q.f.toFixed(4)}rad) scale(${(KS * q.sc).toFixed(4)}) translate(-150px,-215px)`;
+    // 구멍 속 고리는 벽(고리) 쪽에 남는다: 명함이 움직인 만큼 반대로 밀어 두고, 다 빠지면 감춘다
+    const dx = (q.x - q.cx0) / KS, dy = (q.y - q.cy0) / KS, out = Math.abs(dx) + Math.abs(dy) > 16 || q.a < -0.02;
+    slotIs.forEach((i, k) => { i.style.visibility = out ? 'hidden' : ''; i.style.transform = out ? '' : `translate(${((k ? 1 : -1) * dx).toFixed(2)}px,${(-dy).toFixed(2)}px)`; });
+    // 책상 그림자: 빛(위·뒤, 08 4절)을 따라 앞으로 비친 발자국. 높이 뜰수록 넓고 옅고, 닿을수록 작고 진해진다
+    const Hc = 430 * KS * q.sc, sa = -Math.sin(q.a), ca = Math.cos(q.a), hb = q.floor - q.yb;
+    const lf = Hc * (sa + 0.75 * ca), off = q.zb + 0.75 * hb + lf / 2 - (q.zb + q.h * sa);
+    const hc = Math.max(0, q.floor - q.y), dk = 1 + 0.6 * (Stage.state.dk || 0), fin = ss(T_CARRY, 0.22, ct);
+    const sx = q.x + off * Math.sin(q.b), sz = q.z + off * Math.cos(q.b);
+    const put = (el, k, o, dz) => {
+      el.style.transform = `translate3d(${(sx + dz * Math.sin(q.b)).toFixed(2)}px,${(q.floor + 1).toFixed(2)}px,${(sz + dz * Math.cos(q.b)).toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(90deg) scale(${(KS * q.sc * k).toFixed(4)},${(KS * q.sc * k * lf / Hc).toFixed(4)}) translate(-150px,-215px)`;
+      el.style.opacity = (o * fin * dk).toFixed(3);
+    };
+    put(shS, 1 + hc / 520, 0.26 / (1 + hc / 110), 8);
+    put(shC, 0.985, 0.42 * cl(1 - hc / 26), 2);
+    // 유리 반사: 넘어지는 동안 빛줄기가 한 번 지나간다
+    const sw = Math.sin(Math.PI * sa);
+    faces.forEach(fc => {
+      fc.style.setProperty('--rim', `${(q.b * 57.3 * 0.6 + sa * 120) % 360}deg`);
+      fc.style.setProperty('--rimO', (0.3 + sw * 0.45).toFixed(3));
+      fc.style.setProperty('--glare', (0.2 + sw * 0.5).toFixed(3));
+      fc.style.setProperty('--sx', '50%'); fc.style.setProperty('--sy', `${(20 + sa * 30).toFixed(1)}%`);
+      fc.style.setProperty('--shine', `${(-40 + sa * 80).toFixed(1)}%`);
+    });
+    return q;
+  }
+
+  // S1 책상 위: 짧게 누르면 뒤집고, 끌면 책상 위로 옮겨지며 놓으면 카드처럼 미끄러져 멈춘다
+  let dpress = null;
+  const camScale = () => { const c = Stage.camera; return c.P() / (c.d || c.P()); };
+  function deskDown(e){
+    e.preventDefault();
+    if (!stageHold) stageHold = Stage.hold('badge');
+    const g = geo(); target(g);
+    dpress = { id: e.pointerId, sx: e.clientX, sy: e.clientY, x0: desk.x, z0: desk.z, moved: false, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vz: 0 };
+    desk.vx = desk.vz = 0;
+    try { card.setPointerCapture(e.pointerId); } catch {}
+    wakeBadge();
+  }
+  card.addEventListener('pointermove', e => {
+    if (!dpress || e.pointerId !== dpress.id) return;
+    if (!dpress.moved && Math.hypot(e.clientX - dpress.sx, e.clientY - dpress.sy) > 4) { dpress.moved = true; desk.moved = true; card.classList.add('grab'); }
+    if (!dpress.moved) return;
+    const s = camScale(), now = performance.now(), dt = Math.max(4, now - dpress.lt) / STEP;
+    desk.x = dpress.x0 + (e.clientX - dpress.sx) / s; desk.z = dpress.z0 + (e.clientY - dpress.sy) / s;
+    dpress.vx = dpress.vx * 0.5 + (e.clientX - dpress.lx) / s / dt * 0.5; dpress.vz = dpress.vz * 0.5 + (e.clientY - dpress.ly) / s / dt * 0.5;
+    dpress.lx = e.clientX; dpress.ly = e.clientY; dpress.lt = now; wakeBadge();
+  });
+  const deskUp = e => {
+    if (!dpress || e.pointerId !== dpress.id) return;
+    if (stageHold) { Stage.release(stageHold); stageHold = 0; }
+    if (!dpress.moved && e.type === 'pointerup') desk.ft = desk.ft ? 0 : Math.PI;
+    else if (performance.now() - dpress.lt < 80) { const v = Math.hypot(dpress.vx, dpress.vz), cap = 14, k = v > cap ? cap / v : 1; desk.vx = dpress.vx * k; desk.vz = dpress.vz * k; }
+    dpress = null; card.classList.remove('grab'); wakeBadge();
+  };
+  card.addEventListener('pointerup', deskUp); card.addEventListener('pointercancel', deskUp);
+  function deskStep(){
+    desk.vf += (desk.ft - desk.f) * 0.02 - desk.vf * 0.16; desk.f += desk.vf;
+    if (Math.abs(desk.vf) < 1e-4 && Math.abs(desk.ft - desk.f) < 1e-3) { desk.f = desk.ft; desk.vf = 0; }
+    if (dpress || !(desk.vx || desk.vz)) return;
+    desk.x += desk.vx; desk.z += desk.vz; desk.vx *= 0.967; desk.vz *= 0.967;
+    const g = geo(), m = g.hw + 12, mz = g.hh + 12;   // 화면 끝·인쇄 띠 안쪽에서 멈춘다
+    if (desk.x < g.tl + m || desk.x > g.tl + g.TW - m) { desk.x = Math.max(g.tl + m, Math.min(g.tl + g.TW - m, desk.x)); desk.vx *= -0.3; }
+    if (desk.z < mz || desk.z > g.zMax) { desk.z = Math.max(mz, Math.min(g.zMax, desk.z)); desk.vz *= -0.3; }
+    if (Math.hypot(desk.vx, desk.vz) < 0.02) desk.vx = desk.vz = 0;
+  }
+  const deskBusy = () => !!dpress || desk.vf !== 0 || desk.f !== desk.ft || !!(desk.vx || desk.vz);
 
   if (fine) {
     addEventListener('pointermove', e => {
@@ -911,8 +1659,9 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     } else startMotion();
   }
 
-  document.getElementById('toBack').addEventListener('click', () => { flipT = 180; vtw += 4; });
-  document.getElementById('toFront').addEventListener('click', () => { flipT = 0; vtw -= 4; });
+  // 책상 위(엎어져 뒷면이 위)에서는 앞면 보기 = 긴 축으로 반 바퀴, 연락처 보기 = 제자리
+  document.getElementById('toBack').addEventListener('click', () => { if (STG && ct > 0) { desk.ft = 0; return; } flipT = 180; vtw += 4; });
+  document.getElementById('toFront').addEventListener('click', () => { if (STG && ct > 0) { desk.ft = Math.PI; return; } flipT = 0; vtw -= 4; });
   card.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
     const k = b.querySelector('.k'), label = (k.dataset.l ??= k.textContent);
     try { await navigator.clipboard.writeText(b.dataset.copy); k.textContent = 'Copied'; b.classList.add('ok'); }
@@ -966,7 +1715,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
       seg += (seg0 - seg) * 0.035;                     // 늘어난 줄이 천천히 되돌아옴
       if (!reduce) E.x += Math.sin(t * 0.8) * 0.012;
       mag += (magT - mag) * 0.04; E.x += mag * MAG_PULL;   // 커서 쪽으로 아주 약하게 끌림
-      if (!touched && !intro && nudgeN < NUDGE_MAX && ++idleT >= (nudgeN ? NUDGE_GAP : NUDGE_FIRST)) {
+      if (!touched && !intro && !(STG && ct > 0) && nudgeN < NUDGE_MAX && ++idleT >= (nudgeN ? NUDGE_GAP : NUDGE_FIRST)) {
         idleT = 0; nudgeN++; peekDir = nudgeN % 2 ? 1 : -1;
         om -= peekDir * NUDGE_OM; E.px -= peekDir * NUDGE_V;   // 보이지 않는 손이 카드 아래쪽을 옆으로 살짝 밀었다 놓음
         if (flipT === 0) peekT = 1;
@@ -993,6 +1742,11 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     if (peekT && ++peekT === PEEK_AT) flipT = PEEK * peekDir;          // 밀고 나서 Y축으로 살짝 뒤집어 뒷면 가장자리를 보여 줌
     else if (peekT === PEEK_AT + PEEK_HOLD) { flipT = 0; peekT = 0; }   // 그리고 제자리로
     vflip += (flipT - flip) * 0.02 - vflip * 0.16; flip += vflip;
+    // 장면이 시작되면 흔들림을 빨리 가라앉혀, 화면에서 섞이는 쉬는 자세와 실제 물리가 곧 같아지게 한다(되감아 돌아와도 튀지 않게)
+    if (STG && ct > 0) {
+      const k = 1 - 0.08 * ss(0, T_CARRY, ct);
+      om *= k; vtw *= k; vflip *= k; pts.forEach(p => { p.px = p.x - (p.x - p.px) * k; p.py = p.y - (p.y - p.py) * k; });
+    }
   }
 
   window.__cardState = () => ({ phi, flip });
@@ -1001,7 +1755,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   // 벽 그림자: 화면 왼쪽 위 바깥의 점광원이 명함과 목줄을 뒤쪽 벽에 비춘다. 광원에서 멀수록 그림자가 벌어져(SK) 흔들릴 때 명함과 다른 각도로 움직인다.
   // 모양은 화면 밖(-OFF)에 그리고 그림자만 화면 안으로 옮겨 흐림을 준다(canvas filter 없이 모든 브라우저에서 같은 결과)
   const SH_SK = 0.045, SH_OX = 14, SH_OY = 22, SH_OFF = 30000;
-  function drawShadow(P, ph, ry){
+  function drawShadow(P, ph, ry, cs){
     const lx = W * 0.12, ly = -H * 0.9, k = 1 + SH_SK;
     const tx = dpr * (SH_OX - lx * SH_SK) - SH_OFF, ty = dpr * (SH_OY - ly * SH_SK);
     ctx.save();
@@ -1013,22 +1767,26 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.lineWidth = STRAP_W * 0.8 * dpr * k; ctx.lineJoin = 'round'; ctx.lineCap = 'butt'; ctx.strokeStyle = '#000';
     ctx.shadowBlur = 10 * dpr; ctx.stroke();
-    // 명함: 줄 끝에 매달려 phi만큼 돌고, Y축으로 비틀린 만큼 폭이 준다(뒤집히는 순간엔 선처럼)
-    const E = P[N - 1], cw = Math.max(0.02, Math.abs(Math.cos(ry * Math.PI / 180)));
-    ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
-    ctx.translate(E[0], E[1]); ctx.rotate(ph); ctx.scale(cw, 1);
-    ctx.beginPath(); ctx.roundRect(-150 * KS, CT - 4 * KS, 300 * KS, 434 * KS, 22 * KS);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#000';
-    ctx.shadowColor = 'rgba(34,42,92,.10)'; ctx.shadowBlur = 48 * dpr; ctx.fill();   // 넓은 반그늘
-    ctx.shadowColor = 'rgba(34,42,92,.10)'; ctx.shadowBlur = 20 * dpr; ctx.fill();   // 본그늘
+    // 명함: 줄 끝에 매달려 phi만큼 돌고, Y축으로 비틀린 만큼 폭이 준다(뒤집히는 순간엔 선처럼).
+    // 무대에서 명함이 고리를 떠나면(cs) 떨어진 만큼 따라 내려가며 벽에서 멀어져 옅어진다
+    const al = cs ? cs.al : 1;
+    if (al > 0.005) {
+      const E = P[N - 1], cw = Math.max(0.02, Math.abs(Math.cos(ry * Math.PI / 180)));
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
+      ctx.translate(E[0] + (cs ? cs.dx : 0), E[1] + (cs ? cs.dy : 0)); ctx.rotate(ph); ctx.scale(cw, 1);
+      ctx.beginPath(); ctx.roundRect(-150 * KS, CT - 4 * KS, 300 * KS, 434 * KS, 22 * KS);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = '#000';
+      ctx.shadowColor = `rgba(34,42,92,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (48 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 넓은 반그늘
+      ctx.shadowColor = `rgba(34,42,92,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (20 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 본그늘
+    }
     ctx.restore();
   }
 
-  function drawStrap(P, ph = 0, ry = 0){
+  function drawStrap(P, ph = 0, ry = 0, cs = null){
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    drawShadow(P, ph, ry);
+    drawShadow(P, ph, ry, cs);
     const w = STRAP_W / 2;
     for (let i = 0; i < N; i++) {   // 꼭짓점마다 양옆 가장자리(앞뒤 구간 방향의 평균에 수직)
       const p = P[i], q = P[Math.min(N - 1, i + 1)], o = P[Math.max(0, i - 1)];
@@ -1082,7 +1840,10 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     const cur = snapshot(), a = prev && alpha != null ? alpha : 1, b = prev || cur;
     const lerp = (x, y) => x + (y - x) * a;
     const P = cur.e.map((p, i) => [lerp(b.e[i][0], p[0]), lerp(b.e[i][1], p[1])]);
-    const ph = lerp(b.phi, cur.phi), t = lerp(b.tw, cur.tw), fl = lerp(b.flip, cur.flip), o = lerp(b.om, cur.om);
+    // 무대: 장면이 시작되면 줄과 명함을 곧게 늘어진 쉬는 자세로 섞는다(w=1이면 물리와 무관하게 ct만으로 정해짐)
+    const w = STG ? ss(0.03, T_CARRY, ct) : 0, kw = 1 - w;
+    if (w > 0) { const a0 = anchor(); P.forEach((p, i) => { p[0] += (a0.x - p[0]) * w; p[1] += (a0.y + seg0 * i - p[1]) * w; }); }
+    const ph = lerp(b.phi, cur.phi) * kw, t = lerp(b.tw, cur.tw) * kw, fl = lerp(b.flip, cur.flip) * kw, o = lerp(b.om, cur.om) * kw;
     const E = P[N - 1];
     // 끈 끝은 D링 막대에 박음질돼 있어 링(명함과 같이 phi만큼 돈다)과 같은 방향으로 들어가야 한다.
     // 계산상의 줄 끝 방향과 링 방향이 어긋나면 끝이 링 옆으로 비껴 보이므로, 마지막 몇 마디를 링 축 쪽으로 휘어 이어 그린다
@@ -1094,48 +1855,83 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     badge.style.transform = `translate3d(${E[0]}px, ${E[1]}px, 0)`;
     hang.style.transform = `rotate(${ph}rad)`;
     const ryv = t + fl, rxv = Math.max(-10, Math.min(10, -o * 420));
-    card.style.transform = `rotateY(${ryv}deg) rotateX(${rxv}deg)`;
-    const deg = ph * 180 / Math.PI, tilt = Math.min(1, (Math.abs(t) + Math.abs(deg)) / 35);
-    const sv = Math.sin(ryv * Math.PI / 180);
-    faces.forEach(f => {
-      f.style.setProperty('--rim', `${(ryv * 2 + deg * 3) % 360}deg`);
-      f.style.setProperty('--rimO', (0.3 + tilt * 0.6).toFixed(3));
-      f.style.setProperty('--glare', (0.2 + tilt * 0.65).toFixed(3));   // 가만히 있어도 유리 질감은 읽히게, 기울수록 강해짐
-      f.style.setProperty('--sx', `${50 - sv * 45}%`);
-      f.style.setProperty('--sy', `${20 + rxv * 3}%`);
-      f.style.setProperty('--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
-    });
-    drawStrap(P, ph, ryv);
+    const q = STG ? carryFrame() : null;                   // 고리에 걸려 있는 동안(ct < T_CARRY)에는 null: 집게·층 상태만 맞춘다
+    if (!q) {
+      card.style.transform = `rotateY(${ryv}deg) rotateX(${rxv}deg)`;
+      const deg = ph * 180 / Math.PI, tilt = Math.min(1, (Math.abs(t) + Math.abs(deg)) / 35);
+      const sv = Math.sin(ryv * Math.PI / 180);
+      faces.forEach(f => {
+        f.style.setProperty('--rim', `${(ryv * 2 + deg * 3) % 360}deg`);
+        f.style.setProperty('--rimO', (0.3 + tilt * 0.6).toFixed(3));
+        f.style.setProperty('--glare', (0.2 + tilt * 0.65).toFixed(3));   // 가만히 있어도 유리 질감은 읽히게, 기울수록 강해짐
+        f.style.setProperty('--sx', `${50 - sv * 45}%`);
+        f.style.setProperty('--sy', `${20 + rxv * 3}%`);
+        f.style.setProperty('--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
+      });
+    }
+    if (STG && Stage.camera.th > 86) return;               // 다 숙이면 벽은 보이지 않는다: 줄·벽 그림자는 그리지 않는다
+    const cs = q ? { dx: q.x - q.cx0, dy: q.y - (q.cy0 - 4 * KS * q.sl), al: 1 - ss(0.21, 0.40, ct), sp: 30 * ss(0.2, 0.4, ct) } : null;
+    drawStrap(P, ph, ryv, cs);
   }
 
   let acc = 0, last = performance.now();
-  function loop(now){
+  // 첫 화면이 보이는 동안은 늘 돈다(가만히 있어도 줄이 천천히 숨 쉬듯 흔들리는 것이 이 화면의 모습).
+  // 첫 화면이 화면 밖으로 나가면 잠들고, 다시 들어오거나 손대면 깨어난다. 움직임 줄이기에서는 멈추면 바로 잠든다
+  let heroIn = true;
+  const quiet = () => !drag && !press && Math.abs(om) < 1e-5 && Math.abs(vflip) < 0.01 && Math.abs(flip - flipT) < 0.05 && Math.abs(vtw) < 0.005 &&
+    pts.every(p => Math.abs(p.x - p.px) < 0.01 && Math.abs(p.y - p.py) < 0.01);
+  function loop(now, fresh){
+    if (fresh) { last = now; acc = 0; }
     acc += Math.min(100, now - last); last = now;
-    while (acc >= STEP) { prev = snapshot(); step((now - t0) / 1000); acc -= STEP; }
-    render(acc / STEP); requestAnimationFrame(loop);
+    const rope = !(STG && ct >= 0.9);                   // 벽이 화면 밖으로 넘어간 뒤에는 줄 물리를 멈춰 둔다(되감으면 그 자리에서 다시 돈다)
+    while (acc >= STEP) { if (rope) { prev = snapshot(); step((now - t0) / 1000); } if (STG && ct > 0) deskStep(); acc -= STEP; }
+    render(rope ? acc / STEP : 1);
+    if (drag || press) return true;
+    if (STG && ct > 0) return ct < 0.999 || deskBusy();   // 책상에 놓여 멈추면 잠든다(장면 진행·손대기가 깨운다)
+    return reduce ? !quiet() : heroIn;
   }
+  const wakeBadge = () => ticker.wake('badge');
+  // 장면 손잡이(scene-hero.js·scene-table.js·scene-cases.js가 부른다). 모두 진행값에 대한 순수 함수로 쓴다
+  window.Hero = {
+    carry(t){ t = cl(t); if (t === ct) return; ct = t; wakeBadge(); },
+    desk: {
+      corner(k){ k = cl(k); if (k !== desk.ck) { desk.ck = k; wakeBadge(); } },   // 카드를 모을 때 앞 왼쪽 귀퉁이로 밀려남
+      face(k){ k = cl(k); if (k !== desk.fk) { desk.fk = k; wakeBadge(); } },     // 맺음: 앞면(얼굴)으로 넘어감
+      get pose(){ return { x: desk.x, z: desk.z, b: desk.b, f: desk.f, ck: desk.ck, fk: desk.fk }; },
+      // 귀퉁이에 밀려난 명함 가운데의 세계 좌표(08 1절 축: 원점 = 모서리 가운데, x 오른쪽, z 시청자 쪽). 맺음 카메라가 이 점을 겨눈다
+      get cornerAt(){ const g = geo(), k = desk.ck; desk.ck = 1; const t = target(g); desk.ck = k; return { x: t.x - (heroLayer.offsetWidth || innerWidth) / 2, z: t.z }; },
+      // 명함이 지금 멈춰 있을 자리(귀퉁이 보정 포함). hero 층 왼쪽 기준 x, 책상 깊이 z. 맺음 카메라가 따라간다
+      get spot(){ const tg = target(geo()); return { x: tg.x, z: tg.z }; },
+    },
+    get t(){ return ct; },
+  };
+  new IntersectionObserver(es => { const e = es[es.length - 1]; heroIn = e.isIntersecting && e.intersectionRatio > 0; if (heroIn) wakeBadge(); }, { threshold: [0, 0.001] }).observe(hero);
+  addEventListener('scroll', () => { const r = hero.getBoundingClientRect(); heroIn = r.bottom > 0 && r.top < innerHeight; if (heroIn) wakeBadge(); }, { passive: true });   // 관찰자가 늦을 때를 위한 보조
+  ['pointerdown', 'pointermove'].forEach(t => hero.addEventListener(t, wakeBadge, { capture: true, passive: true }));
+  addEventListener('resize', wakeBadge);
+  ['toBack', 'toFront'].forEach(id => document.getElementById(id).addEventListener('click', wakeBadge));
   if (still) {
     const an = anchor();
     pts.forEach((p, i) => { const f = i / (N - 1); p.x = p.px = an.x - 26 * f * f; p.y = p.py = an.y + seg * i * (1 - 0.004 * i); });
     phi = -0.07; tw = 14; flip = 0; om = 0;
     const draw = () => { prev = null; render(1); };
     addEventListener('resize', draw); document.fonts.ready.then(draw); draw(); setTimeout(draw, 400);
-  } else { render(1); requestAnimationFrame(loop); }
+  } else { render(1); ticker.add('badge', loop); }
 })();
 </script>
 <script>
 (() => {
-  // 사례 연구: 원본 랜딩(manifest 순서)을 연속 구간 세 덩어리로 잘라 3단(모바일 2단)으로 세운다. 격자는 1600 판,
-  // 2800 판은 펼친 화면에서만 쓴다. 지면 어디를 눌러도 펼친 화면이 첫 장부터 열린다
-  const sec = document.getElementById('cases'); if (!sec) return;
-  const base = sec.dataset.src, wall = document.getElementById('csWall'), idx = document.getElementById('csIdx');
+  // 사례 연구(교정지): 원본 랜딩(manifest 순서)을 연속 구간 몇 덩어리로 잘라 3단(모바일 2단)으로 세운다. 격자는 1600 판,
+  // 2800 판은 펼친 화면에서만 쓴다. 지면 어디를 눌러도 펼친 화면이 첫 장부터 열린다.
+  // 교정지가 여러 장이라 .cs[data-src] 구역마다 CaseStudy 하나를 만들고, 펼친 화면(.reader)은 하나를 함께 쓴다(열 때 원본을 바꾼다).
+  const secs = [...document.querySelectorAll('.cs[data-src]')]; if (!secs.length) return;
   const reader = document.getElementById('reader'), art = document.getElementById('rdArt'), cutEl = document.getElementById('rdCut');
+  const rdEy = document.getElementById('rdEy'), rdLink = document.getElementById('rdLink'), rdTot = document.getElementById('rdTot');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const narrow = matchMedia('(max-width: 900px)');
-  let list = null, built = false, items = [], cells = [], layout = '';
+  const STAGE = !!(window.Stage && Stage.enabled);
   const hi = () => (devicePixelRatio || 1) * innerWidth > 1700;
-  const make = (m, lazy, full) => {
+  const make = (base, m, lazy, full) => {
     let el;
     if (m.type === 'video') {
       el = document.createElement('video'); el.muted = true; el.loop = true; el.playsInline = true; el.preload = 'none';
@@ -1162,86 +1958,141 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     els.forEach(el => io.observe(el));
     return io;
   };
-  async function load(){
-    if (list) return list;
-    try { const man = await (await fetch(base + 'manifest.json')).json(); list = Array.isArray(man) ? man : man.items; } catch { return null; }
-    document.getElementById('rdTot').textContent = String(list.length).padStart(2, '0');
-    idx.innerHTML = list.map((m, i) => `<li><button type="button" data-i="${i}" aria-label="컷 ${i + 1}">${String(i + 1).padStart(2, '0')}</button></li>`).join('');
-    lay(); return list;
-  }
-  // 단 나누기: 원본의 이음매(새 장면이 시작하는 조각)에서 자른다. 3단 01–11 / 12–19 / 20–27, 2단 01–15 / 16–27
-  let wio = null;
-  const lay = () => {
-    if (!list) return;
-    const want = narrow.matches ? '2' : '3'; if (want === layout) return; layout = want;
-    const cuts = want === '3' ? [0, 11, 19, list.length] : [0, 15, list.length];
-    if (wio) wio.disconnect(); wall.innerHTML = ''; cells = [];
-    for (let k = 0; k < cuts.length - 1; k++) {
-      const col = document.createElement('div'); col.className = 'cs-col';
-      for (let i = cuts[k]; i < cuts[k + 1]; i++) { const el = make(list[i], true, false); el.dataset.i = i; col.appendChild(el); cells[i] = el; }
-      const cap = document.createElement('p'); cap.className = 'cap';
-      cap.innerHTML = `<span>cut ${String(cuts[k] + 1).padStart(2, '0')}–${String(cuts[k + 1]).padStart(2, '0')}</span><span>${k + 1} / ${cuts.length - 1}</span>`;
-      col.appendChild(cap); wall.appendChild(col);
-    }
-    wio = watch(null, cells);
-  };
-  narrow.addEventListener('change', lay);
-  const near = () => { if (!list && sec.getBoundingClientRect().top < innerHeight * 2.5) load(); };
 
-  // 바탕: 지면이 올라오는 동안 화면 전체의 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다.
-  // 훅 바뀌지 않게 지면 윗변이 화면 아래 끝에서 화면 위 15% 지점까지 오는 긴 구간에 걸쳐, 양 끝이 느린 곡선으로 넘긴다
-  const root = document.documentElement;
+  // 교정지 한 장
+  function CaseStudy(sec, k){
+    const base = sec.dataset.src, wall = sec.querySelector('.cs-wall'), idx = sec.querySelector('.cs-idx');
+    // 단을 자르는 자리: data-cols="3단 경계들|2단 경계들"(원본의 이음매). manifest의 cols가 있으면 그것이 먼저다
+    const colsAttr = (sec.dataset.cols || '').split('|').map(t => t ? t.split(',').map(Number) : null);
+    let list = null, cols = null, cells = [], layout = '', wio = null, items = null;
+    async function load(){
+      if (list) return list;
+      try { const man = await (await fetch(base + 'manifest.json')).json(); list = Array.isArray(man) ? man : man.items; cols = man.cols || null; } catch { return null; }
+      if (idx) idx.innerHTML = list.map((m, i) => `<li><button type="button" data-i="${i}" aria-label="컷 ${i + 1}">${String(i + 1).padStart(2, '0')}</button></li>`).join('');
+      lay(); return list;
+    }
+    const cutsFor = n3 => {
+      const n = list.length, c = cols ? (n3 ? cols['3'] : cols['2']) : colsAttr[n3 ? 0 : 1];
+      if (c) return [0, ...c, n];
+      const m = n3 ? 3 : 2; return Array.from({ length: m + 1 }, (_, i) => Math.round(n * i / m));
+    };
+    const lay = () => {
+      if (!list) return;
+      const want = narrow.matches ? '2' : '3'; if (want === layout) return; layout = want;
+      const cuts = cutsFor(want === '3');
+      if (wio) wio.disconnect(); wall.innerHTML = ''; cells = [];
+      for (let c = 0; c < cuts.length - 1; c++) {
+        const col = document.createElement('div'); col.className = 'cs-col';
+        for (let i = cuts[c]; i < cuts[c + 1]; i++) { const el = make(base, list[i], true, false); el.dataset.i = i; col.appendChild(el); cells[i] = el; }
+        const cap = document.createElement('p'); cap.className = 'cap';
+        cap.innerHTML = `<span>cut ${String(cuts[c] + 1).padStart(2, '0')}–${String(cuts[c + 1]).padStart(2, '0')}</span><span>${c + 1} / ${cuts.length - 1}</span>`;
+        col.appendChild(cap); wall.appendChild(col);
+      }
+      wio = watch(null, cells);
+    };
+    narrow.addEventListener('change', lay);
+    const near = () => { if (!list && sec.getBoundingClientRect().top < innerHeight * 2.5) load(); };
+    // 색인: 화면 가운데 가로줄에 걸친 컷만 밝힌다
+    let lit = '';
+    const mark = () => {
+      if (!cells.length || !idx) return;
+      const mid = innerHeight * 0.5, on = [];
+      cells.forEach((el, i) => { const r = el.getBoundingClientRect(); if (r.top <= mid && r.bottom > mid) on.push(i); });
+      const key = on.join(','); if (key === lit) return; lit = key;
+      idx.querySelectorAll('button').forEach(b => b.classList.toggle('on', on.includes(+b.dataset.i)));
+    };
+    if (idx) idx.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || !cells[+b.dataset.i]) return;
+      if (STAGE && Stage.world) {                    // 무대: 그 컷이 화면 위 22% 자리에 오는 진행값으로 간다
+        let y = 0, el = cells[+b.dataset.i]; while (el && el !== sec.parentElement) { y += el.offsetTop; el = el.offsetParent; }
+        Stage.go(Stage.world.paperAt(k, y - 0.22 * innerHeight)); return;
+      }
+      const r = cells[+b.dataset.i].getBoundingClientRect();
+      scrollTo({ top: scrollY + r.top - innerHeight * 0.22, behavior: reduce ? 'auto' : 'smooth' });
+    });
+    // 무대에서 순간 이동하면 관찰자 알림이 한두 프레임 늦어 영상 칸이 빈 갈색으로 보인다. 화면 안 영상은 그 자리에서 바로 깨운다
+    const wakeVideos = () => {
+      if (!STAGE || reduce || !cells.length) return;
+      const lo = -300, hi2 = innerHeight + 300;
+      cells.forEach(v => { if (v.tagName !== 'VIDEO' || !v.paused) return; const r = v.getBoundingClientRect(); if (r.bottom > lo && r.top < hi2) { arm(v); v.play().catch(() => {}); } });
+    };
+    const open = () => openReader(api);
+    wall.addEventListener('click', open);
+    wall.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    const ob = sec.querySelector('.cs-open'); if (ob) ob.addEventListener('click', open);
+    const api = {
+      sec, wall, k, load, near, mark, wakeVideos,
+      // 펼친 화면 내용: 처음 열 때 한 번 만든다
+      items(){ if (!items && list) items = list.map(m => make(base, m, true, true)); return items || []; },
+      get list(){ return list; },
+    };
+    return api;
+  }
+  const papers = secs.map(CaseStudy);
+
+  // 바탕(무대 밖 문서 스크롤 판): 첫 지면이 올라오는 동안 화면 전체의 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다.
+  // 톤은 상속 변수(--dk)를 문서 루트에 쓰지 않고 바탕(body의 배경색) 한 곳에만 쓴다. 루트 변수는 문서 전체 스타일을 다시 계산하게 만든다
+  let dk = 0, dkStr = '';
   const tone = () => {
-    const t = sec.getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight - t) / (innerHeight * 0.85)));
-    root.style.setProperty('--dk', (k * k * k * (k * (k * 6 - 15) + 10)).toFixed(3));
+    if (STAGE) return;                               // 무대에서는 조명을 장면이 정한다(scene-table·world.js의 Stage.tone)
+    const t = secs[0].getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight - t) / (innerHeight * 0.85)));
+    const s = (k * k * k * (k * (k * 6 - 15) + 10)).toFixed(3); if (s === dkStr) return;
+    dkStr = s; dk = +s;
+    document.body.style.backgroundColor = `color-mix(in oklab,var(--bg),var(--nt) ${(dk * 100).toFixed(1)}%)`;
   };
   // 맨 위로 버튼: 첫 화면을 지난 뒤 위로 스크롤할 때와 맨 끝에 닿았을 때만 보인다. 밤색 지면이 버튼 자리를 덮으면 색을 뒤집는다
   const toTop = document.getElementById('toTop');
-  let lastY = scrollY;
+  let lastY = scrollY, lastP = 0;
+  const topBtnStage = () => {
+    const s = Stage.state, p = s.p, end = Stage.config.stations.length - 1;
+    if (p < 1.1) toTop.classList.remove('show');
+    else if (p >= end - 0.05 || p < lastP - 0.002) toTop.classList.add('show');
+    else if (p > lastP + 0.002) toTop.classList.remove('show');
+    toTop.classList.toggle('night', s.dk > 0.5); lastP = p;
+  };
   const topBtn = () => {
+    if (STAGE) return topBtnStage();
     const y = scrollY, up = y < lastY - 2, down = y > lastY + 2, end = y + innerHeight >= document.documentElement.scrollHeight - 40;
     if (y < innerHeight * 1.1) toTop.classList.remove('show');
     else if (up || end) toTop.classList.add('show');
     else if (down) toTop.classList.remove('show');
-    toTop.classList.toggle('night', parseFloat(root.style.getPropertyValue('--dk') || 0) > 0.5);   // 바탕이 절반 넘게 어두워지면
+    toTop.classList.toggle('night', dk > 0.5);
     lastY = y;
   };
-  toTop.addEventListener('click', () => { toTop.classList.remove('show'); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
-  // 색인: 화면 가운데 가로줄에 걸친 컷만 밝힌다
-  let lit = '';
-  const mark = () => {
-    if (!cells.length) return;
-    const mid = innerHeight * 0.5, on = [];
-    cells.forEach((el, i) => { const r = el.getBoundingClientRect(); if (r.top <= mid && r.bottom > mid) on.push(i); });
-    const key = on.join(','); if (key === lit) return; lit = key;
-    idx.querySelectorAll('button').forEach(b => b.classList.toggle('on', on.includes(+b.dataset.i)));
+  toTop.addEventListener('click', () => { toTop.classList.remove('show'); if (STAGE) Stage.go(0); else scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  // 무대에서는 지금 읽는 교정지(와 그 앞뒤)만 따진다
+  const active = () => {
+    if (!STAGE || !Stage.world || !Stage.world.paperIndex) return papers;
+    const k = Stage.world.paperIndex(Stage.state.p); return papers.filter(c => Math.abs(c.k - k) <= 1);
   };
-  idx.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b || !cells[+b.dataset.i]) return;
-    const r = cells[+b.dataset.i].getBoundingClientRect();
-    scrollTo({ top: scrollY + r.top - innerHeight * 0.22, behavior: reduce ? 'auto' : 'smooth' });
-  });
   let ticking = false;
-  const onScroll = () => { near(); if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tone(); mark(); topBtn(); }); } };
+  const onScroll = () => {
+    papers.forEach(c => c.near());
+    if (!ticking) { ticking = true; ticker.once(() => { ticking = false; tone(); topBtn(); active().forEach(c => { c.mark(); c.wakeVideos(); }); }); }
+  };
   addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', () => { tone(); mark(); });
-  near(); tone();
+  addEventListener('resize', () => { tone(); papers.forEach(c => c.mark()); });
+  papers.forEach(c => c.near()); tone();
 
-
-  function build(){
-    if (built || !list) return; built = true;
-    items = list.map(m => make(m, true, true)); items.forEach(el => art.appendChild(el)); watch(reader, items);
-  }
-  // 펼침은 지면 가운데 화면에 보이는 부분에서 시작한다
+  // 펼친 화면(함께 씀): 연 교정지의 원본으로 내용·제목·링크를 바꾼다
+  let cur = null, lastFocus = null, open = false, readerHold = 0, rio = null, ritems = [];
   const rectInset = () => {
-    const r = wall.getBoundingClientRect(), t = Math.max(0, r.top), b = Math.min(innerHeight, r.bottom);
+    const r = cur.wall.getBoundingClientRect(), t = Math.max(0, r.top), b = Math.min(innerHeight, r.bottom);
     return { t, r: innerWidth - r.right, b: innerHeight - b, l: r.left };
   };
   const setClip = c => { reader.style.setProperty('--ct', c.t + 'px'); reader.style.setProperty('--cr', c.r + 'px'); reader.style.setProperty('--cb', c.b + 'px'); reader.style.setProperty('--cl', c.l + 'px'); };
-  let lastFocus = null, open = false;
-  async function openReader(){
-    if (open) return; open = true; lastFocus = document.activeElement;
-    await load(); build();
+  function fill(c){
+    if (cur === c && ritems.length) return;
+    cur = c; if (rio) rio.disconnect();
+    art.replaceChildren(...c.items()); ritems = c.items(); rio = watch(reader, ritems);
+    const t = c.sec.dataset.title || ''; rdEy.innerHTML = `<i></i>${t}`; reader.setAttribute('aria-label', `${t} 사례 연구`);
+    const href = c.sec.dataset.link; rdLink.hidden = !href; if (href) { rdLink.href = href; rdLink.firstChild.textContent = (c.sec.dataset.linkLabel || 'Open') + ' '; }
+    rdTot.textContent = String(ritems.length).padStart(2, '0');
+  }
+  async function openReader(c){
+    if (open) return; open = true; lastFocus = document.activeElement; cur = c;
+    if (STAGE) readerHold = Stage.hold('reader');    // 펼친 화면이 열린 동안 무대 입력 멈춤
+    await c.load(); fill(c);
     reader.classList.add('snap'); setClip(rectInset()); reader.style.setProperty('--cround', '2px');
     reader.hidden = false; reader.scrollTop = 0; document.documentElement.classList.add('reading');   // 어디를 눌러도 첫 장부터
     reader.getBoundingClientRect();
@@ -1249,22 +2100,580 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   }
   function closeReader(){
     if (!open) return; open = false;
-    const done = () => { reader.hidden = true; document.documentElement.classList.remove('reading'); items.forEach(v => v.tagName === 'VIDEO' && v.pause()); lastFocus && lastFocus.focus({ preventScroll: true, focusVisible: false }); };
+    const done = () => { if (readerHold) { Stage.release(readerHold); readerHold = 0; } reader.hidden = true; document.documentElement.classList.remove('reading'); ritems.forEach(v => v.tagName === 'VIDEO' && v.pause()); lastFocus && lastFocus.focus({ preventScroll: true, focusVisible: false }); };
     if (reduce) return done();
     setClip(rectInset()); reader.style.setProperty('--cround', '2px');
-    reader.addEventListener('transitionend', done, { once: true });
+    // 잘라 낼 모양이 그대로면 transitionend가 오지 않으므로, 전환 시간(.6s)이 지나면 닫힘을 마무리한다
+    let fin = false; const end = () => { if (!fin) { fin = true; done(); } };
+    reader.addEventListener('transitionend', end, { once: true }); setTimeout(end, 700);
   }
-  wall.addEventListener('click', openReader);
-  document.getElementById('csOpen').addEventListener('click', openReader);
-  wall.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openReader(); } });
   document.getElementById('rdX').addEventListener('click', closeReader);
   document.getElementById('rdBack').addEventListener('click', closeReader);
   addEventListener('keydown', e => { if (e.key === 'Escape' && open) closeReader(); });
   reader.addEventListener('scroll', () => {
     const mid = innerHeight * 0.45; let k = 0;
-    for (let i = 0; i < items.length; i++) { if (items[i].getBoundingClientRect().top <= mid) k = i; else break; }
+    for (let i = 0; i < ritems.length; i++) { if (ritems[i].getBoundingClientRect().top <= mid) k = i; else break; }
     const t = String(k + 1).padStart(2, '0'); if (cutEl.textContent !== t) cutEl.textContent = t;
   }, { passive: true });
+})();
+</script>
+<script>
+(() => {
+  // 세계 배치(08_공간설계 1절): 벽(.wall)에 첫 화면, 책상(.desk)에 카드 구역과 그 너머 교정지(여러 장이 겹쳐 쌓임)를 놓고 치수를 잰다.
+  // 장면이 카메라·조명을 쓰지 않은 프레임에는 08 2절 표의 기본 경로를 깐다(장면이 쓰면 장면이 이긴다).
+  // 스크롤에 걸린 기존 코드(색인·영상·명함 깨우기)가 돌도록 p가 바뀔 때마다 scroll 이벤트를 보낸다.
+  if (!window.Stage || !Stage.enabled) return;
+  const desk = document.querySelector('.stage-camera > .desk');
+  const L = n => document.querySelector(`.stage-layer[data-scene="${n}"]`);
+  const hero = L('hero'), table = L('table'), pool = desk.querySelector('.pool');
+  const sheets = [...desk.querySelectorAll('.stage-layer.paper')];
+  // 사이트 맺음 줄은 무대에서 교정지 꼬리가 아니라 책상에 인쇄된 글로 둔다(맺음 화면 아래쪽). 무대가 꺼지면 원래 자리 그대로다
+  const sign = desk.querySelector('.paper .foot-note'); if (sign) { sign.classList.add('desk-sign'); desk.appendChild(sign); }
+  [hero, table, ...sheets].forEach(l => { l.dataset.own = '1'; l.style.transform = ''; });
+  const W = { H: 0, Wd: 0, Dt: 0, zP: 0, Lp: 0, Lr: 0, mobile: false };
+  // cubic-bezier(.55,0,.2,1): 느리게 시작해 감속하며 내려앉는다(08 2절). 장면 파일도 Stage.world.ease를 쓴다
+  const bez = (x1, y1, x2, y2) => u => {
+    u = Math.max(0, Math.min(1, u)); let t = u;
+    const X = t => 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3, dX = t => 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t;
+    for (let i = 0; i < 8; i++) { const d = dX(t); if (Math.abs(d) < 1e-6) break; t = Math.max(0, Math.min(1, t - (X(t) - u) / d)); }
+    return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
+  };
+  const ease = bez(0.55, 0, 0.2, 1);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp01 = u => Math.max(0, Math.min(1, u));
+  const SP = 0.92;                                    // 교정지 축척 = S2 카메라 거리 d/P
+  const LAST = () => Stage.config.stations.length - 1;
+
+  // 교정지 k: 첫머리 정거장 h = 2 + 2k, 끝 정거장 h + 1. 다음 정거장까지(h+1 → h+2) 앞 장이 벽 쪽으로 빠지고 아래 장이 같은 자리에서 드러난다.
+  // 마지막 장은 맥북 구간 첫 0.15에 빠진다(11 표: 종이 빠짐과 맥북 다가가기를 겹친다)
+  const papers = sheets.map((layer, k) => ({ layer, k, h: 2 + 2 * k, Lp: 0, Lr: 0, read: 0, wall: layer.querySelector('.cs-wall') }));
+  const EXIT_LAST = 0.15;
+  function measure(){
+    W.H = innerHeight; W.Wd = innerWidth; W.mobile = innerWidth <= 820;
+    W.Dt = table.offsetHeight;                       // 카드 구역 깊이 = 책상 한 장(table.js가 화면 한 장, 모바일 1.2장으로 둔다)
+    W.zP = Math.round(W.Dt + 0.15 * W.H);            // 교정지 시작: 「Selected Work」 너머
+    let maxLp = 0;
+    papers.forEach(pp => {
+      // 교정지는 화면 폭보다 조금 좁은 실물 종이다(08 1절 ±0.47W). S2에서 0.92P로 다가가면 꼭 화면 폭이 되도록 SP배로 놓는다
+      pp.Lp = Math.round(pp.layer.offsetHeight * SP);
+      // 읽는 길이: 마지막 컷(가장 긴 단의 끝)이 화면 아래 6% 자리에 오면 팬이 끝난다. 단 끝의 빈 지면은 남기지 않는다.
+      // 컷이 아직 없으면(재료 전) 머리글·꼬리까지
+      let y = 0, el = pp.wall; while (el && el !== pp.layer) { y += el.offsetTop; el = el.offsetParent; }
+      const bottom = pp.wall && pp.wall.offsetHeight > 0 ? y + pp.wall.offsetHeight : pp.layer.offsetHeight;
+      pp.Lr = Math.round(Math.max(W.H, bottom + 0.06 * W.H) * SP);
+      pp.read = Math.max(0, pp.Lr - W.H * SP);
+      pp.layer.style.top = W.zP + 'px';
+      pp.layer.style.transformOrigin = '50% 0';
+      const f = Stage.config.free.find(z => z[0] === pp.h); if (f) f[2] = Math.max(0.5, pp.read / SP / W.H);   // 팬 길이(화면 수)
+      maxLp = Math.max(maxLp, pp.Lp);
+    });
+    W.Lp = papers[0] ? papers[0].Lp : 0; W.Lr = papers[0] ? papers[0].Lr : 0;
+    desk.style.height = Math.round(W.zP + maxLp + 0.6 * W.H) + 'px';
+    lastP = NaN; lastPlace = '';
+  }
+  // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
+  const P = () => Stage.camera.P();
+  const st = {
+    hero: () => ({ th: 0, Tx: 0, Ty: -W.H / 2, Tz: 0, d: P() }),
+    work: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() * (W.mobile ? 1.2 : 1) }),
+    // 교정지는 모두 같은 자리에 쌓여 있으므로 첫머리 카메라는 하나다
+    cases: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.zP + 0.5 * W.H * SP, d: SP * P() }),
+    // 교정지 끝을 읽는 「카메라 환산」 자리(첫 장 기준). 실제로는 카메라가 cases에 머물고 종이가 그만큼 당겨진다(pull)
+    casesEnd: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.zP + W.Lr - 0.5 * W.H * SP, d: SP * P() }),
+    // 맺음: 카드 한 장 크기(S1과 같은 거리)로, 명함을 화면 (0.44W, 0.56H)에 둔다. 맥북 구간이 생기면 scene-web이 맺음 카메라를 정한다
+    end: () => {
+      const th = 88, d = st.work().d, k = d / P(), c = window.Hero && Hero.desk && Hero.desk.cornerAt;
+      if (c) {                                        // card-drop 식: 명함 가운데(08 축 세계 좌표)를 기울기까지 넣어 화면 (0.44W, 0.56H)에 정확히 놓는다
+        const a = th * Math.PI / 180, sn = Math.sin(a), co = Math.cos(a), u = 0.06 * W.H * d / (P() * sn + 0.06 * W.H * co);
+        return { th, Tx: c.x + 0.06 * W.Wd * (d - u * co) / P(), Ty: 0, Tz: c.z - u, d };
+      }
+      const s = spot(); return { th, Tx: s.x - W.Wd / 2 + 0.07 * W.Wd * k, Ty: 0, Tz: s.z - 0.08 * W.H * k, d };
+    },
+  };
+  // 명함이 멈춰 있는 자리(벽 층 왼쪽 기준 x, 책상 깊이 z). 주인은 hero.js(Hero.desk.spot), 없으면 귀퉁이 식 근사
+  let card3d = null;
+  const spot = () => {
+    if (window.Hero && Hero.desk && Hero.desk.spot) return Hero.desk.spot;
+    if (!card3d || !card3d.isConnected || !/^translate3d/.test(card3d.style.transform)) card3d = [...hero.querySelectorAll('*')].find(e => /^translate3d/.test(e.style.transform) && e.offsetWidth > 100) || null;
+    const m = card3d && card3d.style.transform.match(/^translate3d\(([-\d.]+)px,\s*[-\d.]+px,\s*([-\d.]+)px/);
+    return m ? { x: +m[1], z: +m[2] } : { x: Math.max(0.14 * W.Wd, 130), z: W.Dt - 0.34 * W.H };
+  };
+
+  // 교정지 당기기(10-21 조율 결정): 카메라는 교정지 첫머리에 머물고, 종이가 책상 z를 따라 벽 쪽으로 1:1 밀려 읽힌다(화면에서는 문서 스크롤과 같은 방향).
+  // 다 읽은 장은 같은 방향으로 계속 밀려 화면 위로 빠지고, 그 아래 장이 같은 자리에서 드러난다(11 2절)
+  const gone = pp => pp.Lp + 0.12 * W.H;             // 이만큼 밀면 종이 끝이 화면 윗변 너머로 사라진다
+  function pull(pp, p){
+    if (p <= pp.h) return 0;
+    if (p <= pp.h + 1) return (p - pp.h) * pp.read;
+    const span = pp.k === papers.length - 1 ? EXIT_LAST : 1;
+    return pp.read + ease((p - pp.h - 1) / span) * Math.max(0, gone(pp) - pp.read);
+  }
+  // 지금 맨 위에 있는(읽는) 교정지 번호
+  const paperIndex = p => { for (const pp of papers) if (p < pp.h + 2 - 1e-6) return pp.k; return papers.length - 1; };
+  // 교정지 k의 지면 y(px, 배율 전)가 화면 윗변에 오는 진행값(색인 이동용)
+  const paperAt = (k, y) => { const pp = papers[k]; return pp.h + (pp.read ? Math.max(0, Math.min(1, (y * SP) / pp.read)) : 0); };
+
+  let lastPlace = '';
+  function place(p){
+    const key = papers.map(pp => Math.round(pull(pp, p) * 10)).join(',') + '|' + (p > 2 ? 1 : 0); if (key === lastPlace) return; lastPlace = key;
+    papers.forEach(pp => {
+      const o = pull(pp, p), out = o >= gone(pp) - 0.5;
+      // 아래 장은 위 장보다 조금 낮게(평면 겹침 깜박임 방지) 깔고 −1.5° 비스듬히 둔다. 위 장이 빠지는 동안 바로 놓인다(11 2절)
+      const prev = papers[pp.k - 1], u = !prev ? 1 : clamp01((p - prev.h - 1) / (prev.k === papers.length - 1 ? EXIT_LAST : 1));
+      const rot = -1.5 * (1 - ease(u)), lift = (papers.length - pp.k) * 0.25;
+      pp.layer.style.transform = `translate3d(0,${(-o).toFixed(1)}px,${lift}px) rotate(${rot.toFixed(3)}deg) scale(${SP})`;
+      pp.layer.style.visibility = out || (pp.k > 1 && p < papers[pp.k - 1].h - 0.5) ? 'hidden' : '';
+    });
+    table.style.visibility = p > 2 ? 'hidden' : '';
+    if (sign) {                                       // 맺음 줄: 카드 구역이 비워진 뒤(p>2)에만 그 자리에 인쇄되어 있다
+      sign.style.visibility = p > 2 ? 'visible' : 'hidden';
+      const e = (Stage.webEnd || st.end)(); sign.style.transform = `translate3d(calc(${(W.Wd / 2 + e.Tx).toFixed(1)}px - 50%),${(e.Tz + 0.36 * W.H * (e.d / P())).toFixed(1)}px,0)`;
+    }
+  }
+  // 기본 경로: 장면이 아직 비어 있는 구간용
+  function path(p){
+    if (p <= 1) {                                    // S0→S1: 모서리를 축으로 숙인다(scene-hero가 쓰면 그쪽이 이긴다)
+      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = lerp(W.H / 2, W.Dt / 2, e), a = th * Math.PI / 180;
+      return { th, Tx: 0, Ty: -r * Math.cos(a), Tz: r * Math.sin(a), d: lerp(P(), st.work().d, e) };
+    }
+    if (p <= 2) { const a = st.work(), b = st.cases(), e = ease((p - 1.25) / 0.7); return { th: 90, Tx: 0, Ty: 0, Tz: lerp(a.Tz, b.Tz, e), d: lerp(a.d, b.d, e) }; }
+    const webStart = papers.length ? papers[papers.length - 1].h + 1 : 3;
+    if (p <= webStart || !Stage.webPath) return st.cases();
+    return Stage.webPath(p);
+  }
+  const toneOf = p => p <= 1 ? 0 : p <= 2 ? ease((p - 1.3) / 0.5) : 1;   // 교정지부터 맺음까지 어두운 방
+
+  // 카드 상태는 p의 순수 함수다: 명함이 더미를 치는 0.5부터 모으기 시작점 1.04까지만 쏟아져 있다(scene-hero 0.5, scene-table 1.04와 같은 기준).
+  // 장면이 지나가며 부르는 것이 먼저이고, 해시·Stage.go(instant)처럼 장면을 건너뛴 이동 뒤에 어긋난 것만 여기서 맞춘다
+  const DEAL = [0.5, 1.04];
+  function cards(p){
+    const T = window.Table; if (!T) return;
+    const want = p >= DEAL[0] && p <= DEAL[1];
+    if (want !== T.dealt) want ? T.deal() : T.gather();
+  }
+  let lastP = NaN;
+  function frame(){
+    const p = Stage.state.p, cam = Stage.camera;
+    cards(p);
+    if (p !== lastP) {
+      place(p);
+      if (!cam.setThisFrame) cam.set(path(p));
+      if (!Stage.state._toneSet) Stage.tone(toneOf(p));
+      // 빛웅덩이: 교정지 아래 책상 면만 조금 밝다(08 4절). 가운데는 카메라가 바라보는 점을 따른다. 맥북 구간은 scene-web이 화면 빛으로 바꾼다
+      if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(calc(-50% + ${(cam.Tx || 0).toFixed(1)}px),${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)`; pool.style.opacity = (0.5 * Stage.state.dk).toFixed(3); }
+      lastP = p; dispatchEvent(new Event('scroll'));
+    }
+    cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
+  }
+  Stage.world = { dims: W, station: st, path, papers, pull: p => pull(papers[0], p), pullOf: pull, paperIndex, paperAt, toneOf, measure, ease, bez, SP, last: LAST };
+  // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
+  const remeasure = () => { measure(); Stage.refresh(); frame(); };
+  measure(); frame();
+  Stage.ticker.add(frame);
+  addEventListener('resize', remeasure);
+  if (document.fonts) document.fonts.ready.then(remeasure);
+  const ro = new ResizeObserver(remeasure); sheets.forEach(l => ro.observe(l));
+})();
+</script>
+<script>
+(() => {
+  // 맥북 실물 부품과 글 격자의 DOM(card-drop W2·W6, 13 합의안). 크기·자리·카메라·덮개 각도는 scene-web.js, 화면 속 서비스는 web-live.js(deploy-prep)가 맡는다.
+  // 이 파일은 그 둘이 찾는 골격(.mb, .web-info)이 없으면 만들고, 골격에 실물 부품(몸체 두께·힌지·덮개 두께·그림자·화면 빛)을 얹는다.
+  // 그래서 world.js 뒤, scene-web.js·web-live.js 앞에 둔다
+  if (!window.Stage || !Stage.enabled) return;
+  const desk = document.querySelector('.stage-camera > .desk'); if (!desk) return;
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; };
+
+  let mb = desk.querySelector('.mb');
+  if (!mb) {
+    mb = el('div', 'mb', `<div class="mb-base"></div><div class="mb-lid"><div class="mb-back"></div><div class="mb-face"><div class="mb-screen"><div class="mb-strip"></div>` +
+      `<button class="mb-hit" type="button" aria-label="화면 써 보기"></button></div><p class="mb-chin" aria-hidden="true"></p></div></div>`);
+    mb.style.visibility = 'hidden';
+    desk.appendChild(mb);
+  }
+  const base = mb.querySelector('.mb-base'), lid = mb.querySelector('.mb-lid');
+  // 몸체: 그림자(책상) → 앞·옆 띠 → 윗면(키보드 사진 + 화면 빛). 쌓는 순서는 11 4절
+  if (!base.querySelector('.mb-deck')) {
+    base.prepend(el('i', 'mb-sh'), el('i', 'mb-pool'));
+    base.append(el('i', 'mb-fr'), el('i', 'mb-sl'), el('i', 'mb-sr'), el('i', 'mb-deck', '<i class="mb-kl"></i>'));
+  }
+  // 덮개: 몸체 윗면 높이의 힌지에서 돈다. scene-web이 덮개에 쓰는 top·rotateX는 힌지 기준으로 그대로 맞는다
+  if (!lid.parentElement.classList.contains('mb-hinge')) { const hg = el('div', 'mb-hinge'); lid.before(hg); hg.appendChild(lid); }
+  if (!lid.querySelector('.mb-lt')) lid.append(el('i', 'mb-lt'), el('i', 'mb-ll'), el('i', 'mb-lr'));
+
+  // 글 격자: 카메라에 붙은 화면 층이라 무대 밖(body 바로 아래)에 둔다. 요소는 그대로 두고(scene-web이 쥐고 있다) 안쪽만 4칸 문법으로 짠다.
+  // 내용은 web-live.js가 서비스마다 같은 클래스(.wi-name 등)에 채운다
+  let info = document.querySelector('.web-info');
+  if (!info) { info = el('aside', 'web-info'); info.setAttribute('aria-live', 'polite'); info.style.visibility = 'hidden'; document.body.appendChild(info); }
+  if (!info.querySelector('.wi-body')) {
+    const arrow = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    info.innerHTML = `<p class="wi-ey"><span><i></i>Live service</span><span><span class="wi-mouse">Click the screen to use it</span><span class="wi-touch">Tap the screen to use it</span></span></p>` +
+      `<div class="wi-body"><h2 class="wi-name"></h2><p class="wi-ko" lang="ko"></p><p class="wi-line"></p>` +
+      `<div class="wi-meta"><dl class="wi-dl"><dt>Scope</dt><dd class="wi-role"></dd></dl><dl class="wi-dl"><dt>Year</dt><dd class="wi-year"></dd></dl></div>` +
+      `<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ${arrow}</a></div>`;
+  }
+
+  // 화면 빛 색: 지금 화면에 떠 있는 서비스의 바탕색을 따라 방이 물든다(11 5절). 어두운 화면은 빛도 약하다
+  const GLOW = { bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['120,132,214', 0.5] };
+  let gi = -1;
+  Stage.ticker.add(() => {
+    const w = Stage.web; if (!w) return;
+    const i = w.index; if (i === gi) return; gi = i;
+    const g = GLOW[w.services[i].id] || GLOW.bible;
+    mb.style.setProperty('--glow', g[0]); mb.style.setProperty('--gk', g[1]);
+  });
+})();
+</script>
+<script>
+(() => {
+  // 맥북 화면 속 라이브 서비스(주인 deploy-prep, 13 합의안). 서비스 목록 하나로 돈다.
+  //  · 화면에는 서비스가 옆으로 나란히 깔린 띠(.mb-strip)가 있고, 진행값이 정한 서비스 번호 s만큼 띠가 밀린다(기기 안 데스크톱 전환, 사이 검은 틈)
+  //  · iframe은 그 서비스 정거장과의 거리가 1.0 안이면 불러 두고 라이브로 보인다. 멀어지면 비우고 지운다(동시에 존재하는 것은 2개 이하)
+  //  · 평소 iframe 래퍼는 inert(휠·포인터·Tab이 무대로 간다). 화면(투명 덮개)을 누르거나 Enter면 「사용 중」: Stage.hold, inert 해제, iframe 포커스
+  //  · 나가기: 베젤 띠 누르기, 화면 밖 아무 곳 누르기, 부모에 포커스가 있을 때 Esc. 교차 출처 iframe 안의 Esc는 부모에 오지 않는다
+  //  · 아티팩트판(html[data-artifact])은 외부 사이트(external: true)를 띄울 수 없어 그 화면에 이름과 「사이트 열기 ↗」만 둔다
+  if (!window.Stage || !Stage.enabled) return;
+  const mb = document.querySelector('.mb'); if (!mb) return;
+  const strip = mb.querySelector('.mb-strip'), hit = mb.querySelector('.mb-hit'), chin = mb.querySelector('.mb-chin'), bezel = mb.querySelector('.mb-face');
+  const info = document.querySelector('.web-info');
+  const ARTIFACT = document.documentElement.hasAttribute('data-artifact');
+  const narrow = () => innerWidth <= 820;
+  // at: 그 서비스가 화면에 온전히 떠 있는 진행값(station 번호와 같다. 바이블타이핑은 맥북 앞(10)에서 이미 켜져 있다)
+  const services = [
+    { id: 'bible', at: 10.6, name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
+      line: 'A quiet place to type the King James Bible, one verse a day.', role: 'Product · Design · Build', year: '2026' },
+    { id: 'chuck', at: 12, name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/', external: true,
+      line: 'A website that keeps you looking busy at your desk.', role: 'Product · Design · Build', year: '2026' },
+    { id: 'monthlens', at: 13, name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html',
+      urlNarrow: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용_모바일.html',
+      line: 'Interactive landing template: the page opens as a chat.', role: 'Landing template', year: '2026' },
+    { id: 'monthlens-dark', at: 14, name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html',
+      line: 'Landing page template: dark UI.', role: 'Landing template', year: '2026' },
+  ];
+  // 띠에 서비스 칸을 깐다
+  const panes = services.map(sv => {
+    const pane = document.createElement('div'); pane.className = 'mb-pane'; pane.dataset.id = sv.id; pane.inert = true;
+    if (ARTIFACT && sv.external) {
+      pane.classList.add('is-link');
+      pane.innerHTML = `<p class="mb-off-name">${sv.name}</p><a class="mb-off-go" href="${sv.url}" target="_blank" rel="noopener">사이트 열기 ↗</a>`;
+    }
+    strip.appendChild(pane); return { sv, pane, frame: null };
+  });
+  const urlOf = sv => (narrow() && sv.urlNarrow) || sv.url;
+  function mount(x){
+    if (x.frame || (ARTIFACT && x.sv.external)) return;
+    const f = document.createElement('iframe');
+    f.title = `${x.sv.name} 라이브 화면`; f.loading = 'eager'; f.tabIndex = -1;
+    // 서비스가 상위 창을 옮기지 못하게(target=_top, 프레임 탈출) 막고, 새 창 열기는 허용한다
+    f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads');
+    f.setAttribute('allow', 'clipboard-write');
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.src = urlOf(x.sv); x.pane.appendChild(f); x.frame = f;
+  }
+  function unmount(x){
+    if (!x.frame) return;
+    if (using === x) exitUse();
+    x.frame.src = 'about:blank'; x.frame.remove(); x.frame = null;
+  }
+  // 진행값 → 띠 위치(서비스 번호 s, 실수). 넘어가는 구간은 11 표대로: 척모드로는 물러난 뒤(11.4~11.8), Monthlens 둘은 각 구간 0.2~0.8
+  const TRANS = [[11.4, 11.8], [12.2, 12.8], [13.2, 13.8]];
+  const sOf = p => TRANS.reduce((s, [lo, hi2]) => s + Math.max(0, Math.min(1, (p - lo) / (hi2 - lo))), 0);
+  const springOut = u => 1 - Math.pow(1 - u, 3);
+  let lastKey = '', curIdx = 0;
+  function update(p){
+    // 불러 두기·비우기: 정거장과의 거리 < 1.0
+    panes.forEach(x => { const d = Math.abs(p - x.sv.at); if (d < 1.0 && p > 8.6) mount(x); else unmount(x); });
+    const s = sOf(p), i0 = Math.floor(s), f = s - i0, s2 = i0 + springOut(f);
+    const key = s2.toFixed(4); if (key !== lastKey) { lastKey = key; strip.style.transform = `translate3d(calc(${(-s2).toFixed(4)} * (100% + var(--gap))),0,0)`; }
+    const idx = Math.min(services.length - 1, Math.round(s));
+    if (idx !== curIdx || !chin.textContent) { curIdx = idx; setInfo(services[idx]); }
+    if (using && using !== panes[idx]) exitUse();
+  }
+  function setInfo(sv){
+    chin.textContent = sv.name;
+    if (!info) return;
+    info.querySelector('.wi-name').textContent = sv.name;
+    info.querySelector('.wi-ko').textContent = sv.ko;
+    info.querySelector('.wi-line').textContent = sv.line;
+    info.querySelector('.wi-role').textContent = sv.role;
+    info.querySelector('.wi-year').textContent = sv.year;
+    const a = info.querySelector('.wi-go'); a.href = sv.url.startsWith('http') ? sv.url : new URL(sv.url, location.href).href;
+  }
+
+  // 사용 중
+  let using = null, hold = 0;
+  const useK = { v: 0, to: 0, t0: 0, from: 0, dur: 600 };
+  function animUse(to, dur){
+    useK.from = useK.v; useK.to = to; useK.t0 = performance.now(); useK.dur = dur;
+  }
+  Stage.ticker.add(() => {
+    if (useK.v === useK.to) return;
+    const u = Math.min(1, (performance.now() - useK.t0) / useK.dur), e = u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
+    useK.v = u >= 1 ? useK.to : useK.from + (useK.to - useK.from) * e;
+    Stage.refresh();                                 // scene-web이 useK로 카메라를 화면 속까지 당긴다
+  });
+  function enterUse(){
+    const x = panes[curIdx]; if (!x || using) return;
+    if (ARTIFACT && x.sv.external) { window.open(x.sv.url, '_blank', 'noopener'); return; }
+    if (!x.frame) mount(x);
+    using = x; hold = Stage.hold('web');
+    x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using');
+    animUse(1, 600);
+    setTimeout(() => { if (using === x && x.frame) x.frame.focus(); }, 60);
+  }
+  function exitUse(){
+    const x = using; if (!x) return; using = null;
+    x.pane.inert = true; if (x.frame) x.frame.tabIndex = -1;
+    mb.classList.remove('using'); document.documentElement.classList.remove('web-using');
+    hit.focus({ preventScroll: true });
+    if (hold) { Stage.release(hold); hold = 0; }
+    animUse(0, 450);
+  }
+  hit.addEventListener('click', e => { e.stopPropagation(); enterUse(); });
+  hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterUse(); } });
+  bezel.addEventListener('click', e => { if (using && !e.target.closest('.mb-screen')) { e.stopPropagation(); exitUse(); } });
+  // 화면 밖 아무 곳: iframe 안 클릭은 부모에 오지 않으므로, 부모가 받는 클릭은 모두 「밖」이다
+  addEventListener('pointerdown', e => { if (using && !e.target.closest('.mb-screen')) exitUse(); }, true);
+  addEventListener('keydown', e => { if (using && e.key === 'Escape') { e.preventDefault(); exitUse(); } });
+
+  Stage.web = { services, panes, update, enterUse, exitUse, get using(){ return !!using; }, get useK(){ return useK.v; }, get index(){ return curIdx; } };
+  let lp = NaN;
+  Stage.ticker.add(() => { const p = Stage.state.p; if (p !== lp) { lp = p; update(p); } });
+})();
+</script>
+<script>
+(() => {
+  // 장면 hero (주인 card-drop). 진행값 구간 [0, 1]: S0 벽 앞 명함 → S1 카드 테이블. 큰 순간 ①(08_공간설계 2·3절).
+  //  t 0~0.12   정지: 입력은 받지만 장면은 멈춰 있다. 0.03부터 명함 흔들림만 가라앉는다
+  //  t 0.12~0.26 집게 게이트가 열리고(0.12~0.17) 명함 구멍이 고리에서 빠진 뒤(0.15~0.20) 게이트가 찰칵 닫힌다
+  //  t 0.18~0.70 카메라가 벽과 책상이 만나는 모서리를 축으로 90° 숙인다(바라보는 점은 0.54에 먼저 책상에 닿는다)
+  //  t 0.20~0.86 명함이 떨어져 앞으로 엎어지고(뒷면이 위), 미끄러지며 반 바퀴 돌아 더미 위에 카드 한 장 크기로 멈춘다(hero.js의 pose)
+  //  t 0.5~      명함이 더미를 치는 순간 더미가 흩어진다(앞으로 갈 때만). 0.5 아래로 되감으면 다시 한 벌로 모인다
+  //  스크럽(stage.js): 이 구간은 화면 높이 3배를 스크롤해야 지나간다. 정지 0.36장 → 집게 0.42장 → 낙하·엎어짐 0.8장 → 미끄러짐 1.2장(0.86까지, 스냅이 붙는 0.88 직전)
+  // 명함·줄의 물리는 hero.js 루프에서 돌고, 이 장면은 진행값만 넘긴다. 카메라는 p=1에서 Stage.world.station.work()와 같다
+  if (!window.Stage || !Stage.enabled || !window.Hero) return;
+  const layer = document.querySelector('.stage-layer[data-scene="hero"]');
+  layer.dataset.own = '1';
+  const DEAL = 0.5;     // 미끄러지던 명함이 더미를 치는 순간(0.5)에 흩어진다
+  // 숙임 θ는 0.18~0.70, 바라보는 점 T는 그보다 앞서 0.18~0.54에 책상 쪽(모서리를 축으로 도는 호)으로 간다.
+  // 같은 곡선으로 함께 가면 감속 꼬리(θ 70~90°)에서 벽이 화면 위에 납작한 띠로 오래 남아 워드마크가 가짜 이탤릭처럼 읽혔다(10-21 검수).
+  // 앞서 가면 벽은 0.5에 화면 밖으로 나가고(전 0.62), 떨어지는 명함은 내내 화면 안(위 끝 117px 아래)에 있다
+  function camera(t){
+    const Wd = Stage.world; if (!Wd) return;
+    const D = Wd.dims, e = Wd.ease((t - 0.18) / 0.52), eT = Wd.ease((t - 0.18) / 0.36), th = 90 * e, aT = Math.PI / 2 * eT;
+    const r = D.H / 2 + (D.Dt / 2 - D.H / 2) * eT, d0 = Stage.camera.P(), d1 = Wd.station.work().d;
+    Stage.camera.set(e >= 1 ? Wd.station.work() : { th, Tx: 0, Ty: -r * Math.cos(aT), Tz: r * Math.sin(aT), d: d0 + (d1 - d0) * e });
+  }
+  Stage.add('hero', {
+    range: [0, 1],
+    wake(){},
+    sleep(){},
+    enter(dir){},
+    leave(dir){ Hero.carry(dir > 0 ? 1 : 0); },
+    progress(t, s){
+      Hero.carry(t);
+      camera(t);
+      Stage.tone(0);
+      const T = window.Table; if (!T) return;
+      if (t >= DEAL && !T.dealt && s.dir > 0) T.deal();
+      else if (t < DEAL && T.dealt) T.gather();
+    },
+  });
+  // 해시로 바로 다른 정거장에 들어오면 progress가 불리지 않으므로 명함 자리만 맞춰 둔다
+  Stage.ticker.add(() => {
+    const s = Stage.state;
+    if (s.p > 1 + 1e-3 && Hero.t < 1) Hero.carry(1);
+    // 명함은 끝까지 이 장면 주인의 물건이다(06 13절): 카드를 모을 때(p 1.04~1.15) 앞 왼쪽 귀퉁이로 밀려나고,
+    // 맺음(p 3.6~3.85)에서 앞면(얼굴)으로 넘어가 처음 사람으로 돌아온다. 둘 다 p의 순수 함수
+    const ease = Stage.world ? Stage.world.ease : (u => Math.max(0, Math.min(1, u)));
+    Hero.desk.corner(ease((s.p - 1.04) / 0.11));
+    Hero.desk.face(ease((s.p - 3.6) / 0.25));
+  });
+})();
+</script>
+<script>
+(() => {
+  // 장면 table (주인 deploy-prep). 진행값 구간 [1, 2]: S1 카드 테이블 → S2 교정지. 규칙은 06_장면인터페이스, 공간은 08_공간설계 2·4절.
+  //  t 0~0.15  카드가 한 벌로 모인다(물리 목표만 바꾼다. 되감으면 다시 쏟아진다)
+  //  t 0.15~0.25  숨: 아무것도 움직이지 않는다(큰 순간 앞의 정지)
+  //  t 0.25~0.9  카메라가 각도를 그대로 둔 채 책상 위를 시청자 쪽으로 미끄러진다. 「Selected Work」를 지나 교정지 첫머리로, 조금 다가가며(d P→0.92P)
+  //  t 0.3~0.8  불이 낮아져 밤색 방이 된다(큰 순간). 물건은 어두워지지 않고, 교정지 아래 빛웅덩이가 살아난다(world.js)
+  //  t 0.9~1  교정지 첫머리에 멈춰 있다
+  // S1 직접 조작(던지기·정렬·섞기·전체 뒤집기)은 table.js 그대로이고, 이 장면은 진행값으로 모으기·나눠 주기만 부른다.
+  if (!window.Stage || !Stage.enabled) return;
+  const GATHER = 0.04;
+  Stage.add('table', {
+    range: [1, 2],
+    wake(){},
+    sleep(){},
+    enter(dir){},
+    leave(dir){},
+    progress(t){
+      const T = window.Table, Wd = Stage.world;
+      if (T) {
+        if (t > GATHER) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
+        else if (!T.dealt) T.deal();
+      }
+      if (!Wd) return;
+      const a = Wd.station.work(), b = Wd.station.cases(), e = Wd.ease((t - 0.25) / 0.65);
+      Stage.camera.set({ th: 90, Tx: 0, Ty: 0, Tz: a.Tz + (b.Tz - a.Tz) * e, d: a.d + (b.d - a.d) * e });
+      Stage.tone(Wd.ease((t - 0.3) / 0.5));
+    },
+  });
+})();
+</script>
+<script>
+(() => {
+  // 장면 cases (주인 deploy-prep). 교정지 k마다 진행값 구간 [h, h+2] (h = 2 + 2k, 마지막 장은 [h, h+1]). 규칙은 06_장면인터페이스, 공간은 08 2·4·5절, 13 합의안.
+  //  p h~h+1  자유 구간: 카메라는 교정지 첫머리에 머물고, 종이가 책상 위를 벽 쪽(화면 위)으로 1:1 밀려 읽힌다(world.js pull). 색인 막대는 화면 위에 붙어 따라온다
+  //  p h+1~h+2  다 읽은 장이 같은 방향으로 계속 밀려 화면 위로 빠지고, 아래 깔려 있던 다음 장 첫머리가 같은 자리에서 드러난다(카메라 고정)
+  //  마지막 장은 맥북 구간(scene-web) 첫 0.15 동안 빠진다
+  if (!window.Stage || !Stage.enabled) return;
+  const Wd0 = Stage.world; if (!Wd0) return;
+  Wd0.papers.forEach(pp => {
+    const layer = pp.layer, bar = layer.querySelector('.cs-bar'), wallEl = pp.wall;
+    const offTop = el => { let y = 0; while (el && el !== layer) { y += el.offsetTop; el = el.offsetParent; } return y; };
+    let barY = 0, barMax = 0, shift = -1;
+    const measure = () => { if (!bar || !wallEl) return; bar.style.transform = ''; barY = offTop(bar); barMax = Math.max(0, offTop(wallEl) + wallEl.offsetHeight - barY - bar.offsetHeight); shift = -1; };
+    const remeasure = () => { measure(); Stage.refresh(); };   // 다시 잰 막대 자리를 바로 반영
+    addEventListener('resize', remeasure); if (document.fonts) document.fonts.ready.then(remeasure);
+    if (wallEl) new ResizeObserver(remeasure).observe(wallEl);
+    measure();
+    const lastPaper = pp.k === Wd0.papers.length - 1;
+    Stage.add('cases' + (pp.k ? '-' + pp.k : ''), {
+      range: [pp.h, pp.h + (lastPaper ? 1 : 2)],
+      wake(){ measure(); },
+      sleep(){},
+      enter(dir){},
+      leave(dir){},
+      progress(t, s){
+        const Wd = Stage.world, p = s.p;
+        Stage.camera.set(Wd.station.cases());
+        Stage.tone(Wd.toneOf(p));
+        // 색인 막대 붙이기: 화면 윗변(지면 좌표)이 막대 자리를 지나면 그만큼 내려 화면 위에 붙여 둔다. 3단 지면 끝에서 멈춘다
+        if (bar && p <= pp.h + 1.05) {
+          const S = Wd.SP, a = Wd.station.cases(), viewTop = a.Tz - 0.5 * Wd.dims.H * (a.d / Stage.camera.P());
+          const sft = Math.round(Math.max(0, Math.min(barMax, (viewTop - Wd.dims.zP + Wd.pullOf(pp, p)) / S - barY)));
+          if (sft !== shift) { shift = sft; bar.style.transform = sft ? `translate3d(0,${sft}px,1px)` : ''; }
+        }
+        // 다 읽은 장이 빠질 때 색인 막대는 종이 가운데에 걸려 남지 않게 사라진다
+        if (bar) { const o = p <= pp.h + 1 ? '' : Math.max(0, 1 - (p - pp.h - 1) / 0.25).toFixed(2); if (bar.style.opacity !== o) { bar.style.opacity = o; bar.style.visibility = o === '0.00' ? 'hidden' : ''; } }
+      },
+    });
+  });
+})();
+</script>
+<script>
+(() => {
+  // 장면 web (주인 deploy-prep, 카메라 경로 수치는 card-drop 11 표). 진행값 구간 [9, 15]. 13 합의안.
+  //  p 9~10   마지막 교정지가 빠지고(첫 0.15, world.js), 카메라가 옆으로 미끄러지며 고개를 든다(θ 90→22, 0.10~0.75).
+  //           바라보는 점이 θ보다 앞서 0.55에 맥북에 닿는다. 교정지 오른쪽 옆에 처음부터 있던 열린 맥북이 드러난다
+  //  p 10~11  각도를 그대로 두고 거리만 줄여(0.12~0.80) 화면 속으로: 베젤 안쪽이 뷰포트의 96%, iframe 합성 배율 1
+  //  p 11~12  베젤과 키보드 윗줄이 보이는 거리로 물러나고(0~0.4) 기기 안 데스크톱 전환으로 척모드(0.4~0.8, web-live.js)
+  //  p 12~14  같은 거리에서 Monthlens 인터랙티브 → 다크
+  //  p 14~15  물러나며 θ 22→55, 맥북과 명함이 한 화면(0~0.35). 덮개가 닫히며 화면 빛이 꺼지고(0.35~0.75), 명함이 앞면으로(0.75~0.95, scene-hero)
+  // 화면을 누르면 「사용 중」(web-live.js): 카메라는 그 자리에서 화면 속(배율 1)까지 다가간다(useK)
+  if (!window.Stage || !Stage.enabled || !Stage.world) return;
+  const desk = document.querySelector('.stage-camera > .desk');
+  const mb = desk.querySelector('.mb'); if (!mb) return;
+  const lid = mb.querySelector('.mb-lid'), base = mb.querySelector('.mb-base'), info = document.querySelector('.web-info');
+  const pool = desk.querySelector('.pool');
+  const Wd = Stage.world, W = Wd.dims, ease = Wd.ease, lerp = (a, b, t) => a + (b - a) * t, clamp01 = u => Math.max(0, Math.min(1, u));
+  const P = () => Stage.camera.P();
+  const OPEN = 112, TH = OPEN - 90;                  // 덮개 112° 열림 = 수직에서 22° 뒤로 누움 → 22°에서 화면과 정면으로 마주 본다
+  const G = { Wi: 0, Hi: 0, bz: 0, chin: 0, lidW: 0, lidH: 0, baseD: 0, cx: 0, zh: 0 };
+
+  function measure(){
+    // 화면(iframe) 크기 = 화면 속 정거장에서 뷰포트의 96%(375급은 92%)를 배율 1로 채우는 크기. 16:10
+    const fill = W.mobile ? 0.92 : 0.96;
+    G.Wi = Math.round(fill * Math.min(W.Wd, 1.6 * W.H)); G.Hi = Math.round(G.Wi / 1.6);
+    G.bz = Math.round(G.Wi * 0.0148); G.chin = Math.round(G.Wi * 0.0412);   // 베젤·턱: v09.psd(은색 16형) 실측 비율(card-drop W2)
+    G.lidW = G.Wi + 2 * G.bz; G.lidH = G.Hi + G.bz + G.chin; G.baseD = Math.round(G.lidW * 0.69);
+    // 자리(11 1절): 교정지(±0.46W) 오른쪽 옆. 읽는 동안에는 화면 밖에 있다
+    G.cx = Math.round(W.Wd / 2 + 0.46 * W.Wd + 0.07 * W.Wd + G.lidW / 2); G.zh = Math.round(W.zP + 0.12 * W.H);
+    Object.assign(mb.style, { left: (G.cx - G.lidW / 2) + 'px', top: G.zh + 'px', width: G.lidW + 'px' });
+    mb.style.setProperty('--wi', G.Wi + 'px'); mb.style.setProperty('--hi', G.Hi + 'px'); mb.style.setProperty('--bz', G.bz + 'px'); mb.style.setProperty('--chin', G.chin + 'px');
+    mb.style.setProperty('--gap', Math.round(G.Wi * 0.06) + 'px');
+    Object.assign(base.style, { width: G.lidW + 'px', height: G.baseD + 'px' });
+    Object.assign(lid.style, { width: G.lidW + 'px', height: G.lidH + 'px', top: -G.lidH + 'px' });
+    setLid(OPEN);
+  }
+  let lidDeg = NaN;
+  function setLid(deg){ if (deg === lidDeg) return; lidDeg = deg; lid.style.transform = `rotateX(${(deg - 180).toFixed(3)}deg)`; }
+
+  // 화면 가운데의 세계 좌표(08 축). 힌지에서 덮개를 따라 올라간 거리 r
+  const screen = () => {
+    // 힌지는 몸체 윗면 높이(두께 --t = 화면 폭의 3%, 6-macbook.css)에 있다
+    const r = G.lidH - G.bz - G.Hi / 2, a = TH * Math.PI / 180, t = G.Wi * 0.03;
+    return { Tx: G.cx - W.Wd / 2, Ty: -t - r * Math.cos(a), Tz: G.zh - r * Math.sin(a) };
+  };
+  // 정거장 카메라
+  const cam = {
+    inside: () => ({ th: TH, ...screen(), d: P() }),
+    // 맥북 앞: 덮개 폭이 화면의 62%, 맥북은 가운데에서 살짝 오른쪽 위(글 격자 자리를 왼쪽에 남긴다)
+    front: () => { const s = screen(), d = G.lidW * P() / ((W.mobile ? 0.8 : 0.62) * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.14 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.1 : 0.06) * W.H * k, Tz: s.Tz, d }; },
+    // 베젤 거리: 화면 폭이 뷰포트의 66%, 키보드 윗줄이 아래에 걸린다. 서비스가 바뀌면 글 격자도 바뀌므로 맥북은 오른쪽, 글은 왼쪽 아래(375급은 화면 폭 86%, 글은 아래)
+    bezel: () => { const s = screen(), d = G.Wi * P() / ((W.mobile ? 0.86 : 0.66) * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.14 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.12 : 0.07) * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d }; },
+    // 맺음: 물러나 θ 55, 맥북과 명함이 한 화면(명함 자리는 card-drop이 옮긴다: Hero.desk.cornerAt)
+    end: () => {
+      const c = window.Hero && Hero.desk && Hero.desk.cornerAt, mx = G.cx - W.Wd / 2, mz = G.zh + G.baseD * 0.45;
+      const cx = c ? c.x : mx - G.lidW, cz = c ? c.z : mz;
+      const span = Math.abs(mx - cx) + G.lidW * 0.9, d = Math.max(1.9 * P(), span * P() / (0.85 * W.Wd));
+      return { th: 55, Tx: (mx + cx) / 2, Ty: 0, Tz: (mz + cz) / 2, d };
+    },
+  };
+  const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
+  function path(p){
+    if (p <= 9) return Wd.station.cases();
+    if (p <= 10) {                                  // 맥북 앞으로: 바라보는 점(0.10~0.55)이 θ·거리(0.10~0.75)보다 앞선다
+      const t = p - 9, eT = ease((t - 0.10) / 0.45), eA = ease((t - 0.10) / 0.65);
+      return mix(Wd.station.cases(), cam.front(), eA, eT);
+    }
+    if (p <= 11) return mix(cam.front(), cam.inside(), ease((p - 10 - 0.12) / 0.68));
+    if (p <= 12) return mix(cam.inside(), cam.bezel(), ease((p - 11) / 0.4));
+    if (p <= 14) return cam.bezel();
+    return mix(cam.bezel(), cam.end(), ease((p - 14) / 0.35));
+  }
+  // 덮개: 맺음 0.35~0.75 동안 닫힌다. 가속하다 마지막 6°에서 자석처럼 짧게 붙는다(11 5절. 실물 다듬기는 card-drop W7)
+  const lidOf = p => {
+    const u = clamp01((p - 14.35) / 0.4); if (u <= 0) return OPEN;
+    const deg = OPEN * (1 - u * u);                  // 가속
+    return deg < 6 ? deg * clamp01((14.75 - p) / 0.03) : deg;   // 마지막 6°는 짧게
+  };
+  // 화면 빛: 맥북이 드러나며 켜지고(0.55~0.85), 덮개가 닫히는 만큼 좁아지다 꺼진다
+  const lightOf = p => clamp01((p - 9.55) / 0.3) * clamp01(lidDeg / 60);
+  // 글 격자(카메라에 붙은 화면 층): 화면 속(거리 P 근처)에서는 얹지 않고, 맥북 앞·베젤 거리에서 보인다. 맺음에서는 사라진다
+  const infoOf = (p, c) => p < 9.5 || p > 14.25 ? 0 : clamp01((c.d / P() - 1.06) / 0.1) * clamp01((p - 9.55) / 0.3) * clamp01((14.25 - p) / 0.15);
+
+  let infoStr = '';
+  Stage.add('web', {
+    range: [9, 15],
+    wake(){ measure(); mb.style.visibility = ''; },
+    sleep(){ mb.style.visibility = 'hidden'; },
+    enter(dir){},
+    leave(dir){},
+    progress(t, s){
+      const p = s.p; let c = path(p);
+      const uk = Stage.web ? Stage.web.useK : 0;
+      if (uk > 0) c = mix(c, cam.inside(), uk);     // 사용 중: 그 자리에서 화면 속(배율 1)까지
+      Stage.camera.set(c);
+      Stage.tone(1);
+      setLid(lidOf(p));
+      const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
+      if (pool) {                                    // 화면 빛웅덩이: 맥북 앞 키보드면과 책상(사다리꼴 다듬기는 card-drop)
+        Stage.state._poolSet = true;
+        pool.style.transform = `translate3d(calc(-50% + ${(G.cx - W.Wd / 2).toFixed(1)}px),${(G.zh - W.H * 0.45).toFixed(1)}px,-1px)`;
+        pool.style.opacity = (0.75 * L).toFixed(3);
+      }
+      if (info) { const v = (uk > 0 ? 1 - uk : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
+    },
+  });
+  Stage.webPath = path;
+  Stage.webEnd = cam.end;
+  Stage.webGeo = { G, screen, cam, setLid };
+  const remeasure = () => { measure(); Stage.refresh(); };
+  addEventListener('resize', remeasure);
+  measure(); mb.style.visibility = Stage.state.p > 8.5 ? '' : 'hidden';
 })();
 </script>
 
