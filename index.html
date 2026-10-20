@@ -153,16 +153,10 @@ h1 span{display:block;color:var(--soft)}
 /* ── 사례 연구: 앞 두 구역(흰 책상 위 물건)과 다른 방. 같은 서체·연보라·라벨 체계는 두고, 조명을 낮춘 남보라 밤색 지면에
    원본 랜딩을 순서대로 세 덩어리로 잘라 3단으로 세운다. 손맛은 원본 1:1 루페(명함과 같은 유리). 바탕은 경계 앞뒤에서만 스크롤에 맞춰 바뀐다 ── */
 :root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12)}
-/* 넘어가는 띠: 흰 바탕에서 사이트의 연보라를 거쳐 밤색으로 내려가는 해 질 녘 그라데이션을 지면 맨 위에 깐다.
-   화면 전체를 한꺼번에 어둡게 하지 않고, 스크롤로 띠를 지나가며 어두워진다(위로 올리면 그대로 되밟는다) */
-.cs{position:relative;color:var(--nt-ink);--dusk:62vh;
-  background:linear-gradient(#ffffff 0%,#feffff 7.1%,#fbfcfe 14.3%,#f3f5fc 21.4%,#e6eaf8 28.6%,#d5dcf3 35.7%,#c1cbed 42.9%,#9ea9d5 50%,#6771a3 57.1%,#394176 64.3%,#272c51 71.4%,#191d38 78.6%,#121429 85.7%,#0f1123 92.9%,#0e1022 100%) top/100% var(--dusk) no-repeat,var(--nt)}
-/* 색 단계는 oklab에서 흰색 → 연보라 → 남보라 → 밤색을 잇고 smootherstep으로 양 끝 기울기를 0에 맞춘 값이다(시작점이 선처럼 보이지 않게) */
-/* 지면이 화면을 다 덮은 뒤에만 바탕을 밤색으로 바꿔 둔다(맺음 줄과 아래쪽 당김 여백용, 화면에는 보이지 않는 순간에 바뀐다) */
-body{background:var(--bg)}
-html.dark-tail body{background:var(--nt)}
+body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
+.cs{position:relative;color:var(--nt-ink)}
 .cs-in{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:clamp(32px,4vw,64px);max-width:1360px;margin:0 auto;
-  padding-block:calc(var(--dusk) - 4vh) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
+  padding-block:clamp(120px,16vh,180px) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
 .cs-side{position:sticky;top:clamp(40px,7vh,72px);align-self:start;display:flex;flex-direction:column;gap:28px;min-width:0}
 .cs-ey{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 .cs-ey span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
@@ -235,8 +229,7 @@ html.dark-tail body{background:var(--nt)}
 .cs~.foot-note{color:var(--nt-3)}
 .cs~.foot-note a{color:var(--nt-ink)}
 @media (max-width:900px){
-  .cs{--dusk:52svh}
-  .cs-in{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:calc(var(--dusk) - 2svh) 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .cs-in{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:96px 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
   .cs-side{position:relative;top:0}
   .cs-idx,.cs-hint{display:none}
   .cs-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -348,7 +341,10 @@ html.dark-tail body{background:var(--nt)}
 .copy .intro .en{font-family:var(--f-en);font-size:14px;line-height:1.55;color:var(--ink);letter-spacing:-.005em}
 .copy .intro .ko{margin-top:10px;color:var(--ink-2)}
 .copy .mark{grid-column:1 / -1;grid-row:5;margin:0;font-family:var(--f-disp);font-weight:500;font-size:14vw;line-height:.78;letter-spacing:-.055em;
-  color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
+  color:var(--soft);white-space:nowrap;width:max-content;justify-self:start;position:relative}
+/* 이름 각인: 캔버스가 그린 홈이 준비되면 글자 자체는 자리만 잡고 숨는다(캔버스가 없거나 실패하면 평면 글자 그대로) */
+.copy .mark.carved{color:transparent}
+.copy .mark .carve{position:absolute;pointer-events:none}
 @media (max-width:820px){
   .stage{min-height:max(calc(760px + 11vw),100svh)}   /* 명함 아래로 영문 소개·이름이 겹치지 않을 높이 */
   .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto auto;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:56px}
@@ -460,6 +456,103 @@ html.dark-tail body{background:var(--nt)}
     mark.style.fontSize = '100px'; mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
   });
   fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
+<script>
+(() => {
+  // 이름 각인: 벽에 실제 깊이로 파인 홈. 글자 모양의 구멍 안에 안쪽 벽면과 바닥을 층층이 그리고,
+  // 보는 자리(커서·스크롤, 휴대폰은 기울기)가 바뀌면 바닥이 그만큼 밀려 보여 벽면이 드러나거나 가려진다.
+  // 빛은 명함 그림자와 같은 왼쪽 위: 보는 쪽 벽이 빛을 향하면 밝고, 등지면 어둡다. 바닥에는 테두리 그늘이 진다
+  const mark = document.querySelector('.copy .mark'); if (!mark) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cv = document.createElement('canvas'); cv.className = 'carve'; cv.setAttribute('aria-hidden', 'true');
+  const ctx = cv.getContext('2d'); if (!ctx) return;
+  const tmp = document.createElement('canvas'), tx = tmp.getContext('2d');
+  const mk = document.createElement('canvas'), mx = mk.getContext('2d');   // 글자 열한 자를 한 장으로 그린 판(한 자씩 잘라 내면 앞 글자가 지워진다)
+  let glyphs = [], W = 0, H = 0, dpr = 1, font = '', PAD = 0, depth = 0;
+  const LF = [-0.6, -0.8];                         // 빛이 오는 쪽(왼쪽 위)
+  const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  const rgb = c => `rgb(${c.map(v => Math.round(v)).join(',')})`;
+  const WALL_LIT = [222, 228, 250], WALL_DARK = [92, 104, 166], WALL_AO = [128, 142, 204], FLOOR_LIT = [150, 167, 224], FLOOR_SH = [92, 105, 172];
+  const text = (c, ox, oy) => { for (const g of glyphs) c.fillText(g.ch, g.x + ox, g.y + oy); };
+  // 잘라 내기(destination-in)는 글자 전체를 한 번에: 판에 그린 뒤 그 판으로 자른다
+  const cutTo = (c, ox, oy) => {
+    mx.setTransform(1, 0, 0, 1, 0, 0); mx.clearRect(0, 0, mk.width, mk.height);
+    mx.setTransform(dpr, 0, 0, dpr, 0, 0); mx.font = font; mx.fillStyle = '#000'; text(mx, ox, oy);
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'destination-in'; c.drawImage(mk, 0, 0); c.restore();
+  };
+
+  function layout(){
+    const tn = [...mark.childNodes].find(n => n.nodeType === 3); if (!tn) return;
+    const cs = getComputedStyle(mark), fs = parseFloat(cs.fontSize);
+    font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+    depth = fs * 0.11; PAD = Math.ceil(depth * 1.8);
+    const r = mark.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width + PAD * 2; H = r.height + PAD * 2;
+    Object.assign(cv.style, { left: -PAD + 'px', top: -PAD + 'px', width: W + 'px', height: H + 'px' });
+    cv.width = tmp.width = mk.width = Math.round(W * dpr); cv.height = tmp.height = mk.height = Math.round(H * dpr);
+    ctx.font = font; const asc = ctx.measureText('Hg').fontBoundingBoxAscent;
+    if (!asc) return;
+    // 글자마다 DOM이 놓은 자리를 그대로 따른다(자간·커닝을 브라우저 배치와 똑같이)
+    const range = document.createRange(); glyphs = [];
+    for (let i = 0; i < tn.data.length; i++) {
+      const ch = tn.data[i]; if (ch === ' ') continue;
+      range.setStart(tn, i); range.setEnd(tn, i + 1); const b = range.getBoundingClientRect();
+      glyphs.push({ ch, x: b.left - r.left + PAD, y: b.top - r.top + PAD + asc });
+    }
+    if (!cv.parentNode) mark.appendChild(cv);
+    mark.classList.add('carved'); draw();
+  }
+
+  let vx = -0.45, vy = -0.75, tvx = vx, tvy = vy;   // 보는 자리(-1..1). 기본은 빛과 같은 왼쪽 위에서 조금
+  function draw(){
+    if (!glyphs.length) return;
+    for (const c of [ctx, tx]) { c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalCompositeOperation = 'source-over'; c.font = font; c.filter = 'none'; }
+    ctx.clearRect(0, 0, W, H);
+    const Dx = vx * depth, Dy = vy * depth;                       // 바닥이 보는 쪽으로 밀려 보이는 양
+    const n = Math.hypot(vx, vy) || 1, face = (vx / n) * LF[0] + (vy / n) * LF[1];   // 보이는 벽이 빛을 향하는 정도
+    const wall = mix(WALL_DARK, WALL_LIT, (face + 1) / 2 * Math.min(1, n * 1.4) + (1 - Math.min(1, n * 1.4)) * 0.5);
+    // 1) 안쪽 벽: 테두리에서 바닥까지 층층이, 깊을수록 어둡게(구석에 빛이 덜 든다)
+    const N = Math.max(12, Math.ceil(Math.hypot(Dx, Dy) * 2));
+    for (let k = 0; k <= N; k++) { const t = k / N; ctx.fillStyle = rgb(mix(wall, WALL_AO, t * t * 0.7)); text(ctx, Dx * t, Dy * t); }
+    // 2) 바닥: 먼저 그늘색으로 깔고, 테두리 그늘을 뺀 부분만 밝힌다(빛이 왼쪽 위에서 들어와 그늘은 바닥의 왼쪽 위 가장자리에 진다)
+    ctx.fillStyle = rgb(FLOOR_SH); text(ctx, Dx, Dy);
+    tx.clearRect(0, 0, W, H); tx.fillStyle = rgb(FLOOR_LIT);
+    tx.filter = `blur(${(depth * 0.22).toFixed(2)}px)`; text(tx, Dx - LF[0] * depth * 1.25, Dy - LF[1] * depth * 1.25); tx.filter = 'none';
+    cutTo(tx, Dx, Dy);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(tmp, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // 3) 글자 모양 구멍 밖은 지운다
+    cutTo(ctx, 0, 0);
+    // 4) 테두리 모서리: 빛을 등진 왼쪽 위 가장자리는 어두운 선, 빛을 받는 오른쪽 아래 가장자리는 밝은 선(면이 꺾이는 모서리)
+    const lip = (col, sx, sy, a) => {
+      tx.setTransform(1, 0, 0, 1, 0, 0); tx.globalCompositeOperation = 'source-over'; tx.clearRect(0, 0, tmp.width, tmp.height);
+      tx.setTransform(dpr, 0, 0, dpr, 0, 0); tx.filter = 'none'; tx.fillStyle = col; text(tx, 0, 0);
+      tx.globalCompositeOperation = 'destination-out'; text(tx, sx, sy); tx.globalCompositeOperation = 'source-over';
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = 'source-atop'; ctx.globalAlpha = a; ctx.drawImage(tmp, 0, 0); ctx.restore();
+    };
+    const e = Math.max(1, depth * 0.07);
+    lip('#1c2350', -LF[0] * e, -LF[1] * e, 0.22);
+    lip('#ffffff', LF[0] * e, LF[1] * e, 0.5);
+  }
+
+  // 보는 자리: 데스크톱은 커서(가로·세로)와 스크롤, 휴대폰은 기울기(허락했을 때)와 스크롤. 스프링으로 따라가 출렁이지 않게 다가간다
+  let px = 0.5, py = 0.3, tilt = null, raf = 0;
+  const target = () => {
+    const sy = Math.min(1.5, scrollY / Math.max(1, innerHeight));
+    const bx = tilt ? tilt[0] : (px - 0.5) * 1.6, by = tilt ? tilt[1] : (py - 0.5) * 1.0;
+    tvx = Math.max(-1, Math.min(1, -0.25 + bx)); tvy = Math.max(-1, Math.min(1, -0.75 + by + sy * 0.9));
+  };
+  const step = () => {
+    raf = 0; vx += (tvx - vx) * 0.12; vy += (tvy - vy) * 0.12; draw();
+    if (Math.abs(tvx - vx) + Math.abs(tvy - vy) > 0.002) raf = requestAnimationFrame(step);
+  };
+  const go = () => { if (reduce) return; target(); if (!raf) raf = requestAnimationFrame(step); };
+  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; px = e.clientX / innerWidth; py = e.clientY / innerHeight; go(); }, { passive: true });
+  addEventListener('scroll', () => { if (mark.getBoundingClientRect().bottom > -200) go(); }, { passive: true });
+  window.__carveTilt = (x, y) => { tilt = [x, y]; go(); };   // 휴대폰 기울기 연결용
+  const relayout = () => setTimeout(layout, 30);   // 이름 크기 맞추기(fit)가 끝난 뒤에 잰다
+  addEventListener('resize', relayout);
+  if (document.fonts) document.fonts.ready.then(relayout); else relayout();
 })();
 </script>
 <script>
@@ -772,6 +865,7 @@ html.dark-tail body{background:var(--nt)}
   if (still) document.documentElement.classList.add('still');
 
   const N = 16, G = 0.55, GC = 1.1, STRAP_W0 = 44, STEP = 1000 / 120;   // 120Hz 고정 계산 + 화면 보간
+  const GV = { x: 0, y: 1 }, shake = { x: 0, y: 0 };   // 중력 방향(기본 아래), 흔들기 충격(휴대폰 센서)
   const CY = 286, ICM = 22900;            // 카드 무게중심(고리 기준 아래로 px)과 관성
   let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [], KS = 1, STRAP_W = STRAP_W0, CT = 70.8;   // KS: 명함 축소율(모바일 .74)
   let phi = 0, om = 0, tw = 0, vtw = 0, flip = 0, flipT = 0, vflip = 0;   // phi: 화면 기준 시계 방향 회전
@@ -868,6 +962,40 @@ html.dark-tail body{background:var(--nt)}
     addEventListener('blur', () => { magT = 0; });
   }
 
+  // 휴대폰 기울기·흔들기: 화면 평면에 비친 중력 방향으로 명함이 기울고, 흔들면 그만큼 출렁인다.
+  // iOS는 센서 허락이 필요해서 명함을 처음 눌렀다 뗄 때 묻는다(허락하지 않으면 손가락 조작만 그대로)
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let motionOn = false;
+  const onMotion = e => {
+    const a = e.accelerationIncludingGravity; if (!a || a.x == null) return;
+    const sg = IOS ? 1 : -1;   // iOS와 안드로이드는 가속도 부호가 반대
+    let gx = sg * a.x / 9.81, gy = -sg * a.y / 9.81;                     // 화면 기준(아래가 +y) 중력
+    const ang = ((screen.orientation && screen.orientation.angle) || window.orientation || 0) * Math.PI / 180;
+    [gx, gy] = [gx * Math.cos(ang) + gy * Math.sin(ang), -gx * Math.sin(ang) + gy * Math.cos(ang)];
+    // 폰을 눕혀 화면 평면의 중력이 약해지면 평소(아래쪽)로 되돌아간다. 줄이 길어 조금만 기울어도 많이 밀리므로
+    // 폰 기울기의 35%만 명함에 전하고 7.5도에서 멈춘다(명함이 화면 밖으로 나가지 않게)
+    const m = Math.hypot(gx, gy), w = Math.min(1, m / 0.45);
+    let tx = gx / (m || 1) * w, ty = gy / (m || 1) * w + (1 - w);
+    const th0 = Math.atan2(tx, ty), th = Math.max(-0.13, Math.min(0.13, th0 * 0.35));
+    GV.x += (Math.sin(th) - GV.x) * 0.12; GV.y += (Math.cos(th) - GV.y) * 0.12;
+    const acc = e.acceleration;
+    if (acc && acc.x != null && !reduce) {
+      const k = 0.55, ax = sg * acc.x * k, ay = -sg * acc.y * k, mm = Math.hypot(ax, ay);
+      if (mm > 1.2) { const c = Math.min(1, 7 / mm); shake.x += ax * c; shake.y += ay * c; }
+    }
+    if (window.__carveTilt) window.__carveTilt(Math.max(-1, Math.min(1, Math.sin(th0) * 1.2)), (1 - w) * 0.5);
+  };
+  const startMotion = () => { if (motionOn) return; motionOn = true; addEventListener('devicemotion', onMotion); };
+  if (coarse && typeof DeviceMotionEvent !== 'undefined') {
+    if (IOS && typeof DeviceMotionEvent.requestPermission === 'function') {
+      // iOS는 사용자가 화면을 누른 뒤에만 센서 허락 창을 띄울 수 있다: 첫 화면(명함·이름 구역)을 처음 눌렀다 뗄 때 묻는다
+      hero.addEventListener('touchend', () => {
+        DeviceMotionEvent.requestPermission().then(r => { if (r === 'granted') startMotion(); }).catch(() => {});
+      }, { once: true });
+    } else startMotion();
+  }
+
   document.getElementById('toBack').addEventListener('click', () => { flipT = 180; vtw += 4; });
   document.getElementById('toFront').addEventListener('click', () => { flipT = 0; vtw -= 4; });
   card.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
@@ -905,7 +1033,7 @@ html.dark-tail body{background:var(--nt)}
     const kd = 0.996 - 0.02 * ease;                    // 첫 흔들림은 공기 저항만, 점점 평소 감쇠(0.976)로
     for (let i = 1; i < N; i++) {
       const p = pts[i], vx = (p.x - p.px) * kd, vy = (p.y - p.py) * kd;
-      p.px = p.x; p.py = p.y; p.x += vx; p.y += vy + G * 0.25;
+      p.px = p.x; p.py = p.y; p.x += vx + GV.x * G * 0.25; p.y += vy + GV.y * G * 0.25;
     }
     if (drag) {
       const [gx, gy] = rot(drag.g[0], drag.g[1], phi);
@@ -918,7 +1046,8 @@ html.dark-tail body{background:var(--nt)}
       seg = Math.max(seg0, d / (N - 1));
       solveRope(true);
     } else {
-      E.y += G * 0.25 * 1.6;                          // 카드 무게
+      E.x += GV.x * G * 0.25 * 1.6; E.y += GV.y * G * 0.25 * 1.6;   // 카드 무게(휴대폰을 기울이면 중력 방향도 기운다)
+      if (shake.x || shake.y) { E.px -= shake.x; E.py -= shake.y; shake.x = shake.y = 0; }   // 흔든 만큼 한 번 출렁
       seg += (seg0 - seg) * 0.035;                     // 늘어난 줄이 천천히 되돌아옴
       if (!reduce) E.x += Math.sin(t * 0.8) * 0.012;
       mag += (magT - mag) * 0.04; E.x += mag * MAG_PULL;   // 커서 쪽으로 아주 약하게 끌림
@@ -937,7 +1066,7 @@ html.dark-tail body{background:var(--nt)}
     const gl = drag ? drag.g : [0, 0];
     const [rx, ry] = rot(0 - gl[0], CY - gl[1], phi);   // 축 → 무게중심(화면)
     const r2 = rx * rx + ry * ry;
-    const torque = rx * (GC * 0.25 - ayS * 0.6) + ry * axS * 0.6;
+    const torque = rx * (GC * 0.25 * GV.y - ayS * 0.6) + ry * (axS * 0.6 - GC * 0.25 * GV.x);   // 중력이 기울면 카드도 그쪽으로 늘어진다
     om += torque / (r2 + ICM) * 1.0;
     if (!drag) om -= mag * MAG_TILT;                  // 자석: 카드 아래쪽이 커서 쪽으로 살짝 기운다
     om *= drag ? 0.982 : intro ? 0.974 : 0.986;     // 첫 흔들림: 카드는 줄보다 살짝 늦게 따라 돌되 따로 크게 놀지 않게
@@ -1138,10 +1267,13 @@ html.dark-tail body{background:var(--nt)}
   narrow.addEventListener('change', lay);
   const near = () => { if (!list && sec.getBoundingClientRect().top < innerHeight * 2.5) load(); };
 
-  // 바탕: 넘어가는 띠는 CSS(.cs 배경)가 맡는다. 여기서는 지면이 화면을 다 덮었을 때만 body를 밤색으로 바꿔
-  // 맺음 줄과 맨 아래 당김 여백이 흰색으로 비치지 않게 한다
+  // 바탕: 지면이 올라오는 동안 화면 전체의 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다.
+  // 훅 바뀌지 않게 지면 윗변이 화면 아래 끝에서 화면 위 15% 지점까지 오는 긴 구간에 걸쳐, 양 끝이 느린 곡선으로 넘긴다
   const root = document.documentElement;
-  const tone = () => { root.classList.toggle('dark-tail', sec.getBoundingClientRect().top < -innerHeight * 0.2); };
+  const tone = () => {
+    const t = sec.getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight - t) / (innerHeight * 0.85)));
+    root.style.setProperty('--dk', (k * k * k * (k * (k * 6 - 15) + 10)).toFixed(3));
+  };
   // 맨 위로 버튼: 첫 화면을 지난 뒤 위로 스크롤할 때와 맨 끝에 닿았을 때만 보인다. 밤색 지면이 버튼 자리를 덮으면 색을 뒤집는다
   const toTop = document.getElementById('toTop');
   let lastY = scrollY;
@@ -1150,7 +1282,7 @@ html.dark-tail body{background:var(--nt)}
     if (y < innerHeight * 1.1) toTop.classList.remove('show');
     else if (up || end) toTop.classList.add('show');
     else if (down) toTop.classList.remove('show');
-    toTop.classList.toggle('night', sec.getBoundingClientRect().top + innerHeight * 0.36 < innerHeight - 40);   // 노을 띠의 어두운 쪽이 버튼 밑에 오면
+    toTop.classList.toggle('night', parseFloat(root.style.getPropertyValue('--dk') || 0) > 0.5);   // 바탕이 절반 넘게 어두워지면
     lastY = y;
   };
   toTop.addEventListener('click', () => { toTop.classList.remove('show'); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
