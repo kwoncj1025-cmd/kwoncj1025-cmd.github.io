@@ -153,10 +153,16 @@ h1 span{display:block;color:var(--soft)}
 /* ── 사례 연구: 앞 두 구역(흰 책상 위 물건)과 다른 방. 같은 서체·연보라·라벨 체계는 두고, 조명을 낮춘 남보라 밤색 지면에
    원본 랜딩을 순서대로 세 덩어리로 잘라 3단으로 세운다. 손맛은 원본 1:1 루페(명함과 같은 유리). 바탕은 경계 앞뒤에서만 스크롤에 맞춰 바뀐다 ── */
 :root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12)}
-body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
-.cs{position:relative;color:var(--nt-ink)}
+/* 넘어가는 띠: 흰 바탕에서 사이트의 연보라를 거쳐 밤색으로 내려가는 해 질 녘 그라데이션을 지면 맨 위에 깐다.
+   화면 전체를 한꺼번에 어둡게 하지 않고, 스크롤로 띠를 지나가며 어두워진다(위로 올리면 그대로 되밟는다) */
+.cs{position:relative;color:var(--nt-ink);--dusk:62vh;
+  background:linear-gradient(#ffffff 0%,#feffff 7.1%,#fbfcfe 14.3%,#f3f5fc 21.4%,#e6eaf8 28.6%,#d5dcf3 35.7%,#c1cbed 42.9%,#9ea9d5 50%,#6771a3 57.1%,#394176 64.3%,#272c51 71.4%,#191d38 78.6%,#121429 85.7%,#0f1123 92.9%,#0e1022 100%) top/100% var(--dusk) no-repeat,var(--nt)}
+/* 색 단계는 oklab에서 흰색 → 연보라 → 남보라 → 밤색을 잇고 smootherstep으로 양 끝 기울기를 0에 맞춘 값이다(시작점이 선처럼 보이지 않게) */
+/* 지면이 화면을 다 덮은 뒤에만 바탕을 밤색으로 바꿔 둔다(맺음 줄과 아래쪽 당김 여백용, 화면에는 보이지 않는 순간에 바뀐다) */
+body{background:var(--bg)}
+html.dark-tail body{background:var(--nt)}
 .cs-in{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:clamp(32px,4vw,64px);max-width:1360px;margin:0 auto;
-  padding-block:clamp(120px,16vh,180px) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
+  padding-block:calc(var(--dusk) - 4vh) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
 .cs-side{position:sticky;top:clamp(40px,7vh,72px);align-self:start;display:flex;flex-direction:column;gap:28px;min-width:0}
 .cs-ey{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 .cs-ey span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
@@ -185,7 +191,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .cs-col .cap{display:flex;justify-content:space-between;padding-top:10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 .cs-wall:focus-visible{outline:2px solid var(--soft);outline-offset:8px}
 /* 루페: 명함과 같은 유리 재료. 커서 자리의 원본(2800)을 1:1로 보여 준다. 가운데 작은 십자가 커서를 대신한다 */
-.loupe{position:fixed;left:0;top:0;z-index:60;width:216px;height:216px;margin:-108px 0 0 -108px;border-radius:50%;pointer-events:none;opacity:0;
+.loupe{position:fixed;left:0;top:0;z-index:60;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;pointer-events:none;opacity:0;
   transform:translate3d(var(--lx,0),var(--ly,0),0) scale(var(--ls,.6));transition:opacity .2s,--ls .28s cubic-bezier(.2,.9,.3,1.3)}
 .loupe.on{opacity:1;--ls:1}
 @property --ls{syntax:'<number>';inherits:false;initial-value:.6}
@@ -229,7 +235,8 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .cs~.foot-note{color:var(--nt-3)}
 .cs~.foot-note a{color:var(--nt-ink)}
 @media (max-width:900px){
-  .cs-in{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:96px 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .cs{--dusk:52svh}
+  .cs-in{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:calc(var(--dusk) - 2svh) 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
   .cs-side{position:relative;top:0}
   .cs-idx,.cs-hint{display:none}
   .cs-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -238,6 +245,17 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   .rd-bar a{margin-left:auto}
 }
 @media (prefers-reduced-motion:reduce){.reader,.loupe{transition:none}}
+/* 맨 위로: 첫 화면을 지난 뒤 위로 스크롤하거나 끝에 닿았을 때만 오른쪽 아래에 나타난다. 밤색 지면 위에서는 색을 뒤집는다 */
+.totop{position:fixed;z-index:50;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:40px;height:40px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  background:var(--ink);color:#fff;opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .25s,transform .3s cubic-bezier(.2,.9,.3,1.2),background-color .3s,color .3s}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop.night{background:var(--nt-ink);color:var(--nt)}
+.totop svg{width:14px;height:14px}
+.totop:hover{transform:translateY(-2px)}
+.totop:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.totop{transition:opacity .2s}}
 
 .sort{pointer-events:auto;border:0;background:var(--ink);color:#fff;width:36px;height:36px;padding:0;border-radius:50%;display:inline-grid;place-items:center;cursor:pointer;transition:transform .2s}
 .sort:hover{transform:scale(1.06)}.sort:active{transform:scale(.94)}
@@ -423,13 +441,14 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     </aside>
     <div class="cs-wall" id="csWall" role="button" tabindex="0" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
   </div>
-  <div class="loupe" id="loupe" aria-hidden="true"><canvas width="432" height="432"></canvas></div>
+  <div class="loupe" id="loupe" aria-hidden="true"><canvas width="680" height="680"></canvas></div>
 </section>
 <div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="bewhysee 사례 연구" hidden>
   <div class="rd-bar"><span class="ey"><i></i>bewhysee · BYC rebranding</span><span class="cut">cut <b id="rdCut">01</b> / <span id="rdTot">27</span></span><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button class="rd-x" id="rdX" type="button" aria-label="닫기"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
   <div class="rd-art" id="rdArt"></div>
   <div class="rd-end"><button type="button" id="rdBack">지면으로 돌아가기</button></div>
 </div>
+<button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
 
 <script>
@@ -554,9 +573,10 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
       if (rnd(i, 9) < 0.6) { if (s.x < xMin + edge) r = -Math.abs(r); else if (s.x > xMax - edge) r = Math.abs(r); }
       s.r = r;
     });
-    // 대체로 아래쪽 카드가 위에 오되, 쌓인 순서에 무작위를 섞어 가지런하지 않게
+    // 대체로 아래쪽 자리가 위에 오되, 쌓일 순서에 무작위를 섞어 가지런하지 않게. 자리 순서(seq)만 정해 두고
+    // 실제 쌓기는 나눠 줄 때 한 장씩 올린다(한꺼번에 다시 쌓으면 밑장이 먼저 튀어나오는 것처럼 보인다)
     const zk = c => spots[c.i].y + (rnd(c.i, 10) - 0.5) * ch * 0.9;
-    order = cards.slice().sort((a, b) => zk(a) - zk(b)); restack();
+    spots.zc = cards.slice().sort((a, b) => zk(a) - zk(b)); spots.seq = spots.zc.map(c => spots[c.i]);
     return spots;
   };
   const gridSpots = () => {
@@ -581,10 +601,17 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     c.toss = 1;
   }, delay);
   let sorted = false, dealt = false, dealtAt = 0;
+  // 나눠 주기: 한 벌의 맨 위 카드부터 한 장씩 집어 테이블에 놓는다. 집은 카드는 그 순간 맨 위로 올라오고,
+  // 먼저 놓은 카드일수록 아래에 깔리는 자리(seq 앞쪽)를 받는다
+  const dealFromTop = (spots, d0, step) => {
+    order.slice().reverse().forEach((c, k) => {
+      c.home = null; const t = d0 + k * step;
+      setTimeout(() => raise(c), t); tossTo(c, spots.seq[k], t);
+    });
+  };
   const deal = () => {
     if (dealt) return; dealt = true; dealtAt = performance.now();
-    const spots = scatterSpots();
-    order.slice().reverse().forEach((c, k) => { c.home = null; tossTo(c, spots[c.i], k * 55); });
+    dealFromTop(scatterSpots(), 0, 55);
   };
   // 되감기: 위로 올라가 테이블이 화면 아래로 빠지면 카드가 다시 한 벌로 모이고, 내려오면 다시 쏟아진다
   const regather = () => {
@@ -614,7 +641,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
       cards.forEach((c, i) => { c.home = g.at[i]; setFlip(c, false); });
     } else {
       scatterH();
-      const spots = scatterSpots();
+      const spots = scatterSpots(); order = spots.zc; restack();
       cards.forEach((c, i) => { c.home = null; tossTo(c, spots[i], (N - i) * 30); });
     }
   });
@@ -629,8 +656,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     const cx = TW / 2, cy = BAR + (TH - BAR) * 0.48;
     perm.forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: cx - (N - 1 - k) * 1.2, y: cy + (N - 1 - k) * 1.6, r: (rnd(k, 4) - 0.5) * 0.08 }; });
     setTimeout(() => {
-      const spots = scatterSpots();
-      perm.slice().reverse().forEach((c, k) => { c.home = null; tossTo(c, spots[c.i], 120 + k * 45); });
+      dealFromTop(scatterSpots(), 120, 45);
     }, 700);
   });
   addEventListener('resize', () => {
@@ -1112,12 +1138,22 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   narrow.addEventListener('change', lay);
   const near = () => { if (!list && sec.getBoundingClientRect().top < innerHeight * 2.5) load(); };
 
-  // 바탕: 지면 경계 앞뒤 구간에서만 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다
+  // 바탕: 넘어가는 띠는 CSS(.cs 배경)가 맡는다. 여기서는 지면이 화면을 다 덮었을 때만 body를 밤색으로 바꿔
+  // 맺음 줄과 맨 아래 당김 여백이 흰색으로 비치지 않게 한다
   const root = document.documentElement;
-  const tone = () => {
-    const t = sec.getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight * 0.8 - t) / (innerHeight * 0.35)));
-    root.style.setProperty('--dk', (k * k * (3 - 2 * k)).toFixed(3));
+  const tone = () => { root.classList.toggle('dark-tail', sec.getBoundingClientRect().top < -innerHeight * 0.2); };
+  // 맨 위로 버튼: 첫 화면을 지난 뒤 위로 스크롤할 때와 맨 끝에 닿았을 때만 보인다. 밤색 지면이 버튼 자리를 덮으면 색을 뒤집는다
+  const toTop = document.getElementById('toTop');
+  let lastY = scrollY;
+  const topBtn = () => {
+    const y = scrollY, up = y < lastY - 2, down = y > lastY + 2, end = y + innerHeight >= document.documentElement.scrollHeight - 40;
+    if (y < innerHeight * 1.1) toTop.classList.remove('show');
+    else if (up || end) toTop.classList.add('show');
+    else if (down) toTop.classList.remove('show');
+    toTop.classList.toggle('night', sec.getBoundingClientRect().top + innerHeight * 0.36 < innerHeight - 40);   // 노을 띠의 어두운 쪽이 버튼 밑에 오면
+    lastY = y;
   };
+  toTop.addEventListener('click', () => { toTop.classList.remove('show'); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
   // 색인: 화면 가운데 가로줄에 걸친 컷만 밝힌다
   let lit = '';
   const mark = () => {
@@ -1133,7 +1169,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
     scrollTo({ top: scrollY + r.top - innerHeight * 0.22, behavior: reduce ? 'auto' : 'smooth' });
   });
   let ticking = false;
-  const onScroll = () => { near(); if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tone(); mark(); }); } };
+  const onScroll = () => { near(); if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tone(); mark(); topBtn(); }); } };
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', () => { tone(); mark(); });
   near(); tone();
