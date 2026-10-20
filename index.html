@@ -60,10 +60,15 @@ h1 span{display:block;color:var(--soft)}
 .badge{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;z-index:4}
 .hang{position:absolute;left:0;top:0;transform-origin:0 0}
 
-/* 목줄 끝 실사 D링·집게(목업 PSD 추출). 줄 끝점 = D링 위 막대 가운데, 집게 끝이 명함 구멍을 지난다 */
-.clasp{position:absolute;left:-27.6px;top:-3.3px;width:55.5px;height:85.5px;z-index:3;pointer-events:none;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.22))}
+/* 목줄 끝 실사 D링·집게(목업 PSD 추출). 카드 3D 층 안에 앞·뒤 한 장씩 두어 비틀림·뒤집기를 같이 한다.
+   D링 위 막대 가운데가 줄 끝점(카드 위 62.3px), 집게 끝은 구멍 가운데까지 보이고 그 아래는 구멍 속으로 사라진다 */
+.clasp{position:absolute;left:122.4px;top:-65.6px;width:55.5px;height:85.5px;pointer-events:none;user-select:none;-webkit-user-drag:none;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(1px);
+  -webkit-mask:linear-gradient(#000 70px,transparent 74px);mask:linear-gradient(#000 70px,transparent 74px);
+  filter:drop-shadow(0 2px 1.5px rgba(13,14,18,.28))}
+.clasp.cb{transform:rotateY(180deg) translateZ(1px)}
 
-.card3d{position:absolute;left:-150px;top:71px;width:300px;height:430px;perspective:1100px}
+.card3d{position:absolute;left:-150px;top:62.3px;width:300px;height:430px;perspective:1100px}
 .card{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
 .card.grab{cursor:grabbing}
 .face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
@@ -81,8 +86,8 @@ h1 span{display:block;color:var(--soft)}
     linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.55) 48%,rgba(255,255,255,0) 60%);
   transform:translateX(var(--shine,0%));opacity:var(--glare,.2)}
 /* 목줄이 지나가는 구멍 */
-.slot{position:absolute;left:50%;top:5px;width:46px;height:7px;margin-left:-23px;border-radius:4px;background:rgba(13,14,18,.12);
-  box-shadow:inset 0 1px 2px rgba(13,14,18,.25),0 1px 0 rgba(255,255,255,.9)}
+.slot{position:absolute;left:50%;top:5px;width:46px;height:7px;margin-left:-23px;border-radius:4px;background:rgba(13,14,18,.2);
+  box-shadow:inset 0 1.5px 2.5px rgba(13,14,18,.5),0 1px 0 rgba(255,255,255,.9)}
 
 .row{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
 .photo{border-radius:15px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
@@ -244,7 +249,7 @@ h1 span{display:block;color:var(--soft)}
   .copy .mark{grid-row:6}
   .copy .intro .ko{display:none}   /* 좁은 화면에선 영문 소개만 남긴다 */
   .copy .intro .en{font-size:13px}
-  .card3d{top:72px;scale:.74;transform-origin:150px 0}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+  .card3d{top:46.1px;scale:.74;transform-origin:150px 0}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
 }
 </style>
 
@@ -252,9 +257,10 @@ h1 span{display:block;color:var(--soft)}
     <canvas id="strap"></canvas>
   <div class="badge" id="badge">
     <div class="hang" id="hang">
-      <img class="clasp" src="lanyard/clasp.webp" alt="" width="56" height="86" draggable="false">
       <div class="card3d">
         <div class="card" id="card">
+          <img class="clasp" src="lanyard/clasp.webp" alt="" width="56" height="86" draggable="false">
+          <img class="clasp cb" src="lanyard/clasp.webp" alt="" width="56" height="86" draggable="false">
           <section class="face front" aria-label="명함 앞면">
             <span class="slot"></span>
             <div class="row"><span>Designer · AI Maker</span><span>#01</span></div>
@@ -568,9 +574,9 @@ h1 span{display:block;color:var(--soft)}
   const still = location.hash === '#still';
   if (still) document.documentElement.classList.add('still');
 
-  const N = 16, G = 0.55, GC = 1.1, STRAP_W = 44, STEP = 1000 / 120;   // 120Hz 고정 계산 + 화면 보간
-  const CY = 286, ICM = 22900;            // 카드 무게중심(고리 기준 아래로 px)과 관성
-  let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [];
+  const N = 16, G = 0.55, GC = 1.1, STRAP_W0 = 44, STEP = 1000 / 120;   // 120Hz 고정 계산 + 화면 보간
+  const CY = 277, ICM = 22900;            // 카드 무게중심(고리 기준 아래로 px)과 관성
+  let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [], KS = 1, STRAP_W = STRAP_W0;   // KS: 명함 축소율(모바일 .74)
   let phi = 0, om = 0, tw = 0, vtw = 0, flip = 0, flipT = 0, vflip = 0;   // phi: 화면 기준 시계 방향 회전
   let piv = { x: 0, y: 0, vx: 0, vy: 0 }, axS = 0, ayS = 0, vxS = 0;
   let drag = null, press = null, t0 = performance.now();
@@ -601,9 +607,10 @@ h1 span{display:block;color:var(--soft)}
     const r = hero.getBoundingClientRect(), sr = stage.getBoundingClientRect();
     const nAX = sr.left - r.left + sr.width / 2, nAY = sr.top - r.top - 14;
     if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
+    KS = parseFloat(getComputedStyle(card.parentElement).scale) || 1; STRAP_W = STRAP_W0 * KS;
     W = r.width; H = r.height; AX = nAX; AY = nAY; SH = sr.height; dpr = Math.min(2, devicePixelRatio || 1);
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    seg0 = Math.max(10, Math.min(16, (SH * 0.36 - 49) / (N - 1))); if (!drag) seg = seg0;
+    seg0 = Math.max(10, Math.min(16.5, (SH * 0.36 - 40) / (N - 1))); if (!drag) seg = seg0;
     const a = anchor();
     if (!pts.length) {
       if (intro) {   // 줄을 오른쪽 위로 기울여 든 자세. 카드는 손에 들린 채 수직이라, 놓으면 줄보다 늦게 따라 돈다
@@ -784,16 +791,16 @@ h1 span{display:block;color:var(--soft)}
       ctx.closePath(); ctx.fillStyle = '#15161b'; ctx.fill();
     }
     // 인쇄 글자: 끈 결 위에 screen 으로 얹어 결이 글자에도 비친다
-    ctx.font = '600 11.5px "Funnel Sans", sans-serif'; ctx.fillStyle = '#8496cc'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `600 ${(11.5 * KS).toFixed(1)}px "Funnel Sans", sans-serif`; ctx.fillStyle = '#8496cc'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.globalCompositeOperation = 'screen';
-    let acc = 0, ci = 0, next = 14;
+    let acc = 0, ci = 0, next = 14 * KS;
     for (let i = 0; i < N - 2; i++) {
       const p = P[i], q = P[i + 1], d = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1, ang = Math.atan2(q[1] - p[1], q[0] - p[0]);
       while (next <= acc + d) {
         const f = (next - acc) / d, ch = label[ci % label.length]; ci++;
         ctx.setTransform(dpr * Math.cos(ang), dpr * Math.sin(ang), -dpr * Math.sin(ang), dpr * Math.cos(ang), dpr * (p[0] + (q[0] - p[0]) * f), dpr * (p[1] + (q[1] - p[1]) * f));
         ctx.fillText(ch, 0, 0);
-        next += ch === ' ' ? 5 : 9.2;
+        next += (ch === ' ' ? 5 : 9.2) * KS;
       }
       acc += d;
     }
