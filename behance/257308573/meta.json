@@ -1,0 +1,392 @@
+{
+  "id": 257308573,
+  "title": "bewhysee · BYC rebranding (concept project)",
+  "publishedOn": "2026-10-20T01:52:52Z",
+  "tags": [
+    "rebranding",
+    "branding",
+    "brand identity",
+    "logo",
+    "typography",
+    "Packaging",
+    "motion",
+    "underwear",
+    "Korea",
+    "concept"
+  ],
+  "creativeFields": null,
+  "url": "https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29",
+  "embed": "https://www.behance.net/embed/project/257308573?ilo0=1",
+  "cover": {
+    "file": "cover.webp",
+    "width": 1616,
+    "height": 1264
+  },
+  "long": {
+    "width": 1200,
+    "totalHeight": 33352,
+    "tiles": [
+      {
+        "file": "long_00.webp",
+        "top": 0,
+        "height": 4000
+      },
+      {
+        "file": "long_01.webp",
+        "top": 4000,
+        "height": 4000
+      },
+      {
+        "file": "long_02.webp",
+        "top": 8000,
+        "height": 4000
+      },
+      {
+        "file": "long_03.webp",
+        "top": 12000,
+        "height": 4000
+      },
+      {
+        "file": "long_04.webp",
+        "top": 16000,
+        "height": 4000
+      },
+      {
+        "file": "long_05.webp",
+        "top": 20000,
+        "height": 4000
+      },
+      {
+        "file": "long_06.webp",
+        "top": 24000,
+        "height": 4000
+      },
+      {
+        "file": "long_07.webp",
+        "top": 28000,
+        "height": 4000
+      },
+      {
+        "file": "long_08.webp",
+        "top": 32000,
+        "height": 1352
+      }
+    ]
+  },
+  "strip": {
+    "file": "strip_360.webp",
+    "width": 360,
+    "height": 10006,
+    "scale": 0.3
+  },
+  "modules": [
+    {
+      "index": 0,
+      "type": "vimeo",
+      "vimeo": "1237446327",
+      "url": "https://vimeo.com/1237446327",
+      "size": [
+        1400,
+        875
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213333-dc6acd6d7ce1bfd3233ea4d160c90489ebb6e32d9f2b40d1f498e67e659771ef-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p01",
+      "y": 0,
+      "height": 750
+    },
+    {
+      "index": 1,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/c3c08b257308573.6ad6bfbb8ff8f.jpg",
+      "y": 750,
+      "height": 624
+    },
+    {
+      "index": 2,
+      "type": "vimeo",
+      "vimeo": "1237446333",
+      "url": "https://vimeo.com/1237446333",
+      "size": [
+        1400,
+        812
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212890-a2ddbcd914b309e1aac263dfb66fb37964d0e7dfd6b801f4b545ab4d2a133784-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p03",
+      "y": 1374,
+      "height": 696
+    },
+    {
+      "index": 3,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/0956b2257308573.6ad6bfbb8f167.jpg",
+      "y": 2070,
+      "height": 2424
+    },
+    {
+      "index": 4,
+      "type": "vimeo",
+      "vimeo": "1237446338",
+      "url": "https://vimeo.com/1237446338",
+      "size": [
+        1400,
+        532
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212899-aef89fe3a1e4c2ed6b6f60789cd635b6672b601e11b57e9589abfd98788a1aa4-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p07a",
+      "y": 4494,
+      "height": 456
+    },
+    {
+      "index": 5,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/414f0e257308573.6ad6bfbb8e3b9.jpg",
+      "y": 4950,
+      "height": 2376
+    },
+    {
+      "index": 6,
+      "type": "vimeo",
+      "vimeo": "1237446343",
+      "url": "https://vimeo.com/1237446343",
+      "size": [
+        1400,
+        700
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212905-3a208483b6f99a6786c653a5a23c5be73651fbcb1b17b6ad0b4baa7fd7ba8bac-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p08e",
+      "y": 7326,
+      "height": 600
+    },
+    {
+      "index": 7,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/f160e9257308573.6ad6bfbb8dd10.jpg",
+      "y": 7926,
+      "height": 477
+    },
+    {
+      "index": 8,
+      "type": "vimeo",
+      "vimeo": "1237446348",
+      "url": "https://vimeo.com/1237446348",
+      "size": [
+        1400,
+        954
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212906-fd0a53a9a44f81b44c3e16a31ce782daff205ea4a08dae31ea72a19a240cd6a2-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p09",
+      "y": 8403,
+      "height": 818
+    },
+    {
+      "index": 9,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/6b4744257308573.6ad6bfbb8d1c3.jpg",
+      "y": 9221,
+      "height": 1704
+    },
+    {
+      "index": 10,
+      "type": "vimeo",
+      "vimeo": "1237446352",
+      "url": "https://vimeo.com/1237446352",
+      "size": [
+        1400,
+        728
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212917-b1a53b7b359e81fd178ec691c0f9987558fe6886bdc719db54d874f488a57694-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p11",
+      "y": 10925,
+      "height": 624
+    },
+    {
+      "index": 11,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/1a1db4257308573.6ad6bfbb90a03.jpg",
+      "y": 11549,
+      "height": 1320
+    },
+    {
+      "index": 12,
+      "type": "vimeo",
+      "vimeo": "1237447363",
+      "url": "https://vimeo.com/1237447363",
+      "size": [
+        1400,
+        532
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214214211-5eb174d25678ce73cefa0e9a8a0dae5063eb8638f8091c319fcdd8d0b88717bd-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p13",
+      "y": 12869,
+      "height": 456
+    },
+    {
+      "index": 13,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/a24f66257308573.6ad6bfbb8ea9d.jpg",
+      "y": 13325,
+      "height": 1128
+    },
+    {
+      "index": 14,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/70925f257308573.6ad6bfbb8cc8f.jpg",
+      "y": 14453,
+      "height": 1518
+    },
+    {
+      "index": 15,
+      "type": "vimeo",
+      "vimeo": "1237446358",
+      "url": "https://vimeo.com/1237446358",
+      "size": [
+        1400,
+        1896
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212983-bafeb97513cd6a0b521fd6394f38009b3aa4826ed9af7b06beb59fbc54a32926-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p16L",
+      "y": 15971,
+      "height": 1625
+    },
+    {
+      "index": 16,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/aee506257308573.6ad6bfbb8f820.jpg",
+      "y": 17596,
+      "height": 2664
+    },
+    {
+      "index": 17,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/bee623257308573.6ad6bfbb904ca.jpg",
+      "y": 20260,
+      "height": 1695
+    },
+    {
+      "index": 18,
+      "type": "image",
+      "src": "https://mir-s3-cdn-cf.behance.net/project_modules/1400/158530257308573.6ad6bfbb8d796.jpg",
+      "y": 21955,
+      "height": 2294
+    },
+    {
+      "index": 19,
+      "type": "vimeo",
+      "vimeo": "1237446859",
+      "url": "https://vimeo.com/1237446859",
+      "size": [
+        1400,
+        2735
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213642-96d791c98f2225f240fcfd2e4e87dca1a3a580ff81fb1618ecd19825c18b422f-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p18",
+      "y": 24249,
+      "height": 2344
+    },
+    {
+      "index": 20,
+      "type": "vimeo",
+      "vimeo": "1237446862",
+      "url": "https://vimeo.com/1237446862",
+      "size": [
+        1400,
+        1138
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213745-e59e3307a927bb0a1a8668acabc80089e848930edf5341a9cb7b429cda82084e-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p19a",
+      "y": 26593,
+      "height": 975
+    },
+    {
+      "index": 21,
+      "type": "vimeo",
+      "vimeo": "1237446867",
+      "url": "https://vimeo.com/1237446867",
+      "size": [
+        1400,
+        1820
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213907-35c386aa087d614e3af45e7013f9688c01ae837b93d2ddfb67e266e15fa2bad3-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p19b",
+      "y": 27568,
+      "height": 1560
+    },
+    {
+      "index": 22,
+      "type": "vimeo",
+      "vimeo": "1237446362",
+      "url": "https://vimeo.com/1237446362",
+      "size": [
+        1400,
+        1036
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212987-3f7c7e57dab50d7bb686c8d3d4389ada33b6b424018ba5ddea235e91fb42dcae-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p19c",
+      "y": 29128,
+      "height": 888
+    },
+    {
+      "index": 23,
+      "type": "vimeo",
+      "vimeo": "1237446368",
+      "url": "https://vimeo.com/1237446368",
+      "size": [
+        1400,
+        1260
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213486-2ae89e4fb22ee7ecd9efb5b1e11709c7e92ac0c9f3e1e5aced9e610d1bdc2e85-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p19d_1",
+      "y": 30016,
+      "height": 1080
+    },
+    {
+      "index": 24,
+      "type": "vimeo",
+      "vimeo": "1237446376",
+      "url": "https://vimeo.com/1237446376",
+      "size": [
+        1400,
+        1260
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214213541-aa2974f1dc3ce50620ac48ce510125d00f75b598dea0bd6aff2d22c099f9c5a2-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p19d_2",
+      "y": 31096,
+      "height": 1080
+    },
+    {
+      "index": 25,
+      "type": "vimeo",
+      "vimeo": "1237446379",
+      "url": "https://vimeo.com/1237446379",
+      "size": [
+        1400,
+        532
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212931-0156ff5053185c0af9e01b196d0d4ce4ededc4e064e52370328324f2f6c83eff-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p20",
+      "y": 32176,
+      "height": 456
+    },
+    {
+      "index": 26,
+      "type": "vimeo",
+      "vimeo": "1237446383",
+      "url": "https://vimeo.com/1237446383",
+      "size": [
+        1400,
+        840
+      ],
+      "thumbnail": "https://i.vimeocdn.com/video/2214212921-14559454e3e5222f1b1569bfe373e762d909227ca245623d0181cd8f8c6990e3-d_1280?region=us",
+      "title": "bewhysee · 12차 loop p21",
+      "y": 32632,
+      "height": 720
+    }
+  ],
+  "counts": {
+    "modules": 27,
+    "images": 11,
+    "vimeo": 16
+  },
+  "vimeoThumbFailed": [],
+  "note": "modules[].y·height는 폭 1200 기준. 영상 모듈은 Vimeo 대표 프레임(oEmbed thumbnail_url)을 원래 비율로 맞춰 채웠다."
+}
