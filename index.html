@@ -222,7 +222,7 @@ h1 span{display:block;color:var(--soft)}
   padding:calc(32px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) 64px max(32px,env(safe-area-inset-left,0px))}
 .copy .eyebrow{grid-column:1;grid-row:1}
 .copy h1{grid-column:1;grid-row:2;margin-top:18px;font-size:clamp(30px,3vw,44px);line-height:1.05;letter-spacing:-.03em;max-width:12em}
-.copy .intro{grid-column:2;grid-row:1 / 3;align-self:start;justify-self:end;margin-top:0;max-width:300px;font-size:13.5px}
+.copy .intro{grid-column:2;grid-row:1 / 3;align-self:start;justify-self:end;margin-top:13px;max-width:300px;font-size:13.5px}   /* 첫 줄을 왼쪽 눈썹 글 높이에 맞춘다 */
 .copy .meta{grid-column:2;grid-row:4;justify-self:end;margin:0 0 10px}
 .copy .intro span{display:block}
 .copy .intro .en{font-family:var(--f-en);font-size:14px;line-height:1.55;color:var(--ink);letter-spacing:-.005em}
@@ -230,14 +230,15 @@ h1 span{display:block;color:var(--soft)}
 .copy .mark{grid-column:1 / -1;grid-row:5;margin:0;font-family:var(--f-disp);font-weight:500;font-size:14vw;line-height:.78;letter-spacing:-.055em;
   color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
 @media (max-width:820px){
-  .stage{min-height:max(640px,100svh)}
+  .stage{min-height:max(800px,100svh)}   /* 명함 아래로 영문 소개·이름이 겹치지 않을 높이 */
   .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto auto;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:56px}
   .copy h1{grid-row:2;margin-top:14px;font-size:30px}
-  .copy .intro{grid-column:1;grid-row:4;justify-self:start;max-width:none;margin-bottom:10px;font-size:13px}
+  .copy .intro{grid-column:1;grid-row:4;justify-self:start;max-width:none;margin:0 0 10px;font-size:13px}
   .copy .meta{grid-column:1;grid-row:5;justify-self:start}
   .copy .mark{grid-row:6}
-  .copy .intro{display:none}   /* 소개는 명함 뒷면과 아래 작업이 대신한다 */
-  .card3d{scale:.78;transform-origin:150px 0}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+  .copy .intro .ko{display:none}   /* 좁은 화면에선 영문 소개만 남긴다 */
+  .copy .intro .en{font-size:13px}
+  .card3d{scale:.74;transform-origin:150px 0}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
 }
 </style>
 
