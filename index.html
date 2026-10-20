@@ -131,11 +131,21 @@ h1 span{display:block;color:var(--soft)}
 .tbar{position:absolute;left:0;right:0;top:0;z-index:40;pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
   padding:calc(28px + env(safe-area-inset-top,0px)) max(32px,env(safe-area-inset-right,0px)) 0 max(32px,env(safe-area-inset-left,0px));
   font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
-.tbar .r{display:flex;align-items:center;gap:22px}
+.tbar .r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.tbar .ey{display:flex;align-items:center;gap:8px}
+.tbar .ey i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
+.sort.ghost{background:rgba(13,14,18,.06);color:var(--ink)}
+/* 아래: 첫 화면과 같은 문법. 작은 글은 구석에, 이름 대신 「Selected Work」를 폭 가득 깔고 카드가 그 위로 흩어진다 */
+.tfoot{position:absolute;left:0;right:0;bottom:0;z-index:1;pointer-events:none;
+  padding:0 max(32px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(32px,env(safe-area-inset-left,0px))}
+.tmeta{display:flex;justify-content:space-between;gap:16px;margin:0 0 10px;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.tmeta a{color:var(--ink);text-decoration:none;pointer-events:auto}
+.tmeta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
+.tmark{margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
 .sort{pointer-events:auto;border:0;background:var(--ink);color:#fff;font:500 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:9px 14px;cursor:pointer}
 .sort:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.pile{position:absolute;inset:0;z-index:3;perspective:1600px;--cw:min(214px,16.5vw,31vh)}
+.pile{position:absolute;inset:0;z-index:3;perspective:1600px;--cw:min(196px,15vw,27vh)}
 .pc{position:absolute;left:0;top:0;width:var(--cw);transform-style:preserve-3d;will-change:transform;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;outline:none}
 .pc.held{cursor:grabbing}
 @media (pointer:coarse){.pc{touch-action:pan-y}}   /* 터치: 세로로 밀면 페이지가 내려가고, 옆·대각선으로 밀면 카드를 던진다 */
@@ -185,6 +195,8 @@ h1 span{display:block;color:var(--soft)}
   .table{height:100svh;min-height:560px}
   .tbar{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
   .tbar .hint{display:none}
+  .tbar .ey{display:none}
+  .tfoot{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
   .pile{--cw:min(36vw,170px,24svh)}
   .back{padding:12px 10px 9px}
   .back .sub{display:none}
@@ -280,8 +292,12 @@ h1 span{display:block;color:var(--soft)}
 <section class="work" id="work" aria-label="인스타그램 작업">
   <div class="table">
     <div class="tbar">
-      <span>Selected work · 19 posts</span>
-      <span class="r"><button class="sort" id="sort" type="button" aria-pressed="false">Sort</button></span>
+      <span class="ey"><i></i>Selected work · Instagram</span>
+      <span class="r"><button class="sort ghost" id="shuffle" type="button">Shuffle</button><button class="sort" id="sort" type="button" aria-pressed="false">Sort</button></span>
+    </div>
+    <div class="tfoot">
+      <p class="tmeta"><span>19 posts · 2026</span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener">@chanjun.kwon ↗</a></p>
+      <p class="tmark" aria-hidden="true">Selected Work</p>
     </div>
     <div class="pile" id="pile"></div>
   </div>
@@ -290,8 +306,12 @@ h1 span{display:block;color:var(--soft)}
 
 <script>
 (() => {
-  const mark = document.querySelector('.copy .mark');
-  const fit = () => { mark.style.fontSize = '100px'; const w = mark.scrollWidth, avail = mark.parentElement.clientWidth - parseFloat(getComputedStyle(mark.parentElement).paddingLeft) * 2; mark.style.fontSize = (100 * avail / w).toFixed(2) + 'px'; };
+  // 큰 워드마크(첫 화면 이름, 작업 구역 제목)를 실제 글자 폭으로 재서 좌우 여백 안에 꼭 맞춘다
+  const marks = [...document.querySelectorAll('.copy .mark, .tfoot .tmark')];
+  const fit = () => marks.forEach(mark => {
+    const cs = getComputedStyle(mark.parentElement), avail = mark.parentElement.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    mark.style.fontSize = '100px'; mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
+  });
   fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
 })();
 </script>
@@ -343,17 +363,20 @@ h1 span{display:block;color:var(--soft)}
   if (reduce) { cards.forEach(c => c.el.addEventListener('click', ev => { if (!ev.target.closest('a')) setFlip(c, !c.flT); })); sortBtn.hidden = true; return; }
 
   // 테이블 크기
-  let TW = 0, TH = 0, cw = 200, ch = 260, mobile = false, BAR = 80;
+  let TW = 0, TH = 0, cw = 200, ch = 260, mobile = false, BAR = 80, FOOT = 0;
+  const tfoot = table.querySelector('.tfoot');
   const measure = () => {
     mobile = innerWidth <= 820; BAR = mobile ? 64 : 84;
     cw = cards[0].el.offsetWidth || cw; ch = cards[0].el.offsetHeight || ch;
-    TW = table.clientWidth; TH = table.clientHeight;
+    TW = table.clientWidth; TH = table.clientHeight; FOOT = tfoot.offsetHeight;
   };
   // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
-  const rnd = (i, s) => { const x = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return x - Math.floor(x); };
+  let seed = 0;
+  const rnd = (i, s) => { const x = Math.sin(i * 127.1 + (s + seed * 7) * 311.7) * 43758.5453; return x - Math.floor(x); };
   const scatterSpots = () => {
     const cols = mobile ? 3 : Math.max(4, Math.round(TW / (cw * 1.15))), rows = Math.ceil(N / cols);
-    const gx = (TW - cw * 0.7) / cols, gy = (TH - BAR - ch * 0.55) / rows;
+    // 워드마크 띠는 비워 두고(윗부분에만 살짝 걸치게) 그 위에 흩는다. 첫 화면에서 명함이 이름에 걸친 것과 같은 관계
+    const gx = (TW - cw * 0.7) / cols, gy = Math.max(ch * 0.32, (TH - BAR - FOOT * 0.62 - ch * 0.55) / rows);
     return cards.map((c, i) => {
       const col = i % cols, row = Math.floor(i / cols);
       return { x: cw * 0.35 + gx * (col + 0.5) + (rnd(i, 1) - 0.5) * gx * 0.7, y: BAR + ch * 0.3 + gy * (row + 0.5) + (rnd(i, 2) - 0.5) * gy * 0.6,
@@ -406,6 +429,21 @@ h1 span{display:block;color:var(--soft)}
       const spots = scatterSpots();
       cards.forEach((c, i) => { c.home = null; tossTo(c, spots[i], (N - i) * 30); });
     }
+  });
+  // 섞기: 흩어진 카드가 가운데로 모여 한 벌이 되고, 순서가 섞인 뒤 새 자리로 다시 쏟아진다
+  const shuffleBtn = document.getElementById('shuffle');
+  shuffleBtn.addEventListener('click', () => {
+    touched = true; dealt = true;
+    if (sorted) { sorted = false; sortBtn.textContent = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); table.style.height = ''; measure(); }
+    seed++;
+    const perm = cards.map((c, i) => [rnd(i, 9), c]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
+    order = perm; restack();
+    const cx = TW / 2, cy = BAR + (TH - BAR) * 0.48;
+    perm.forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: cx - (N - 1 - k) * 1.2, y: cy + (N - 1 - k) * 1.6, r: (rnd(k, 4) - 0.5) * 0.08 }; });
+    setTimeout(() => {
+      const spots = scatterSpots();
+      perm.slice().reverse().forEach((c, k) => { c.home = null; tossTo(c, spots[c.i], 120 + k * 45); });
+    }, 700);
   });
   addEventListener('resize', () => {
     const ow = TW, oh = TH; measure();
@@ -462,7 +500,7 @@ h1 span{display:block;color:var(--soft)}
   let last = performance.now();
   function frame(now){
     const dt = Math.min(2.5, (now - last) / 16.67); last = now;
-    checkDeal(); idleHint(now);
+    checkDeal(); idleHint(now); peekState();
     const top = order.length - 1;
     order.forEach((c, k) => {
       const held = drag && drag.c === c && drag.moved;
