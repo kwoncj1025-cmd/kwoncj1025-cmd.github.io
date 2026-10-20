@@ -424,7 +424,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   <div class="table">
     <div class="tbar">
       <span class="ey"><i></i>Selected work · Instagram</span>
-      <span class="r"><button class="sort ghost" id="shuffle" type="button" aria-label="Shuffle" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c4.5 0 4.5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.6 0 2.6-1.3 3.4-3M13.1 10c.8-1.7 1.8-3 3.4-3H20M17 4l3 3-3 3"/></svg></button><button class="sort" id="sort" type="button" aria-pressed="false" aria-label="Sort" title="Sort"><svg class="i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><svg class="i-scatter" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="7" height="7" rx="1.2" transform="rotate(-14 7 8.5)"/><rect x="13" y="3.5" width="7" height="7" rx="1.2" transform="rotate(10 16.5 7)"/><rect x="8" y="13" width="7" height="7" rx="1.2" transform="rotate(6 11.5 16.5)"/></svg></button></span>
+      <span class="r"><button class="sort ghost" id="flipAll" type="button" aria-pressed="false" aria-label="Flip all" title="Flip all"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.25" y="4" width="7.5" height="16" rx="1.4"/><path d="M5 10.3c-1.3.5-2 1.1-2 1.7 0 1.9 4 3.5 9 3.5s9-1.6 9-3.5c0-.6-.7-1.2-2-1.7M19 10.3l.4 2.4M19 10.3l-2.3.7"/></svg></button><button class="sort ghost" id="shuffle" type="button" aria-label="Shuffle" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c4.5 0 4.5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.6 0 2.6-1.3 3.4-3M13.1 10c.8-1.7 1.8-3 3.4-3H20M17 4l3 3-3 3"/></svg></button><button class="sort" id="sort" type="button" aria-pressed="false" aria-label="Sort" title="Sort"><svg class="i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><svg class="i-scatter" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="7" height="7" rx="1.2" transform="rotate(-14 7 8.5)"/><rect x="13" y="3.5" width="7" height="7" rx="1.2" transform="rotate(10 16.5 7)"/><rect x="8" y="13" width="7" height="7" rx="1.2" transform="rotate(6 11.5 16.5)"/></svg></button></span>
     </div>
     <div class="tfoot">
       <p class="tmeta"><span>19 posts · 2026</span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>@chanjun.kwon ↗</a></p>
@@ -650,6 +650,15 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
       const spots = scatterSpots(); order = spots.zc; restack();
       cards.forEach((c, i) => { c.home = null; tossTo(c, spots[i], (N - i) * 30); });
     }
+  });
+  // 전체 뒤집기: 왼쪽 카드부터 차례로 물결처럼 넘어간다. 하나라도 앞면이면 모두 뒷면으로, 모두 뒷면이면 다시 앞면으로
+  const flipAllBtn = document.getElementById('flipAll');
+  flipAllBtn.addEventListener('click', () => {
+    touched = true; dealt = true;
+    const to = !cards.every(c => c.flT === 180);
+    flipAllBtn.setAttribute('aria-pressed', to);
+    cards.slice().sort((a, b) => (a.x + a.y * 0.35) - (b.x + b.y * 0.35))
+      .forEach((c, k) => setTimeout(() => setFlip(c, to), reduce ? 0 : k * 38));
   });
   // 섞기: 흩어진 카드가 가운데로 모여 한 벌이 되고, 순서가 섞인 뒤 새 자리로 다시 쏟아진다
   const shuffleBtn = document.getElementById('shuffle');
