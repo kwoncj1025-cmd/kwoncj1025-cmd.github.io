@@ -513,8 +513,11 @@ html.reading{overflow:hidden}
              at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cw + gap), y: BAR + 24 + ch / 2 + Math.floor(i / cols) * (ch + gap), r: 0 })) };
   };
 
+  // 흩은 상태도 화면보다 위아래로 넉넉하게(화면의 1.3배, 정렬 격자보다 길지는 않게). 정렬과 높이 차이가 덜 나게 한다
+  const scatterH = () => { table.style.height = ''; measure(); const h = Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * 1.3)));
+    table.style.height = h + 'px'; TH = h; };
   // 처음엔 테이블 아래 가운데에 한 벌로 쌓여 있다가, 화면에 들어오면 흩은 자리로 던져진다
-  measure();
+  scatterH();
   order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = TH * 0.62 + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
   restack();
   const FR = 0.935, FRR = 0.88;
@@ -557,7 +560,7 @@ html.reading{overflow:hidden}
       order = cards.slice().reverse(); restack();
       cards.forEach((c, i) => { c.home = g.at[i]; setFlip(c, false); });
     } else {
-      table.style.height = ''; measure();
+      scatterH();
       const spots = scatterSpots();
       cards.forEach((c, i) => { c.home = null; tossTo(c, spots[i], (N - i) * 30); });
     }
@@ -566,7 +569,7 @@ html.reading{overflow:hidden}
   const shuffleBtn = document.getElementById('shuffle');
   shuffleBtn.addEventListener('click', () => {
     touched = true; dealt = true;
-    if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); table.style.height = ''; measure(); }
+    if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
     seed++;
     const perm = cards.map((c, i) => [rnd(i, 9), c]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     order = perm; restack();
@@ -578,7 +581,7 @@ html.reading{overflow:hidden}
     }, 700);
   });
   addEventListener('resize', () => {
-    const ow = TW, oh = TH; measure();
+    const ow = TW, oh = TH; if (sorted) measure(); else scatterH();
     if (sorted) { const g = gridSpots(); table.style.height = g.h + 'px'; TH = g.h; cards.forEach((c, i) => { c.home = g.at[i]; }); }
     else if (ow && oh) cards.forEach(c => { c.x *= TW / ow; c.y *= TH / oh; });
   });
