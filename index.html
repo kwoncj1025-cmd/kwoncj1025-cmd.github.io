@@ -1,586 +1,559 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CHANJUN KWON | Portfolio</title>
-    <meta
-      name="description"
-      content="시각적 구조를 설계하는 디자이너 권찬준 포트폴리오. 브랜드 디자인, 그래픽 디자인, 모바일 상세페이지, 캐릭터 컨셉 프로젝트."
-    />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="bg-layer" aria-hidden="true"></div>
+<meta charset="utf-8">
+<title>Chanjun Kwon — Designer · AI Maker</title>
+<meta name="description" content="브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준의 명함과 작업입니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chanjun Kwon — Designer · AI Maker">
+<meta property="og:description" content="브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준의 명함과 작업입니다.">
+<meta property="og:url" content="https://kwoncj1025-cmd.github.io/chanjun-portfolio/">
+<meta property="og:image" content="https://kwoncj1025-cmd.github.io/chanjun-portfolio/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kwoncj1025-cmd.github.io/chanjun-portfolio/og.jpg">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600&family=Funnel+Sans:wght@400;500;600;700&display=swap">
+<style>
+@font-face{font-family:SUIT;font-weight:500;src:url(fonts/SUIT-Medium.otf) format("opentype")}
+@font-face{font-family:SUIT;font-weight:700;src:url(fonts/SUIT-Bold.otf) format("opentype")}
 
-    <header class="site-header">
-      <div class="site-header-left">
-        <a href="#top" class="brand">CHANJUN KWON</a>
-        <div class="site-header-contact" aria-label="상단 연락처">
-          <a href="tel:+821063434110">+82 10 6343 4110</a>
-          <span class="site-header-divider" aria-hidden="true">·</span>
-          <a href="mailto:kwoncj1025@gmail.com">kwoncj1025@gmail.com</a>
+/* 레이아웃: 왼쪽은 소개 글, 오른쪽은 화면 위에서 내려오는 목줄에 걸린 유리 사원증 */
+:root{
+  --bg:#ffffff;
+  --ink:#0d0e12;
+  --ink-2:#5f6170;
+  --ink-3:#9a9cab;
+  --soft:#9fb2e6;
+  --dot:#7d8fe0;
+  --live:#4cc38a;
+  --strap:#15161b;
+  --line:rgba(13,14,18,.08);
+  --f-en:"Funnel Sans",SUIT,system-ui,sans-serif;
+  --f-disp:"Funnel Display","Funnel Sans",SUIT,system-ui,sans-serif;
+  --f-ko:SUIT,"Funnel Sans",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-en);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.page{position:relative;min-height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:1240px;margin:0 auto;
+  padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.copy{align-self:center;padding-block:64px;position:relative;z-index:2;min-width:0}
+.eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.eyebrow i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
+h1{margin-top:22px;font-family:var(--f-disp);font-weight:500;font-size:clamp(40px,5.4vw,68px);line-height:1.02;letter-spacing:-.035em;text-wrap:balance}
+h1 span{display:block;color:var(--soft)}
+.intro{margin-top:26px;max-width:340px;font-family:var(--f-ko);font-size:14px;line-height:1.7;color:var(--ink-2);word-break:keep-all}
+.meta{margin-top:16px;display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.meta i{width:5px;height:5px;border-radius:50%;background:var(--live)}
+
+.stage{position:relative;min-height:max(680px,100vh);touch-action:none}
+.hero{position:relative;overflow-x:clip}
+#strap{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.badge{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;z-index:4}
+.hang{position:absolute;left:0;top:0;transform-origin:0 0}
+
+/* 목줄 끝 금속 고리 + 카드 구멍에 끼운 투명 스트랩 */
+.clip{position:absolute;left:-12px;top:-4px;width:24px;height:44px;z-index:3;pointer-events:none}
+.clip .ring{position:absolute;left:4px;top:0;width:16px;height:16px;border-radius:50%;
+  background:conic-gradient(from 210deg,#f5f6f8,#9da1ab,#e9ebef,#7f838d,#f5f6f8);
+  -webkit-mask:radial-gradient(circle,transparent 5.2px,#000 5.8px);mask:radial-gradient(circle,transparent 5.2px,#000 5.8px);
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.clip .tab{position:absolute;left:5px;top:9px;width:14px;height:32px;border-radius:5px 5px 4px 4px;
+  background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(225,230,244,.35) 50%,rgba(255,255,255,.6));
+  border:1px solid rgba(140,150,185,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 2px rgba(20,24,40,.12)}
+.clip .tab::before{content:"";position:absolute;left:3px;top:4px;width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#b9bdc8 60%,#8d919c);box-shadow:0 0 0 1px rgba(120,126,140,.35)}
+.clip .tab::after{content:"";position:absolute;left:3px;top:14px;width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#b9bdc8 60%,#8d919c);box-shadow:0 0 0 1px rgba(120,126,140,.35)}
+
+.card3d{position:absolute;left:-150px;top:22px;width:300px;height:430px;perspective:1100px}
+.card{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
+.card.grab{cursor:grabbing}
+.face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
+  background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(242,243,248,.82) 46%,rgba(233,236,246,.88));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.6),
+    0 1px 1px rgba(13,14,18,.05),0 22px 44px -18px rgba(40,46,80,.32),0 50px 90px -40px rgba(40,46,80,.24);
+  padding:30px 16px 16px;display:flex;flex-direction:column}
+.back{transform:rotateY(180deg)}
+.face::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
+  background:conic-gradient(from var(--rim,0deg),#c9f1ff,#e7d4ff,#ffe1f0,#fff3c8,#d2ffe8,#c9f1ff);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:var(--rimO,.35)}
+.face::after{content:"";position:absolute;inset:-30%;pointer-events:none;mix-blend-mode:soft-light;z-index:2;
+  background:radial-gradient(40% 30% at var(--sx,30%) var(--sy,20%),rgba(255,255,255,.9),rgba(255,255,255,0) 70%),
+    linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.55) 48%,rgba(255,255,255,0) 60%);
+  transform:translateX(var(--shine,0%));opacity:var(--glare,.2)}
+/* 목줄이 지나가는 구멍 */
+.slot{position:absolute;left:50%;top:11px;width:46px;height:9px;margin-left:-23px;border-radius:5px;background:rgba(13,14,18,.12);
+  box-shadow:inset 0 1px 2px rgba(13,14,18,.25),0 1px 0 rgba(255,255,255,.9)}
+
+.row{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
+.photo{border-radius:15px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.18) translateY(4%);pointer-events:none;-webkit-user-drag:none;user-select:none}
+.name{margin:14px 4px 0;font-family:var(--f-disp);font-size:26px;font-weight:500;letter-spacing:-.025em;line-height:1.1}
+.role{margin:4px 4px 0;font-size:13.5px;color:var(--ink-2)}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 4px 0;border-top:1px solid var(--line);font-size:9.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
+.go{width:28px;height:28px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .2s;position:relative;z-index:3}
+.go:hover{transform:scale(1.08)}
+.go:focus-visible,.cbtn:focus-visible,.contact a:focus-visible{outline:2px solid var(--dot);outline-offset:2px}
+.go svg{width:12px;height:12px}
+
+.back .ko{margin:6px 4px 0;font-family:var(--f-ko);font-size:30px;font-weight:700;letter-spacing:-.02em}
+.back .en{margin:2px 4px 0;font-size:13.5px;color:var(--ink-2)}
+.contact{margin-top:22px;display:grid;position:relative;z-index:3}
+.contact div{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:8px;padding:11px 4px;border-top:1px solid var(--line)}
+.contact dt{font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase}
+.contact dd{font-size:13px;min-width:0;overflow-wrap:anywhere;user-select:text}
+.contact a{color:inherit;text-decoration:none}
+.cbtn{border:0;background:rgba(13,14,18,.06);color:var(--ink-2);font:500 10px var(--f-en);letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:5px 7px;cursor:pointer}
+.cbtn.ok{background:var(--ink);color:#fff}
+.back .note{margin:12px 4px 0;font-family:var(--f-ko);font-size:12px;line-height:1.6;color:var(--ink-2)}
+
+.hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;white-space:nowrap}
+
+/* 메일 서명용 정지 화면: 주소 끝에 #still */
+.still .copy,.still .hint{display:none}
+.still .page{grid-template-columns:minmax(0,1fr)}
+.still .stage{min-height:760px}
+
+/* ── 작업: 손에 쥔 카드 덱. 스크롤하면 한 장씩 패를 돌리듯 격자 자리에 내려앉는다 ── */
+.work{position:relative;max-width:1240px;margin:0 auto;padding-block:120px 40px;
+  padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.work-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:32px}
+.work-head h2{margin-top:18px;font-family:var(--f-disp);font-weight:500;font-size:clamp(34px,4.4vw,56px);line-height:1.02;letter-spacing:-.035em;text-wrap:balance}
+.work-head h2 span{display:block;color:var(--soft)}
+.work-head>p{justify-self:end;font-family:var(--f-ko);font-size:14px;line-height:1.7;color:var(--ink-2);max-width:340px;word-break:keep-all}
+.deck{margin-top:64px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:56px 32px;list-style:none;padding:0}
+.deck li{perspective:1000px;min-width:0}
+.pc{display:block;position:relative;border-radius:22px;padding:8px 8px 0;text-decoration:none;color:inherit;transform-origin:50% 100%;will-change:transform,opacity;
+  background:linear-gradient(160deg,rgba(255,255,255,.96),rgba(242,243,248,.86) 46%,rgba(233,236,246,.9));
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(13,14,18,.05),0 22px 44px -22px rgba(40,46,80,.3),0 40px 70px -44px rgba(40,46,80,.22)}
+.pc::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
+  background:conic-gradient(from var(--rim,0deg),#c9f1ff,#e7d4ff,#ffe1f0,#fff3c8,#d2ffe8,#c9f1ff);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:var(--rimO,.35)}
+.pc::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;z-index:2;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.7) 48%,rgba(255,255,255,0) 60%);
+  transform:translateX(var(--shine,0%));opacity:var(--glint,.25)}
+.pc .im{border-radius:15px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#e9ecf5}
+.pc img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.pc .row{padding:14px 6px 0}
+.pc .t{margin:6px 6px 0;font-family:var(--f-disp);font-weight:500;font-size:19px;line-height:1.2;letter-spacing:-.02em;word-break:keep-all;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+.pc .t.ko{font-family:var(--f-ko);font-weight:700;font-size:17px;letter-spacing:-.03em}
+.pc .ft{margin-top:14px;display:flex;justify-content:space-between;align-items:center;padding:11px 6px 13px;border-top:1px solid var(--line);
+  font-size:9.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
+.pc .ft b{font-weight:500;color:var(--ink)}
+.pc:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
+.foot-note{max-width:1240px;margin:0 auto;padding:40px max(24px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px));
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.foot-note a{color:var(--ink);text-decoration:none}
+@media (max-width:980px){ .deck{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 20px} }
+@media (max-width:820px){
+  .work{padding-block:72px 24px}
+  .work-head{grid-template-columns:minmax(0,1fr);gap:12px}
+  .work-head>p{justify-self:start}
+  .deck{margin-top:40px}
+}
+@media (max-width:520px){
+  .deck{gap:28px 12px}
+  .pc{border-radius:16px;padding:5px 5px 0}
+  .pc .im{border-radius:11px}
+  .pc .row{padding:10px 4px 0;font-size:8.5px}
+  .pc .t{margin:4px 4px 0;font-size:14px}
+  .pc .t.ko{font-size:13px}
+  .pc .ft{margin-top:10px;padding:8px 4px 10px;font-size:8px}
+  .pc .ft .lk{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .pc{transform:none!important;opacity:1!important} }
+@media (max-width:820px){
+  .page{grid-template-columns:minmax(0,1fr)}
+  .copy{padding-block:40px 8px}
+  .stage{min-height:740px}
+}
+@media (prefers-reduced-motion:reduce){.go{transition:none}}
+</style>
+
+<div class="hero" id="hero">
+    <canvas id="strap"></canvas>
+  <div class="badge" id="badge">
+    <div class="hang" id="hang">
+      <div class="clip"><span class="ring"></span><span class="tab"></span></div>
+      <div class="card3d">
+        <div class="card" id="card">
+          <section class="face front" aria-label="명함 앞면">
+            <span class="slot"></span>
+            <div class="row"><span>Designer · AI Maker</span><span>#01</span></div>
+            <div class="photo"><img src="avatar.webp" alt="권찬준의 3D 아바타" draggable="false"></div>
+            <p class="name">Chanjun Kwon</p>
+            <p class="role">Designer · AI Maker</p>
+            <div class="foot"><span>View contact</span>
+              <button class="go" id="toBack" aria-label="연락처 보기"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </section>
+          <section class="face back" aria-label="명함 뒷면">
+            <span class="slot"></span>
+            <div class="row"><span>Contact</span><span>#01</span></div>
+            <p class="ko">권찬준</p>
+            <p class="en">Chanjun Kwon · Designer · AI Maker</p>
+            <dl class="contact">
+              <div><dt>Phone</dt><dd><a href="tel:01063434110">010-6343-4110</a></dd><button class="cbtn" data-copy="010-6343-4110">Copy</button></div>
+              <div><dt>Email</dt><dd><a href="mailto:kwoncj1025@gmail.com">kwoncj1025@gmail.com</a></dd><button class="cbtn" data-copy="kwoncj1025@gmail.com">Copy</button></div>
+              <div><dt>Work</dt><dd><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener">@chanjun.kwon</a></dd><button class="cbtn" data-copy="https://instagram.com/chanjun.kwon">Copy</button></div>
+            </dl>
+            <p class="note">브랜딩 · 웹사이트 · AI 콘텐츠</p>
+            <div class="foot"><span>Back to card</span>
+              <button class="go" id="toFront" aria-label="앞면 보기"><svg viewBox="0 0 12 12" fill="none"><path d="M9 3L3 9M3 9H7.8M3 9V4.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </section>
         </div>
       </div>
-      <nav class="site-nav">
-        <button class="site-nav-intro" type="button" id="introOpenButton">Cover Letter</button>
-        <a href="#about">About</a>
-        <a href="#work">Portfolio</a>
-        <a href="#journey">Journey</a>
-        <a href="#page-end">Contact</a>
-      </nav>
-    </header>
-
-    <main id="top" class="container">
-      <section class="hero reveal">
-        <div class="hero-layout">
-        <div class="hero-copy">
-          <div class="hero-topline">
-            <div class="hero-contact">
-              <a class="contact-icon-link" href="tel:+821063434110" aria-label="전화 걸기">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6.9 3.2h3.2l1.2 4.7-2 1.6a14.1 14.1 0 0 0 5.2 5.2l1.6-2 4.7 1.2v3.2a1.9 1.9 0 0 1-2.1 1.9C10.5 18.8 5.2 13.5 5 6.1A1.9 1.9 0 0 1 6.9 3.2Z"></path>
-                </svg>
-              </a>
-              <a class="contact-icon-link" href="mailto:kwoncj1025@gmail.com" aria-label="이메일 보내기">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M3.5 6.5h17a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 16V8A1.5 1.5 0 0 1 3.5 6.5Z"></path>
-                  <path d="m3 8 9 6 9-6"></path>
-                </svg>
-              </a>
-            </div>
-            <div class="hero-role">
-              <p class="eyebrow">Brand Designer</p>
-              <p class="eyebrow-en">I Design Systems, Not Just Visuals.</p>
-            </div>
-          </div>
-          <h1>
-            <span>시각적 구조를 설계하는 디자이너</span>
-            <span>권찬준입니다.</span>
-          </h1>
-          <p class="hero-description">
-            <span class="hero-description-line">브랜드를 보이는 결과물이 아닌 경험으로 설계합니다. 시각보다 메시지와 구조의 일관성을 우선하며,</span>
-            <span class="hero-description-line">텍스트·이미지·인터랙션을 연결해 브랜드 경험이 가치로 이어지도록 디자인합니다.</span>
-          </p>
-          <section id="skills" class="hero-skills reveal">
-            <div class="skills-grid" id="skillsGrid">
-              <article class="skill-card" tabindex="0" role="button" aria-label="Photoshop skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img src="https://early-cap-da5.notion.site/image/attachment%3A51619c5c-977d-44bf-8a28-30482a1b516d%3Aimage.png?table=block&id=2e9da7ea-3ca4-8116-9eaf-e7bda02cd3ab&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=120" alt="Photoshop" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>Photoshop</h3>
-                  <ul>
-                    <li>브랜드 비주얼, 포스터, 이미지 보정 및 합성 작업</li>
-                    <li>단순 편집이 아닌 의도·구조가 드러나는 시각 결과물 제작</li>
-                    <li>랜딩페이지, 포트폴리오, SNS용 이미지까지 실사용 기준으로 작업</li>
-                  </ul>
-                </div>
-              </article>
-              <article class="skill-card" tabindex="0" role="button" aria-label="Illustrator skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img src="https://early-cap-da5.notion.site/image/attachment%3A6d358d0c-eb9f-4835-b023-78939c6c3ddd%3Aimage_%281%29.png?table=block&id=2e9da7ea-3ca4-8133-851a-c5dda6f33100&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=120" alt="Illustrator" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>illustrator</h3>
-                  <ul>
-                    <li>로고, 타이포그래피, 심볼 등 벡터 기반 브랜드 자산 설계</li>
-                    <li>감각적인 장식보다 확장성과 일관성을 고려한 시스템 디자인</li>
-                    <li>실제 적용(웹·인쇄·굿즈)을 전제로 한 구조적 작업</li>
-                  </ul>
-                </div>
-              </article>
-              <article class="skill-card" tabindex="0" role="button" aria-label="Figma skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img src="https://early-cap-da5.notion.site/image/attachment%3A54d08d0b-6ee1-4a35-ae1d-a6055a85bb63%3Apngegg.png?table=block&id=2e9da7ea-3ca4-817f-acf8-d95cf12cd9c7&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=120" alt="Figma" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>Figma</h3>
-                  <ul>
-                    <li>랜딩페이지, 포트폴리오 페이지 구조 설계</li>
-                    <li>디자인과 콘텐츠 흐름을 함께 설계하여 사용자 시선 동선 최적화</li>
-                    <li>개발·기획 관점에서도 이해 가능한 화면 구성</li>
-                  </ul>
-                </div>
-              </article>
-              <article class="skill-card" tabindex="0" role="button" aria-label="Chat GPT / Runway / Midjourney skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img src="skill-ai-generate-square.png" alt="ChatGPT / Runway / Midjourney" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>Chat GPT / Runway / Midjourney</h3>
-                  <ul>
-                    <li>아이디어 확장, 카피 초안, 구조 정리 등 사고 보조 도구로 활용</li>
-                    <li>결과물을 대신 만드는 용도가 아니라, 판단·선택·정제는 직접 수행</li>
-                    <li>작업 속도와 완성도를 동시에 끌어올리는 데 집중</li>
-                  </ul>
-                </div>
-              </article>
-              <article class="skill-card" tabindex="0" role="button" aria-label="Apple Software skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img src="https://early-cap-da5.notion.site/image/attachment%3A95cdaceb-5d84-4749-99f8-b4c769fc5519%3Akeynote.png?table=block&id=2e9da7ea-3ca4-811a-b7b8-fc59dfad9e3d&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=120" alt="Apple Software" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>Apple Software</h3>
-                  <ul>
-                    <li>macOS 기반 작업 환경에 익숙</li>
-                    <li>파일 관리, 단축키, 워크플로우 최적화로 작업 효율 극대화</li>
-                    <li>디자인·문서·이미지 작업을 하나의 흐름으로 연결</li>
-                  </ul>
-                </div>
-              </article>
-              <article class="skill-card" tabindex="0" role="button" aria-label="Notion skill details">
-                <div class="skill-icon" aria-hidden="true">
-                  <img class="notion-icon" src="https://www.notion.so/icons/notion_gray.svg" alt="Notion" loading="lazy" />
-                </div>
-                <div class="skill-detail">
-                  <h3>Notion</h3>
-                  <ul>
-                    <li>포트폴리오, 프로젝트 정리, 작업 기록 및 구조화</li>
-                    <li>생각과 결과물을 논리적인 문서 구조로 정리하는 도구로 활용</li>
-                    <li>단순 기록이 아닌 “설명 가능한 작업”으로 정리</li>
-                  </ul>
-                </div>
-              </article>
-            </div>
-            <article class="skill-preview" id="skillPreview" aria-live="polite">
-              <h3 id="skillPreviewTitle">Photoshop</h3>
-              <ul id="skillPreviewList">
-                <li>브랜드 비주얼, 포스터, 이미지 보정 및 합성 작업</li>
-                <li>단순 편집이 아닌 의도·구조가 드러나는 시각 결과물 제작</li>
-                <li>랜딩페이지, 포트폴리오, SNS용 이미지까지 실사용 기준으로 작업</li>
-              </ul>
-            </article>
-          </section>
-        </div>
-        <aside class="hero-side" aria-label="핵심 정보">
-          <section class="hero-proof">
-            <p class="hero-side-kicker">Core Strengths</p>
-            <ul class="hero-proof-list">
-              <li>
-                <strong>Structure Thinking</strong>
-                <span>브랜드 메시지를 정보 구조로 번역하고 설계</span>
-              </li>
-              <li>
-                <strong>System-Driven Design</strong>
-                <span>결과물보다 작동 가능한 기준과 흐름 구축</span>
-              </li>
-              <li>
-                <strong>Execution Detail</strong>
-                <span>카피·비주얼·인터랙션까지 일관된 밀도로 완성</span>
-              </li>
-            </ul>
-          </section>
-
-          <section class="hero-selected">
-            <p class="hero-side-kicker">Selected Work</p>
-            <div class="hero-mini-strip">
-              <button class="hero-mini-card" type="button" data-project-id="quietlab-landing" data-category="Brand Design" aria-label="Quietlab Brand Landing Page 열기">
-                <img src="https://early-cap-da5.notion.site/image/attachment%3Ad0f07756-1c6c-43e2-a9c2-cd371e52a856%3AAsset_5-100.jpg?id=2eada7ea-3ca4-808a-99ff-e2d5506194a7&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=600&userId=&cache=v2" alt="" loading="lazy" />
-                <div class="hero-mini-meta">
-                  <p>Brand Design</p>
-                  <h3>Quietlab Brand Landing Page</h3>
-                </div>
-              </button>
-              <button class="hero-mini-card" type="button" data-project-id="yoasobi-poster" data-category="Graphic Design" aria-label="YOASOBI ASIA TOUR POSTER 열기">
-                <img src="https://early-cap-da5.notion.site/image/attachment%3Ae4e434d1-4e51-448e-ac9e-6077001df935%3AAsset_2-100.jpg?id=2e9da7ea-3ca4-813a-9648-f90072f5b5e3&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=600&userId=&cache=v2" alt="" loading="lazy" />
-                <div class="hero-mini-meta">
-                  <p>Graphic Design</p>
-                  <h3>YOASOBI ASIA TOUR POSTER</h3>
-                </div>
-              </button>
-              <button class="hero-mini-card" type="button" data-project-id="toss-tovi" data-category="Character Design" aria-label="Toss x Tovi Character Concept 열기">
-                <img src="https://early-cap-da5.notion.site/image/attachment%3Abfedc256-6ac1-4aaa-ac29-bf5885a37c85%3Aba013006-f771-4449-a6cd-3f82f866bee7.png?id=2e9da7ea-3ca4-81b3-88ab-c91c372d9997&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=600&userId=&cache=v2" alt="" loading="lazy" />
-                <div class="hero-mini-meta">
-                  <p>Character Design</p>
-                  <h3>Toss x Tovi Character Concept</h3>
-                </div>
-              </button>
-            </div>
-          </section>
-        </aside>
-        </div>
-      </section>
-
-
-
-      <section id="about" class="section reveal">
-        <div class="about-layout">
-          <figure class="about-visual">
-            <img
-              src="profile-photo-cutout.png"
-              alt="권찬준 프로필 비주얼"
-              loading="lazy"
-            />
-          </figure>
-          <div class="about-copy">
-            <div class="section-title-wrap">
-              <p class="section-kicker">About</p>
-            </div>
-            <p>
-              디자인은 결과물을 만드는 일이 아니라, 브랜드가 왜 존재하는지와 어떤 감각·구조로 전달되어야 하는지를<br />
-              정의하는 과정이라고 생각합니다.<br />
-              그래서 모든 프로젝트를 단순한 포트폴리오가 아닌, 하나의 브랜드를 처음부터 끝까지 설계한다는 관점으로 접근합니다.<br /><br />
-              모든 작업은 실제 클라이언트를 전제로 진행하며, 시안 제작에 머무르지 않고 브랜드 방향, 페이지 구조, 시각 시스템까지<br />
-              전 과정을 직접 설계합니다.<br />
-              또한 사용자의 시선 흐름과 브랜드 아이덴티티가 자연스럽게 이어지도록 구조와 디테일을 반복적으로 검증합니다.
-            </p>
-            <div class="about-tags" aria-label="성향 키워드">
-              <span>#INFP</span>
-              <span>#섬세함</span>
-              <span>#신중함</span>
-              <span>#집중력</span>
-              <span>#책임감</span>
-              <span>#감각</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="work" class="section reveal">
-        <div class="section-title-wrap with-controls">
-          <div>
-            <p class="section-kicker">Portfolio</p>
-          </div>
-          <div class="section-controls-row">
-            <div class="filters" role="tablist" aria-label="프로젝트 카테고리 필터">
-              <button class="filter is-active" type="button" data-filter="all">All</button>
-              <button class="filter" type="button" data-filter="Brand Design">Brand Design</button>
-              <button class="filter" type="button" data-filter="Graphic Design">Graphic Design</button>
-              <button class="filter" type="button" data-filter="Mobile Design">Mobile Design</button>
-              <button class="filter" type="button" data-filter="Photo shoot & Editing">Photo shoot & Editing</button>
-              <button class="filter" type="button" data-filter="Character Design">Character Design</button>
-            </div>
-            <div class="carousel-nav" role="group" aria-label="프로젝트 캐러셀 탐색">
-              <button class="carousel-arrow is-prev" type="button" aria-label="프로젝트 이전 보기" data-carousel-prev="projectsCarousel" aria-controls="projectsCarousel">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
-              </button>
-              <button class="carousel-arrow is-next" type="button" aria-label="프로젝트 다음 보기" data-carousel-next="projectsCarousel" aria-controls="projectsCarousel">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="carousel-shell" data-carousel-shell>
-          <div class="projects-grid carousel-track" id="projectsCarousel">
-          <a
-            class="project-card"
-            data-category="Brand Design"
-            data-project-id="branding-concept"
-            href="https://early-cap-da5.notion.site/Branding-Concept-2e9da7ea3ca481539fcaf43fbe7052a8?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Ac3cfdc64-b411-47fa-b6f5-906463a3b3c7%3AUntitled-2.png?id=2e9da7ea-3ca4-8153-9fca-f43fbe7052a8&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="Branding Concept" loading="lazy" />
-            <div class="project-meta">
-              <p>Brand Design</p>
-              <h3>Branding Concept</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Brand Design"
-            data-project-id="quietlab-landing"
-            href="https://early-cap-da5.notion.site/Quietlab-Brand-Landing-Page-2eada7ea3ca4808a99ffe2d5506194a7?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Ad0f07756-1c6c-43e2-a9c2-cd371e52a856%3AAsset_5-100.jpg?id=2eada7ea-3ca4-808a-99ff-e2d5506194a7&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="Quietlab Brand Landing Page" loading="lazy" />
-            <div class="project-meta">
-              <p>Brand Design</p>
-              <h3>Quietlab Brand Landing Page</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Graphic Design"
-            data-project-id="yoasobi-poster"
-            href="https://early-cap-da5.notion.site/YOASOBI-ASIA-TOUR-POSTER-2e9da7ea3ca4813a9648f90072f5b5e3?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Ae4e434d1-4e51-448e-ac9e-6077001df935%3AAsset_2-100.jpg?id=2e9da7ea-3ca4-813a-9648-f90072f5b5e3&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="YOASOBI ASIA TOUR POSTER" loading="lazy" />
-            <div class="project-meta">
-              <p>Graphic Design</p>
-              <h3>YOASOBI ASIA TOUR POSTER</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Graphic Design"
-            data-project-id="bmw-campaign"
-            href="https://early-cap-da5.notion.site/BMW-M-Campaign-Landing-Page-2efda7ea3ca48011b705d50762f9d7de?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Afd3c7ca6-1c4d-40f9-baa5-ac96874ee61d%3AAsset_3.png?id=2efda7ea-3ca4-8011-b705-d50762f9d7de&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="BMW M Campaign Landing Page" loading="lazy" />
-            <div class="project-meta">
-              <p>Graphic Design</p>
-              <h3>BMW M Campaign Landing Page</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Photo shoot & Editing"
-            data-project-id="ai-image-gen"
-            href="https://early-cap-da5.notion.site/AI-Image-Gen-302da7ea3ca480a7a1d4f3a608505f4c?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A5a4e5351-70c6-4732-92bf-d12ad4530a2f%3A7829357.png?id=302da7ea-3ca4-80a7-a1d4-f3a608505f4c&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="AI Image Gen + 제품 연출컷 프로젝트" loading="lazy" />
-            <div class="project-meta">
-              <p>Photo shoot & Editing</p>
-              <h3>AI Image Gen + 제품 연출컷 프로젝트</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Mobile Design"
-            data-project-id="whipped-renewal"
-            href="https://early-cap-da5.notion.site/WHIPPED-2f4da7ea3ca480a9bd9ccf19de8bf7dd?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A9dc4c99e-1a3f-43a8-b60f-70f4529f5024%3Aaf_527.png?id=2f4da7ea-3ca4-80a9-bd9c-cf19de8bf7dd&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="연출컷 활용 WHIPPED 상세페이지 리뉴얼" loading="lazy" />
-            <div class="project-meta">
-              <p>Mobile Design</p>
-              <h3>연출컷 활용 WHIPPED 상세페이지 리뉴얼</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Mobile Design"
-            data-project-id="sirloin-renewal"
-            href="https://early-cap-da5.notion.site/SIR-LOIN-2fdda7ea3ca480b3b1bdfaef64e310dd?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A7edf0a38-8232-4f0c-919b-b3603a97d376%3Aiphone_13_pro_mockups_12.png?id=2fdda7ea-3ca4-80b3-b1bd-faef64e310dd&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="SIR. LOIN 설로인 한우 상세페이지 리뉴얼" loading="lazy" />
-            <div class="project-meta">
-              <p>Mobile Design</p>
-              <h3>SIR. LOIN 설로인 한우 상세페이지 리뉴얼</h3>
-            </div>
-          </a>
-
-          <a
-            class="project-card"
-            data-category="Character Design"
-            data-project-id="toss-tovi"
-            href="https://early-cap-da5.notion.site/Toss-x-Tovi-Character-Concept-2e9da7ea3ca481b388abc91c372d9997?pvs=25"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Abfedc256-6ac1-4aaa-ac29-bf5885a37c85%3Aba013006-f771-4449-a6cd-3f82f866bee7.png?id=2e9da7ea-3ca4-81b3-88ab-c91c372d9997&table=block&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1400&userId=&cache=v2" alt="Toss x Tovi Character Concept" loading="lazy" />
-            <div class="project-meta">
-              <p>Character Design</p>
-              <h3>Toss x Tovi Character Concept</h3>
-            </div>
-          </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="journey" class="section reveal">
-        <div class="section-title-wrap">
-          <p class="section-kicker">Journey</p>
-        </div>
-
-        <div class="timeline">
-          <article class="timeline-item">
-            <p class="period">2025 - 2026</p>
-            <h3>인천구월그린컴퓨터아트학원</h3>
-            <p>SNS 기반 브랜드/제품 홍보 및 콘텐츠 제작 실무자 양성과정</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2024 - 2025</p>
-            <h3>레코드팩토리</h3>
-            <p>사운드 엔지니어 과정 수료</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2020 - 2021</p>
-            <h3>The Coffee Club</h3>
-            <p>Barista / Runner</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2020 - 2021</p>
-            <h3>Hillsong College</h3>
-            <p>Certificate IV in Ministry Worship Music</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2019 - 2019</p>
-            <h3>네이버 스마트 스토어</h3>
-            <p>남성 패션 브랜드 디프런트(Difrent) 창업 경험</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2016 - 2025</p>
-            <h3>(주)남동컴퍼니 / 남동열처리</h3>
-            <p>품질경영팀 - 방위산업 품질시스템 설계 및 운용</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2013 - 2015</p>
-            <h3>University of Gloucestershire</h3>
-            <p>Accounting and Financial Management Studies</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2013 - 2014</p>
-            <h3>TMC ACADEMY in Singapore</h3>
-            <p>Higher Diploma in Business (Accounting Specialisation)</p>
-          </article>
-          <article class="timeline-item">
-            <p class="period">2012 - 2013</p>
-            <h3>KAPLAN in London</h3>
-            <p>Intensive IELTS Course</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="career-tech" class="section reveal">
-        <div class="section-title-wrap with-controls">
-          <div>
-            <p class="section-kicker">Experience Statement</p>
-          </div>
-          <div class="section-controls-row">
-            <div class="filters career-filters" role="tablist" aria-label="경력 기술 연도 필터">
-              <button class="filter is-active" type="button" data-career-year="all">All</button>
-              <button class="filter" type="button" data-career-year="2016-2025">2016 - 2025</button>
-              <button class="filter" type="button" data-career-year="2020-2021">2020 - 2021</button>
-              <button class="filter" type="button" data-career-year="2019">2019</button>
-            </div>
-            <div class="carousel-nav" role="group" aria-label="경력기술 캐러셀 탐색">
-              <button class="carousel-arrow is-prev" type="button" aria-label="경력 기술 이전 보기" data-carousel-prev="careerCarousel" aria-controls="careerCarousel">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
-              </button>
-              <button class="carousel-arrow is-next" type="button" aria-label="경력 기술 다음 보기" data-carousel-next="careerCarousel" aria-controls="careerCarousel">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="carousel-shell" data-carousel-shell>
-          <div class="career-tech-grid carousel-track" id="careerCarousel">
-          <a
-            class="career-tech-card project-card"
-            data-career-id="2e9da7ea-3ca4-81ab-9316-d6dde75ee3ca"
-            data-career-year="2016-2025"
-            href="https://early-cap-da5.notion.site/2e9da7ea3ca481ab9316d6dde75ee3ca?pvs=25"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A457fa97f-56a9-4834-aca7-051f71871625%3A%E1%84%86%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%86%B7_%E1%84%8B%E1%85%A1%E1%87%81%E1%84%86%E1%85%A7%E1%86%AB.png?table=block&id=2e9da7ea-3ca4-81ab-9316-d6dde75ee3ca&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1800&userId=&cache=v2" alt="(주)남동컴퍼니 / 남동열처리 커버 이미지" loading="lazy" />
-            <div class="project-meta">
-              <p>품질경영팀 | 2016 - 2025</p>
-              <h3>(주)남동컴퍼니 / 남동열처리</h3>
-            </div>
-          </a>
-          <a
-            class="career-tech-card project-card"
-            data-career-id="2e9da7ea-3ca4-8116-8578-e8a8b495b5f6"
-            data-career-year="2019"
-            href="https://early-cap-da5.notion.site/2e9da7ea3ca481168578e8a8b495b5f6?pvs=25"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A69374e95-6101-41b3-8265-17b786541432%3Aog_image.jpg?table=block&id=2e9da7ea-3ca4-8116-8578-e8a8b495b5f6&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1800&userId=&cache=v2" alt="(주)펄어비스 커버 이미지" loading="lazy" />
-            <div class="project-meta">
-              <p>경영지원팀 · 복지팀 | 2019</p>
-              <h3>(주)펄어비스</h3>
-            </div>
-          </a>
-          <a
-            class="career-tech-card project-card"
-            data-career-id="2e9da7ea-3ca4-81e1-9b32-c229c15a0733"
-            data-career-year="2019"
-            href="https://early-cap-da5.notion.site/2e9da7ea3ca481e19b32c229c15a0733?pvs=25"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3A7f92c4f9-19ad-43b6-9a58-3c54e61e8e6f%3A%E1%84%82%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A1%E1%84%90%E1%85%B3%E1%84%89%E1%85%B3%E1%84%90%E1%85%A9%E1%84%8B%E1%85%A5.jpg?table=block&id=2e9da7ea-3ca4-81e1-9b32-c229c15a0733&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1800&userId=&cache=v2" alt="Difrent 커버 이미지" loading="lazy" />
-            <div class="project-meta">
-              <p>네이버 스마트 스토어 창업 경험</p>
-              <h3>Difrent</h3>
-            </div>
-          </a>
-          <a
-            class="career-tech-card project-card"
-            data-career-id="2efda7ea-3ca4-8064-9b72-c179e1ca6dd5"
-            data-career-year="2020-2021"
-            href="https://early-cap-da5.notion.site/2efda7ea3ca480649b72c179e1ca6dd5?pvs=25"
-          >
-            <img src="https://early-cap-da5.notion.site/image/attachment%3Ae0fcf234-16d5-43c2-936f-349d31352d2a%3Alogo-horizontal.webp?table=block&id=2efda7ea-3ca4-8064-9b72-c179e1ca6dd5&spaceId=416da7ea-3ca4-81f6-8faa-0003d10995ff&width=1800&userId=&cache=v2" alt="The Coffee Club 커버 이미지" loading="lazy" />
-            <div class="project-meta">
-              <p>Barista & Runner | 2020 - 2021</p>
-              <h3>The Coffee Club - Sydney</h3>
-            </div>
-          </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" class="section contact reveal">
-        <div class="contact-copy">
-          <p class="section-kicker">Contact</p>
-          <h2>브랜드 메시지를 사용자 경험으로 설계하는 작업을 함께합니다</h2>
-        </div>
-        <div class="contact-actions">
-          <a class="cta" href="mailto:kwoncj1025@gmail.com">이메일 보내기</a>
-          <a class="cta ghost" href="tel:+821063434110">연락하기</a>
-        </div>
-      </section>
-    </main>
-
-    <div class="viewer" id="detailViewer" aria-hidden="true">
-      <div class="viewer-backdrop" data-viewer-close></div>
-      <section class="viewer-shell" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
-        <header class="viewer-topbar">
-          <div class="viewer-topbar-main">
-            <div class="viewer-topbar-meta">
-              <p class="viewer-category" id="viewerCategory"></p>
-              <h2 class="viewer-title" id="viewerTitle"></h2>
-            </div>
-            <section class="viewer-related" id="viewerRelated" hidden></section>
-            <div class="viewer-actions">
-              <a class="viewer-source" id="viewerSource" href="tel:+821063434110">연락하기</a>
-              <button class="viewer-close" type="button" aria-label="닫기" data-viewer-close>닫기</button>
-            </div>
-          </div>
-        </header>
-        <div class="viewer-scroll">
-          <section class="viewer-cover" id="viewerCover"></section>
-          <section class="viewer-intro" id="viewerIntro"></section>
-          <section class="viewer-stack" id="viewerStack"></section>
-          <div class="viewer-bottom-actions">
-            <button class="viewer-back-to-top" id="viewerBackTop" type="button" aria-label="상단으로 이동">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5l-6.5 6.5"></path>
-                <path d="M12 5l6.5 6.5"></path>
-                <path d="M12 5v14"></path>
-              </svg>
-              <span>맨 위로 가기</span>
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
+  </div>
+<main class="page">
+  <section class="copy">
+    <p class="eyebrow"><i></i>Chanjun Kwon · Studio</p>
+    <h1>Meet the designer<span>behind the work.</span></h1>
+    <p class="intro">브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준입니다. 작업은 인스타그램에 모아 두었습니다.</p>
+    <p class="meta"><i></i>Available for new projects</p>
+  </section>
 
-    <footer class="site-footer">
-      <p>© <span id="year"></span> CHANJUN KWON</p>
-      <a class="back-to-top" id="pageBackTop" href="#top" aria-label="맨 위로 이동">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 5l-6.5 6.5"></path>
-          <path d="M12 5l6.5 6.5"></path>
-          <path d="M12 5v14"></path>
-        </svg>
-      </a>
-    </footer>
+  <section class="stage" id="stage" aria-label="권찬준 사원증">
+    <p class="hint">Drag the badge · Click to flip</p>
+  </section>
+</main>
+</div>
 
-    <div id="page-end" aria-hidden="true"></div>
+<section class="work" id="work" aria-label="인스타그램 작업">
+  <div class="work-head">
+    <div>
+      <p class="eyebrow"><i></i>Selected work · 19 posts</p>
+      <h2>The work,<span>card by card.</span></h2>
+    </div>
+    <p>인스타그램에 올린 작업 19편입니다. 카드를 누르면 원본 게시물이 열립니다.</p>
+  </div>
+  <ul class="deck" id="deck"></ul>
+</section>
+<footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener">instagram.com/chanjun.kwon ↗</a></span></footer>
 
-    <script src="intro-details.js"></script>
-    <script src="project-details.js"></script>
-    <script src="career-details.js"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+<script>
+(() => {
+  const ITEMS = [{"c": "DeqOA8QT1Lq", "t": "bewhysee — Concept Rebrand", "s": "Brand Identity · Packaging · Campaign · Web", "d": "Oct 19, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegYwaPzQjM", "t": "OURZ\\ — First Address in Korea", "s": "Brand identity · motion", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegI_tnTouO", "t": "Monthlens — Interactive Landing Template", "s": "Web Design · Interaction · Chat UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DegIk8mzAt-", "t": "Monthlens — Landing Page Template", "s": "Web Design · Landing Page · Dark UI", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Def2RmSzCky", "t": "BizCopilot — Brand Identity Concept", "s": "Brand Identity · Brand Story · Design System", "d": "Oct 15, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeerEJ0zFCp", "t": "BeCanvas — Behance projects as canvas", "s": "Chrome extension · design and build", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ded7nqRTNGB", "t": "Bible Typing — Web Design & Build", "s": "Web Design · Typography · Themes", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedwSsDTXzT", "t": "A dashboard for looking busy at work", "s": "Web dashboard · UI design · Front-end", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedZAVnTInU", "t": "Picketing — Design System Concept", "s": "Colour · Typography · Layout · Components", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DedSsqXzPoc", "t": "Picketing — Brand Renewal", "s": "Brand Identity · Character · Design System · Web", "d": "Oct 14, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebPl7vzX5A", "t": "알트먼 형, 혹시 작년 12월에 내 폴더 뒤져 봤어?", "s": "파란색. 눈 두 개. 입 없음. 짧은 팔.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DebJVSZigkG", "t": "척모드가 업그레이드됐습니다.", "s": "이제 화면에 보이는 건 전부 눌려요.", "d": "Oct 13, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DeaT8hCCaYm", "t": "픽켓팅 디자인 시스템", "s": "Logo · Colour · Typography", "d": "Oct 12, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "Ddg7YGwkwm_", "t": "전라남도 영암 F1 사업 1조 288억.", "s": "논 한가운데 서킷만 덩그러니.", "d": "Sep 20, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdV2wdUk5HR", "t": "토스에 얼굴이 있다면.", "s": "이름은 토비.", "d": "Sep 16, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DdPNAD7Ezct", "t": "디자인은 문제를 풀어내는 일,", "s": "이번 문제는 게임.", "d": "Sep 13, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "Dc-AJVQzOZl", "t": "일하는 척. 바쁜 척. 주소는 척모드 닷컴.", "s": "chuckmode.com 하나 켜 두면 끝납니다.", "d": "Sep 07, 2026", "k": "Reel", "r": "9/16", "o": "chanjun.kwon"}, {"c": "DcvS6oPk-Ra", "t": "소리 내어 읽어보세요.", "s": "1946년입니다. 그때부터 80년 동안 한국에서 가장 많이", "d": "Sep 01, 2026", "k": "Carousel", "r": "4/5", "o": "chanjun.kwon"}, {"c": "DcIc61UPya-", "t": "“이게 비전공자의 브랜딩 결과물이라고요?😲”", "s": "DIAD 브랜딩 17기 권찬준님의 거주 호스피탈리티 플랫폼 ‘OURZI’ 브랜딩입니다.", "d": "Aug 17, 2026", "k": "Reel", "r": "9/16", "o": "dgodwonchan"}];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (document.documentElement.classList.contains('still')) return;
+  const deck = document.getElementById('deck');
+  const hasKo = s => /[가-힣]/.test(s);
+  const els = ITEMS.map((it, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<a class="pc" href="https://www.instagram.com/p/${it.c}/" target="_blank" rel="noopener" aria-label="${it.t.replace(/"/g, '&quot;')} — 인스타그램에서 열기">
+      <div class="im"><img src="work/${it.c}.webp" alt="" loading="${i < 6 ? 'eager' : 'lazy'}" decoding="async"></div>
+      <div class="row"><span>${it.k}${it.o !== 'chanjun.kwon' ? ' · @' + it.o : ''}</span><span>${String(i + 1).padStart(2, '0')} / ${ITEMS.length}</span></div>
+      <p class="t${hasKo(it.t) ? ' ko' : ''}"></p>
+      <div class="ft"><span>${it.d}</span><b class="lk">Open ↗</b></div></a>`;
+    li.querySelector('.t').textContent = it.t;
+    deck.appendChild(li);
+    const a = li.firstElementChild;
+    return { li, a, top: 0, cxp: 0, col: 0, v: 0, vel: 0, hx: 0, hy: 0, thx: 0, thy: 0, jit: ((i * 53) % 9 - 4) / 4 };
+  });
+  if (reduce) return;
+
+  // 카드 자리(문서 기준)는 크기가 바뀔 때만 잰다. 매 프레임에는 transform만 쓴다
+  let H = innerHeight, gridCX = 0;
+  const measure = () => {
+    H = innerHeight;
+    const g = deck.getBoundingClientRect(); gridCX = g.left + g.width / 2;
+    const lefts = [...new Set(els.map(e => Math.round(e.li.offsetLeft)))].sort((a, b) => a - b);
+    els.forEach(e => {
+      const r = e.li.getBoundingClientRect();
+      e.top = r.top + scrollY; e.cxp = r.left + r.width / 2; e.col = lefts.indexOf(Math.round(e.li.offsetLeft));
+    });
+  };
+  measure(); addEventListener('resize', measure); addEventListener('load', measure);
+  if (window.ResizeObserver) new ResizeObserver(measure).observe(document.body);   // 위쪽 명함 영역 높이가 바뀌어도 카드 자리를 다시 잰다
+  if (document.fonts) document.fonts.ready.then(measure);
+
+  // 올리면 들리며 커서 쪽으로 기울어짐
+  els.forEach(e => {
+    e.a.addEventListener('pointermove', ev => { const r = e.li.getBoundingClientRect(); e.thx = ((ev.clientX - r.left) / r.width - 0.5) * 2; e.thy = ((ev.clientY - r.top) / r.height - 0.5) * 2; e.on = 1; });
+    e.a.addEventListener('pointerleave', () => { e.thx = 0; e.thy = 0; e.on = 0; });
+  });
+
+  function frame(){
+    const sy = scrollY;
+    els.forEach(e => {
+      // 카드 윗변이 화면 아래쪽에 닿으면 덱에서 한 장 뽑혀 나와 제자리에 앉는다. 같은 줄은 왼쪽부터 조금씩 늦게
+      const y = e.top - sy;
+      const t = Math.min(1, Math.max(0, (H * 0.98 - y - e.col * H * 0.05) / (H * 0.34)));
+      e.vel = (e.vel + (t - e.v) * 0.085) * 0.74;       // 살짝 넘쳤다가 돌아오는 스프링
+      e.v += e.vel;
+      e.hx += ((e.on ? e.thx : 0) - e.hx) * 0.12; e.hy += ((e.on ? e.thy : 0) - e.hy) * 0.12;
+      const k = 1 - e.v;                                  // 0 = 제자리, 1 = 덱 안
+      const side = Math.sign(e.cxp - gridCX) || 1;
+      const dx = (gridCX - e.cxp) * k * 0.55;             // 덱은 격자 가운데 아래에 있다
+      const dy = k * 260 - (e.on ? 6 : 0) * (1 - Math.min(1, Math.abs(k) * 4));
+      const rz = k * (-side * 10 + e.jit * 4), rx = k * 46 - e.hy * 7, ry = k * side * -10 + e.hx * 9;
+      const s = 0.84 + 0.16 * Math.min(1.04, e.v);
+      e.a.style.transform = `translate3d(${dx.toFixed(1)}px,${dy.toFixed(1)}px,0) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+      e.a.style.opacity = Math.min(1, Math.max(0, e.v * 1.7)).toFixed(3);
+      e.a.style.setProperty('--rim', `${(ry * 8 + rz * 6 + 200).toFixed(1)}deg`);
+      e.a.style.setProperty('--rimO', (0.35 + Math.min(1, Math.abs(k) * 2) * 0.45 + Math.hypot(e.hx, e.hy) * 0.35).toFixed(3));
+      e.a.style.setProperty('--shine', `${(-ry * 5 + k * 60).toFixed(1)}%`);
+      e.a.style.setProperty('--glint', (0.25 + Math.hypot(e.hx, e.hy) * 0.3).toFixed(3));
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+(() => {
+  const hero = document.getElementById('hero'), stage = document.getElementById('stage'), cv = document.getElementById('strap'), ctx = cv.getContext('2d');
+  const badge = document.getElementById('badge'), hang = document.getElementById('hang'), card = document.getElementById('card');
+  const faces = card.querySelectorAll('.face');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const still = location.hash === '#still';
+  if (still) document.documentElement.classList.add('still');
+
+  const N = 16, G = 0.55, GC = 1.1, STRAP_W = 24, STEP = 1000 / 120;   // 120Hz 고정 계산 + 화면 보간
+  const CY = 237, ICM = 22900;            // 카드 무게중심(고리 기준 아래로 px)과 관성
+  let W = 0, H = 0, dpr = 1, seg0 = 18, seg = 18, pts = [];
+  let phi = 0, om = 0, tw = 0, vtw = 0, flip = 0, flipT = 0, vflip = 0;   // phi: 화면 기준 시계 방향 회전
+  let piv = { x: 0, y: 0, vx: 0, vy: 0 }, axS = 0, ayS = 0, vxS = 0;
+  let drag = null, press = null, t0 = performance.now();
+  const label = '  CHANJUN KWON  ·  DESIGNER  ·  AI MAKER  ·';
+  let prev = null;
+  // 첫 진입 낙하: drop = 줄이 고정점 위에 있는 동안(화면 밖), intro = 처음 팽팽해지는 순간 한 번 살짝 튕김
+  let intro = !reduce && !still, drop = intro;
+  const DROP_X = 30, DROP_PHI = 0.12, BOUNCE = 0.2, CALM = 330;
+  let calm = 0;
+
+  let AX = 0, AY = -14, SH = 600;
+  const anchor = () => ({ x: AX, y: AY });
+  const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+
+  function resize(){
+    const r = hero.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+    const nAX = sr.left - r.left + sr.width / 2, nAY = sr.top - r.top - 14;
+    if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
+    W = r.width; H = r.height; AX = nAX; AY = nAY; SH = sr.height; dpr = Math.min(2, devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    seg0 = Math.max(12, Math.min(19, (SH * 0.36) / (N - 1))); if (!drag) seg = seg0;
+    const a = anchor();
+    if (!pts.length) {
+      if (intro && a.y < 60) {   // 첫 진입(고정점이 화면 맨 위): 카드가 화면 밖 위에서 줄을 끌고 떨어진다
+        const ex = a.x + DROP_X, ey = Math.min(a.y - seg0 * (N - 1) * 0.6, -card.offsetHeight - 80);
+        seg = Math.hypot(ex - a.x, ey - a.y) / (N - 1);
+        for (let i = 0; i < N; i++) { const f = i / (N - 1), x = a.x + (ex - a.x) * f, y = a.y + (ey - a.y) * f; pts.push({ x, y, px: x, py: y }); }
+        phi = DROP_PHI; om = 0;
+      } else if (intro) {   // 고정점이 글 아래(모바일): 카드를 고정점 높이까지 들어 올린 자세에서 놓는다. 늘어진 줄 고리는 카드 뒤에 숨는다
+        drop = false;
+        const L = seg0 * (N - 1), h = (L + 24) / 2;
+        for (let i = 0; i < N; i++) { const s = i * seg0, up = s > h, x = a.x + (up ? 5 : -5), y = a.y + (up ? 2 * h - s : s); pts.push({ x, y, px: x, py: y }); }
+        phi = DROP_PHI * 0.5; om = 0;
+      } else { for (let i = 0; i < N; i++) { const x = a.x, y = a.y + i * seg; pts.push({ x, y, px: x, py: y }); } om = reduce ? 0 : 0.0025; }
+      const E = pts[N - 1]; piv.x = E.x; piv.y = E.y; }   // 축의 첫 위치를 줄 끝에 맞춰 첫 프레임 튐 방지
+  }
+  resize(); addEventListener('resize', resize);
+  if (document.fonts) document.fonts.ready.then(resize);
+
+  const local = e => { const r = hero.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+
+  // 짧게 누르면 뒤집기, 4px 넘게 움직이면 잡은 자리 그대로 끌기
+  card.addEventListener('pointerdown', e => {
+    if (e.target.closest('button,a')) return;
+    e.preventDefault();
+    const P = local(e), A = pts[N - 1];
+    const g = rot(P.x - A.x, P.y - A.y, -phi);           // 카드 위 잡은 점(카드 좌표)
+    press = { id: e.pointerId, sx: e.clientX, sy: e.clientY, g, P, moved: false };
+    try { card.setPointerCapture(e.pointerId); } catch {}
+  });
+  card.addEventListener('pointermove', e => {
+    if (!press || e.pointerId !== press.id) return;
+    press.P = local(e);
+    if (!press.moved && Math.hypot(e.clientX - press.sx, e.clientY - press.sy) > 4) {
+      press.moved = true; card.classList.add('grab'); intro = drop = false; calm = 0; seg = seg0;
+      const A = pts[N - 1], [gx, gy] = rot(press.g[0], press.g[1], phi);
+      drag = { g: press.g, x: A.x + gx, y: A.y + gy };          // 손이 잡은 점의 현재 위치
+      piv.x = drag.x; piv.y = drag.y;
+    }
+  });
+  const end = e => {
+    if (!press || (e && e.pointerId !== press.id)) return;
+    if (!press.moved && e && e.type === 'pointerup') { flipT = flipT ? 0 : 180; vtw += flipT ? 4 : -4; }
+    if (drag) {   // 놓는 순간: 고리 기준으로 다시 매달리되 회전 속도는 이어간다
+      const A = pts[N - 1]; piv.x = A.x; piv.y = A.y;
+      const vx = A.x - A.px, vy = A.y - A.py, v = Math.hypot(vx, vy), cap = 6;   // 놓을 때 튕김 제한
+      if (v > cap) { A.px = A.x - vx * cap / v; A.py = A.y - vy * cap / v; }
+      om = Math.max(-0.03, Math.min(0.03, om));
+    }
+    press = null; drag = null; card.classList.remove('grab');
+  };
+  card.addEventListener('pointerup', end); card.addEventListener('pointercancel', end);
+
+  document.getElementById('toBack').addEventListener('click', () => { flipT = 180; vtw += 4; });
+  document.getElementById('toFront').addEventListener('click', () => { flipT = 0; vtw -= 4; });
+  card.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; b.classList.add('ok'); }
+    catch { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected'; }
+    setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('ok'); }, 1400);
+  }));
+
+  function solveRope(fixEnd){
+    const a = anchor();
+    for (let k = 0; k < 18; k++) {
+      pts[0].x = a.x; pts[0].y = a.y;
+      for (let i = 0; i < N - 1; i++) {
+        const p = pts[i], q = pts[i + 1];
+        const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1, diff = (d - seg) / d;
+        const wp = i === 0 ? 0 : 1, wq = (i + 1 === N - 1 && fixEnd) ? 0 : 1, s = wp + wq || 1;
+        p.x += dx * diff * wp / s; p.y += dy * diff * wp / s;
+        q.x -= dx * diff * wq / s; q.y -= dy * diff * wq / s;
+      }
+    }
+  }
+
+  function step(t){
+    const a = anchor(), E = pts[N - 1];
+    let px0 = piv.x, py0 = piv.y;
+    if (drag) {
+      // 손가락 위치를 부드럽게 따라감(이벤트 간격이 들쭉날쭉해도 끊기지 않게)
+      drag.x += (press.P.x - drag.x) * 0.45; drag.y += (press.P.y - drag.y) * 0.45;
+      piv.x = drag.x; piv.y = drag.y;
+    }
+    // 목줄: verlet
+    const calmK = calm > 0 ? calm-- / CALM : 0;       // 첫 낙하 뒤 2~3초 동안만 감쇠를 더해 흔들림을 가라앉힌다
+    const kd = intro ? 0.994 : 0.976 - 0.012 * calmK;   // 떨어지는 동안은 공기 저항만
+    for (let i = 1; i < N; i++) {
+      const p = pts[i], vx = (p.x - p.px) * kd, vy = (p.y - p.py) * kd;
+      p.px = p.x; p.py = p.y; p.x += vx; p.y += vy + G * 0.25;
+    }
+    if (drag) {
+      const [gx, gy] = rot(drag.g[0], drag.g[1], phi);
+      let Ax = piv.x - gx, Ay = piv.y - gy;
+      const maxL = seg0 * (N - 1) * 1.2;              // 줄은 원래 길이의 1.2배까지만 늘어난다
+      let d = Math.hypot(Ax - a.x, Ay - a.y);
+      if (d > maxL) { Ax = a.x + (Ax - a.x) * maxL / d; Ay = a.y + (Ay - a.y) * maxL / d; d = maxL;
+        piv.x = Ax + gx; piv.y = Ay + gy; drag.x = piv.x; drag.y = piv.y; }
+      E.px = E.x; E.py = E.y; E.x = Ax; E.y = Ay;
+      seg = Math.max(seg0, d / (N - 1));
+      solveRope(true);
+    } else if (drop) {
+      E.y += G * 0.25 * 1.6;                          // 화면 밖에서 자유낙하: 줄은 끝을 따라오기만 한다
+      const d = Math.hypot(E.x - a.x, E.y - a.y), L = seg0 * (N - 1);
+      seg = Math.max(seg0, d / (N - 1)); solveRope(true);
+      if (d <= L) { drop = false; seg = seg0; }
+      piv.x = E.x; piv.y = E.y;
+    } else {
+      E.y += G * 0.25 * 1.6;                          // 카드 무게
+      seg += (seg0 - seg) * 0.035;                     // 늘어난 줄이 천천히 되돌아옴
+      if (!reduce) E.x += Math.sin(t * 0.8) * 0.012;
+      const vyE = E.y - E.py;
+      solveRope(false);
+      if (intro && vyE > 3 && Math.hypot(E.x - a.x, E.y - a.y) >= seg0 * (N - 1) * 0.97) {
+        intro = false; calm = CALM; E.py = E.y + vyE * BOUNCE;   // 줄이 처음 팽팽해질 때 한 번만 살짝 튕긴다
+      }
+      piv.x = E.x; piv.y = E.y;
+    }
+    // 회전: 잡은 점(또는 고리)을 축으로 한 진자. 축의 가속도는 관성으로 작용
+    const vx = piv.x - px0, vy = piv.y - py0;
+    const ax = vx - piv.vx, ay = vy - piv.vy; piv.vx = vx; piv.vy = vy;
+    axS += (ax - axS) * 0.35; ayS += (ay - ayS) * 0.35; vxS += (vx - vxS) * 0.25;
+    const gl = drag ? drag.g : [0, 0];
+    const [rx, ry] = rot(0 - gl[0], CY - gl[1], phi);   // 축 → 무게중심(화면)
+    const r2 = rx * rx + ry * ry;
+    const torque = rx * (GC * 0.25 - ayS * 0.6) + ry * axS * 0.6;
+    om += torque / (r2 + ICM) * 1.0;
+    om *= drag ? 0.982 : 0.986 - 0.01 * calmK;
+    om = Math.max(-0.05, Math.min(0.05, om));
+    phi += om; phi = Math.max(-1.2, Math.min(1.2, phi));
+    // 비틀림(Y축)과 뒤집기
+    vtw += -tw * 0.012 - vtw * 0.06 + vxS * 0.18;
+    tw += vtw; tw = Math.max(-60, Math.min(60, tw));
+    vflip += (flipT - flip) * 0.02 - vflip * 0.16; flip += vflip;
+  }
+
+  window.__cardState = () => ({ phi, flip });
+  function snapshot(){ return { e: pts.map(p => [p.x, p.y]), phi, tw, flip, om }; }
+
+  function drawStrap(P){
+    ctx.clearRect(0, 0, W, H);
+    const L = [], R = [];
+    for (let i = 0; i < N; i++) {
+      const p = P[i], q = P[Math.min(N - 1, i + 1)], o = P[Math.max(0, i - 1)];
+      let tx = q[0] - o[0], ty = q[1] - o[1]; const d = Math.hypot(tx, ty) || 1; tx /= d; ty /= d;
+      const w = STRAP_W / 2;
+      L.push([p[0] - ty * w, p[1] + tx * w]); R.push([p[0] + ty * w, p[1] - tx * w]);
+    }
+    ctx.beginPath(); ctx.moveTo(L[0][0], L[0][1]);
+    for (let i = 1; i < N; i++) ctx.lineTo(L[i][0], L[i][1]);
+    for (let i = N - 1; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
+    ctx.closePath(); ctx.fillStyle = '#15161b'; ctx.fill();
+    ctx.font = '600 9px "Funnel Sans", sans-serif'; ctx.fillStyle = '#9fb2e6'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    let acc = 0, ci = 0, next = 10;
+    for (let i = 0; i < N - 2; i++) {
+      const p = P[i], q = P[i + 1], d = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1, ang = Math.atan2(q[1] - p[1], q[0] - p[0]);
+      while (next <= acc + d) {
+        const f = (next - acc) / d, ch = label[ci % label.length]; ci++;
+        ctx.setTransform(dpr * Math.cos(ang), dpr * Math.sin(ang), -dpr * Math.sin(ang), dpr * Math.cos(ang), dpr * (p[0] + (q[0] - p[0]) * f), dpr * (p[1] + (q[1] - p[1]) * f));
+        ctx.fillText(ch, 0, 0);
+        next += ch === ' ' ? 4 : 7.2;
+      }
+      acc += d;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const e = P[N - 1], f = P[N - 3], ca = Math.atan2(e[1] - f[1], e[0] - f[0]);
+    ctx.save(); ctx.translate(e[0], e[1]); ctx.rotate(ca - Math.PI / 2);
+    const g = ctx.createLinearGradient(-STRAP_W / 2 - 1, 0, STRAP_W / 2 + 1, 0);
+    g.addColorStop(0, '#8c909a'); g.addColorStop(.3, '#f2f3f6'); g.addColorStop(.6, '#c3c6ce'); g.addColorStop(1, '#7d818b');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(-STRAP_W / 2 - 1, -15, STRAP_W + 2, 11, 2.5); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(-STRAP_W / 2 + 2, -8, STRAP_W - 4, 1);
+    ctx.restore();
+  }
+
+  function render(alpha){
+    const cur = snapshot(), a = prev && alpha != null ? alpha : 1, b = prev || cur;
+    const lerp = (x, y) => x + (y - x) * a;
+    const P = cur.e.map((p, i) => [lerp(b.e[i][0], p[0]), lerp(b.e[i][1], p[1])]);
+    const ph = lerp(b.phi, cur.phi), t = lerp(b.tw, cur.tw), fl = lerp(b.flip, cur.flip), o = lerp(b.om, cur.om);
+    const E = P[N - 1];
+    badge.style.transform = `translate3d(${E[0]}px, ${E[1]}px, 0)`;
+    hang.style.transform = `rotate(${ph}rad)`;
+    const ryv = t + fl, rxv = Math.max(-10, Math.min(10, -o * 420));
+    card.style.transform = `rotateY(${ryv}deg) rotateX(${rxv}deg)`;
+    const deg = ph * 180 / Math.PI, tilt = Math.min(1, (Math.abs(t) + Math.abs(deg)) / 35);
+    const sv = Math.sin(ryv * Math.PI / 180);
+    faces.forEach(f => {
+      f.style.setProperty('--rim', `${(ryv * 2 + deg * 3) % 360}deg`);
+      f.style.setProperty('--rimO', (0.3 + tilt * 0.6).toFixed(3));
+      f.style.setProperty('--glare', (0.2 + tilt * 0.65).toFixed(3));   // 가만히 있어도 유리 질감은 읽히게, 기울수록 강해짐
+      f.style.setProperty('--sx', `${50 - sv * 45}%`);
+      f.style.setProperty('--sy', `${20 + rxv * 3}%`);
+      f.style.setProperty('--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
+    });
+    drawStrap(P);
+  }
+
+  let acc = 0, last = performance.now();
+  function loop(now){
+    acc += Math.min(100, now - last); last = now;
+    while (acc >= STEP) { prev = snapshot(); step((now - t0) / 1000); acc -= STEP; }
+    render(acc / STEP); requestAnimationFrame(loop);
+  }
+  if (still) {
+    const an = anchor();
+    pts.forEach((p, i) => { const f = i / (N - 1); p.x = p.px = an.x - 26 * f * f; p.y = p.py = an.y + seg * i * (1 - 0.004 * i); });
+    phi = -0.07; tw = 14; flip = 0; om = 0;
+    const draw = () => { prev = null; render(1); };
+    addEventListener('resize', draw); document.fonts.ready.then(draw); draw(); setTimeout(draw, 400);
+  } else { render(1); requestAnimationFrame(loop); }
+})();
+</script>
