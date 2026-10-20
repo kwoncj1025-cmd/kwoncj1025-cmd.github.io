@@ -446,12 +446,16 @@ html.stage-on .web-guide[hidden]{display:none}
 html.stage-on .web-guide:hover,html.stage-on .web-guide[aria-pressed="true"]{color:var(--nt-ink)}
 html.stage-on .web-guide:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
 @media (max-width:820px){html.stage-on .web-guide{top:20px;right:20px}}
-/* 글 격자 안의 옛 안내(오른쪽 눈썹)는 이 상태 글로 대신한다 */
-html.stage-on body .web-info .wi-ey>span:last-child{visibility:hidden}
 /* 쓰는 동안 화면 밖을 살짝 어둡게: 화면 자리에 놓인 빈 상자의 바깥 그림자. 누르기는 그대로 통과한다(밖을 누르면 나가기) */
 html.stage-on .web-dim{display:block;position:fixed;z-index:45;pointer-events:none;visibility:hidden;opacity:0;box-shadow:0 0 0 200vmax rgba(6,7,16,.5)}
 /* 쓰는 동안에는 화면(뷰포트의 88%)이 위아래 6%만 남기므로 상태 글을 화면 위 띠로 올린다 */
 @media (min-width:821px){html.stage-on .web-guide[aria-pressed="true"]{top:10px}}
+/* 쓰는 동안 상태 글은 라벨이 아니라 본문 글(.wi-line)과 같은 크기·가장 밝은 글색으로 읽힌다. 들어간 직후 한 번만 밝아졌다 가라앉는다 */
+html.stage-on .web-guide[aria-pressed="true"]{font-size:clamp(14px,1.05vw,16px);letter-spacing:.01em;text-transform:none;color:var(--nt-ink)}
+@media (max-width:820px){html.stage-on .web-guide[aria-pressed="true"]{font-size:13.5px}}
+html.stage-on .web-guide.is-cue{animation:webGuideCue 1.6s cubic-bezier(.3,0,.2,1) .25s 1 both}
+@keyframes webGuideCue{0%{color:var(--nt-ink);text-shadow:none}25%{color:#fff;text-shadow:0 0 14px rgba(233,236,245,.55)}100%{color:var(--nt-ink);text-shadow:none}}
+@media (prefers-reduced-motion:reduce){html.stage-on .web-guide.is-cue{animation:none}}
 /* 불러오는 동안의 화면은 꺼진 맥 화면(검정). 문서가 뜨면 짧게 켜진다 */
 html.stage-on .mb-pane iframe{transition:opacity .35s ease-out}
 html.stage-on .mb-pane iframe.is-loading{opacity:0}
@@ -1043,7 +1047,10 @@ window.ticker = (() => {
   if (STAGE) { let pp = -1; Stage.ticker.add(() => { const p = Stage.state.p > 0.04; if (p !== pp) { pp = p; peekState(); } }); }
   // 무대: 카드 사진(19장)은 첫 화면(벽)에서는 보이지 않으므로, 손이 움직이기 시작하면(p>0.08) 그때 받는다. 첫 화면 요청 수를 줄인다(GitHub Pages 429)
   if (STAGE) { const arm = () => { if (Stage.state.p <= 0.08) return; Stage.ticker.remove(arm); document.querySelectorAll('#pile img[data-src]').forEach(im => { im.src = im.dataset.src; im.removeAttribute('data-src'); }); }; Stage.ticker.add(arm); }
-  addEventListener('scroll', peekState, { passive: true }); peekState();
+  addEventListener('scroll', peekState, { passive: true });
+  // 해시로 다른 정거장에 바로 들어오면 첫 순간 p=0이라 카드 더미가 비쳤다가 사라진다: 그때는 전환 없이 처음부터 감춘다
+  if (STAGE && location.hash.length > 1) { peek.style.transition = 'none'; peek.classList.add('gone'); peek.offsetWidth; requestAnimationFrame(() => requestAnimationFrame(() => { peek.style.transition = ''; })); }
+  else peekState();
   peek.addEventListener('click', () => window.Stage && Stage.enabled ? Stage.go('work') : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
   const hasKo = s => /[가-힣]/.test(s), pad = n => String(n).padStart(2, '0');
@@ -2467,6 +2474,7 @@ window.ticker = (() => {
   const dim = document.createElement('div'); dim.className = 'web-dim'; dim.setAttribute('aria-hidden', 'true');
   document.body.append(dim, guide);
   const guideText = () => { guide.textContent = using ? (TOUCH.matches ? '사용 중 · 나가기' : '사용 중 · 나가기 Esc') : '화면을 눌러 써 보기'; guide.setAttribute('aria-pressed', using ? 'true' : 'false'); };
+  guide.addEventListener('animationend', () => guide.classList.remove('is-cue'));
   guide.addEventListener('click', e => { e.stopPropagation(); using ? exitUse() : enterUse(); });
   let dimKey = '';
   function placeDim(){
@@ -2493,14 +2501,14 @@ window.ticker = (() => {
     if (ARTIFACT && x.sv.external) { window.open(x.sv.url, '_blank', 'noopener'); return; }
     if (!x.frame) mount(x);
     using = x; hold = Stage.hold('web');
-    x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using'); guideText();
+    x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using'); guideText(); guide.classList.remove('is-cue'); void guide.offsetWidth; guide.classList.add('is-cue');
     animUse(1, 600);
     setTimeout(() => { if (using === x && x.frame) x.frame.focus(); }, 60);
   }
   function exitUse(){
     const x = using; if (!x) return; using = null;
     x.pane.inert = true; if (x.frame) x.frame.tabIndex = -1;
-    mb.classList.remove('using'); document.documentElement.classList.remove('web-using'); guideText();
+    mb.classList.remove('using'); document.documentElement.classList.remove('web-using'); guideText(); guide.classList.remove('is-cue');
     hit.focus({ preventScroll: true });
     if (hold) { Stage.release(hold); hold = 0; }
     animUse(0, 450);
@@ -2705,11 +2713,10 @@ window.ticker = (() => {
     // 맺음: θ 80 내려다보기로 명함(앞면, 왼쪽 위)과 화면이 잠든 맥북(가운데 아래)을 책상 위 평면 배치로 한 화면에 잡는다(card-drop 시험식).
     // θ 55에서는 명함이 맥북 뒤(벽 쪽)에 가려 어둠에 뜬 조각으로 읽혔다
     end: () => {
+      // 맺음의 주인공은 명함(card-drop 식): 명함을 가운데 두고 다가가고, 꺼진 맥북은 오른쪽 아래에 베젤·노치만 걸린다
       const c = (window.Hero && Hero.desk && Hero.desk.cornerAt) || { x: G.cx - W.Wd / 2 - G.lidW, z: W.Dt - 0.34 * W.H };
-      const th = 80, a = th * Math.PI / 180, mx = G.cx - W.Wd / 2, mz = G.zh + 0.5 * G.baseD;
-      const sx = Math.abs(mx - c.x) + 0.5 * G.lidW + 120, sz = (mz - c.z) + 0.5 * G.baseD + 160;
-      const d = Math.max(sx * P() / (0.92 * W.Wd), sz * Math.sin(a) * P() / (0.92 * W.H));
-      return { th, Tx: (mx + 0.5 * G.lidW + c.x - 120) / 2, Ty: 0, Tz: (mz + 0.5 * G.baseD + c.z - 160) / 2, d };
+      const d = 1.45 * P(), k = d / P();
+      return { th: 80, Tx: c.x + 0.14 * W.Wd * k, Ty: 0, Tz: c.z + 0.09 * W.H * k, d };
     },
   };
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
@@ -2751,7 +2758,8 @@ window.ticker = (() => {
   Stage.webPath = path;
   Stage.webEnd = cam.end;
   // 맺음 줄 자리: 키보드면 위에 인쇄돼 보이지 않게 책상 위에
-  Stage.webSign = () => { const c = window.Hero && Hero.desk && Hero.desk.cornerAt, left = G.cx - G.lidW / 2; return { x: c ? (c.x + W.Wd / 2 + left) / 2 : left - 200, z: G.zh + G.baseD - 40 }; };   // 맺음 카메라 아래 끝이 몸체 앞 끝이라, 몸체 왼쪽 앞 책상(명함과 맥북 사이)에 둔다
+  // 맺음 줄: 명함 중심 카메라에서 명함 바로 아래 책상(화면 0.6H 안팎)에 명함과 가운데를 맞춰 둔다. 맥북은 그보다 아래·오른쪽에서 시작한다
+  Stage.webSign = () => { const c = (window.Hero && Hero.desk && Hero.desk.cornerAt) || { x: G.cx - W.Wd / 2 - G.lidW, z: W.Dt - 0.34 * W.H }, k = cam.end().d / P(); return { x: c.x + W.Wd / 2, z: c.z + 0.19 * W.H * k }; };
   Stage.webGeo = { G, screen, cam, setLid };
   const remeasure = () => { measure(); Stage.refresh(); };
   addEventListener('resize', remeasure);
