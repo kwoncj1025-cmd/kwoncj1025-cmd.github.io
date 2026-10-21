@@ -278,6 +278,14 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 }
 /* 터치 기기: 카드 면의 빛줄기(soft-light 혼합)를 끈다. 3D 무대에서 카드 19장의 혼합 합성이 휴대폰을 버벅이게 했다(10-21 측정). 테두리 무지개는 멈춘 채 남는다 */
 @media (pointer:coarse){.f::after{display:none}}
+/* 터치 기기: 층 수 줄이기(10-21 측정, 층 정리 비용이 카드 3D 층 수에 비례). 늘 붙어 있던 will-change를 풀고, 움직이거나 뒤집힌 카드(.live, table.js)만
+   앞뒤 면을 3D로 둔다. 멈춘 앞면 카드는 평면 한 장(뒷면은 그리지 않음). 세로 책상에서 화면 밖 카드(.off)는 그리지 않는다 */
+@media (pointer:coarse){
+  html.stage-on .pc{will-change:auto}
+  html.stage-on .pc:not(.live),html.stage-on .pc:not(.live) .flip{transform-style:flat}
+  html.stage-on .pc:not(.live) .back{display:none}
+  html.stage-on .pc.off{visibility:hidden}
+}
 @media (prefers-reduced-motion:reduce){
   .table{height:auto;padding:96px max(24px,env(safe-area-inset-right,0px)) 48px max(24px,env(safe-area-inset-left,0px))}
   .tbar .hint{display:none}
@@ -1465,10 +1473,13 @@ window.ticker = (() => {
       c.ks = c.ks == null ? K : c.ks + (K - c.ks) * 0.18;
       // 이 카드가 아직 움직이는 중인가(위치·회전·뒤집기·기울기·들림 중 하나라도 자리를 찾는 중이면)
       const h = c.home;
-      if (held || c.toss || !near0(c.vx, 0.02) || !near0(c.vy, 0.02) || !near0(c.vr, 1e-4) ||
+      const moving = held || pressed || c.toss || !near0(c.vx, 0.02) || !near0(c.vy, 0.02) || !near0(c.vr, 1e-4) ||
           (h && !held && (!near0(h.x - c.x, 0.05) || !near0(h.y - c.y, 0.05) || !near0(Math.atan2(Math.sin(h.r - c.r), Math.cos(h.r - c.r)), 1e-3))) ||
           !near0(c.flT + hoverPeek + c.peekT - c.fl, 0.05) || !near0(c.flV, 0.02) ||
-          !near0(txT - c.tx, 0.01) || !near0(tyT - c.ty, 0.01) || !near0(liftT - c.lift, 0.002) || !near0(K - c.ks, 0.001)) busy = true;
+          !near0(txT - c.tx, 0.01) || !near0(tyT - c.ty, 0.01) || !near0(liftT - c.lift, 0.002) || !near0(K - c.ks, 0.001);
+      if (moving) busy = true;
+      // 터치 기기: 움직이거나 뒤집힌(뒤집히는) 카드만 3D 층(앞뒤 면·preserve-3d)을 가진다. 멈춘 앞면 카드는 평면 한 장으로 합성해 층 수를 줄인다(4-cards.css .live)
+      put(c, '_live', moving || c.flT !== 0 || Math.abs(c.fl) > 0.5, v => c.el.classList.toggle('live', v));
       const st = c.el.style;
       // 모바일은 들릴 때 더 커지고(14%), 누른 손가락 쪽으로 조금 다가온다
       const mob = MOB(), grow = mob ? 0.14 : 0.05, toward = pressed && !held && mob ? 0.18 * c.lift : 0;
@@ -1489,6 +1500,12 @@ window.ticker = (() => {
     return false;
   }
   ticker.add('cards', frame);
+  // 모바일 세로 책상: 화면 밖(카메라가 보는 책상 범위 위아래로 카드 한 장 이상 떨어진) 카드는 감춘다. 책상을 내려가는 동안만(p 0.9~1.22) 따지고, 그 밖에서는 모두 보인다
+  if (STAGE) { let offKey = ''; Stage.ticker.add(() => {
+    const p = Stage.state.p, on = MOB() && p > 0.9 && p < 1.22, tz = Stage.camera.Tz || 0, half = innerHeight / 2 + ch * 1.1;
+    const key = on ? Math.round(tz / 40) + '' : '-'; if (key === offKey) return; offKey = key;
+    cards.forEach(c => { const off = on && !(drag && drag.c === c) && Math.abs(c.y - tz) > half; if (c._off !== off) { c._off = off; c.el.classList.toggle('off', off); } });
+  }); }
   checkDeal();
   // 장면(scene-hero·scene-table)이 부르는 손잡이. 모으기는 정렬도 풀고 모두 앞면으로 돌린다
   window.Table = {
@@ -2149,6 +2166,7 @@ window.ticker = (() => {
   // 명함이 커서 대신 굵기를 끌고 간다. 경계 없이 거리에 따라 줄어들고(가우스), 다가갈 때는 빠르게, 떠나면 관성 있게 천천히 돌아온다.
   // 글자마다 기본 굵기(500)일 때의 폭으로 칸을 고정해 굵어져도 줄이 출렁이지 않는다. 움직임 줄이기에서는 쓰지 않는다
   // 같은 손을 끝 화면 큰 줄(「Thanks for watching.」, macbook.js)도 쓴다: Hero.weightText(요소, 보이는지)
+  const cardMoving = () => ticker.awake('badge');
   function weightText(mark, isOn, cardOn){
     if (!mark || reduce) return;
     const W0 = 500, W1 = 700, txt = mark.textContent; mark.textContent = '';
@@ -2178,9 +2196,11 @@ window.ticker = (() => {
       const kUp = 1 - Math.exp(-dt / 70), kDn = 1 - Math.exp(-dt / 600);
       const p = src(), mr = mark.getBoundingClientRect(), R = mr.height * 0.95;
       let busy = false;
-      ls.forEach(l => {
+      // 글자 자리는 먼저 한꺼번에 읽고 굵기는 그 뒤에 쓴다(읽기·쓰기를 번갈아 하면 글자마다 배치를 다시 계산한다)
+      const cs = p ? ls.map(l => { const r = l.e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }) : null;
+      ls.forEach((l, i) => {
         let t = W0;
-        if (p) { const r = l.e.getBoundingClientRect(), dx = p[0] - (r.left + r.width / 2), dy = p[1] - (r.top + r.height / 2); t = W0 + (W1 - W0) * Math.exp(-(dx * dx + dy * dy) / (R * R)); }
+        if (p) { const dx = p[0] - cs[i][0], dy = p[1] - cs[i][1]; t = W0 + (W1 - W0) * Math.exp(-(dx * dx + dy * dy) / (R * R)); }
         l.w += (t - l.w) * (t > l.w ? kUp : kDn);
         if (Math.abs(t - l.w) > 0.5) busy = true;
         const v = Math.round(l.w); if (v !== l.shown) { l.shown = v; l.e.style.fontVariationSettings = `"wght" ${v}`; }
@@ -2194,7 +2214,7 @@ window.ticker = (() => {
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) { haveP = false; kick(); } });
     ['pointerdown', 'pointerup', 'wheel', 'touchmove', 'scroll'].forEach(t => addEventListener(t, kick, { passive: true }));
     fit(); document.fonts.load('500 1em "Funnel Display"').then(fit, () => {});   // 서체가 도착하면 그 글자 폭으로 한 번 더 잰다
-    if (!fine) setInterval(() => { if (isOn()) kick(); }, 500);   // 터치: 흔들리는 명함을 따라가도록 가끔 깨운다(멈추면 다시 잠든다)
+    if (!fine) setInterval(() => { if (isOn() && cardMoving()) kick(); }, 500);   // 터치: 흔들리는 명함을 따라가도록 가끔 깨운다. 명함 루프가 잠들었으면(멈춤) 깨우지 않는다
   }
   { const hm = document.querySelector('.copy .mark'); if (hm) hm.addEventListener('mk-fit', () => { if (innerWidth <= 820) resize(); }); }   // 세로 화면 이름 크기·목줄 길이는 이름 폭에 달려 있다
   weightText(document.querySelector('.copy .mark'), () => heroIn, () => (drag || press) && ct === 0);
@@ -2653,9 +2673,18 @@ window.ticker = (() => {
     sync();
   }
   // iframe: 고른 서비스(와 바꾸는 동안 앞 서비스)만 둔다
+  // 휴대폰(10-21 조율, 모바일 성능): iframe을 붙이는 일(문서 만들기·첫 탐색)을 스크롤 밖으로 뺀다.
+  //  · 정거장에 거의 닿았거나(0.06 안) 손가락이 멈춰 무대가 가라앉았을 때만 붙인다. 그 전에는 꺼진 화면(검정)이 그대로 보인다
+  //  · 붙이기는 그 프레임에서 하지 않고 다음 틈(setTimeout)으로 미룬다
+  //  · 서비스를 바꾸는 동안 앞 서비스를 남기지 않고, 띠가 다 밀린 뒤 고른 것 하나만 붙인다(동시에 1개)
+  let mountT = 0;
   function sync(){
-    const on = live(Stage.state.p);
-    panes.forEach((x, i) => { if (on && (i === sel || (anim && i === prev))) mount(x); else unmount(x); });
+    const p = Stage.state.p, on = live(p);
+    if (!narrow()) { panes.forEach((x, i) => { if (on && (i === sel || (anim && i === prev))) mount(x); else unmount(x); }); return; }
+    const ready = on && !anim && (Math.abs(p - WEB) < 0.06 || Stage.state.settled);
+    panes.forEach((x, i) => { if (!(on && i === sel)) unmount(x); });
+    const x = panes[sel];
+    if (ready && !x.frame && !mountT) mountT = setTimeout(() => { mountT = 0; const p2 = Stage.state.p; if (live(p2) && !anim && panes[sel] === x && (Math.abs(p2 - WEB) < 0.06 || Stage.state.settled)) mount(x); }, 60);
   }
   function update(p){
     if (anim) {
