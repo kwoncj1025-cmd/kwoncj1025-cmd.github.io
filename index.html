@@ -237,7 +237,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 /* 그늘 한 장: 더미 아래쪽 카드(--so)와, 빛웅덩이 가장자리 카드(--amb × --li)가 어두워진다. 색은 밤 방의 남보라 */
 .f>.sh{position:absolute;inset:0;border-radius:inherit;background:var(--nt);opacity:calc(var(--so,0) + var(--amb,0) * var(--li,0) * .3);pointer-events:none;z-index:1}
 /* 스크롤 신호(10-21 대표님: 카드 미리보기 빼고 화살표만, 잘 보이게): 첫 화면 아래 가운데에 아래 화살표 셋을 세로로 쌓는다.
-   위에서 아래로 차례로 진해지며 흘러내린다. 선은 사이트 아이콘과 같은 둥근 끝, 색은 본문 먹색. 누르면 작업 구역으로, 첫 화면을 떠나면 사라진다 */
+   위에서 아래로 차례로 진해지며 흘러내린다. 선은 사이트 아이콘과 같은 둥근 끝, 색은 본문 먹색. 맺음 앞 모든 정거장에 멈춰 있을 때 보이고 누르면 다음 정거장으로(table.js) */
 .peek{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:20;display:block;margin:0;padding:4px 14px;border:0;background:none;cursor:pointer;
   color:var(--ink);transform:translateX(-50%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
 .peek-t{display:flex;flex-direction:column;align-items:center;gap:0}   /* 화살표 간격 10px(10-21 대표님: 조금 넓다). 묶음 높이 38px로 이름 글자 아래 64px 틈 안에 든다 */
@@ -249,6 +249,8 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .peek:hover{transform:translate(-50%,3px)}
 .peek.gone{opacity:0;transform:translate(-50%,40px);pointer-events:none}
 .peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px;border-radius:8px}
+.peek.night{color:var(--nt-ink)}
+html.stage-held .peek{visibility:hidden}   /* 맥북을 써 보는 동안 */
 @media (prefers-reduced-motion:reduce){.peek-t svg{animation:none;opacity:.8}}
 /* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
 .back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
@@ -709,7 +711,7 @@ html.end-on .totop{bottom:var(--ei-top-b,20px)}
   <dl class="wi-dl"><dt>Service</dt><dd class="wi-ko"></dd><dd class="wi-line"></dd></dl>
   <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
 </aside>
-<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg></span></button>
+<button class="peek" id="peek" type="button" aria-label="다음 장면 보기"><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg></span></button>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
@@ -1049,8 +1051,15 @@ window.ticker = (() => {
   const peek = document.getElementById('peek');
   const STAGE = !!(window.Stage && Stage.enabled);   // 무대: 문서 스크롤 대신 장면이 나눠 주기·모으기를 부르고, 책상은 화면 한 장
   [...peek.querySelectorAll('i')].forEach((el, k) => { el.style.backgroundImage = `url(work/${ITEMS[k].c}.webp)`; });
-  const peekState = () => peek.classList.toggle('gone', STAGE ? Stage.state.p > 0.04 : scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
-  if (STAGE) { let pp = -1; Stage.ticker.add(() => { const p = Stage.state.p > 0.04; if (p !== pp) { pp = p; peekState(); } }); }
+  // 스크롤 신호(10-21 대표님: 히어로에만 있으면 안 된다, 카드 화면에도): 첫 화면과 카드 책상에 멈춰 있을 때 보이고, 움직이는 동안에는 사라진다.
+  // 맥북 정거장에서는 화면 아래 가운데가 맥북 손목 받침이라 두지 않는다. 누르면 다음 정거장으로 간다
+  const WEB = STAGE ? Stage.config.stations.findIndex(x => x.name === 'web') : 0;
+  const peekKey = () => { const s = Stage.state, i = Math.round(s.p); return `${Math.abs(s.p - i) < 0.04 && i < WEB}|${s.dk > 0.5}`; };
+  const peekState = () => {
+    if (!STAGE) return peek.classList.toggle('gone', scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
+    const [show, night] = peekKey().split('|'); peek.classList.toggle('gone', show !== 'true'); peek.classList.toggle('night', night === 'true');
+  };
+  if (STAGE) { let pk = ''; Stage.ticker.add(() => { const k = peekKey(); if (k !== pk) { pk = k; peekState(); } }); }
   // 무대: 카드 사진(19장, 합쳐 약 450KB)은 첫 화면(벽)에서는 보이지 않으므로 첫 화면 요청에서 뺀다(GitHub Pages 429).
   // 손이 움직이기 시작하면(p>0.01) 바로, 움직이지 않아도 첫 화면을 다 불러온 뒤 1.5초 쉬었다가 받는다.
   // p>0.08에서야 받기 시작하면 휴대폰은 카드가 쏟아질 때(p 0.5)까지 다 오지 않아 빈 판으로 보였다(10-21 모바일 결함 14)
@@ -1063,7 +1072,7 @@ window.ticker = (() => {
   // 해시로 다른 정거장에 바로 들어오면 첫 순간 p=0이라 카드 더미가 비쳤다가 사라진다: 그때는 전환 없이 처음부터 감춘다
   if (STAGE && location.hash.length > 1) { peek.style.transition = 'none'; peek.classList.add('gone'); peek.offsetWidth; requestAnimationFrame(() => requestAnimationFrame(() => { peek.style.transition = ''; })); }
   else peekState();
-  peek.addEventListener('click', () => window.Stage && Stage.enabled ? Stage.go('work') : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
+  peek.addEventListener('click', () => STAGE ? Stage.go(Math.min(Stage.config.stations.length - 1, Math.round(Stage.state.p) + 1)) : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
   // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 무대 + 820 이하. 데스크톱 흩뿌림·조작은 그대로다
   const MOB = () => STAGE && innerWidth <= 820;
