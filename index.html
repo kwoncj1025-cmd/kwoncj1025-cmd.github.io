@@ -2499,7 +2499,10 @@ window.ticker = (() => {
     lampEl.style.transform = `translate3d(${(LP.cx - LP.rx).toFixed(1)}px,${(LP.cz - LP.rz).toFixed(1)}px,-1px) scale(${(2 * LP.rx / 256).toFixed(4)},${(2 * LP.rz / 256).toFixed(4)})`;
     poolS = ` scale(${(1.5 * W.Wd / 256).toFixed(4)},${(1.4 * W.H / 256).toFixed(4)})`;   // 밤 빛웅덩이: 책상 폭 150% × 화면 높이 140%
     const a = pan(), BR = 1.25;
-    Stage.config.split = a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]];
+    // 맺음 앞 꼬리(카메라가 맺음 자리에 닿은 e-0.65부터 끝까지)는 화면이 멈춘 채 맥북이 잠들고 글만 떠오른다. 2.5장 빠르기로는 휠 1.6장이 거의 정지 화면이라
+    // 끝에서 올려도 안 움직이는 것처럼 보였다(10-21 대표님: 끝 화면에서 스크롤 업이 안 된다). 0.5장으로 줄인다
+    const E = Stage.config.stations.length - 1;
+    Stage.config.split = (a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]]).concat([[E - 0.65, E, 0.5]]);
   }
   // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
   const P = () => Stage.camera.P();
