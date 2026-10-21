@@ -181,6 +181,8 @@ h1 span{display:block;color:var(--soft)}
 .tmeta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
 .tmark{position:absolute;z-index:1;left:var(--pl);bottom:var(--pb);transform-origin:0 100%;transform:rotate(-90deg) translateY(100%);margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
+/* 책상 조명(10-21): 무대에서는 빛웅덩이 밖 구석이 어두워지므로, 구석에 놓인 작은 글 줄은 한 단계 짙은 글색으로 읽힌다 */
+html.stage-on .tbar,html.stage-on .tmeta{color:var(--ink-2)}
 /* ── 밤색 방: 카드 테이블(흰 책상) 다음은 조명을 낮춘 남보라 밤색 방이다. 같은 서체·연보라·라벨 체계를 쓴다.
    무대에서는 맥북 구간, 무대가 꺼지면(stage-off) 작업 목록(.web-list)이 이 방에 놓인다. 바탕은 경계 앞뒤에서만 바뀐다 ── */
 :root{--nt:#110f21;--nt-ink:#eaebf5;--nt-2:rgba(234,235,245,.62);--nt-3:rgba(234,235,245,.38);--nt-line:rgba(234,235,245,.12)}
@@ -219,7 +221,11 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .flip{position:relative;transform-style:preserve-3d}
 .f{border-radius:18px;padding:7px;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;
   background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(242,243,248,.9) 46%,rgba(233,236,246,.94));
-  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(14,14,18,.05),0 14px 30px -18px rgba(46,44,79,.34),0 30px 60px -40px rgba(46,44,79,.24)}
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(14,14,18,.05),var(--sxx) calc(14px * (1 - var(--amb,0) * .85) + var(--shy,0px)) 30px -18px rgba(46,44,79,.34),
+    calc(var(--sxx) * 2) calc(30px * (1 - var(--amb,0) * .85) + var(--shy,0px) * 2) 60px -40px rgba(46,44,79,.24);
+  --sxx:var(--shx,0px)}
+/* 책상 조명(world.js lamp, table.js --li·--shx·--shy): 그림자는 빛 가운데에서 바깥쪽으로 진다. 뒷면은 좌우가 뒤집혀 있어 가로 방향을 되돌린다 */
+.f.back{--sxx:calc(var(--shx,0px) * -1)}
 .f::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
   background:conic-gradient(from var(--rim,0deg),#c9f1ff,#e7d4ff,#ffe1f0,#fff3c8,#d2ffe8,#c9f1ff);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:var(--rimO,.35)}
@@ -228,7 +234,8 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   transform:translateX(var(--shine,0%));opacity:var(--glint,.25)}
 .front .im{border-radius:12px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#eaebf5}
 .front img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-.front .sh{position:absolute;inset:7px;border-radius:12px;background:#0e0e12;opacity:0;pointer-events:none;z-index:1}
+/* 그늘 한 장: 더미 아래쪽 카드(--so)와, 빛웅덩이 가장자리 카드(--amb × --li)가 어두워진다. 색은 밤 방의 남보라 */
+.f>.sh{position:absolute;inset:0;border-radius:inherit;background:var(--nt);opacity:calc(var(--so,0) + var(--amb,0) * var(--li,0) * .3);pointer-events:none;z-index:1}
 /* 스크롤 신호: 첫 화면 아래 가장자리에 다음 구역의 카드가 반쯤 보이며 오르내린다. 누르면 그 구역으로 */
 .peek{position:fixed;left:50%;bottom:0;z-index:20;display:flex;align-items:flex-end;border:0;background:none;padding:0 0 env(safe-area-inset-bottom,0px);cursor:pointer;
   transform:translate(-50%,46%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
@@ -350,7 +357,9 @@ html.stage-on .wall,html.stage-on .desk{position:absolute;left:0;right:0;transfo
 html.stage-on .wall{top:-50%;height:100%}                      /* 세계 y∈[−H,0]: 원점(모서리)이 화면 가운데 */
 html.stage-on .desk{top:50%;transform-origin:50% 0;transform:rotateX(90deg)}   /* 모서리에서 시청자 쪽으로 뻗는 상판. 높이는 world.js */
 /* 빛웅덩이: 소등 뒤 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
-.pool{display:none}
+.pool,.lamp{display:none}
+/* 책상 조명(10-21): 카드 구역 가운데 위에서 떨어지는 갓 조명의 타원 빛. 감쇠 곡선·자리·세기는 world.js */
+html.stage-on .lamp{display:block;position:absolute;left:0;top:0;pointer-events:none;opacity:0;border-radius:50%}
 html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;height:140vh;pointer-events:none;opacity:0;
   background:radial-gradient(closest-side,rgba(62,57,116,.9),rgba(49,43,94,.55) 55%,rgba(43,39,91,0) 100%)}
 html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
@@ -1073,6 +1082,7 @@ window.ticker = (() => {
         <h4 class="${hasKo(it.t) ? 'ko' : ''}">${esc(it.t)}</h4>
         <p class="sub">${esc(it.s)}</p>
         <p class="ft"><span>${it.d}</span><a href="https://www.instagram.com/p/${it.c}/" target="_blank" rel="noopener" tabindex="-1" aria-label="${esc(it.t)} 인스타그램에서 열기">${ARROW}</a></p>
+        <span class="sh"></span>
       </div></div>`;
     pile.appendChild(el);
     return { el, flipEl: el.firstElementChild, sh: el.querySelector('.sh'), back: el.querySelector('.back'), link: el.querySelector('.ft a'), i,
@@ -1488,7 +1498,17 @@ window.ticker = (() => {
       const ox = toward ? (drag.px - c.x) * toward : 0, oy = toward ? (drag.py - c.y) * toward : 0;
       put(c, '_tf', `translate3d(${(c.x + ox - cw / 2).toFixed(1)}px,${(c.y + oy - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${((1 + c.lift * grow) * c.ks * c.sz).toFixed(4)})`, v => { st.transform = v; });
       put(c, '_ff', `rotateY(${c.fl.toFixed(2)}deg)`, v => { c.flipEl.style.transform = v; });
-      put(c, '_so', (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3), v => { c.sh.style.opacity = v; });
+      put(c, '_so', (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3), v => st.setProperty('--so', v));
+      // 책상 조명(world.js lamp): 빛웅덩이 밖으로 갈수록 카드 면이 어두워지고(--li, 세기는 table 층의 --amb), 마우스 기기에서는 그림자가 빛 가운데에서 바깥쪽으로 진다
+      const lamp = STAGE && Stage.world && Stage.world.lamp;
+      if (lamp) {
+        put(c, '_li', (1 - lamp.at(c.x, c.y)).toFixed(2), v => st.setProperty('--li', v));
+        if (FANCY) {
+          const L = lamp.c, ux = (c.x - L.cx) / L.rx, uz = (c.y - L.cz) / L.rz, co = Math.cos(c.r), sn = Math.sin(c.r);
+          const sx = Math.round((ux * co + uz * sn) * 30), sy = Math.round((-ux * sn + uz * co) * 30);   // 카드가 돈 만큼 되돌려 카드 기준 방향으로
+          put(c, '_shd', sx + ',' + sy, () => { st.setProperty('--shx', sx + 'px'); st.setProperty('--shy', sy + 'px'); });
+        }
+      }
       // 테두리 무지개·빛줄기는 마우스 기기에서만 움직인다. 터치 기기에서는 매 프레임 그라데이션·마스크·혼합을 다시 칠해 버벅였다(10-21 측정): 처음 값 그대로 둔다
       if (FANCY) {
         put(c, '_rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`, v => st.setProperty('--rim', v));
@@ -1660,6 +1680,9 @@ window.ticker = (() => {
     carry = document.createElement('div'); carry.className = 'carry'; carry.style.display = 'none';
     carry.innerHTML = '<i class="dsh s"></i><i class="dsh c"></i>'; [shS, shC] = carry.children;
     heroLayer.appendChild(carry);
+    // 책상 조명(world.js lamp, 10-21 deploy-prep): 빛웅덩이 가장자리에서는 명함 면도 카드처럼 어두워진다. 면마다 맨 위에 그늘 한 장(세기 --amb는 world.js가 hero 층에, 자리 값 --li는 carryFrame이 쓴다)
+    faces.forEach(fc => { const i = document.createElement('i'); i.setAttribute('aria-hidden', 'true');
+      i.style.cssText = 'position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;background:var(--nt);opacity:calc(var(--amb,0) * var(--li,0) * .3)'; fc.appendChild(i); });
   }
   // 게이트: 엄지 받침이 눌리듯 0→16°(감속), 명함 구멍이 빠지는 동안 열려 있다가, 손을 뗀 스냅 훅처럼 빠르게 닫힌다
   const gateDeg = t => t < 0.20 ? 16 * (1 - (1 - cl((t - 0.12) / 0.05)) ** 3) : 16 * (1 - cl((t - 0.20) / 0.035)) ** 2;
@@ -1758,7 +1781,14 @@ window.ticker = (() => {
     const Hc = 430 * KS * q.sc, sa = -Math.sin(q.a), ca = Math.cos(q.a), hb = q.floor - q.yb;
     const lf = Hc * (sa + 0.75 * ca), off = q.zb + 0.75 * hb + lf / 2 - (q.zb + q.h * sa);
     const hc = Math.max(0, q.floor - q.y), dk = 1 + 0.6 * (Stage.state.dk || 0), fin = ss(T_CARRY, 0.22, ct);
-    const sx = q.x + off * Math.sin(q.b), sz = q.z + off * Math.cos(q.b);
+    let sx = q.x + off * Math.sin(q.b), sz = q.z + off * Math.cos(q.b);
+    // 책상 조명: 그림자를 빛 가운데에서 바깥쪽으로 민다(카드 그림자와 같은 조명), 명함 자리의 그늘 값도 여기서 쓴다
+    const lamp = Stage.world && Stage.world.lamp;
+    if (lamp) {
+      const L = lamp.c, on = lamp.on(Stage.state.p), ux = (q.x - L.cx) / L.rx, uz = (q.z - L.cz) / L.rz;
+      sx += ux * 40 * KS * on; sz += uz * 40 * KS * on;
+      const li = (1 - lamp.at(q.x, q.z)).toFixed(2); if (card3d.style.getPropertyValue('--li') !== li) card3d.style.setProperty('--li', li);
+    }
     const put = (el, k, o, dz) => {
       el.style.transform = `translate3d(${(sx + dz * Math.sin(q.b)).toFixed(2)}px,${(q.floor + 1).toFixed(2)}px,${(sz + dz * Math.cos(q.b)).toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(90deg) scale(${(KS * q.sc * k).toFixed(4)},${(KS * q.sc * k * lf / Hc).toFixed(4)}) translate(-150px,-215px)`;
       el.style.opacity = (o * fin * dk).toFixed(3);
@@ -2349,6 +2379,9 @@ window.ticker = (() => {
   const desk = document.querySelector('.stage-camera > .desk');
   const L = n => document.querySelector(`.stage-layer[data-scene="${n}"]`);
   const hero = L('hero'), table = L('table'), pool = desk.querySelector('.pool');
+  // 책상 조명(10-21 대표님 선택 「책상 위 조명 빛웅덩이」): 카메라가 책상으로 숙는 동안 방이 한 단계 어두워지고(T1),
+  // 책상 가운데에 위에서 떨어지는 갓 조명 빛이 생긴다. 밝기 흐름은 hero(가장 밝음) → work(빛웅덩이) → web(어둠 속 화면 빛)
+  const lampEl = document.createElement('div'); lampEl.className = 'lamp'; lampEl.setAttribute('aria-hidden', 'true'); desk.prepend(lampEl);
   // 맺음 글은 card-drop의 끝 화면 층(.end-info)이 맡는다(10-21 대표님 결정 6). 옛 책상 인쇄 맺음 줄(.desk-sign)은 없앴고, .foot-note는 무대가 꺼진 판의 서비스 목록 끝에만 남는다
   [hero, table].forEach(l => { l.dataset.own = '1'; l.style.transform = ''; });
   const W = { H: 0, Wd: 0, Dt: 0, zP: 0, mobile: false };
@@ -2367,6 +2400,15 @@ window.ticker = (() => {
   const pan = () => (W.mobile && W.Dt > W.H + 4 ? PANP : 0);
   const panU = p => { const a = pan(); return a ? Math.max(0, Math.min(1, (p - 1) / a)) : 0; };
   const WEB = () => Stage.config.stations.findIndex(x => x.name === 'web');
+  // 갓 조명의 밝기 감쇠: 높이 h에 매단 점광원의 조도 (1 + r²/h²)^-2 에, 갓 테두리에서 부드럽게 끊기는 가장자리를 곱한다(r은 타원 반지름으로 나눈 거리)
+  const sstep = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const lampI = r => r >= 1 ? 0 : (1 + r * r / 2.56) ** -2 * (1 - sstep(0.3, 0.98, r));   // 가운데 r<0.3은 거의 흰 책상, 그 밖에서 분명하게 떨어진다
+  lampEl.style.background = 'radial-gradient(closest-side,' + Array.from({ length: 17 }, (_, i) => `rgba(255,255,255,${lampI(i / 16).toFixed(3)}) ${(i / 16 * 100).toFixed(1)}%`).join() + ')';
+  const T1 = 0.24;                                   // work 정거장의 방 밝기(dk): 흰 방에서 남보라 밤색 쪽으로 24%
+  const lampOn = p => p <= 1 ? ease((p - 0.18) / 0.52) : 1 - ease((p - 1.3) / 0.5);
+  const LP = { cx: 0, cz: 0, rx: 1, rz: 1 };
+  // 책상 좌표(x는 책상 왼쪽에서, z는 모서리에서 깊이)의 조명 세기 0~1(켜진 정도는 뺀 공간 분포). 카드(table.js)와 명함(hero.js)이 같은 조명을 쓴다
+  const lamp = { at: (x, z) => lampI(Math.hypot((x - LP.cx) / LP.rx, (z - LP.cz) / LP.rz)), on: lampOn, c: LP, T1 };
 
   function measure(){
     W.H = innerHeight; W.Wd = innerWidth; W.mobile = innerWidth <= 820;
@@ -2376,6 +2418,10 @@ window.ticker = (() => {
     lastP = NaN; lastPlace = '';
     // 책상을 따라 내려가는 구간의 스크롤 거리 = 책상에서 화면 밖에 있는 길이(손가락과 1:1).
     // 모으기와 숨(맥북으로 고개를 들기 전, scene-web t 0.25까지)은 스크롤 화면 0.3장으로 줄인다: 흰 책상에 더미만 남은 화면이 오래 머물렀다(10-21 점검)
+    // 조명 자리: 카드 구역 가운데. 데스크톱은 화면 한 장 크기 책상이라 가로로 넓은 타원, 모바일 세로 책상은 책상 길이를 따라 긴 타원
+    LP.cx = W.Wd / 2; LP.cz = W.Dt / 2; LP.rx = W.Wd * (W.mobile ? 0.95 : 0.74); LP.rz = W.mobile ? Math.max(W.H * 0.8, W.Dt * 0.62) : W.Dt * 0.82;
+    lampEl.style.width = 2 * LP.rx + 'px'; lampEl.style.height = 2 * LP.rz + 'px';
+    lampEl.style.transform = `translate3d(${(LP.cx - LP.rx).toFixed(1)}px,${(LP.cz - LP.rz).toFixed(1)}px,-1px)`;
     const a = pan(), BR = 1.25;
     Stage.config.split = a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]];
   }
@@ -2415,7 +2461,10 @@ window.ticker = (() => {
   const uiOf = p => { const a = 1.02 + pan(), w = pan() ? 0.05 : 0.15; return p < 0.7 ? Math.max(0, Math.min(1, (p - 0.55) / 0.15)) : p <= a ? 1 : Math.max(0, 1 - (p - a) / w); };
   let lastPlace = '';
   function place(p){
-    const k = sinkOf(p).toFixed(3), ui = uiOf(p).toFixed(3), key = k + '|' + ui; if (key === lastPlace) return; lastPlace = key;
+    const k = sinkOf(p).toFixed(3), ui = uiOf(p).toFixed(3), lo = lampOn(p).toFixed(3), key = k + '|' + ui + '|' + lo; if (key === lastPlace) return; lastPlace = key;
+    // 조명: 빛 요소의 세기와, 카드 가장자리 그늘의 세기(--amb, 방이 어두워진 만큼). 카드별 자리 값(--li)은 table.js
+    lampEl.style.opacity = lo; lampEl.style.visibility = +lo <= 0.001 ? 'hidden' : '';
+    table.style.setProperty('--amb', (+lo).toFixed(3)); hero.style.setProperty('--amb', (+lo).toFixed(3));
     table.style.setProperty('--sink', k); table.style.setProperty('--ui', ui); table.classList.toggle('ui-off', +ui <= 0.001);
     table.style.visibility = +k <= 0.001 ? 'hidden' : '';
   }
@@ -2427,7 +2476,10 @@ window.ticker = (() => {
     }
     return Stage.webPath ? Stage.webPath(p) : st.work();
   }
-  const toneOf = p => p <= 1 ? 0 : p <= WEB() ? ease((p - 1.3) / 0.5) : 1;   // 맥북으로 가며 불이 낮아지고, 맺음까지 어두운 방
+  // 방 밝기: 숙이는 동안 한 단계(T1) 어두워지고, 맥북으로 가며 불이 마저 낮아져 맺음까지 어두운 방
+  const toneOf = p => p <= 1 ? T1 * ease((p - 0.18) / 0.52) : p <= WEB() ? T1 + (1 - T1) * ease((p - 1.3) / 0.5) : 1;
+  // 밤 빛웅덩이(.pool, 남색)는 work 단계 밝기 위로 더 어두워진 만큼만 보인다
+  const nightOf = dk => Math.max(0, (dk - T1) / (1 - T1));
 
   // 카드 상태는 p의 순수 함수다: 명함이 더미를 치는 0.5부터 모으기 시작점 1.04까지만 쏟아져 있다(scene-hero 0.5, scene-table 1.04와 같은 기준).
   // 장면이 지나가며 부르는 것이 먼저이고, 해시·Stage.go(instant)처럼 장면을 건너뛴 이동 뒤에 어긋난 것만 여기서 맞춘다
@@ -2446,12 +2498,12 @@ window.ticker = (() => {
       if (!cam.setThisFrame) cam.set(path(p));
       if (!Stage.state._toneSet) Stage.tone(toneOf(p));
       // 빛웅덩이: 소등 뒤 책상 면이 조금 밝다(08 4절). 가운데는 카메라가 바라보는 점을 따른다. 맥북 구간은 scene-web이 화면 빛으로 바꾼다
-      if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(calc(-50% + ${(cam.Tx || 0).toFixed(1)}px),${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)`; pool.style.opacity = (0.5 * Stage.state.dk).toFixed(3); }
+      if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(calc(-50% + ${(cam.Tx || 0).toFixed(1)}px),${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)`; pool.style.opacity = (0.5 * nightOf(Stage.state.dk)).toFixed(3); }
       lastP = p; dispatchEvent(new Event('scroll'));
     }
     cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
   }
-  Stage.world = { dims: W, station: st, path, toneOf, sinkOf, measure, ease, bez, last: LAST, pan };
+  Stage.world = { dims: W, station: st, path, toneOf, nightOf, sinkOf, measure, ease, bez, last: LAST, pan, lamp };
   // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
   const remeasure = () => { measure(); Stage.refresh(); frame(); };
   measure(); frame();
@@ -2924,7 +2976,7 @@ window.ticker = (() => {
       // 세로 화면(10-21 점검표 ②): 긴 책상 맨 위를 바라보느라 벽이 0.5 뒤까지 화면 위에 납작한 띠로 남아 글과 이름이 가짜 이탤릭으로 읽힌다.
       // 벽 위 글 묶음(.copy, 3D 자식이 없는 잎 요소)만 숙이는 동안 지운다(0.26~0.4). 데스크톱은 벽이 0.5에 화면 밖으로 나가 그대로 둔다
       if (copyEl) copyEl.style.opacity = innerWidth <= 820 ? (1 - Stage.world.ease((t - 0.26) / 0.14)).toFixed(3) : '';
-      Stage.tone(0);
+      Stage.tone(Stage.world.toneOf(s.p));   // 숙이는 동안 방이 한 단계 어두워진다(world.js 책상 조명, 10-21)
       const T = window.Table; if (!T) return;
       if (t >= DEAL && !T.dealt && s.dir > 0) T.deal();
       else if (t < DEAL && T.dealt) T.gather();
@@ -3134,7 +3186,7 @@ window.ticker = (() => {
       Stage.tone(Wd.toneOf(p));
       const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
       // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook3d.js의 면광원(키보드면·책상)이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
-      if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Stage.state.dk * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
+      if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Wd.nightOf(Stage.state.dk) * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
       if (info) { const v = (uk > 0 ? (W.mobile ? 1 - clamp01(uk / 0.3) : 1 - uk) : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
     },
   });
@@ -3408,7 +3460,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
 const T3 = 'https://cdn.jsdelivr.net/npm/three@0.160.0';
 const fine = matchMedia('(pointer: fine)').matches, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (fine && !reduce && window.WebGL2RenderingContext) {
-  let THREE = null, renderer = null, envTex = null, envS = 1, booting = false, floatLinear = false;
+  let THREE = null, renderer = null, envTex = null, envS = 1, booting = false, floatLinear = false, ptOK = false;
   const states = new Map();
   const MAXL = 24, KN = 512;
 
@@ -3519,21 +3571,33 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     }
     // 벽: 납작한 글자 자리면 토큰 색, 아니면 바탕색
     vec3 wallAt(vec2 p){ float dd; hgt(p, dd); return dd > 0. ? tokL : uWall; }
-    // 반사 광선이 맞은 다른 글자(그 자리 법선의 빛만, 그 안의 반사는 생략)
-    vec3 letterAt(vec3 q){ vec3 n = nrm(q.xy); return tokL * (AMB + KD * max(dot(n, uLd), 0.)); }
-    vec3 refl(vec3 p, vec3 r){
+    // 반사 광선이 맞은 다른 글자: 그 자리의 빛에 그 글자의 하이라이트와 환경 반사까지(납작한 라벤더만 칠하면 같은 라벤더 위에서 비친 것이 보이지 않았다)
+    vec3 letterAt(vec3 q, vec3 r){
+      vec3 n = nrm(q.xy);
+      float F = .04 + .96 * pow(1. - max(dot(n, -r), 0.), 5.);
+      vec3 c = tokL * (AMB + KD * max(dot(n, uLd), 0.)) * (1. - F) + envc(reflect(r, n)) * F;
+      return c + vec3(pow(max(dot(n, normalize(uLd - r)), 0.), 110.) * 1.4);
+    }
+    // 확산 광선이 맞은 글자: 그 자리의 빛만(한 번 튕김)
+    vec3 letterDif(vec3 q){ vec3 n = nrm(q.xy); return tokL * (AMB + KD * max(dot(n, uLd), 0.)); }
+    // 광선 추적: 다른 글자 → 벽(바탕·납작한 글자) → 바깥 순. a = 1이면 바깥(환경)으로 빠졌다
+    vec4 trace(vec3 p, vec3 r, bool gloss){
       float tw = r.z < 0. ? -p.z / r.z : 1e5, t = .8, ht = hTop();
       for (int i = 0; i < 40; i++) {
-        if (t > tw) return wallAt((p + r * tw).xy);
+        if (t > tw) return vec4(wallAt((p + r * tw).xy), 0.);
         vec3 q = p + r * t;
         if (r.z > 0. && q.z > ht) break;
         if (q.x < 0. || q.y < 0. || q.x > uSize.x || q.y > uSize.y) break;
         float d = map(q);
-        if (d < .2) return letterAt(q);
+        if (d < .2) return vec4(gloss ? letterAt(q, r) : letterDif(q), 0.);
         t += max(d, .3);
       }
-      return r.z < 0. ? wallAt((p + r * tw).xy) : envc(r);
+      return r.z < 0. ? vec4(wallAt((p + r * tw).xy), 0.) : vec4(envc(r), 1.);
     }
+    vec3 refl(vec3 p, vec3 r){ return trace(p, r, true).rgb; }
+  `;
+  // 움직이는 동안: 정해진 광선(반그림자·주변 가림은 근사)으로 한 프레임에 그린다
+  const MAIN_DET = `
     void main(){
       vec2 p = vUv * uSize;
       vec2 kk = kq(p);
@@ -3570,6 +3634,63 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
       }
       gl_FragColor = outc;
     }`;
+  // 멈춘 뒤: 경로 추적. 면광원 그림자(빛 원뿔 안의 한 방향, 맞음/안 맞음), 한 번 튕긴 간접광(옆 글자·벽 색이 번진다), 거친 반사를
+  // 화소마다 표본 하나씩 쌓는다. 표본은 R-수열(8차원)을 화소별 IGN만큼 돌려 쓰고, 화소 안 위치도 흔들어 윤곽 안티에일리어싱까지 같이 얻는다
+  const MAIN_PT = `
+    uniform sampler2D uAcc; uniform float uN; uniform float uQ[8]; uniform vec2 uRes;
+    float ign(vec2 p){ return fract(52.9829189 * fract(dot(p, vec2(.06711056, .00583715)))); }
+    float rnd(int i){ return fract(uQ[i] + ign(gl_FragCoord.xy + float(i) * vec2(17.31, 31.73))); }
+    vec3 tangentOf(vec3 n){ return normalize(abs(n.z) < .9 ? cross(n, vec3(0., 0., 1.)) : cross(n, vec3(1., 0., 0.))); }
+    vec3 cosDir(vec3 n, vec2 u){ vec3 t = tangentOf(n), b = cross(n, t); float a = 6.2832 * u.x, r = sqrt(u.y); return normalize(t * cos(a) * r + b * sin(a) * r + n * sqrt(1. - u.y)); }
+    vec3 coneDir(vec3 d, vec2 u, float ang){ vec3 t = tangentOf(d), b = cross(d, t); float a = 6.2832 * u.x, r = sqrt(u.y) * ang; return normalize(d + (t * cos(a) + b * sin(a)) * r); }
+    float vis(vec3 ro, vec3 rd){
+      float t = 1., ht = hTop();
+      for (int i = 0; i < 40; i++) { vec3 q = ro + rd * t; if (q.z > ht) return 1.; float d = map(q); if (d < .15) return 0.; t += max(d, .3); }
+      return 1.;
+    }
+    void main(){
+      vec2 p = (gl_FragCoord.xy + vec2(rnd(0), rnd(1)) - .5) / uRes * uSize;
+      vec4 prev = texture2D(uAcc, gl_FragCoord.xy / uRes);
+      vec2 kk = kq(p);
+      vec4 outc = vec4(0.);
+      if (kk.g >= .004) {
+        tokL = pow(uTok, vec3(2.2));
+        float dd; float h = hgt(p, dd);
+        float k = kk.r;
+        vec3 Ls = coneDir(uLd, vec2(rnd(2), rnd(3)), .16);   // 빛은 점이 아니라 면: 원뿔 안 한 방향
+        if (k < .012 || dd <= 0.) {
+          // 벽: 빛이 닿는가 + 위쪽 반구에서 들어오는 빛(글자에 막히면 그 글자의 라벤더 빛이 대신 든다). 막힌 데 없는 벽은 정확히 1이라 캔버스 경계가 보이지 않는다
+          vec3 W = vec3(p, .3);
+          float v = vis(W, Ls);
+          vec4 hit = trace(W, cosDir(vec3(0., 0., 1.), vec2(rnd(4), rnd(5))), false);
+          vec3 Li = hit.a > .5 ? vec3(1.) : hit.rgb;
+          vec3 c = (AMB * Li + KD * Ls.z * v) / (AMB + KD * Ls.z);
+          c = mix(c, c * c * c, uDark);   // 어두운 바탕에서는 비율 차가 묻혀 그림자가 사라졌다
+          vec3 Ws = pow(uWall, vec3(1. / 2.2)), T = pow(uWall * c, vec3(1. / 2.2));
+          float a = clamp(1. - min(min(T.r / max(Ws.r, 1e-3), T.g / max(Ws.g, 1e-3)), T.b / max(Ws.b, 1e-3)), 0., 1.);
+          outc = vec4(max(T - Ws * (1. - a), 0.), a);
+        } else {
+          vec3 P = vec3(p, h), N = nrm(p), V = vec3(0., 0., 1.);
+          float nl = max(dot(N, Ls), 0.);
+          float v = nl > 0. ? vis(P + N * .6, Ls) : 0.;
+          vec4 hit = trace(P + N * .6, cosDir(N, vec2(rnd(4), rnd(5))), false);
+          vec3 Li = hit.a > .5 ? vec3(1.) : hit.rgb;   // 열린 하늘은 1(평평한 꼭대기가 토큰 색 그대로), 막히면 옆 글자·벽의 빛
+          vec3 dif = tokL * (AMB * Li + KD * nl * v);
+          dif += tokL * tokL * .3 * (1. - v) * min(Li, vec3(1.));
+          float F = .04 + .96 * pow(1. - max(N.z, 0.), 5.);
+          vec3 rc = trace(P + N * .6, coneDir(reflect(-V, N), vec2(rnd(6), rnd(7)), .07), true).rgb;   // 거친 반사: 반사 방향 둘레의 원뿔
+          float spec = pow(max(dot(N, normalize(Ls + V)), 0.), 110.) * v * 1.4;
+          vec3 col = dif * (1. - F) + rc * F + vec3(spec);
+          col = pow(clamp(col, 0., 1.), vec3(1. / 2.2));
+          col = mix(uTok, col, smoothstep(.012, .22, k));
+          outc = vec4(col, 1.);
+        }
+      }
+      gl_FragColor = uN < .5 ? outc : mix(prev, outc, 1. / (uN + 1.));   // 첫 표본은 버퍼의 이전 내용(초기화 안 된 값일 수 있다)을 읽지 않는다
+    }`;
+  const SHOW = `
+    uniform sampler2D uDet; uniform sampler2D uAccS; uniform float uMix; varying vec2 vUv;
+    void main(){ gl_FragColor = mix(texture2D(uDet, vUv), texture2D(uAccS, vUv), uMix); }`;
 
   async function boot(){
     if (booting) return; booting = true;
@@ -3577,6 +3698,7 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     THREE = T;
     renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, premultipliedAlpha: true });
     floatLinear = renderer.extensions.has('OES_texture_float_linear');
+    ptOK = renderer.extensions.has('EXT_color_buffer_float');   // 누적 버퍼(반정밀 렌더 타깃)가 없으면 경로 추적 없이 정해진 광선 판만
     renderer.setClearColor(0x000000, 0);
     Object.assign(renderer.domElement.style, { position: 'absolute', pointerEvents: 'none', display: 'none' });
     renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -3592,7 +3714,9 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     (window.requestIdleCallback || setTimeout)(pre, { timeout: 1500 });
   }
 
-  const rgbOf = c => { const m = c.match(/[\d.]+/g); return m ? [m[0] / 255, m[1] / 255, m[2] / 255, m[3] === undefined ? 1 : +m[3]] : null; };
+  // CSS 색 → sRGB 0~1. 브라우저가 oklab()·color() 같은 꼴로 돌려주기도 해서 글자를 읽지 않고 1px에 칠해 되읽는다
+  const px1 = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  const rgbOf = c => { px1.clearRect(0, 0, 1, 1); px1.fillStyle = '#000'; px1.fillStyle = c; px1.fillRect(0, 0, 1, 1); const d = px1.getImageData(0, 0, 1, 1).data; return [d[0] / 255, d[1] / 255, d[2] / 255, d[3] / 255]; };
   // 반사에 비칠 벽 색: 끝 화면은 어두운 바탕, 그 밖은 위로 올라가며 처음 칠해진 바탕
   function wallColor(mark){
     if (mark.closest('.end-info')) return [0.086, 0.086, 0.106];
@@ -3654,17 +3778,17 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
       uTok: { value: new THREE.Vector3(tok[0], tok[1], tok[2]) }, uWall: { value: new THREE.Vector3(...lin(wallColor(mark))) }, uLd: { value: L },
       uShadow: { value: new THREE.Vector3(0.063, 0.047, 0.118) },
     };
-    const mat = new THREE.ShaderMaterial({
-      uniforms: U, fragmentShader: FRAG, blending: THREE.NoBlending, depthTest: false, depthWrite: false,
-      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }',
-    });
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat); mesh.frustumCulled = false;
+    Object.assign(U, { uAcc: { value: null }, uN: { value: 0 }, uQ: { value: new Array(8).fill(0) }, uRes: { value: new THREE.Vector2(1, 1) } });
+    const VS = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }';
+    const sm = (frag, uniforms) => new THREE.ShaderMaterial({ uniforms, fragmentShader: frag, vertexShader: VS, blending: THREE.NoBlending, depthTest: false, depthWrite: false });
+    const mats = { det: sm(FRAG + MAIN_DET, U), pt: sm(FRAG + MAIN_PT, U), show: sm(SHOW, { uDet: { value: null }, uAccS: { value: null }, uMix: { value: 0 } }) };
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mats.det); mesh.frustumCulled = false;
     const scene = new THREE.Scene(); scene.add(mesh);
-    const st = { mark, scene, cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), mesh, U, W, H, pad, bpx, n: Math.min(MAXL, spans.length), key: sizeKey(mark), host: mark.offsetParent };
+    const st = { mark, scene, cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), mesh, mats, U, W, H, pad, bpx, n: Math.min(MAXL, spans.length), key: sizeKey(mark), host: mark.offsetParent };
     states.set(mark, st);
     return st;
   }
-  function dispose(st){ st.mesh.geometry.dispose(); st.mesh.material.dispose(); st.U.uSdf.value.dispose(); st.U.uKt.value.dispose(); states.delete(st.mark); }
+  function dispose(st){ st.mesh.geometry.dispose(); Object.values(st.mats).forEach(m => m.dispose()); st.U.uSdf.value.dispose(); st.U.uKt.value.dispose(); states.delete(st.mark); }
   const sizeKey = m => [m.offsetWidth, m.offsetHeight, getComputedStyle(m).fontSize, getComputedStyle(m).color, [...m.querySelectorAll('.mk')].map(s => s.style.width).join()].join('|');
 
   // 칸마다 k를 가로 띠로 펴 둔다(셰이더가 광선 한 걸음마다 칸을 뒤지지 않게). R: r의 0.6 폭으로 이은 값, G: 그림자·접지 가림이 닿는 넓이로 번진 값
@@ -3682,8 +3806,46 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
   }
 
   let active = null, rebuildT = 0;
+
+  // 경로 추적 누적: 마지막으로 바뀐 뒤 60ms 조용하면 시작해 NS 표본에서 멈춘다. 첫 16표본(약 0.3초) 동안 정해진 광선 판에서 누적 판으로 섞어 넘긴다(바꿔치기가 보이지 않게)
+  const NS = 96;
+  let pt = null, acc = -1, movedAt = 0, raf = 0, lastKs = null;
+  // R-수열(8차원, 일반화 황금비): 표본 번호마다 고르게 퍼진 8개 값
+  let gq = 2; for (let i = 0; i < 40; i++) gq = Math.pow(1 + gq, 1 / 9);
+  const RA = Array.from({ length: 8 }, (_, i) => Math.pow(1 / gq, i + 1));
+  function targets(){
+    const v = renderer.getDrawingBufferSize(new THREE.Vector2());
+    if (pt && pt.w === v.x && pt.h === v.y) return pt;
+    if (pt) [pt.a, pt.b, pt.d].forEach(t => t.dispose());
+    const mk = () => new THREE.WebGLRenderTarget(v.x, v.y, { type: THREE.HalfFloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, depthBuffer: false });
+    pt = { a: mk(), b: mk(), d: mk(), w: v.x, h: v.y };
+    return pt;
+  }
+  function draw(st, mat, target){ st.mesh.material = mat; renderer.setRenderTarget(target); if (target) renderer.clear(); renderer.render(st.scene, st.cam); renderer.setRenderTarget(null); }
+  // 누적 한 걸음. 끝났으면 false
+  function step(){
+    const st = active; if (!st || !ptOK || acc >= NS) return false;
+    const T = targets();
+    if (acc < 0) { draw(st, st.mats.det, T.d); acc = 0; }
+    const U = st.U; U.uAcc.value = T.a.texture; U.uN.value = acc; U.uRes.value.set(T.w, T.h);
+    for (let i = 0; i < 8; i++) U.uQ.value[i] = (0.5 + RA[i] * (acc + 1)) % 1;
+    st.mesh.material = st.mats.pt; renderer.setRenderTarget(T.b); renderer.render(st.scene, st.cam); renderer.setRenderTarget(null);
+    [T.a, T.b] = [T.b, T.a];
+    const S = st.mats.show.uniforms; S.uDet.value = T.d.texture; S.uAccS.value = T.a.texture; S.uMix.value = Math.min(1, (acc + 1) / 16);
+    draw(st, st.mats.show, null);
+    acc++;
+    return acc < NS;
+  }
+  function tick(){
+    raf = 0;
+    if (!active || !ptOK) return;
+    if (performance.now() - movedAt < 60) { raf = requestAnimationFrame(tick); return; }
+    if (step()) raf = requestAnimationFrame(tick);
+  }
+
   window.Inflate3D = {
     ok: false,
+    get samples(){ return acc; },   // 검수용: 지금까지 쌓인 표본 수(-1 = 움직이는 중)
     // hero.js가 이 표식을 쓸 수 있는지 묻는다(데스크톱 폭에서 준비가 끝났을 때만)
     ready: mark => window.Inflate3D.ok && innerWidth > 820 && !!mark && !!mark.offsetParent,
     // ks: 글자(칸)마다 부푼 정도. 하나도 부풀지 않으면 감추고 그리지 않는다
@@ -3691,7 +3853,7 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
       if (!window.Inflate3D.ok) return;
       const any = ks.some(k => k >= 0.012);
       let st = states.get(mark);
-      if (!any) { if (st && active === st) { renderer.domElement.style.display = 'none'; active = null; } return; }
+      if (!any) { lastKs = null; if (st && active === st) { renderer.domElement.style.display = 'none'; active = null; } return; }
       if (!st || st.key !== sizeKey(mark)) {
         // 크기·서체·색이 바뀌면 거리장을 다시 만든다(약 300ms). 연달아 바뀌는 동안은 기다린다
         if (st && performance.now() - rebuildT < 250) return;
@@ -3707,11 +3869,21 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
         active = st;
       }
       cv.style.left = (st.mark.offsetLeft - st.pad) + 'px'; cv.style.top = (st.mark.offsetTop - st.pad) + 'px'; cv.style.display = '';
+      // 부푼 정도가 그대로면 다시 그리지 않는다(멈춘 동안 쌓이는 누적을 지우지 않게)
+      const same = lastKs && lastKs.st === st && lastKs.v.length === ks.length && ks.every((k, i) => Math.abs(k - lastKs.v[i]) < 1e-4);
+      if (same) return;
+      lastKs = { st, v: ks.slice() };
       putK(st, ks);
-      renderer.render(st.scene, st.cam);
+      draw(st, st.mats.det, null);
+      acc = -1; movedAt = performance.now();
+      if (!raf) raf = requestAnimationFrame(tick);
     },
-    // 검수용: 지금 그림을 그대로 이미지로(같은 작업 안에서 읽어야 그리기 버퍼가 남아 있다)
-    snap(mark, ks){ window.Inflate3D.frame(mark, ks); return renderer.domElement.toDataURL('image/png'); },
+    // 검수용: 지금 그림을 그대로 이미지로(같은 작업 안에서 읽어야 그리기 버퍼가 남아 있다). n을 주면 누적을 n표본 바로 돌린 결과
+    snap(mark, ks, n){
+      lastKs = null; window.Inflate3D.frame(mark, ks);
+      if (n) { acc = -1; for (let i = 0; i < n; i++) if (!step()) break; }
+      return renderer.domElement.toDataURL('image/png');
+    },
   };
   // 첫 화면 요청을 늘리지 않게 맥북처럼 load 3초 뒤 쉴 때 부른다. 그 전에 손이 움직이면 바로(준비 전엔 SVG 방식)
   const go = () => boot().catch(() => {});
