@@ -790,6 +790,8 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   const inFree = v => config.free.some(([a, b]) => v > a + 1e-4 && v < b - 1e-4);
   const hashOf = v => { const z = config.free.find(([a, b]) => v > a + 1e-4 && v < b - 1e-4), st = config.stations[z ? z[0] : Math.round(clamp(v, 0, last()))]; return st.hashFn ? st.hashFn() : st.hash; };
   const easeIO = u => u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
+  // 활공(스크롤 화살표, 10-21 대표님: 휙 넘어가면 공간 이동이 느껴지지 않는다): 사인 곡선이라 가운데에서 몰아치지 않고 고르게 흐른다
+  const EASE = { io: easeIO, glide: u => (1 - Math.cos(Math.PI * u)) / 2 };
 
   // 구간 i([i, i+1])에서 진행값 1이 몇 px인가
   const segPx = i => { i = clamp(i, 0, last() - 1); const f = config.free.find(z => z[0] === i); return (config.seg[i] == null && f ? f[2] : config.seg[i] || 1) * innerHeight; };
@@ -826,8 +828,8 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
     return t;
   }
 
-  function tween(to, dur){
-    tw = { from: target, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000 };
+  function tween(to, dur, ease = easeIO){
+    tw = { from: target, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000, ease };
   }
   // 입력: 모든 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
   function input(px){
@@ -846,14 +848,14 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
     const lim = Math.min(config.snapWithin, config.snapMaxScreens * innerHeight / pieceLen(n, state.dir > 0 ? -1 : 1));
     if (d > 1e-4 && d <= lim) tween(n, config.snapSec);
   }
-  function go(to, { instant = false } = {}){
+  function go(to, { instant = false, sec = 0, ease = 'io' } = {}){   // sec·ease: 부르는 쪽이 이동 시간과 곡선을 정할 때(스크롤 화살표)
     const i = typeof to === 'number' ? to : config.stations.findIndex(s => s.name === to);
     if (i < 0) return;
     clearTimeout(snapTimer); state.input = false;
     const t = clamp(i, 0, last()); state.dir = Math.sign(t - x) || state.dir;
     if (instant) { tw = null; x = target = t; return; }
     const dist = Math.abs(t - x); if (dist < 1e-4) return;
-    tween(t, clamp(config.goSec[0] + (config.goSec[1] - config.goSec[0]) * (dist - 1) / 2, config.goSec[0], config.goSec[1]));
+    tween(t, sec || clamp(config.goSec[0] + (config.goSec[1] - config.goSec[0]) * (dist - 1) / 2, config.goSec[0], config.goSec[1]), EASE[ease] || easeIO);
   }
 
   // 휠·트랙패드: 노치 휠 한 칸은 진행값의 작은 걸음(약 100px)이고, 트랙패드는 손과 관성이 그대로 p를 민다.
@@ -936,7 +938,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
     const dt = Math.min(0.05, deltaMs / 1000), now = performance.now();
     if (tw) {
       const u = clamp((now - tw.t0) / tw.dur, 0, 1);
-      target = tw.from + (tw.to - tw.from) * easeIO(u);
+      target = tw.from + (tw.to - tw.from) * tw.ease(u);
       x = target;                                    // 이징이 곧 움직임이다(지수 보간을 겹치지 않는다)
       if (u >= 1) tw = null;
     } else if (x !== target) {
@@ -1086,7 +1088,7 @@ window.ticker = (() => {
   // 해시로 다른 정거장에 바로 들어오면 첫 순간 p=0이라 카드 더미가 비쳤다가 사라진다: 그때는 전환 없이 처음부터 감춘다
   if (STAGE && location.hash.length > 1) { peek.style.transition = 'none'; peek.classList.add('gone'); peek.offsetWidth; requestAnimationFrame(() => requestAnimationFrame(() => { peek.style.transition = ''; })); }
   else peekState();
-  peek.addEventListener('click', () => STAGE ? Stage.go(Math.min(Stage.config.stations.length - 1, Math.round(Stage.state.p) + 1)) : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
+  peek.addEventListener('click', () => STAGE ? Stage.go(Math.min(Stage.config.stations.length - 1, Math.round(Stage.state.p) + 1), { sec: 3.2, ease: 'glide' }) : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
   // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 무대 + 820 이하. 데스크톱 흩뿌림·조작은 그대로다
   const MOB = () => STAGE && innerWidth <= 820;
