@@ -21,8 +21,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600&family=Funnel+Sans:wght@400;500;600;700&display=swap">
 <style>
-@font-face{font-family:SUIT;font-weight:500;src:url(fonts/SUIT-Medium.otf) format("opentype")}
-@font-face{font-family:SUIT;font-weight:700;src:url(fonts/SUIT-Bold.otf) format("opentype")}
+/* SUIT: 페이지에 쓰인 글자(한글 699자·ASCII·기호)만 남긴 woff2(10-21 최적화, 350KB×2 → 57KB×2). 글자 모양은 원본과 같다.
+   한글 문구를 새로 넣으면 fonttools로 다시 만든다(원본 otf는 fonts/에 남겨 둔다) */
+@font-face{font-family:SUIT;font-weight:500;font-display:swap;src:url(fonts/SUIT-Medium.sub.woff2) format("woff2")}
+@font-face{font-family:SUIT;font-weight:700;font-display:swap;src:url(fonts/SUIT-Bold.sub.woff2) format("woff2")}
 
 /* 레이아웃: 왼쪽은 소개 글, 오른쪽은 화면 위에서 내려오는 목줄에 걸린 유리 사원증 */
 :root{
@@ -296,9 +298,9 @@ html.stage-held .peek{visibility:hidden}   /* 맥북을 써 보는 동안 */
 }
 /* 터치 기기: 카드 면의 빛줄기(soft-light 혼합)를 끈다. 3D 무대에서 카드 19장의 혼합 합성이 휴대폰을 버벅이게 했다(10-21 측정). 테두리 무지개는 멈춘 채 남는다 */
 @media (pointer:coarse){.f::after{display:none}}
-/* 터치 기기: 층 수 줄이기(10-21 측정, 층 정리 비용이 카드 3D 층 수에 비례). 늘 붙어 있던 will-change를 풀고, 움직이거나 뒤집힌 카드(.live, table.js)만
-   앞뒤 면을 3D로 둔다. 멈춘 앞면 카드는 평면 한 장(뒷면은 그리지 않음). 세로 책상에서 화면 밖 카드(.off)는 그리지 않는다 */
-@media (pointer:coarse){
+/* 층 수 줄이기(10-21 측정, 층 정리 비용이 카드 3D 층 수에 비례. 터치 기기에 먼저 넣고, 10-21 조율 배정으로 데스크톱에도). 늘 붙어 있던 will-change를 풀고,
+   움직이거나 뒤집힌 카드(.live, table.js)만 앞뒤 면을 3D로 둔다. 멈춘 앞면 카드는 평면 한 장(뒷면은 그리지 않음). 세로 책상에서 화면 밖 카드(.off)는 그리지 않는다 */
+@media all{
   html.stage-on .pc{will-change:auto}
   html.stage-on .pc:not(.live),html.stage-on .pc:not(.live) .flip{transform-style:flat}
   html.stage-on .pc:not(.live) .back{display:none}
@@ -370,8 +372,9 @@ html.stage-on .desk{top:50%;transform-origin:50% 0;transform:rotateX(90deg)}   /
 /* 빛웅덩이: 소등 뒤 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
 .pool,.lamp{display:none}
 /* 책상 조명(10-21): 카드 구역 가운데 위에서 떨어지는 갓 조명의 타원 빛. 감쇠 곡선·자리·세기는 world.js */
-html.stage-on .lamp{display:block;position:absolute;left:0;top:0;pointer-events:none;opacity:0;border-radius:50%}
-html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;height:140vh;pointer-events:none;opacity:0;
+/* 빛 두 장(.lamp, .pool)은 256px 상자에 그린 그라데이션을 transform scale로 키운다: 화면보다 큰 상자를 그대로 그리면 층 면적이 장마다 3MP였다(10-21 층 최적화) */
+html.stage-on .lamp{display:block;position:absolute;left:0;top:0;width:256px;height:256px;transform-origin:0 0;pointer-events:none;opacity:0;visibility:hidden;border-radius:50%}
+html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:256px;height:256px;margin-left:-128px;transform-origin:50% 0;pointer-events:none;opacity:0;visibility:hidden;
   background:radial-gradient(closest-side,rgba(62,57,116,.9),rgba(49,43,94,.55) 55%,rgba(43,39,91,0) 100%)}
 html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
 html.stage-held #stage-root{touch-action:auto}
@@ -1712,6 +1715,16 @@ window.ticker = (() => {
     gate = clasp.querySelector('.gate'); hang.insertBefore(clasp, card3d);
     carry = document.createElement('div'); carry.className = 'carry'; carry.style.display = 'none';
     carry.innerHTML = '<i class="dsh s"></i><i class="dsh c"></i>'; [shS, shC] = carry.children;
+    // 책상 그림자 두 장은 처음 한 번 흐린 그림으로 그려 둔다(10-21 층 최적화, card-drop 합의). CSS filter: blur는 그림자가 움직이는 매 프레임 GPU가 다시 흐렸다.
+    // 흐림 여백 m(3σ)만큼 상자를 키우고 put()의 끝 이동에서 되돌린다. 2배 해상도로 그려 또렷한 본그늘(σ 4)도 고해상도 화면에서 흐려지지 않는다.
+    // 흐림은 shadowBlur(=2σ)로 낸다: 캔버스 filter를 지원하지 않는 브라우저에서도 같다
+    const preBlur = (el, sd, m) => {
+      const k = 2, w = 300 + 2 * m, h = 430 + 2 * m, OFF = 4000, c = document.createElement('canvas'); c.width = w * k; c.height = h * k;
+      const g = c.getContext('2d'); g.shadowColor = 'rgb(37,34,75)'; g.shadowBlur = 2 * sd * k; g.shadowOffsetX = OFF;
+      g.beginPath(); g.roundRect(m * k - OFF, m * k, 300 * k, 430 * k, 22 * k); g.fill();
+      el._m = m; Object.assign(el.style, { width: w + 'px', height: h + 'px', borderRadius: '0', filter: 'none', background: `url(${c.toDataURL()}) 0 0/100% 100% no-repeat` });
+    };
+    preBlur(shS, 22, 66); preBlur(shC, 4, 12);
     heroLayer.appendChild(carry);
     // 책상 조명(world.js lamp, 10-21 deploy-prep): 빛웅덩이 가장자리에서는 명함 면도 카드처럼 어두워진다. 면마다 맨 위에 그늘 한 장(세기 --amb는 world.js가 hero 층에, 자리 값 --li는 carryFrame이 쓴다)
     faces.forEach(fc => { const i = document.createElement('i'); i.setAttribute('aria-hidden', 'true');
@@ -1823,7 +1836,7 @@ window.ticker = (() => {
       const li = (1 - lamp.at(q.x, q.z)).toFixed(2); if (card3d.style.getPropertyValue('--li') !== li) card3d.style.setProperty('--li', li);
     }
     const put = (el, k, o, dz) => {
-      el.style.transform = `translate3d(${(sx + dz * Math.sin(q.b)).toFixed(2)}px,${(q.floor + 1).toFixed(2)}px,${(sz + dz * Math.cos(q.b)).toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(90deg) scale(${(KS * q.sc * k).toFixed(4)},${(KS * q.sc * k * lf / Hc).toFixed(4)}) translate(-150px,-215px)`;
+      el.style.transform = `translate3d(${(sx + dz * Math.sin(q.b)).toFixed(2)}px,${(q.floor + 1).toFixed(2)}px,${(sz + dz * Math.cos(q.b)).toFixed(2)}px) rotateY(${q.b.toFixed(4)}rad) rotateX(90deg) scale(${(KS * q.sc * k).toFixed(4)},${(KS * q.sc * k * lf / Hc).toFixed(4)}) translate(${-150 - el._m}px,${-215 - el._m}px)`;
       el.style.opacity = (o * fin * dk).toFixed(3);
     };
     put(shS, 1 + hc / 520, 0.26 * desk.vk / (1 + hc / 110), 8);
@@ -2296,7 +2309,8 @@ window.ticker = (() => {
       return haveP ? [px, py] : null;
     };
     const step = () => {
-      raf = 0; if (!isOn()) return;
+      raf = 0;
+      if (!isOn()) { if (glOn && window.Inflate3D) { Inflate3D.sleep(); glOn = false; } return; }   // 화면을 떠나면 이름 WebGL을 재운다
       const now = performance.now(), dt = Math.min(48, lt ? now - lt : 16) / 1000; lt = now;
       const p = src(), mr = mark.getBoundingClientRect(), R = mr.height * 0.9, fs = parseFloat(getComputedStyle(mark).fontSize) || 100;
       let busy = false;
@@ -2328,7 +2342,7 @@ window.ticker = (() => {
         l.e.style.transform = `translateY(${(-0.025 * q).toFixed(4)}em) scale(${(1 + 0.07 * q).toFixed(4)})`;   // 바닥에서 부풀어 오르며 살짝 떠오른다
         l.e.style.fontVariationSettings = `"wght" ${Math.round(W0 + (W1 - W0) * Math.min(1, q))}`;
       });
-      if (gl) Inflate3D.frame(mark, ls.map(l => l.shown && l.shown !== '-' ? Math.max(0, l.k) : 0));
+      if (gl) Inflate3D.frame(mark, ls.map(l => l.shown && l.shown !== '-' ? Math.max(0, l.k) : 0), busy);   // 출렁이는 동안(파도 포함)은 경로 추적을 쌓지 않는다
       const moved = p && (Math.abs(p[0] - lx) > 0.3 || Math.abs(p[1] - ly) > 0.3); if (p) { lx = p[0]; ly = p[1]; }
       idle = busy || moved ? 0 : idle + 1;
       if (idle < 20) raf = requestAnimationFrame(step); else lt = 0;
@@ -2360,7 +2374,8 @@ window.ticker = (() => {
     }
   }
   { const hm = document.querySelector('.copy .mark'); if (hm) hm.addEventListener('mk-fit', () => { if (innerWidth <= 820) resize(); }); }   // 세로 화면 이름 크기·목줄 길이는 이름 폭에 달려 있다
-  weightText(document.querySelector('.copy .mark'), () => heroIn, () => (drag || press) && ct === 0, true);
+  // 무대에서 벽을 넘어가면(ct 1) hero 층이 아직 화면에 걸려 있어도 이름은 끈다: 맥북 WebGL과 함께 돌지 않게 이름 WebGL을 바로 재운다
+  weightText(document.querySelector('.copy .mark'), () => heroIn && !(STG && ct >= 1), () => (drag || press) && ct === 0, true);
   if (window.Hero) Hero.weightText = (el, isOn) => weightText(el, isOn, () => false);
 
   new IntersectionObserver(es => { const e = es[es.length - 1]; heroIn = e.isIntersecting && e.intersectionRatio > 0; if (heroIn) wakeBadge(); }, { threshold: [0, 0.001] }).observe(hero);
@@ -2467,6 +2482,7 @@ window.ticker = (() => {
   const T1 = 0.24;                                   // work 정거장의 방 밝기(dk): 흰 방에서 남보라 밤색 쪽으로 24%
   const lampOn = p => p <= 1 ? ease((p - 0.18) / 0.52) : 1 - ease((p - 1.3) / 0.5);
   const LP = { cx: 0, cz: 0, rx: 1, rz: 1 };
+  let poolS = '';
   // 책상 좌표(x는 책상 왼쪽에서, z는 모서리에서 깊이)의 조명 세기 0~1(켜진 정도는 뺀 공간 분포). 카드(table.js)와 명함(hero.js)이 같은 조명을 쓴다
   const lamp = { at: (x, z) => lampI(Math.hypot((x - LP.cx) / LP.rx, (z - LP.cz) / LP.rz)), on: lampOn, c: LP, T1 };
 
@@ -2480,8 +2496,8 @@ window.ticker = (() => {
     // 모으기와 숨(맥북으로 고개를 들기 전, scene-web t 0.25까지)은 스크롤 화면 0.3장으로 줄인다: 흰 책상에 더미만 남은 화면이 오래 머물렀다(10-21 점검)
     // 조명 자리: 카드 구역 가운데. 데스크톱은 화면 한 장 크기 책상이라 가로로 넓은 타원, 모바일 세로 책상은 책상 길이를 따라 긴 타원
     LP.cx = W.Wd / 2; LP.cz = W.Dt / 2; LP.rx = W.Wd * (W.mobile ? 0.95 : 0.74); LP.rz = W.mobile ? Math.max(W.H * 0.8, W.Dt * 0.62) : W.Dt * 0.82;
-    lampEl.style.width = 2 * LP.rx + 'px'; lampEl.style.height = 2 * LP.rz + 'px';
-    lampEl.style.transform = `translate3d(${(LP.cx - LP.rx).toFixed(1)}px,${(LP.cz - LP.rz).toFixed(1)}px,-1px)`;
+    lampEl.style.transform = `translate3d(${(LP.cx - LP.rx).toFixed(1)}px,${(LP.cz - LP.rz).toFixed(1)}px,-1px) scale(${(2 * LP.rx / 256).toFixed(4)},${(2 * LP.rz / 256).toFixed(4)})`;
+    poolS = ` scale(${(1.5 * W.Wd / 256).toFixed(4)},${(1.4 * W.H / 256).toFixed(4)})`;   // 밤 빛웅덩이: 책상 폭 150% × 화면 높이 140%
     const a = pan(), BR = 1.25;
     Stage.config.split = a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]];
   }
@@ -2523,7 +2539,7 @@ window.ticker = (() => {
   function place(p){
     const k = sinkOf(p).toFixed(3), ui = uiOf(p).toFixed(3), lo = lampOn(p).toFixed(3), key = k + '|' + ui + '|' + lo; if (key === lastPlace) return; lastPlace = key;
     // 조명: 빛 요소의 세기와, 카드 가장자리 그늘의 세기(--amb, 방이 어두워진 만큼). 카드별 자리 값(--li)은 table.js
-    lampEl.style.opacity = lo; lampEl.style.visibility = +lo <= 0.001 ? 'hidden' : '';
+    lampEl.style.opacity = lo; lampEl.style.visibility = +lo <= 0.001 ? 'hidden' : 'visible';
     table.style.setProperty('--amb', (+lo).toFixed(3)); hero.style.setProperty('--amb', (+lo).toFixed(3));
     table.style.setProperty('--sink', k); table.style.setProperty('--ui', ui); table.classList.toggle('ui-off', +ui <= 0.001);
     table.style.visibility = +k <= 0.001 ? 'hidden' : '';
@@ -2540,6 +2556,8 @@ window.ticker = (() => {
   const toneOf = p => p <= 1 ? T1 * ease((p - 0.18) / 0.52) : p <= WEB() ? T1 + (1 - T1) * ease((p - 1.3) / 0.5) : 1;
   // 밤 빛웅덩이(.pool, 남색)는 work 단계 밝기 위로 더 어두워진 만큼만 보인다
   const nightOf = dk => Math.max(0, (dk - T1) / (1 - T1));
+  // 밤 빛웅덩이의 세기. 0이면 그리지 않는다(층을 내려놓는다). scene-web도 이것으로 쓴다
+  const poolOp = o => { if (!pool) return; const s = o.toFixed(3); pool.style.opacity = s; pool.style.visibility = +s <= 0.001 ? 'hidden' : 'visible'; };
 
   // 카드 상태는 p의 순수 함수다: 명함이 더미를 치는 0.5부터 모으기 시작점 1.04까지만 쏟아져 있다(scene-hero 0.5, scene-table 1.04와 같은 기준).
   // 장면이 지나가며 부르는 것이 먼저이고, 해시·Stage.go(instant)처럼 장면을 건너뛴 이동 뒤에 어긋난 것만 여기서 맞춘다
@@ -2558,12 +2576,12 @@ window.ticker = (() => {
       if (!cam.setThisFrame) cam.set(path(p));
       if (!Stage.state._toneSet) Stage.tone(toneOf(p));
       // 빛웅덩이: 소등 뒤 책상 면이 조금 밝다(08 4절). 가운데는 카메라가 바라보는 점을 따른다. 맥북 구간은 scene-web이 화면 빛으로 바꾼다
-      if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(calc(-50% + ${(cam.Tx || 0).toFixed(1)}px),${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)`; pool.style.opacity = (0.5 * nightOf(Stage.state.dk)).toFixed(3); }
+      if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(${(cam.Tx || 0).toFixed(1)}px,${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)` + poolS; poolOp(0.5 * nightOf(Stage.state.dk)); }
       lastP = p; dispatchEvent(new Event('scroll'));
     }
     cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
   }
-  Stage.world = { dims: W, station: st, path, toneOf, nightOf, sinkOf, measure, ease, bez, last: LAST, pan, lamp };
+  Stage.world = { dims: W, station: st, path, toneOf, nightOf, poolOp, sinkOf, measure, ease, bez, last: LAST, pan, lamp };
   // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
   const remeasure = () => { measure(); Stage.refresh(); frame(); };
   measure(); frame();
@@ -2851,6 +2869,8 @@ window.ticker = (() => {
   let mountT = 0;
   function sync(){
     const p = Stage.state.p, on = live(p);
+    // 층 줄이기(10-21 조율 배정): 띠의 9칸 중 고른 칸(바꾸는 동안에는 앞 칸까지)만 그린다. 나머지 칸은 화면 밖이거나 검은 틈이라, 내려놓아도 모습이 같다(.mb-screen 바탕도 검정)
+    panes.forEach((x, i) => { const v = i === sel || (!!anim && i === prev); if (x._v !== v) { x._v = v; x.pane.style.visibility = v ? '' : 'hidden'; } });
     if (!narrow()) { panes.forEach((x, i) => { if (on && (i === sel || (anim && i === prev))) mount(x); else unmount(x); }); return; }
     const ready = on && !anim && Stage.state.settled && Math.abs(p - WEB) < 0.02;
     panes.forEach((x, i) => { if (!(on && i === sel)) unmount(x); });
@@ -3248,7 +3268,7 @@ window.ticker = (() => {
       Stage.tone(Wd.toneOf(p));
       const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
       // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook3d.js의 면광원(키보드면·책상)이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
-      if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Wd.nightOf(Stage.state.dk) * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
+      if (pool) { Stage.state._poolSet = true; Wd.poolOp(0.5 * Wd.nightOf(Stage.state.dk) * clamp01((WEB() - 0.5 - p) / 0.4)); }
       if (info) { const v = (uk > 0 ? (W.mobile ? 1 - clamp01(uk / 0.3) : 1 - uk) : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
     },
   });
@@ -3458,9 +3478,12 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
       const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
       const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
+      // 해상도: 휴대폰(DPR 3)은 1.5까지(화면 전체 캔버스라 픽셀 수가 곧 GPU 일이다).
+      // 움직이는 동안만 1.25로 낮추는 안은 시험 뒤 뺐다(10-21): 해상도를 바꿀 때마다 캔버스 버퍼를 다시 잡느라 움직이기 시작하는 프레임 22~97ms, 멈춰 다시 선명해지는 프레임 10~59ms가 걸려
+      // 평소 프레임에서 아낀 것(중앙값 2.6→1.9ms, 1440)보다 끊김이 컸다
+      const pr = Math.min(devicePixelRatio || 1, w <= 820 ? 1.5 : 2);
       const k = [c.th, c.Tx, c.Ty, c.Tz, d, P, w, h, (Stage.state.dk || 0).toFixed(3), L.toFixed(3), onV.toFixed(3), gl.join(), gk, Stage.webGeo.G.Wi, Stage.webGeo.G.cx].join();
       if (k === key) return; key = k;
-      const pr = Math.min(devicePixelRatio || 1, w <= 820 ? 1.5 : 2);   // 휴대폰(DPR 3)은 1.5까지: 화면 전체 캔버스라 픽셀 수가 곧 GPU 일이다
       if (canvas.width !== Math.round(w * pr) || canvas.height !== Math.round(h * pr)) { renderer.setPixelRatio(pr); renderer.setSize(w, h, false); }
       place();
       // CSS 카메라(translateZ(P−d) rotateX(−θ) translate(−T), 원근 P)와 같은 투영: 눈은 바라보는 점에서 θ만큼 숙인 채 d 뒤
@@ -3870,8 +3893,9 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
   let active = null, rebuildT = 0;
 
   // 경로 추적 누적: 마지막으로 바뀐 뒤 60ms 조용하면 시작해 NS 표본에서 멈춘다. 첫 16표본(약 0.3초) 동안 정해진 광선 판에서 누적 판으로 섞어 넘긴다(바꿔치기가 보이지 않게)
-  const NS = 96;
-  let pt = null, acc = -1, movedAt = 0, raf = 0, lastKs = null;
+  // 표본 수는 화면 밀도에 맞춘다: 화소가 작으면(실제 배율 1.75 이상) 48표본에서 96표본과 구별되지 않았다(96 대비 평균 차 2.4/255, 6배 확대 비교). 그 아래는 96
+  const NS = () => renderer.getPixelRatio() >= 1.75 ? 48 : 96;
+  let pt = null, acc = -1, movedAt = 0, raf = 0, lastKs = null, hold = false;
   // R-수열(8차원, 일반화 황금비): 표본 번호마다 고르게 퍼진 8개 값
   let gq = 2; for (let i = 0; i < 40; i++) gq = Math.pow(1 + gq, 1 / 9);
   const RA = Array.from({ length: 8 }, (_, i) => Math.pow(1 / gq, i + 1));
@@ -3883,38 +3907,46 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     pt = { a: mk(), b: mk(), d: mk(), w: v.x, h: v.y };
     return pt;
   }
-  function draw(st, mat, target){ st.mesh.material = mat; renderer.setRenderTarget(target); if (target) renderer.clear(); renderer.render(st.scene, st.cam); renderer.setRenderTarget(null); }
+  const stats = { draws: 0, samples: 0 };   // 검수용: GPU에 그린 횟수(전체 화면 패스), 쌓은 표본 수
+  function draw(st, mat, target){ stats.draws++; st.mesh.material = mat; renderer.setRenderTarget(target); if (target) renderer.clear(); renderer.render(st.scene, st.cam); renderer.setRenderTarget(null); }
   // 누적 한 걸음. 끝났으면 false
   function step(){
-    const st = active; if (!st || !ptOK || acc >= NS) return false;
+    const st = active; if (!st || !ptOK || acc >= NS()) return false;
     const T = targets();
     if (acc < 0) { draw(st, st.mats.det, T.d); acc = 0; }
     const U = st.U; U.uAcc.value = T.a.texture; U.uN.value = acc; U.uRes.value.set(T.w, T.h);
     for (let i = 0; i < 8; i++) U.uQ.value[i] = (0.5 + RA[i] * (acc + 1)) % 1;
+    stats.draws++; stats.samples++;
     st.mesh.material = st.mats.pt; renderer.setRenderTarget(T.b); renderer.render(st.scene, st.cam); renderer.setRenderTarget(null);
     [T.a, T.b] = [T.b, T.a];
     const S = st.mats.show.uniforms; S.uDet.value = T.d.texture; S.uAccS.value = T.a.texture; S.uMix.value = Math.min(1, (acc + 1) / 16);
     draw(st, st.mats.show, null);
     acc++;
-    return acc < NS;
+    return acc < NS();
   }
   function tick(){
     raf = 0;
     if (!active || !ptOK) return;
-    if (performance.now() - movedAt < 60) { raf = requestAnimationFrame(tick); return; }
+    // 움직임이 남아 있으면(hero.js가 hold로 알림: 스프링이 아직 출렁이거나 파도가 지나가는 중) 쌓지 않는다. 프레임이 한 번 늦게 와도 60ms 규칙만으로는 중간에 쌓기 시작했다
+    if (hold || performance.now() - movedAt < 60) { raf = requestAnimationFrame(tick); return; }
     if (step()) raf = requestAnimationFrame(tick);
   }
 
   window.Inflate3D = {
     ok: false,
-    get samples(){ return acc; },   // 검수용: 지금까지 쌓인 표본 수(-1 = 움직이는 중)
+    get samples(){ return acc; },
+    stats,   // 검수용: 지금까지 쌓인 표본 수(-1 = 움직이는 중)
+    // 첫 화면을 떠나면 이름 WebGL을 완전히 재운다(맥북 WebGL과 함께 돌지 않게): 캔버스를 숨기고 누적 루프를 끊는다
+    sleep(){ if (raf) { cancelAnimationFrame(raf); raf = 0; } if (renderer) renderer.domElement.style.display = 'none'; active = null; lastKs = null; acc = -1; },
     warm: () => go(),                  // 이름 파도(hero.js)가 첫 파도 전에 미리 깨운다
     has: mark => states.has(mark),     // 그 표식의 거리장이 이미 만들어졌는가
     // hero.js가 이 표식을 쓸 수 있는지 묻는다(데스크톱 폭에서 준비가 끝났을 때만)
     ready: mark => window.Inflate3D.ok && innerWidth > 820 && !!mark && !!mark.offsetParent,
     // ks: 글자(칸)마다 부푼 정도. 하나도 부풀지 않으면 감추고 그리지 않는다
-    frame(mark, ks){
+    // hold: 아직 움직이는 중(쌓지 말 것)
+    frame(mark, ks, holdNow){
       if (!window.Inflate3D.ok) return;
+      hold = !!holdNow;
       const any = ks.some(k => k >= 0.012);
       let st = states.get(mark);
       if (!any) { lastKs = null; if (st && active === st) { renderer.domElement.style.display = 'none'; active = null; } return; }
