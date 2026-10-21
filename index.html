@@ -769,7 +769,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   if (reduce || !gsap || !Observer) {
     root.classList.add('stage-off');
     const noop = () => {};
-    window.Stage = { enabled: false, config, state: {}, add: noop, hold: () => 0, release: noop, on: noop, camera: { set: noop, P: () => 1200 }, tone: noop,
+    window.Stage = { enabled: false, config, state: {}, add: noop, hold: () => 0, held: () => false, release: noop, on: noop, camera: { set: noop, P: () => 1200 }, tone: noop,
       go: name => { const el = document.querySelector(`[data-station="${name}"]`); if (el) el.scrollIntoView(); },
       ticker: gsap ? gsap.ticker : null };
     return;
@@ -784,7 +784,11 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   const scenes = [];
   const listeners = { settle: [], station: [] };
   const emit = (k, ...a) => listeners[k].forEach(f => f(...a));
-  const holds = new Set(); let holdSeq = 0;
+  const holds = new Map(); let holdSeq = 0;   // 토큰 → 이유(badge·card·web)
+  // 손으로 잡는 동안만의 잠금(명함·카드). 놓기를 놓쳐도(버튼 위에서 눌러 밖에서 뗌 등) 무대가 잠긴 채 남지 않게 손을 떼는 순간 모두 푼다(10-21 대표님: 히어로로 돌아온 뒤 스크롤이 안 먹힘)
+  const GRIP = new Set(['badge', 'card']);
+  const dropGrips = () => { let n = 0; holds.forEach((r, t) => { if (GRIP.has(r)) { holds.delete(t); n++; } }); if (n && !holds.size) { obs.enable(); root.classList.remove('stage-held'); } };
+  ['pointerup', 'pointercancel'].forEach(t => addEventListener(t, () => setTimeout(dropGrips, 0), true));
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const inFree = v => config.free.some(([a, b]) => v > a + 1e-4 && v < b - 1e-4);
@@ -863,6 +867,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   let lastWheelT = 0;
   const ownWheel = e => !holds.size && !e.ctrlKey && !e.metaKey && Math.abs(e.deltaY) >= Math.abs(e.deltaX);
   function onWheel(e){
+    if (holds.size && !e.buttons) dropGrips();   // 아무것도 누르지 않은 휠인데 잡기 잠금이 남아 있으면 남은 것이다
     if (!ownWheel(e)) return;
     e.preventDefault();
     const now = performance.now(), gap = now - lastWheelT; lastWheelT = now;
@@ -990,7 +995,8 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
       hooks.sleep && hooks.sleep();
       dispatch(true); return s;
     },
-    hold(reason = ''){ const tok = ++holdSeq; holds.add(tok); clearTimeout(snapTimer); state.input = false; obs.disable(); root.classList.add('stage-held'); holds.reason = reason; return tok; },
+    hold(reason = ''){ const tok = ++holdSeq; holds.set(tok, reason); clearTimeout(snapTimer); state.input = false; obs.disable(); root.classList.add('stage-held'); holds.reason = reason; return tok; },
+    held(tok){ return holds.has(tok); },
     release(tok){ holds.delete(tok); if (!holds.size) { obs.enable(); root.classList.remove('stage-held'); } },
     refresh(){ dispatch(true); },      // 치수가 바뀌었을 때 현재 p로 장면 progress를 다시 부른다(카메라·조명 다시 쓰기)
     go, on(k, f){ (listeners[k] || (listeners[k] = [])).push(f); },
@@ -1407,13 +1413,13 @@ window.ticker = (() => {
     //  · 처음 8px을 세로로 밀면 책상 스크롤(무대가 이미 받고 있다): 카드를 내려놓는다
     //  · 옆으로 밀거나 0.2초 버티면 카드를 집는다(무대 입력 멈춤). 집은 뒤에는 어느 쪽으로든 끌고, 놓으면 던져진다
     //  · 움직이지 않고 0.6초 누르고 있으면 뒤집힌다. 짧게 눌렀다 떼면 그 자리에 내려놓는다
-    const grab = () => { if (!drag || drag.c !== c || !drag.pending) return; drag.pending = false; if (!stageHold) stageHold = Stage.hold('card'); };
+    const grab = () => { if (!drag || drag.c !== c || !drag.pending) return; drag.pending = false; if (!Stage.held(stageHold)) stageHold = Stage.hold('card'); };
     const dropPending = () => { clearTimeout(drag.gt); clearTimeout(drag.ft); try { c.el.releasePointerCapture(drag.id); } catch (_) {} drag = null; c.el.classList.remove('held'); wake(); };
     c.el.addEventListener('pointerdown', ev => {
       if (ev.button > 0 || ev.target.closest('a') || uiAt(ev.clientX, ev.clientY)) return;
       ev.preventDefault();
       const touchDesk = MOB() && ev.pointerType !== 'mouse';
-      if (!touchDesk && window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
+      if (!touchDesk && window.Stage && Stage.enabled && !Stage.held(stageHold)) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
       const [px, py] = local(ev), dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
       drag = { c, id: ev.pointerId, lx: dx * co - dy * si, ly: dx * si + dy * co, px, py, x0: px, y0: py, vx: 0, vy: 0, vr: 0, t: performance.now(), moved: false, pending: touchDesk, flipped: false };
       if (touchDesk) {
@@ -1653,7 +1659,7 @@ window.ticker = (() => {
     if (STG && ct > 0) { if (ct >= 0.999) deskDown(e); else if (!e.target.closest('button,a')) e.preventDefault(); return; }   // 책상 위: 명함 면이 거의 복사 버튼이라 버튼 위에서도 끌기를 먼저 받는다(움직이지 않으면 버튼 클릭 그대로, 10-21 deploy-prep)
     if (e.target.closest('button,a')) return;   // 떨어지는 동안은 잡지 않고, 책상에 놓인 뒤에는 책상 위에서 끈다
     e.preventDefault();
-    if (window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('badge');   // 잡은 동안 무대 입력 멈춤
+    if (window.Stage && Stage.enabled && !Stage.held(stageHold)) stageHold = Stage.hold('badge');   // 잡은 동안 무대 입력 멈춤
     const P = local(e), A = pts[N - 1];
     const g = rot(P.x - A.x, P.y - A.y, -phi);           // 카드 위 잡은 점(카드 좌표)
     press = { id: e.pointerId, sx: e.clientX, sy: e.clientY, g, P, moved: false };
@@ -1847,7 +1853,7 @@ window.ticker = (() => {
   function deskDown(e){
     const onBtn = !!e.target.closest('button,a');
     if (!onBtn) e.preventDefault();
-    if (!stageHold) stageHold = Stage.hold('badge');
+    if (!Stage.held(stageHold)) stageHold = Stage.hold('badge');
     const g = geo(); target(g);
     const s = camScale(), r = card3d.getBoundingClientRect(), gx = (e.clientX - (r.left + r.width / 2)) / s, gz = (e.clientY - (r.top + r.height / 2)) / s;
     const a = desk.b, co = Math.cos(a), si = Math.sin(a);   // 화면 회전 −b를 되돌린 명함 좌표의 잡은 점
