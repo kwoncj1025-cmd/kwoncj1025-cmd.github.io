@@ -164,94 +164,18 @@ h1 span{display:block;color:var(--soft)}
 .tmeta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
 .tmark{margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
-/* ── 사례 연구: 앞 두 구역(흰 책상 위 물건)과 다른 방. 같은 서체·연보라·라벨 체계는 두고, 조명을 낮춘 남보라 밤색 지면에
-   원본 랜딩을 순서대로 세 덩어리로 잘라 3단으로 세운다. 작업은 화면 폭 전체를 쓰고 따로 얹는 장치는 두지 않는다. 바탕은 경계 앞뒤에서만 스크롤에 맞춰 바뀐다 ── */
+/* ── 밤색 방: 카드 테이블(흰 책상) 다음은 조명을 낮춘 남보라 밤색 방이다. 같은 서체·연보라·라벨 체계를 쓴다.
+   무대에서는 맥북 구간, 무대가 꺼지면(stage-off) 작업 목록(.web-list)이 이 방에 놓인다. 바탕은 경계 앞뒤에서만 바뀐다 ── */
 :root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12)}
 body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
-.cs{position:relative;color:var(--nt-ink)}
-/* 짜임(A안): 작업은 화면 폭 전체를 쓰고, 글은 작업 위아래 띠에만 둔다. 띠는 화면을 넷으로 나눈 격자를 따른다
-   (1칸 의뢰·연도, 2칸 범위, 3~4칸 설명). 선·상자 없이 칸의 자리만으로 위계를 나눈다 */
-.cs-in{padding-block:clamp(120px,16vh,180px) clamp(96px,12vh,140px);padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
-.cs-head,.cs-foot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);align-items:start}
-.cs-head{row-gap:clamp(40px,6vh,64px);padding-bottom:clamp(56px,9vh,96px)}
-.cs-ey{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
-.cs-ey span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
-.cs-ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
-.cs-name{grid-column:1/-1;margin:0;font:500 clamp(64px,8.4vw,132px)/.86 var(--f-disp);letter-spacing:-.04em;color:var(--soft)}
-.cs-dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
-.cs-dl dt{color:var(--nt-3);margin-bottom:6px}
-.cs-dl dd{margin:0}
-.cs-text{grid-column:3/-1;display:flex;flex-direction:column;gap:14px;min-width:0}
-.cs-lede{margin:0;font-size:clamp(16px,1.25vw,19px);line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:34em}
-.cs-lede b{font-weight:500;color:var(--nt-ink)}
-.cs-ko{margin:0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
-.cs-text a,.cs-foot a{align-self:flex-start;margin-top:6px;color:var(--nt-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-.cs-text a svg,.cs-foot a svg{width:11px;height:11px}
-.cs-text a:focus-visible,.cs-foot a:focus-visible,.cs-foot button:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
-/* 색인 막대: 작업 위에 붙어 함께 내려온다. 27컷 번호 중 지금 화면 가운데에 있는 컷만 밝아지고, 누르면 그 컷으로 내려간다 */
-.cs-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:24px;margin-bottom:clamp(10px,1vw,16px);padding-block:10px;
-  background:color-mix(in oklab,var(--nt) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.cs-idx{flex:1;display:grid;grid-template-columns:repeat(27,minmax(0,1fr));margin:0;padding:0;list-style:none;min-width:0}
-.cs-idx button{width:100%;padding:6px 0;border:0;background:none;font:400 11px var(--f-en);font-variant-numeric:tabular-nums;letter-spacing:.02em;
-  color:var(--nt-3);text-align:left;cursor:pointer;transition:color .25s}
-.cs-idx button:hover{color:var(--nt-2)}
-.cs-idx button.on{color:var(--nt-ink)}
-.cs-idx button:focus-visible{outline:2px solid var(--soft);outline-offset:1px}
-/* 끝 띠: 같은 격자. 분량·크레딧·펼쳐 보기·원본 */
-.cs-foot{margin-top:clamp(56px,9vh,96px);padding-top:16px;border-top:1px solid var(--nt-line)}
-.cs-foot .cs-dl{grid-column:auto}
-.cs-foot .cs-go{grid-column:3/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-.cs-foot button{margin:0;padding:0;border:0;background:none;color:var(--nt-ink);font:400 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
-.cs-foot a{margin-top:0}
-/* 3단: 각 단은 원본 랜딩의 연속 구간. 조각 사이 틈 없이 이어 붙이고, 단 사이만 띄운다 */
-.cs-wall{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1vw,16px);align-items:start;cursor:zoom-in}
-.cs-col{display:flex;flex-direction:column;min-width:0}
-.cs-col>img,.cs-col>video{display:block;width:100%;height:auto;background:#242320}
-.cs-col .cap{display:flex;justify-content:space-between;padding-top:10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
-.cs-wall:focus-visible{outline:2px solid var(--soft);outline-offset:8px}
-/* 펼친 화면: 지면(3단) 자리에서 화면 가득 열린다(clip-path). 같은 밤색, 원본을 화면 폭 그대로 */
-.reader{position:fixed;inset:0;z-index:300;background:var(--nt);overflow-y:auto;overscroll-behavior:contain;
-  clip-path:inset(var(--ct,0) var(--cr,0) var(--cb,0) var(--cl,0) round var(--cround,0px));transition:clip-path .6s cubic-bezier(.2,.8,.2,1)}
-.reader.snap{transition:none}
-.rd-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:20px;height:56px;
-  padding:env(safe-area-inset-top,0px) max(24px,env(safe-area-inset-right,0px)) 0 max(24px,env(safe-area-inset-left,0px));
-  background:rgba(14,16,34,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  font-size:11px;letter-spacing:.08em;color:var(--nt-3);text-transform:uppercase}
-.rd-bar .ey{display:flex;align-items:center;gap:8px;color:var(--nt-ink)}
-.rd-bar .ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
-.rd-bar .cut{margin-left:auto;font-variant-numeric:tabular-nums}
-.rd-bar .cut b{font-weight:500;color:var(--nt-ink)}
-.rd-bar a{color:var(--nt-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px}
-.rd-bar a svg{width:11px;height:11px}
-.rd-x{width:36px;height:36px;border-radius:50%;border:0;background:var(--nt-ink);color:var(--nt);display:grid;place-items:center;cursor:pointer;transition:transform .2s}
-.rd-x:hover{transform:scale(1.06)}
-.rd-x svg{width:13px;height:13px}
-.rd-bar a:focus-visible,.rd-x:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
-.rd-art{max-width:1600px;margin:0 auto}
-.rd-art>*{display:block;width:100%;height:auto}
-.rd-art video{object-fit:cover;background:#242320}
-.rd-end{display:flex;justify-content:center;padding:56px 24px calc(64px + env(safe-area-inset-bottom,0px))}
-.rd-end button{height:44px;padding:0 20px;border-radius:999px;border:0;background:rgba(233,236,245,.08);color:var(--nt-ink);font:500 13px var(--f-en);cursor:pointer}
-.rd-end button:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
-/* 뒤 페이지는 잠그지 않는다(html을 잠그면 스크롤 위치가 맨 위로 튄다). 펼친 화면은 전체를 덮고 overscroll-behavior로 스크롤이 새지 않게 한다 */
-/* 지면이 끝난 뒤의 맺음 줄도 밤색 위에서 읽히게 */
-.cs~.foot-note{color:var(--nt-3);max-width:none;padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
-.cs~.foot-note a{color:var(--nt-ink)}
-@media (max-width:900px){
-  .cs-in{padding-block:96px 72px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-  .cs-head,.cs-foot{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
-  .cs-head{row-gap:32px;padding-bottom:48px}
-  .cs-name{font-size:clamp(56px,17vw,96px)}
-  .cs-text,.cs-foot .cs-go{grid-column:1/-1}
-  .cs-bar{display:none}
-  .cs-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .cs~.foot-note{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-  .rd-bar{gap:12px;height:52px}
-  .rd-bar .cut{display:none}
-  .rd-bar a{margin-left:auto}
-}
-@media (prefers-reduced-motion:reduce){.reader{transition:none}}
-/* 맨 위로: 첫 화면을 지난 뒤 위로 스크롤하거나 끝에 닿았을 때만 오른쪽 아래에 나타난다. 밤색 지면 위에서는 색을 뒤집는다 */
+/* 작업 목록의 눈썹 글(stage-off) */
+.wl-ey{display:flex;align-items:center;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.wl-ey span{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
+.wl-ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
+/* 목록 끝의 맺음 줄도 밤색 위에서 읽히게 */
+.web-list .foot-note{color:var(--nt-3);max-width:none;margin-top:clamp(56px,9vh,96px);padding:0}
+.web-list .foot-note a{color:var(--nt-ink)}
+/* 맨 위로: 첫 화면을 지난 뒤 위로 스크롤하거나 끝에 닿았을 때만 오른쪽 아래에 나타난다. 밤색 방에서는 색을 뒤집는다 */
 .totop{position:fixed;z-index:50;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
   width:40px;height:40px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;
   background:var(--ink);color:#fff;opacity:0;transform:translateY(12px);pointer-events:none;
@@ -371,17 +295,17 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
    stage-off(움직임 줄이기, GSAP 실패)에서는 무대 요소가 보통 블록이라 지금의 문서 스크롤 판이 그대로 보인다 */
 html.stage-on, html.stage-on body{height:100%;overflow:hidden;overscroll-behavior:none}
 html.stage-on body{position:fixed;inset:0;width:100%}
-/* 바탕은 투명: 톤 전환(사례 연구의 tone)이 body 배경색 한 곳에 쓰는 색이 그대로 비친다 */
+/* 바탕은 투명: 톤 전환(Stage.tone)이 body 배경색 한 곳에 쓰는 색이 그대로 비친다 */
 html.stage-on #stage-root{position:fixed;inset:0;height:100vh;height:100dvh;touch-action:none;
   perspective:1200px;perspective-origin:50% 50%}
 @media (max-width:820px){html.stage-on #stage-root{perspective:820px}}   /* 08_공간설계 2절의 원근 P */
 /* 카메라 하나만 움직인다. 조상에는 opacity·filter·overflow·clip-path·mix-blend-mode를 걸지 않는다(3D 평면화 방지) */
 html.stage-on .stage-camera{position:absolute;inset:0;transform-style:preserve-3d}
-/* 두 면(08_공간설계 1절): 벽(첫 화면)과 책상(카드 테이블·교정지). 지금은 평면 그대로이고, 기울기는 장면이 준다 */
+/* 두 면(08_공간설계 1절): 벽(첫 화면)과 책상(카드 테이블·맥북). 지금은 평면 그대로이고, 기울기는 장면이 준다 */
 html.stage-on .wall,html.stage-on .desk{position:absolute;left:0;right:0;transform-style:preserve-3d}
 html.stage-on .wall{top:-50%;height:100%}                      /* 세계 y∈[−H,0]: 원점(모서리)이 화면 가운데 */
 html.stage-on .desk{top:50%;transform-origin:50% 0;transform:rotateX(90deg)}   /* 모서리에서 시청자 쪽으로 뻗는 상판. 높이는 world.js */
-/* 빛웅덩이: 소등 뒤 교정지 주변 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
+/* 빛웅덩이: 소등 뒤 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
 .pool{display:none}
 html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;height:140vh;pointer-events:none;opacity:0;
   background:radial-gradient(closest-side,rgba(52,60,118,.9),rgba(40,46,96,.55) 55%,rgba(34,42,92,0) 100%)}
@@ -392,8 +316,8 @@ html.stage-on .desk>.desk-sign{position:absolute;left:0;top:0;margin:0;padding:0
   font-size:10px;color:var(--nt-3);visibility:hidden}
 html.stage-on .desk>.desk-sign a{color:var(--nt-ink)}
 @media (max-width:820px){html.stage-on .desk>.desk-sign{flex-direction:column;align-items:center;gap:8px}}
-/* 교정지(13 합의안): 여러 장이 겹쳐 쌓이므로 종이마다 불투명한 면이 있다. 방보다 한 단계 밝아 가장자리가 실물 종이로 읽힌다 */
-html.stage-on .stage-layer.paper>.cs{background:color-mix(in oklab,var(--nt),#fff 3.5%)}
+/* 카드 테이블이 어둠에 잠긴다(world.js --sink): 맥북으로 가며 불이 낮아지는 동안. 3D가 평면이 되지 않게 잎 요소(카드 면·글줄)에만 건다 */
+html.stage-on [data-scene="table"] :is(.tbar,.tfoot,.f){opacity:var(--sink,1)}
 /* 맥북(13 합의안, 구조·자리 deploy-prep / 부품 그림·힌지 다듬기 card-drop W2·W7). 크기·자리는 scene-web.js가 쓴다.
    책상 면 위에 몸체(키보드면)가 눕고, 힌지(몸체 뒤 모서리)에서 덮개가 112° 열려 있다 */
 .mb,.web-info{display:none}
@@ -417,7 +341,7 @@ html.stage-on .mb-hit{position:absolute;inset:0;margin:0;padding:0;border:0;back
 html.stage-on .mb.using .mb-hit{display:none}
 html.stage-on .mb-chin{position:absolute;left:0;right:0;bottom:0;height:var(--chin);margin:0;display:flex;align-items:center;justify-content:center;
   font:500 11px var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.28)}
-/* 글 격자(카메라에 붙은 화면 층, 배치는 card-drop W6). 케이스 스터디 머리글과 같은 문법 */
+/* 글 격자(카메라에 붙은 화면 층, 배치는 card-drop W6). 4칸 라벨 문법 */
 html.stage-on .web-info{display:grid;position:fixed;left:max(32px,env(safe-area-inset-left,0px));bottom:clamp(32px,7vh,72px);width:min(36vw,520px);z-index:40;
   grid-template-columns:1fr 1fr;column-gap:24px;row-gap:22px;color:var(--nt-ink);pointer-events:none}
 html.stage-on .web-info a{pointer-events:auto}
@@ -430,7 +354,7 @@ html.stage-on .wi-dl dt{color:var(--nt-3);margin-bottom:6px;text-transform:upper
 html.stage-on .wi-dl dd{margin:0}
 html.stage-on .wi-go{color:var(--nt-ink);text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
 @media (max-width:820px){html.stage-on .web-info{width:auto;right:20px;left:20px;bottom:24px}}
-/* 움직임 줄이기·GSAP 실패(stage-off): 맥북 장면 대신 서비스 목록을 문서 흐름에 둔다. 무대에서는 쓰지 않는다 */
+/* 움직임 줄이기·GSAP 실패(stage-off): 맥북 장면 대신 작업 목록을 문서 흐름에 둔다. 무대에서는 쓰지 않는다 */
 .web-list{display:none}
 html.stage-off .web-list{display:block;padding:clamp(56px,9vh,96px) max(32px,env(safe-area-inset-left,0px));color:var(--nt-ink);background:var(--nt)}
 html.stage-off .web-list ul{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:18px}
@@ -459,46 +383,16 @@ html.stage-on .web-guide.is-cue{animation:webGuideCue 1.6s cubic-bezier(.3,0,.2,
 /* 불러오는 동안의 화면은 꺼진 맥 화면(검정). 문서가 뜨면 짧게 켜진다 */
 html.stage-on .mb-pane iframe{transition:opacity .35s ease-out}
 html.stage-on .mb-pane iframe.is-loading{opacity:0}
-/* 맥북 실물 부품(card-drop W2, 11 4절). 골격·크기·자리는 stage.css와 scene-web.js(deploy-prep)가 정하고, 여기서는 그 위에 힌지·면 그림만 얹는다.
-   부품 그림(10-21 조율 지정 v09.psd, 은색 16형 CG): 덮개 안쪽·몸체 앞면 띠 = v09에서 그대로(정면이라 정사영), 키보드면 = MACBOOK-MOCKUP-013을 정사영으로 편 뒤
-   알루미늄만 은색으로 다시 칠함(v09는 키보드면이 스치는 각도라 펼 수 없다. 키보드 우물은 실물처럼 검정).
-   원칙(10-21 대표님): 사진에 없는 면(덮개 뒷면, 옆면 두께, 접히는 빛)은 지어내지 않는다. 덮개는 112° 열린 채 움직이지 않는다.
-   세계 축: 책상 면 = 이 층의 평면, translateZ(+) = 책상 위로. 몸체 두께 --t(16형 실물 비율 약 3%)는 v09 앞면 띠 높이와 같다 */
-html.stage-on .mb{--t:calc(var(--wi,1000px) * .03);--rd:calc(var(--wi,1000px) * .022);--alu:#c6c7ca;--alu-2:#9d9ea2;
-  --glow:238,240,248;--gk:1}
-/* 몸체: 윗면(키보드 사진)은 두께만큼 떠 있고, 앞면 띠(v09 사진)가 책상까지 내려온다 */
-html.stage-on .mb .mb-base{transform:none;background:none;box-shadow:none;border-radius:0;transform-style:preserve-3d}
-html.stage-on .mb .mb-deck,html.stage-on .mb .mb-fr,html.stage-on .mb .mb-sh,html.stage-on .mb .mb-kl{position:absolute;display:block;pointer-events:none}
-html.stage-on .mb .mb-deck{inset:0;transform:translateZ(var(--t));border-radius:calc(var(--rd) * .5) calc(var(--rd) * .5) var(--rd) var(--rd);overflow:hidden;
-  background:var(--alu) url(macbook/deck.webp) 0 0/100% 100% no-repeat;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
-/* 소등한 방이라 몸체는 스스로 밝지 않다: 방 빛에 눌려 있다가(곱하는 색은 회색 기를 남긴 무채색 쪽: 남보라로 물들면 알루미늄이 아니다), 화면 빛이 닿는 만큼(힌지 쪽 → 앞쪽으로 옅게)만 은색이 살아난다.
-   그래야 방에서 가장 밝은 면이 화면이다 */
-html.stage-on .mb .mb-deck::after{content:"";position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply;pointer-events:none;
-  background:linear-gradient(color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 92%),rgb(92,94,104)),
-    color-mix(in srgb,rgb(var(--glow)) calc(var(--light,0) * var(--on,1) * var(--gk) * 38%),rgb(72,74,84)) 45%,rgb(54,56,66) 92%)}
-html.stage-on .mb .mb-fr::after{content:"";position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply;pointer-events:none;background:rgba(66,68,80,.86)}
-/* 화면 빛이 키보드면에 떨어진다: 힌지 쪽이 가장 밝고 앞으로 갈수록 옅다(빛이 비스듬히 닿는 사다리꼴) */
-html.stage-on .mb .mb-kl{inset:0;z-index:2;border-radius:inherit;mix-blend-mode:screen;opacity:calc(var(--light,0) * var(--on,1) * var(--gk));
-  background:linear-gradient(rgba(var(--glow),.10),rgba(var(--glow),0) 30%)}
-html.stage-on .mb .mb-fr{left:0;right:0;top:calc(100% - var(--t));height:var(--t);transform-origin:50% 100%;transform:rotateX(-90deg);
-  background:url(macbook/front.webp) 0 0/100% 100% no-repeat}
-/* 책상에 지는 그림자: 몸체 바로 아래 짙은 접지 그림자 + 넓고 옅은 그림자 */
-html.stage-on .mb .mb-sh{inset:-2% -1.5% -3%;border-radius:var(--rd);transform:translateZ(.5px);background:rgba(4,5,14,.8);filter:blur(10px);
-  box-shadow:0 0 60px 30px rgba(4,5,14,.35)}
-/* 화면 빛웅덩이(08 4절, 11 1절): 흐린 원이 아니라 화면 사각형이 책상 앞쪽으로 비친 사다리꼴. 화면이 잠들면(--on) 함께 꺼진다 */
-html.stage-on .mb .mb-pool{position:absolute;display:block;pointer-events:none;left:-30%;right:-30%;top:96%;height:110%;transform:translateZ(.3px);
-  clip-path:polygon(23% 0,77% 0,100% 100%,0 100%);filter:blur(28px);mix-blend-mode:screen;opacity:calc(var(--light,0) * var(--on,1) * var(--gk) * .55);
-  background:linear-gradient(rgba(var(--glow),.42),rgba(var(--glow),.14) 45%,rgba(var(--glow),0) 92%)}
-
-/* 덮개: 힌지는 몸체 윗면 높이. 덮개는 열린 채로 두고(10-21 대표님 결정) 사진에 있는 앞면(.mb-face)만 그린다.
-   덮개 뒷면·두께처럼 사진에 없는 면은 지어내지 않는다 */
+/* 맥북(card-drop, 10-21 조율 합의): 몸체·덮개·힌지는 macbook3d.js가 WebGL로 그리고(MahdiEdits 3D 모델), CSS 무대에는 화면(iframe)만 남는다.
+   캔버스는 무대 바로 아래 고정 층이라, 덮개 자리의 CSS 면은 투명하게 두고 iframe만 모델 화면 자리에 얹는다.
+   WebGL이 없으면 iframe만 보인다 */
+.mb3d{display:none}
+html.stage-on .mb3d{display:block;position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+html.stage-on .mb{--t:calc(var(--wi,1000px) * .03)}
+html.stage-on .mb .mb-base{transform:none;background:none;box-shadow:none;border-radius:0}
+/* 덮개: 힌지는 몸체 윗면 높이(--t). 112° 열린 채 움직이지 않는다(10-21 대표님 결정) */
 html.stage-on .mb .mb-hinge{position:absolute;left:0;top:0;width:100%;height:0;transform:translateZ(var(--t));transform-style:preserve-3d}
-html.stage-on .mb .mb-face{background:#2b2b2b;border-radius:var(--rd) var(--rd) calc(var(--rd) * .3) calc(var(--rd) * .3);box-shadow:none}
-/* 베젤 사진(노치·테두리)은 화면 위에 얹는 틀이다. 가운데는 투명이라 화면이 그대로 보이고, 노치만 화면 위 끝을 가린다 */
-html.stage-on .mb .mb-face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
-  border-style:solid;border-width:calc(var(--bz) * 2.2) var(--bz) var(--chin) var(--bz);border-image:url(macbook/lid.webp) 51 23 64 23 stretch}
-html.stage-on .mb .mb-face::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,calc(.04 + .06 * var(--using,0)))}
+html.stage-on .mb .mb-face{background:none;box-shadow:none}
 html.stage-on .mb .mb-screen{z-index:1}
 /* 화면이 잠든다(맺음): 실제 맥처럼 한 번 어둡게 내려앉았다가 검게 꺼진다. 라이브 화면 위에 검은 막을 덮어 --on만큼 밝기를 남긴다 */
 html.stage-on .mb .mb-screen::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:#000;opacity:calc(1 - var(--on,1))}
@@ -608,105 +502,19 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
   </div>
 </section>
 </div>
-<div class="stage-layer paper" data-scene="cases" data-paper="bewhysee">
-<section class="cs" id="cases" aria-label="사례 연구 bewhysee" data-src="case/bewhysee/" data-cols="11,19|15" data-title="bewhysee · BYC rebranding" data-link="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" data-link-label="Behance">
-  <div class="cs-in">
-    <header class="cs-head">
-      <p class="cs-ey"><span><i></i>Case study</span></p>
-      <h2 class="cs-name">bewhysee</h2>
-      <dl class="cs-dl"><dt>Client</dt><dd>BYC, since 1946</dd><dd>Concept project · 2026</dd></dl>
-      <dl class="cs-dl"><dt>Scope</dt><dd>Naming</dd><dd>Brand architecture</dd><dd>Identity system</dd><dd>Labels &amp; packaging</dd><dd>Online</dd></dl>
-      <div class="cs-text">
-        <p class="cs-lede">A concept rebrand for <b>BYC</b>, a Korean innerwear label since 1946. The new name is the old one, read out loud: be, why, see.</p>
-        <p class="cs-ko" lang="ko">보이지 않는 옷이 보이는 이유가 된다.</p>
-        <a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">View on Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </div>
-    </header>
-    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
-    <div class="cs-wall" role="button" tabindex="0" aria-label="bewhysee 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
-    <footer class="cs-foot">
-      <dl class="cs-dl"><dt>Format</dt><dd>27 cuts · 2800 px</dd><dd>One landing, cut in order</dd></dl>
-      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
-      <div class="cs-go"><button type="button" class="cs-open">Open full case</button><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-    </footer>
-  </div>
-</section>
-</div>
-<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot">
-<section class="cs" id="bizcopilot" aria-label="사례 연구 BizCopilot" data-src="case/bizcopilot-c/" data-title="BizCopilot · Brand identity C">
-  <div class="cs-in">
-    <header class="cs-head">
-      <p class="cs-ey"><span><i></i>Case study</span></p>
-      <h2 class="cs-name">BizCopilot</h2>
-      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
-      <dl class="cs-dl"><dt>Scope</dt><dd>Brand identity</dd><dd>Landing redesign</dd><dd>Ad creative</dd></dl>
-      <div class="cs-text">
-        <p class="cs-lede">A brand identity concept for BizCopilot, a Korean business support service.</p>
-        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
-      </div>
-    </header>
-    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
-    <div class="cs-wall" role="button" tabindex="0" aria-label="BizCopilot 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
-    <footer class="cs-foot">
-      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
-      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
-    </footer>
-  </div>
-</section>
-</div>
-<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot-story">
-<section class="cs" id="bizcopilot-story" aria-label="사례 연구 Brand Story" data-src="case/bizcopilot-story/" data-title="BizCopilot · Brand Story">
-  <div class="cs-in">
-    <header class="cs-head">
-      <p class="cs-ey"><span><i></i>BizCopilot</span></p>
-      <h2 class="cs-name">Brand Story</h2>
-      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
-      <dl class="cs-dl"><dt>Scope</dt><dd>Brand story</dd></dl>
-      <div class="cs-text">
-        <p class="cs-lede">(카피 확인 필요)</p>
-        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
-      </div>
-    </header>
-    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
-    <div class="cs-wall" role="button" tabindex="0" aria-label="Brand Story 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
-    <footer class="cs-foot">
-      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
-      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
-    </footer>
-  </div>
-</section>
-</div>
-<div class="stage-layer paper" data-scene="cases" data-paper="bizcopilot-system">
-<section class="cs" id="bizcopilot-system" aria-label="사례 연구 Brand System" data-src="case/bizcopilot-system/" data-title="BizCopilot · Brand System">
-  <div class="cs-in">
-    <header class="cs-head">
-      <p class="cs-ey"><span><i></i>BizCopilot</span></p>
-      <h2 class="cs-name">Brand System</h2>
-      <dl class="cs-dl"><dt>Client</dt><dd>BizCopilot</dd><dd>Concept project · 2026</dd></dl>
-      <dl class="cs-dl"><dt>Scope</dt><dd>Brand system</dd><dd>Guidelines</dd></dl>
-      <div class="cs-text">
-        <p class="cs-lede">(카피 확인 필요)</p>
-        <p class="cs-ko" lang="ko">(카피 확인 필요)</p>
-      </div>
-    </header>
-    <div class="cs-bar"><ol class="cs-idx" aria-label="컷 색인"></ol></div>
-    <div class="cs-wall" role="button" tabindex="0" aria-label="Brand System 사례 연구 펼쳐 보기" aria-haspopup="dialog"></div>
-    <footer class="cs-foot">
-      <dl class="cs-dl"><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
-      <div class="cs-go"><button type="button" class="cs-open">Open full case</button></div>
-    </footer>
-  </div>
-</section>
-<footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
-</div>
-<section class="web-list" aria-label="라이브 서비스">
-  <p class="cs-ey"><span><i></i>Live service</span></p>
+<section class="web-list" aria-label="작업">
+  <p class="wl-ey"><span><i></i>Work</span></p>
   <ul>
+    <li><a href="web/bewhysee/" target="_blank" rel="noopener">bewhysee ↗</a><span>A concept rebrand for BYC, a Korean innerwear label since 1946.</span></li>
+    <li><a href="web/bizcopilot/c/" target="_blank" rel="noopener">BizCopilot ↗</a><span>A brand identity concept for BizCopilot, a Korean business support service.</span></li>
+    <li><a href="web/bizcopilot/story/" target="_blank" rel="noopener">BizCopilot · Brand Story ↗</a><span>The story behind the BizCopilot identity.</span></li>
+    <li><a href="web/bizcopilot/system/" target="_blank" rel="noopener">BizCopilot · Brand System ↗</a><span>The BizCopilot design system and guidelines.</span></li>
     <li><a href="https://kingjesus.kr/" target="_blank" rel="noopener">Bible Typing ↗</a><span>A quiet place to type the King James Bible, one verse a day.</span></li>
     <li><a href="https://chuckmode.com/" target="_blank" rel="noopener">CHUCK MODE ↗</a><span>A website that keeps you looking busy at your desk.</span></li>
     <li><a href="web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html" target="_blank" rel="noopener">Monthlens · chat ↗</a><span>Interactive landing template: the page opens as a chat.</span></li>
     <li><a href="web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html" target="_blank" rel="noopener">Monthlens · dark ↗</a><span>Landing page template: dark UI.</span></li>
   </ul>
+<footer class="foot-note"><span>Chanjun Kwon · Designer · AI Maker</span><span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>instagram.com/chanjun.kwon ↗</a></span></footer>
 </section>
 <div class="mb" aria-label="책상 위 맥북" style="visibility:hidden">
   <div class="mb-base" aria-hidden="true"></div>
@@ -728,11 +536,6 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
   <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
 </aside>
 <button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i></button>
-<div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="bewhysee 사례 연구" hidden>
-  <div class="rd-bar"><span class="ey" id="rdEy"><i></i>bewhysee · BYC rebranding</span><span class="cut">cut <b id="rdCut">01</b> / <span id="rdTot">27</span></span><a id="rdLink" href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button class="rd-x" id="rdX" type="button" aria-label="닫기"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
-  <div class="rd-art" id="rdArt"></div>
-  <div class="rd-end"><button type="button" id="rdBack">지면으로 돌아가기</button></div>
-</div>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
@@ -747,29 +550,26 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
   const gsap = window.gsap, Observer = window.Observer;
 
   const config = {
-    // 정거장(13 합의안): 교정지 네 장은 각각 첫머리·끝, 그다음 맥북 앞 → 바이블타이핑 화면 속 → 척모드 → Monthlens 둘 → 맺음
+    // 정거장(10-21 대표님 결정): 카드 테이블 → 맥북 앞 → 화면 속 서비스(bewhysee → BizCopilot 셋 → 바이블타이핑 → 척모드 → Monthlens 둘) → 맺음.
+    // 교정지 구간은 없앴다. 옛 해시(#cases)는 alias로 그 작업의 화면 정거장에 닿는다. 서비스 목록은 web-live.js, 같은 순서
     stations: [
       { name: 'hero', hash: '' },
       { name: 'work', hash: 'work' },
-      { name: 'cases', hash: 'cases' },              // 교정지 1 bewhysee(기존 #cases 유지)
-      { name: 'casesEnd', hash: 'cases' },
-      { name: 'biz', hash: 'bizcopilot' },           // 교정지 2 BizCopilot C
-      { name: 'bizEnd', hash: 'bizcopilot' },
-      { name: 'story', hash: 'bizcopilot-story' },   // 교정지 3
-      { name: 'storyEnd', hash: 'bizcopilot-story' },
-      { name: 'system', hash: 'bizcopilot-system' }, // 교정지 4
-      { name: 'systemEnd', hash: 'bizcopilot-system' },
-      { name: 'web', hash: 'web' },                  // 맥북 앞(바이블타이핑이 켜진 화면)
-      { name: 'bible', hash: 'bible' },              // 바이블타이핑 화면 속(합성 배율 1)
-      { name: 'chuck', hash: 'chuck' },              // 베젤 거리, 기기 안 데스크톱 전환
+      { name: 'web', hash: 'web' },                  // 맥북 앞(bewhysee가 켜진 화면)
+      { name: 'bewhysee', hash: 'bewhysee', alias: ['cases'] },   // 화면 속(합성 배율 1)
+      { name: 'biz', hash: 'bizcopilot' },           // 베젤 거리, 기기 안 데스크톱 전환
+      { name: 'story', hash: 'bizcopilot-story' },
+      { name: 'system', hash: 'bizcopilot-system' },
+      { name: 'bible', hash: 'bible' },
+      { name: 'chuck', hash: 'chuck' },
       { name: 'monthlens', hash: 'monthlens' },
       { name: 'monthlensDark', hash: 'monthlens-dark' },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
-    free: [[2, 3, 3], [4, 5, 3], [6, 7, 3], [8, 9, 3]],   // 교정지 구간 [시작, 끝, 화면 수]: 화면 수는 world.js가 교정지마다 다시 쓴다
-    // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수. 교정지 사이(앞 장이 빠지고 아래 장이 드러남)는 0.8장,
-    // 맥북 구간은 11 표(앞으로 2.5 · 화면 속 2 · 척모드 1.5 · Monthlens 각 1 · 맺음 2.5)
-    seg: [2.2, 2, null, 0.8, null, 0.8, null, 0.8, null, 2.5, 2, 1.5, 1, 1, 2.5],
+    free: [],                // 자유 구간 [시작, 끝, 화면 수](지금은 없다. 긴 문서는 맥북 화면 속 iframe이 스스로 스크롤한다)
+    // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수.
+    // 카드 → 맥북 앞 2.5 · 화면 속 2 · 베젤로 물러나며 다음 서비스 1.5 · 서비스마다 1 · 맺음 2.5
+    seg: [2.2, 2.5, 2, 1.5, 1, 1, 1, 1, 1, 1, 2.5],
     follow: 11,              // p가 target을 따라오는 빠르기(1/초, 지수 보간). 120Hz에서 프레임당 약 0.09
     snapIdleMs: 450,         // 입력이 이만큼 멈추면 스냅을 따진다
     snapWithin: 0.12, snapMaxScreens: 0.25,   // 마지막 이동 방향 쪽 정거장이 0.12 안(그리고 화면 0.25장 안)이면 마저 붙는다. 되돌리는 쪽으로는 끌지 않는다
@@ -880,7 +680,7 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
     },
   });
 
-  // 키보드: 정거장 단위로 부드럽게 간다. 교정지 구간 안에서 화살표는 반 화면, PageUp/Down은 구간 끝으로
+  // 키보드: 정거장 단위로 부드럽게 간다. 자유 구간(free)이 있으면 그 안에서 화살표는 반 화면, PageUp/Down은 구간 끝으로
   addEventListener('keydown', e => {
     if (holds.size || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
     const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
@@ -900,7 +700,7 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
   });
 
   // 주소: 정착하면 replaceState, 처음 불러올 때와 사용자가 해시를 바꿀 때는 그 정거장으로
-  const stationOfHash = h => { h = (h || '').replace(/^#/, ''); return h ? config.stations.findIndex(s => s.hash === h) : 0; };
+  const stationOfHash = h => { h = (h || '').replace(/^#/, ''); return h ? config.stations.findIndex(s => s.hash === h || (s.alias && s.alias.includes(h))) : 0; };
   let lastHash = location.hash.replace(/^#/, '');
   const writeHash = () => {
     const h = hashOf(x); if (h === lastHash) return; lastHash = h;
@@ -962,8 +762,8 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
       const P = camera.P(), d = camera.d || P;
       const css = `translateZ(${(P - d).toFixed(2)}px) rotateX(${(-camera.th).toFixed(3)}deg) translate3d(${(-camera.Tx).toFixed(2)}px,${(-camera.Ty).toFixed(2)}px,${(-camera.Tz).toFixed(2)}px)`;
       if (css !== camera._css && camEl) { camera._css = css; camEl.style.transform = css; }
-      // 다 숙이면 벽은 카메라 뒤로 넘어간다. 교정지부터는(p>2) 고개를 들어도 벽(첫 화면)은 이야기 밖이라 감춘다
-      if (wallEl) wallEl.style.visibility = camera.th > 86 || state.p > 2 ? 'hidden' : '';
+      // 다 숙이면 벽은 카메라 뒤로 넘어간다. 카드 테이블을 지나면(p>1) 맥북 쪽으로 고개를 들어도 벽(첫 화면)은 이야기 밖이라 감춘다
+      if (wallEl) wallEl.style.visibility = camera.th > 86 || state.p > 1.001 ? 'hidden' : '';
     },
   };
   // 조명(08 4절): 바탕 면의 밝기 dk(0 흰 방 → 1 밤색 방). 물건은 따라 어두워지지 않는다. body 배경색 한 곳에만 쓴다
@@ -1973,153 +1773,32 @@ window.ticker = (() => {
 </script>
 <script>
 (() => {
-  // 사례 연구(교정지): 원본 랜딩(manifest 순서)을 연속 구간 몇 덩어리로 잘라 3단(모바일 2단)으로 세운다. 격자는 1600 판,
-  // 2800 판은 펼친 화면에서만 쓴다. 지면 어디를 눌러도 펼친 화면이 첫 장부터 열린다.
-  // 교정지가 여러 장이라 .cs[data-src] 구역마다 CaseStudy 하나를 만들고, 펼친 화면(.reader)은 하나를 함께 쓴다(열 때 원본을 바꾼다).
-  const secs = [...document.querySelectorAll('.cs[data-src]')]; if (!secs.length) return;
-  const reader = document.getElementById('reader'), art = document.getElementById('rdArt'), cutEl = document.getElementById('rdCut');
-  const rdEy = document.getElementById('rdEy'), rdLink = document.getElementById('rdLink'), rdTot = document.getElementById('rdTot');
+  // 맨 위로 버튼과 문서 스크롤 판(stage-off)의 바탕 톤. 옛 cases.js에서 교정지와 무관한 두 가지만 남겼다(10-21 교정지 없앰)
+  const toTop = document.getElementById('toTop'); if (!toTop) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const narrow = matchMedia('(max-width: 900px)');
   const STAGE = !!(window.Stage && Stage.enabled);
-  const hi = () => (devicePixelRatio || 1) * innerWidth > 1700;
-  const make = (base, m, lazy, full) => {
-    let el;
-    if (m.type === 'video') {
-      el = document.createElement('video'); el.muted = true; el.loop = true; el.playsInline = true; el.preload = 'none';
-      el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
-      const pst = full && m.poster2x && hi() ? m.poster2x : m.poster; if (pst) { if (lazy) el.dataset.poster = base + pst; else el.poster = base + pst; }
-      // 펼친 화면은 HEVC 원본 해상도 판을 먼저(맥·아이폰·하드웨어 HEVC 크롬), 못 틀면 H.264 판. 지면은 H.264 1600 판만
-      const srcs = []; if (full && m.hevc) srcs.push([m.hevc, 'video/mp4; codecs="hvc1"']); srcs.push([m.file, 'video/mp4']);
-      srcs.forEach(([f, t]) => { const so = document.createElement('source'); so.type = t; if (lazy) so.dataset.src = base + f; else so.src = base + f; el.appendChild(so); });
-      if (lazy) el.dataset.lazy = '1';
-    } else {
-      el = new Image(); el.decoding = 'async'; el.alt = ''; if (lazy) el.loading = 'lazy';
-      if (full && m.file2x) { el.srcset = `${base + m.file} ${m.w}w, ${base + m.file2x} ${m.w2x || 2800}w`; el.sizes = '100vw'; }
-      // 무대의 지면 격자: 3D 안에서는 브라우저의 지연 로드가 화면 밖 컷까지 받아 버리므로, 화면 가까이 온 컷에만 src를 붙인다(wakeCells)
-      if (lazy && !full && STAGE) el.dataset.src = base + m.file; else el.src = base + m.file;
-    }
-    el.width = m.w; el.height = m.h; el.style.aspectRatio = `${m.w} / ${m.h}`;
-    return el;
-  };
-  // 화면에 들어온 영상만 포스터·src를 붙인다. 한 번 붙인 src는 떼지 않는다(다시 받지 않게)
-  const arm = v => { if (v.dataset.lazy) { if (v.dataset.poster) v.poster = v.dataset.poster; v.querySelectorAll('source').forEach(so => { so.src = so.dataset.src; }); delete v.dataset.lazy; v.load(); } };
-  const watch = (root, els) => {
-    const io = new IntersectionObserver(es => es.forEach(e => {
-      const v = e.target; if (v.tagName !== 'VIDEO') return;
-      // 무대의 지면 격자는 3D 안이라 관찰자가 화면 밖(빠진 장)도 겹친다고 볼 수 있다: 깨우기는 wakeCells가 하고, 관찰자는 멈추기만 한다
-      if (e.isIntersecting) { if (STAGE && !root) return; arm(v); if (!reduce) v.play().catch(() => {}); } else v.pause();
-    }), { root, rootMargin: '300px 0px' });
-    els.forEach(el => io.observe(el));
-    return io;
-  };
+  const list = document.querySelector('.web-list');
 
-  // 교정지 한 장
-  function CaseStudy(sec, k){
-    const base = sec.dataset.src, wall = sec.querySelector('.cs-wall'), idx = sec.querySelector('.cs-idx');
-    // 단을 자르는 자리: data-cols="3단 경계들|2단 경계들"(원본의 이음매). manifest의 cols가 있으면 그것이 먼저다
-    const colsAttr = (sec.dataset.cols || '').split('|').map(t => t ? t.split(',').map(Number) : null);
-    let list = null, cols = null, cells = [], layout = '', wio = null, items = null, asked = null;
-    // manifest는 한 장에 한 번만 묻는다. 없으면(404, 재료 전 빈 자리) 다시 묻지 않는다
-    function load(){ return asked || (asked = fetchList()); }
-    async function fetchList(){
-      try { const r = await fetch(base + 'manifest.json'); if (!r.ok) return null; const man = await r.json(); list = Array.isArray(man) ? man : man.items; cols = man.cols || null; } catch { return null; }
-      if (idx) idx.innerHTML = list.map((m, i) => `<li><button type="button" data-i="${i}" aria-label="컷 ${i + 1}">${String(i + 1).padStart(2, '0')}</button></li>`).join('');
-      lay(); return list;
-    }
-    const cutsFor = n3 => {
-      const n = list.length, c = cols ? (n3 ? cols['3'] : cols['2']) : colsAttr[n3 ? 0 : 1];
-      if (c) return [0, ...c, n];
-      const m = n3 ? 3 : 2; return Array.from({ length: m + 1 }, (_, i) => Math.round(n * i / m));
-    };
-    const lay = () => {
-      if (!list) return;
-      const want = narrow.matches ? '2' : '3'; if (want === layout) return; layout = want;
-      const cuts = cutsFor(want === '3');
-      if (wio) wio.disconnect(); wall.innerHTML = ''; cells = [];
-      for (let c = 0; c < cuts.length - 1; c++) {
-        const col = document.createElement('div'); col.className = 'cs-col';
-        for (let i = cuts[c]; i < cuts[c + 1]; i++) { const el = make(base, list[i], true, false); el.dataset.i = i; col.appendChild(el); cells[i] = el; }
-        const cap = document.createElement('p'); cap.className = 'cap';
-        cap.innerHTML = `<span>cut ${String(cuts[c] + 1).padStart(2, '0')}–${String(cuts[c + 1]).padStart(2, '0')}</span><span>${c + 1} / ${cuts.length - 1}</span>`;
-        col.appendChild(cap); wall.appendChild(col);
-      }
-      wio = watch(null, cells);
-    };
-    narrow.addEventListener('change', lay);
-    // 재료는 그 장에 다가갈 때만 받는다. 무대에서는 진행값으로(그 장 첫머리 정거장 0.5 앞부터), 문서 스크롤 판에서는 화면 2.5장 앞부터
-    const near = () => {
-      if (asked) return;
-      if (STAGE) { const pp = Stage.world && Stage.world.papers[k], p = Stage.state.p; if (pp && p >= pp.h - 0.5 && p <= pp.h + 2) load(); return; }   // 그 장을 건너뛰어 지나간 자리(해시·순간 이동)에서는 받지 않는다
-      if (sec.getBoundingClientRect().top < innerHeight * 2.5) load();
-    };
-    // 색인: 화면 가운데 가로줄에 걸친 컷만 밝힌다
-    let lit = '';
-    const mark = () => {
-      if (!cells.length || !idx) return;
-      const mid = innerHeight * 0.5, on = [];
-      cells.forEach((el, i) => { const r = el.getBoundingClientRect(); if (r.top <= mid && r.bottom > mid) on.push(i); });
-      const key = on.join(','); if (key === lit) return; lit = key;
-      idx.querySelectorAll('button').forEach(b => b.classList.toggle('on', on.includes(+b.dataset.i)));
-    };
-    if (idx) idx.addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b || !cells[+b.dataset.i]) return;
-      if (STAGE && Stage.world) {                    // 무대: 그 컷이 화면 위 22% 자리에 오는 진행값으로 간다
-        let y = 0, el = cells[+b.dataset.i]; while (el && el !== sec.parentElement) { y += el.offsetTop; el = el.offsetParent; }
-        Stage.go(Stage.world.paperAt(k, y - 0.22 * innerHeight)); return;
-      }
-      const r = cells[+b.dataset.i].getBoundingClientRect();
-      scrollTo({ top: scrollY + r.top - innerHeight * 0.22, behavior: reduce ? 'auto' : 'smooth' });
-    });
-    // 무대에서 순간 이동하면 관찰자 알림이 한두 프레임 늦어 영상 칸이 빈 갈색으로 보인다. 화면 안 영상은 그 자리에서 바로 깨운다
-    // 화면 가까이(위아래 한 화면) 온 컷만 깨운다: 사진은 src를 붙이고, 영상은 src를 붙여 재생한다
-    const wakeVideos = () => {
-      if (!STAGE || !cells.length) return;
-      const lo = -innerHeight, hi2 = innerHeight * 2;
-      cells.forEach(v => {
-        const isV = v.tagName === 'VIDEO'; if (isV ? !v.paused && !v.dataset.lazy : !v.dataset.src) return;
-        const r = v.getBoundingClientRect(); if (!(r.bottom > lo && r.top < hi2)) return;
-        if (!isV) { v.src = v.dataset.src; delete v.dataset.src; return; }
-        arm(v); if (!reduce) v.play().catch(() => {});
-      });
-    };
-    const open = () => openReader(api);
-    wall.addEventListener('click', open);
-    wall.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
-    const ob = sec.querySelector('.cs-open'); if (ob) ob.addEventListener('click', open);
-    const api = {
-      sec, wall, k, load, near, mark, wakeVideos,
-      sleepVideos(){ cells.forEach(v => { if (v.tagName === 'VIDEO' && !v.paused) v.pause(); }); },
-      // 펼친 화면 내용: 처음 열 때 한 번 만든다
-      items(){ if (!items && list) items = list.map(m => make(base, m, true, true)); return items || []; },
-      get list(){ return list; },
-    };
-    return api;
-  }
-  const papers = secs.map(CaseStudy);
-
-  // 바탕(무대 밖 문서 스크롤 판): 첫 지면이 올라오는 동안 화면 전체의 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다.
-  // 톤은 상속 변수(--dk)를 문서 루트에 쓰지 않고 바탕(body의 배경색) 한 곳에만 쓴다. 루트 변수는 문서 전체 스타일을 다시 계산하게 만든다
+  // 바탕(문서 스크롤 판): 작업 목록이 올라오는 동안 화면 전체의 흰 바탕이 남보라 밤색으로 넘어간다. 위로 올리면 그대로 되돌아간다.
+  // 톤은 상속 변수를 문서 루트에 쓰지 않고 바탕(body의 배경색) 한 곳에만 쓴다. 루트 변수는 문서 전체 스타일을 다시 계산하게 만든다
   let dk = 0, dkStr = '';
   const tone = () => {
-    if (STAGE) return;                               // 무대에서는 조명을 장면이 정한다(scene-table·world.js의 Stage.tone)
-    const t = secs[0].getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight - t) / (innerHeight * 0.85)));
+    if (STAGE || !list) return;                      // 무대에서는 조명을 장면이 정한다(world.js·scene-web의 Stage.tone)
+    const t = list.getBoundingClientRect().top, k = Math.max(0, Math.min(1, (innerHeight - t) / (innerHeight * 0.85)));
     const s = (k * k * k * (k * (k * 6 - 15) + 10)).toFixed(3); if (s === dkStr) return;
     dkStr = s; dk = +s;
     document.body.style.backgroundColor = `color-mix(in oklab,var(--bg),var(--nt) ${(dk * 100).toFixed(1)}%)`;
   };
-  // 맨 위로 버튼: 첫 화면을 지난 뒤 위로 스크롤할 때와 맨 끝에 닿았을 때만 보인다. 밤색 지면이 버튼 자리를 덮으면 색을 뒤집는다
-  const toTop = document.getElementById('toTop');
+  // 맨 위로: 첫 화면을 지난 뒤 위로 갈 때와 맨 끝에 닿았을 때만 보인다. 밤색 방에서는 색을 뒤집는다
   let lastY = scrollY, lastP = 0;
-  const topBtnStage = () => {
-    const s = Stage.state, p = s.p, end = Stage.config.stations.length - 1;
-    if (p < 1.1) toTop.classList.remove('show');
-    else if (p >= end - 0.05 || p < lastP - 0.002) toTop.classList.add('show');
-    else if (p > lastP + 0.002) toTop.classList.remove('show');
-    toTop.classList.toggle('night', s.dk > 0.5); lastP = p;
-  };
   const topBtn = () => {
-    if (STAGE) return topBtnStage();
+    if (STAGE) {
+      const s = Stage.state, p = s.p, end = Stage.config.stations.length - 1;
+      if (p < 1.1) toTop.classList.remove('show');
+      else if (p >= end - 0.05 || p < lastP - 0.002) toTop.classList.add('show');
+      else if (p > lastP + 0.002) toTop.classList.remove('show');
+      toTop.classList.toggle('night', s.dk > 0.5); lastP = p; return;
+    }
     const y = scrollY, up = y < lastY - 2, down = y > lastY + 2, end = y + innerHeight >= document.documentElement.scrollHeight - 40;
     if (y < innerHeight * 1.1) toTop.classList.remove('show');
     else if (up || end) toTop.classList.add('show');
@@ -2128,77 +1807,27 @@ window.ticker = (() => {
     lastY = y;
   };
   toTop.addEventListener('click', () => { toTop.classList.remove('show'); if (STAGE) Stage.go(0); else scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
-  // 무대에서는 지금 읽는 교정지(와 그 앞뒤)만 따진다
-  const active = () => {
-    if (!STAGE || !Stage.world || !Stage.world.paperIndex) return papers;
-    const k = Stage.world.paperIndex(Stage.state.p); return papers.filter(c => Math.abs(c.k - k) <= 1);
-  };
+  // 무대에서는 world.js가 p가 바뀔 때마다 scroll 이벤트를 보낸다
   let ticking = false;
-  const onScroll = () => {
-    papers.forEach(c => c.near());
-    if (!ticking) { ticking = true; ticker.once(() => { ticking = false; tone(); topBtn(); const on = active(); papers.forEach(c => on.includes(c) ? (c.mark(), c.wakeVideos()) : c.sleepVideos()); }); }
-  };
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', () => { tone(); papers.forEach(c => c.mark()); });
-  papers.forEach(c => c.near()); tone();
-
-  // 펼친 화면(함께 씀): 연 교정지의 원본으로 내용·제목·링크를 바꾼다
-  let cur = null, lastFocus = null, open = false, readerHold = 0, rio = null, ritems = [];
-  const rectInset = () => {
-    const r = cur.wall.getBoundingClientRect(), t = Math.max(0, r.top), b = Math.min(innerHeight, r.bottom);
-    return { t, r: innerWidth - r.right, b: innerHeight - b, l: r.left };
-  };
-  const setClip = c => { reader.style.setProperty('--ct', c.t + 'px'); reader.style.setProperty('--cr', c.r + 'px'); reader.style.setProperty('--cb', c.b + 'px'); reader.style.setProperty('--cl', c.l + 'px'); };
-  function fill(c){
-    if (cur === c && ritems.length) return;
-    cur = c; if (rio) rio.disconnect();
-    art.replaceChildren(...c.items()); ritems = c.items(); rio = watch(reader, ritems);
-    const t = c.sec.dataset.title || ''; rdEy.innerHTML = `<i></i>${t}`; reader.setAttribute('aria-label', `${t} 사례 연구`);
-    const href = c.sec.dataset.link; rdLink.hidden = !href; if (href) { rdLink.href = href; rdLink.firstChild.textContent = (c.sec.dataset.linkLabel || 'Open') + ' '; }
-    rdTot.textContent = String(ritems.length).padStart(2, '0');
-  }
-  async function openReader(c){
-    if (open) return; open = true; lastFocus = document.activeElement; cur = c;
-    if (STAGE) readerHold = Stage.hold('reader');    // 펼친 화면이 열린 동안 무대 입력 멈춤
-    await c.load(); fill(c);
-    reader.classList.add('snap'); setClip(rectInset()); reader.style.setProperty('--cround', '2px');
-    reader.hidden = false; reader.scrollTop = 0; document.documentElement.classList.add('reading');   // 어디를 눌러도 첫 장부터
-    reader.getBoundingClientRect();
-    setTimeout(() => { reader.classList.remove('snap'); setClip({ t: 0, r: 0, b: 0, l: 0 }); reader.style.setProperty('--cround', '0px'); document.getElementById('rdX').focus({ preventScroll: true }); }, reduce ? 0 : 200);
-  }
-  function closeReader(){
-    if (!open) return; open = false;
-    const done = () => { if (readerHold) { Stage.release(readerHold); readerHold = 0; } reader.hidden = true; document.documentElement.classList.remove('reading'); ritems.forEach(v => v.tagName === 'VIDEO' && v.pause()); lastFocus && lastFocus.focus({ preventScroll: true, focusVisible: false }); };
-    if (reduce) return done();
-    setClip(rectInset()); reader.style.setProperty('--cround', '2px');
-    // 잘라 낼 모양이 그대로면 transitionend가 오지 않으므로, 전환 시간(.6s)이 지나면 닫힘을 마무리한다
-    let fin = false; const end = () => { if (!fin) { fin = true; done(); } };
-    reader.addEventListener('transitionend', end, { once: true }); setTimeout(end, 700);
-  }
-  document.getElementById('rdX').addEventListener('click', closeReader);
-  document.getElementById('rdBack').addEventListener('click', closeReader);
-  addEventListener('keydown', e => { if (e.key === 'Escape' && open) closeReader(); });
-  reader.addEventListener('scroll', () => {
-    const mid = innerHeight * 0.45; let k = 0;
-    for (let i = 0; i < ritems.length; i++) { if (ritems[i].getBoundingClientRect().top <= mid) k = i; else break; }
-    const t = String(k + 1).padStart(2, '0'); if (cutEl.textContent !== t) cutEl.textContent = t;
-  }, { passive: true });
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; ticker.once(() => { ticking = false; tone(); topBtn(); }); } }, { passive: true });
+  addEventListener('resize', tone);
+  tone();
 })();
 </script>
 <script>
 (() => {
-  // 세계 배치(08_공간설계 1절): 벽(.wall)에 첫 화면, 책상(.desk)에 카드 구역과 그 너머 교정지(여러 장이 겹쳐 쌓임)를 놓고 치수를 잰다.
-  // 장면이 카메라·조명을 쓰지 않은 프레임에는 08 2절 표의 기본 경로를 깐다(장면이 쓰면 장면이 이긴다).
-  // 스크롤에 걸린 기존 코드(색인·영상·명함 깨우기)가 돌도록 p가 바뀔 때마다 scroll 이벤트를 보낸다.
+  // 세계 배치(08_공간설계 1절): 벽(.wall)에 첫 화면, 책상(.desk)에 카드 구역과 그 너머 맥북을 놓고 치수를 잰다.
+  // 장면이 카메라·조명을 쓰지 않은 프레임에는 기본 경로를 깐다(장면이 쓰면 장면이 이긴다).
+  // 스크롤에 걸린 기존 코드(명함·맨 위로 버튼)가 돌도록 p가 바뀔 때마다 scroll 이벤트를 보낸다.
+  // 10-21 대표님 결정: 교정지(케이스 스터디) 구간은 없앴다. 카드 테이블에서 바로 맥북으로 가고, 작업은 모두 맥북 화면 속 서비스다
   if (!window.Stage || !Stage.enabled) return;
   const desk = document.querySelector('.stage-camera > .desk');
   const L = n => document.querySelector(`.stage-layer[data-scene="${n}"]`);
   const hero = L('hero'), table = L('table'), pool = desk.querySelector('.pool');
-  const sheets = [...desk.querySelectorAll('.stage-layer.paper')];
-  // 사이트 맺음 줄은 무대에서 교정지 꼬리가 아니라 책상에 인쇄된 글로 둔다(맺음 화면 아래쪽). 무대가 꺼지면 원래 자리 그대로다
-  const sign = desk.querySelector('.paper .foot-note'); if (sign) { sign.classList.add('desk-sign'); desk.appendChild(sign); }
-  [hero, table, ...sheets].forEach(l => { l.dataset.own = '1'; l.style.transform = ''; });
-  const W = { H: 0, Wd: 0, Dt: 0, zP: 0, Lp: 0, Lr: 0, mobile: false };
+  // 사이트 맺음 줄은 무대에서 책상에 인쇄된 글로 둔다(맺음 화면, 명함 아래). 무대가 꺼지면 서비스 목록 끝 원래 자리 그대로다
+  const sign = desk.querySelector('.foot-note'); if (sign) { sign.classList.add('desk-sign'); desk.appendChild(sign); }
+  [hero, table].forEach(l => { l.dataset.own = '1'; l.style.transform = ''; });
+  const W = { H: 0, Wd: 0, Dt: 0, zP: 0, mobile: false };
   // cubic-bezier(.55,0,.2,1): 느리게 시작해 감속하며 내려앉는다(08 2절). 장면 파일도 Stage.world.ease를 쓴다
   const bez = (x1, y1, x2, y2) => u => {
     u = Math.max(0, Math.min(1, u)); let t = u;
@@ -2207,36 +1836,14 @@ window.ticker = (() => {
     return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
   };
   const ease = bez(0.55, 0, 0.2, 1);
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const clamp01 = u => Math.max(0, Math.min(1, u));
-  const SP = 0.92;                                    // 교정지 축척 = S2 카메라 거리 d/P
   const LAST = () => Stage.config.stations.length - 1;
+  const WEB = () => Stage.config.stations.findIndex(x => x.name === 'web');
 
-  // 교정지 k: 첫머리 정거장 h = 2 + 2k, 끝 정거장 h + 1. 다음 정거장까지(h+1 → h+2) 앞 장이 벽 쪽으로 빠지고 아래 장이 같은 자리에서 드러난다.
-  // 마지막 장은 맥북 구간 첫 0.15에 빠진다(11 표: 종이 빠짐과 맥북 다가가기를 겹친다)
-  const papers = sheets.map((layer, k) => ({ layer, k, h: 2 + 2 * k, Lp: 0, Lr: 0, read: 0, wall: layer.querySelector('.cs-wall') }));
-  const EXIT_LAST = 0.15;
   function measure(){
     W.H = innerHeight; W.Wd = innerWidth; W.mobile = innerWidth <= 820;
     W.Dt = table.offsetHeight;                       // 카드 구역 깊이 = 책상 한 장(table.js가 화면 한 장, 모바일 1.2장으로 둔다)
-    W.zP = Math.round(W.Dt + 0.15 * W.H);            // 교정지 시작: 「Selected Work」 너머
-    let maxLp = 0;
-    papers.forEach(pp => {
-      // 교정지는 화면 폭보다 조금 좁은 실물 종이다(08 1절 ±0.47W). S2에서 0.92P로 다가가면 꼭 화면 폭이 되도록 SP배로 놓는다
-      pp.Lp = Math.round(pp.layer.offsetHeight * SP);
-      // 읽는 길이: 마지막 컷(가장 긴 단의 끝)이 화면 아래 6% 자리에 오면 팬이 끝난다. 단 끝의 빈 지면은 남기지 않는다.
-      // 컷이 아직 없으면(재료 전) 머리글·꼬리까지
-      let y = 0, el = pp.wall; while (el && el !== pp.layer) { y += el.offsetTop; el = el.offsetParent; }
-      const bottom = pp.wall && pp.wall.offsetHeight > 0 ? y + pp.wall.offsetHeight : pp.layer.offsetHeight;
-      pp.Lr = Math.round(Math.max(W.H, bottom + 0.06 * W.H) * SP);
-      pp.read = Math.max(0, pp.Lr - W.H * SP);
-      pp.layer.style.top = W.zP + 'px';
-      pp.layer.style.transformOrigin = '50% 0';
-      const f = Stage.config.free.find(z => z[0] === pp.h); if (f) f[2] = Math.max(0.5, pp.read / SP / W.H);   // 팬 길이(화면 수)
-      maxLp = Math.max(maxLp, pp.Lp);
-    });
-    W.Lp = papers[0] ? papers[0].Lp : 0; W.Lr = papers[0] ? papers[0].Lr : 0;
-    desk.style.height = Math.round(W.zP + maxLp + 0.6 * W.H) + 'px';
+    W.zP = Math.round(W.Dt + 0.15 * W.H);            // 「Selected Work」 너머: 맥북 자리의 기준 깊이(scene-web)
+    desk.style.height = Math.round(W.zP + 0.12 * W.H + 0.75 * W.Wd + 0.6 * W.H) + 'px';
     lastP = NaN; lastPlace = '';
   }
   // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
@@ -2244,11 +1851,7 @@ window.ticker = (() => {
   const st = {
     hero: () => ({ th: 0, Tx: 0, Ty: -W.H / 2, Tz: 0, d: P() }),
     work: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() * (W.mobile ? 1.2 : 1) }),
-    // 교정지는 모두 같은 자리에 쌓여 있으므로 첫머리 카메라는 하나다
-    cases: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.zP + 0.5 * W.H * SP, d: SP * P() }),
-    // 교정지 끝을 읽는 「카메라 환산」 자리(첫 장 기준). 실제로는 카메라가 cases에 머물고 종이가 그만큼 당겨진다(pull)
-    casesEnd: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.zP + W.Lr - 0.5 * W.H * SP, d: SP * P() }),
-    // 맺음: 카드 한 장 크기(S1과 같은 거리)로, 명함을 화면 (0.44W, 0.56H)에 둔다. 맥북 구간이 생기면 scene-web이 맺음 카메라를 정한다
+    // 맺음: 카드 한 장 크기(S1과 같은 거리)로, 명함을 화면 (0.44W, 0.56H)에 둔다. 맥북 구간이 있으면 scene-web이 맺음 카메라를 정한다
     end: () => {
       const th = 88, d = st.work().d, k = d / P(), c = window.Hero && Hero.desk && Hero.desk.cornerAt;
       if (c) {                                        // card-drop 식: 명함 가운데(08 축 세계 좌표)를 기울기까지 넣어 화면 (0.44W, 0.56H)에 정확히 놓는다
@@ -2267,32 +1870,13 @@ window.ticker = (() => {
     return m ? { x: +m[1], z: +m[2] } : { x: Math.max(0.14 * W.Wd, 130), z: W.Dt - 0.34 * W.H };
   };
 
-  // 교정지 당기기(10-21 조율 결정): 카메라는 교정지 첫머리에 머물고, 종이가 책상 z를 따라 벽 쪽으로 1:1 밀려 읽힌다(화면에서는 문서 스크롤과 같은 방향).
-  // 다 읽은 장은 같은 방향으로 계속 밀려 화면 위로 빠지고, 그 아래 장이 같은 자리에서 드러난다(11 2절)
-  const gone = pp => pp.Lp + 0.12 * W.H;             // 이만큼 밀면 종이 끝이 화면 윗변 너머로 사라진다
-  function pull(pp, p){
-    if (p <= pp.h) return 0;
-    if (p <= pp.h + 1) return (p - pp.h) * pp.read;
-    const span = pp.k === papers.length - 1 ? EXIT_LAST : 1;
-    return pp.read + ease((p - pp.h - 1) / span) * Math.max(0, gone(pp) - pp.read);
-  }
-  // 지금 맨 위에 있는(읽는) 교정지 번호
-  const paperIndex = p => { for (const pp of papers) if (p < pp.h + 2 - 1e-6) return pp.k; return papers.length - 1; };
-  // 교정지 k의 지면 y(px, 배율 전)가 화면 윗변에 오는 진행값(색인 이동용)
-  const paperAt = (k, y) => { const pp = papers[k]; return pp.h + (pp.read ? Math.max(0, Math.min(1, (y * SP) / pp.read)) : 0); };
-
+  // 카드 테이블은 불이 낮아지는 동안(맥북으로 가는 구간 0.3~0.75) 어둠에 잠긴다. 카드 면(.f)·글줄 같은 잎 요소의 투명도만 바꾼다(조상 opacity는 3D를 평면으로 만든다)
+  const sinkOf = p => p <= 1 ? 1 : 1 - ease((p - 1.3) / 0.45);
   let lastPlace = '';
   function place(p){
-    const key = papers.map(pp => Math.round(pull(pp, p) * 10)).join(',') + '|' + (p > 2 ? 1 : 0) + (p > LAST() - 0.2 ? 1 : 0); if (key === lastPlace) return; lastPlace = key;
-    papers.forEach(pp => {
-      const o = pull(pp, p), out = o >= gone(pp) - 0.5;
-      // 아래 장은 위 장보다 조금 낮게(평면 겹침 깜박임 방지) 깔고 −1.5° 비스듬히 둔다. 위 장이 빠지는 동안 바로 놓인다(11 2절)
-      const prev = papers[pp.k - 1], u = !prev ? 1 : clamp01((p - prev.h - 1) / (prev.k === papers.length - 1 ? EXIT_LAST : 1));
-      const rot = -1.5 * (1 - ease(u)), lift = (papers.length - pp.k) * 0.25;
-      pp.layer.style.transform = `translate3d(0,${(-o).toFixed(1)}px,${lift}px) rotate(${rot.toFixed(3)}deg) scale(${SP})`;
-      pp.layer.style.visibility = out || (pp.k > 1 && p < papers[pp.k - 1].h - 0.5) ? 'hidden' : '';
-    });
-    table.style.visibility = p > 2 ? 'hidden' : '';
+    const k = sinkOf(p).toFixed(3), key = k + '|' + (p > LAST() - 0.2 ? 1 : 0); if (key === lastPlace) return; lastPlace = key;
+    table.style.setProperty('--sink', k);
+    table.style.visibility = +k <= 0.001 ? 'hidden' : '';
     if (sign) {                                       // 맺음 줄: 맺음 마지막 0.2에만 보인다(맥북 구간에서 글 격자·키보드 위에 인쇄돼 보이지 않게)
       sign.style.visibility = p > LAST() - 0.2 ? 'visible' : 'hidden';
       const e = Stage.webSign ? Stage.webSign() : (() => { const c = st.end(); return { x: W.Wd / 2 + c.Tx, z: c.Tz + 0.36 * W.H * (c.d / P()) }; })();
@@ -2302,15 +1886,12 @@ window.ticker = (() => {
   // 기본 경로: 장면이 아직 비어 있는 구간용
   function path(p){
     if (p <= 1) {                                    // S0→S1: 모서리를 축으로 숙인다(scene-hero가 쓰면 그쪽이 이긴다)
-      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = lerp(W.H / 2, W.Dt / 2, e), a = th * Math.PI / 180;
-      return { th, Tx: 0, Ty: -r * Math.cos(a), Tz: r * Math.sin(a), d: lerp(P(), st.work().d, e) };
+      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = W.H / 2 + (W.Dt / 2 - W.H / 2) * e, a = th * Math.PI / 180;
+      return { th, Tx: 0, Ty: -r * Math.cos(a), Tz: r * Math.sin(a), d: P() + (st.work().d - P()) * e };
     }
-    if (p <= 2) { const a = st.work(), b = st.cases(), e = ease((p - 1.25) / 0.7); return { th: 90, Tx: 0, Ty: 0, Tz: lerp(a.Tz, b.Tz, e), d: lerp(a.d, b.d, e) }; }
-    const webStart = papers.length ? papers[papers.length - 1].h + 1 : 3;
-    if (p <= webStart || !Stage.webPath) return st.cases();
-    return Stage.webPath(p);
+    return Stage.webPath ? Stage.webPath(p) : st.work();
   }
-  const toneOf = p => p <= 1 ? 0 : p <= 2 ? ease((p - 1.3) / 0.5) : 1;   // 교정지부터 맺음까지 어두운 방
+  const toneOf = p => p <= 1 ? 0 : p <= WEB() ? ease((p - 1.3) / 0.5) : 1;   // 맥북으로 가며 불이 낮아지고, 맺음까지 어두운 방
 
   // 카드 상태는 p의 순수 함수다: 명함이 더미를 치는 0.5부터 모으기 시작점 1.04까지만 쏟아져 있다(scene-hero 0.5, scene-table 1.04와 같은 기준).
   // 장면이 지나가며 부르는 것이 먼저이고, 해시·Stage.go(instant)처럼 장면을 건너뛴 이동 뒤에 어긋난 것만 여기서 맞춘다
@@ -2328,27 +1909,26 @@ window.ticker = (() => {
       place(p);
       if (!cam.setThisFrame) cam.set(path(p));
       if (!Stage.state._toneSet) Stage.tone(toneOf(p));
-      // 빛웅덩이: 교정지 아래 책상 면만 조금 밝다(08 4절). 가운데는 카메라가 바라보는 점을 따른다. 맥북 구간은 scene-web이 화면 빛으로 바꾼다
+      // 빛웅덩이: 소등 뒤 책상 면이 조금 밝다(08 4절). 가운데는 카메라가 바라보는 점을 따른다. 맥북 구간은 scene-web이 화면 빛으로 바꾼다
       if (pool && !Stage.state._poolSet) { pool.style.transform = `translate3d(calc(-50% + ${(cam.Tx || 0).toFixed(1)}px),${(cam.Tz - W.H * 0.7).toFixed(1)}px,-1px)`; pool.style.opacity = (0.5 * Stage.state.dk).toFixed(3); }
       lastP = p; dispatchEvent(new Event('scroll'));
     }
     cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
   }
-  Stage.world = { dims: W, station: st, path, papers, pull: p => pull(papers[0], p), pullOf: pull, paperIndex, paperAt, toneOf, measure, ease, bez, SP, last: LAST };
+  Stage.world = { dims: W, station: st, path, toneOf, sinkOf, measure, ease, bez, last: LAST };
   // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
   const remeasure = () => { measure(); Stage.refresh(); frame(); };
   measure(); frame();
   Stage.ticker.add(frame);
   addEventListener('resize', remeasure);
   if (document.fonts) document.fonts.ready.then(remeasure);
-  const ro = new ResizeObserver(remeasure); sheets.forEach(l => ro.observe(l));
 })();
 </script>
 <script>
 (() => {
   // 맥북 실물 부품과 글 격자의 DOM(card-drop W2·W6, 13 합의안). 크기·자리·카메라·덮개 각도는 scene-web.js, 화면 속 서비스는 web-live.js(deploy-prep)가 맡는다.
-  // 이 파일은 그 둘이 찾는 골격(.mb, .web-info)이 없으면 만들고, 골격에 실물 부품(몸체 앞면 띠·힌지·그림자·화면 빛)을 얹는다.
-  // 사진에 없는 면(덮개 뒷면·옆면 두께)은 만들지 않는다(10-21 대표님). 맺음에서 덮개는 닫히지 않고 화면만 잠든다(--on)
+  // 이 파일은 그 둘이 찾는 골격(.mb, .web-info)이 없으면 만들고, 덮개를 힌지로 감싼다. 몸체는 macbook3d.js가 WebGL로 그린다.
+  // 맺음에서 덮개는 닫히지 않고 화면만 잠든다(--on)
   // 그래서 world.js 뒤, scene-web.js·web-live.js 앞에 둔다
   if (!window.Stage || !Stage.enabled) return;
   const desk = document.querySelector('.stage-camera > .desk'); if (!desk) return;
@@ -2361,12 +1941,7 @@ window.ticker = (() => {
     mb.style.visibility = 'hidden';
     desk.appendChild(mb);
   }
-  const base = mb.querySelector('.mb-base'), lid = mb.querySelector('.mb-lid');
-  // 몸체: 그림자(책상) → 앞면 띠 → 윗면(키보드 사진 + 화면 빛). 쌓는 순서는 11 4절
-  if (!base.querySelector('.mb-deck')) {
-    base.prepend(el('i', 'mb-sh'), el('i', 'mb-pool'));
-    base.append(el('i', 'mb-fr'), el('i', 'mb-deck', '<i class="mb-kl"></i>'));
-  }
+  const lid = mb.querySelector('.mb-lid');
   // 덮개: 몸체 윗면 높이의 힌지에 112° 열린 채 서 있다. scene-web이 덮개에 쓰는 top·rotateX는 힌지 기준으로 그대로 맞는다
   if (!lid.parentElement.classList.contains('mb-hinge')) { const hg = el('div', 'mb-hinge'); lid.before(hg); hg.appendChild(lid); }
 
@@ -2382,11 +1957,11 @@ window.ticker = (() => {
       `<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ${arrow}</a></div>`;
   }
 
-  // 화면 빛 색: 지금 화면에 떠 있는 서비스의 바탕색을 따라 방이 물든다(11 5절). 어두운 화면은 빛도 약하다
+  // 화면 빛 색: 지금 화면에 떠 있는 서비스의 바탕색을 따라 방이 물든다(11 5절). 어두운 화면은 빛도 약하다. macbook3d.js가 --glow·--gk를 읽는다
   const GLOW = { bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['168,174,214', 0.45] };
   // 화면이 잠든다(맺음, 대표님 결정): 카메라가 물러나는 동안(마지막 정거장 앞 1 → 0.65) 켜져 있다가,
   // 실제 맥처럼 먼저 30%로 어둡게 내려앉고(0.65 → 0.52) 잠깐 머문 뒤(→ 0.42) 검게 꺼진다(→ 0.36). 그 뒤 명함이 앞면으로 넘어간다(scene-hero, 0.25 → 0.05).
-  // 화면 빛(키보드면·책상 사다리꼴)도 같은 값으로 꺼진다. p의 순수 함수라 되감으면 다시 켜진다
+  // 화면 빛(macbook3d.js의 면광원)도 같은 값으로 꺼진다. p의 순수 함수라 되감으면 다시 켜진다
   const ss = (a, b, x) => { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); };
   const onOf = p => { const e = Stage.config.stations.length - 1; return 1 - 0.7 * ss(e - 0.65, e - 0.52, p) - 0.3 * ss(e - 0.42, e - 0.36, p); };
   let onStr = '';
@@ -2419,18 +1994,33 @@ window.ticker = (() => {
   const info = document.querySelector('.web-info');
   const ARTIFACT = document.documentElement.hasAttribute('data-artifact');
   const narrow = () => innerWidth <= 820;
-  // at: 그 서비스가 화면에 온전히 떠 있는 진행값(station 번호와 같다. 바이블타이핑은 맥북 앞(10)에서 이미 켜져 있다)
+  // st: 그 서비스의 정거장 이름(stage.js). at: 그 서비스가 화면에 온전히 떠 있는 진행값 = 정거장 번호. 첫 서비스는 맥북 앞(web)에서 이미 켜져 있어 0.4 앞당긴다.
+  // 순서(10-21 대표님 결정): bewhysee → BizCopilot(아이덴티티 C·브랜드 스토리·브랜드 시스템) → 바이블타이핑 → 척모드 → Monthlens 둘.
+  // BizCopilot 셋은 원본끼리 서로 잇는 링크가 없는 독립 문서라 화면도 셋으로 나눴다(하나로 묶으면 둘째·셋째 장으로 갈 길이 없다)
+  // site: 글 격자 「Open」이 여는 주소(없으면 url). bewhysee는 비핸스 원 게시물
   const services = [
-    { id: 'bible', at: 10.6, pre: 1.6, name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
+    { id: 'bewhysee', st: 'bewhysee', lead: 0.4, pre: 1.1, name: 'bewhysee', ko: '비와이씨', url: 'web/bewhysee/',
+      site: 'https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29',
+      line: 'A concept rebrand for BYC, a Korean innerwear label since 1946.', role: 'Naming · Identity · Packaging', year: '2026' },
+    { id: 'bizcopilot', st: 'biz', name: 'BizCopilot', ko: '비즈코파일럿', url: 'web/bizcopilot/c/',
+      line: 'A brand identity concept for BizCopilot, a Korean business support service.', role: 'Brand identity · Landing · Ad creative', year: '2026' },
+    { id: 'bizcopilot-story', st: 'story', name: 'Brand Story', ko: '비즈코파일럿 브랜드 스토리', url: 'web/bizcopilot/story/',
+      line: 'The story behind the BizCopilot identity.', role: 'Brand story', year: '2026' },
+    { id: 'bizcopilot-system', st: 'system', name: 'Brand System', ko: '비즈코파일럿 브랜드 시스템', url: 'web/bizcopilot/system/',
+      line: 'The BizCopilot design system and guidelines.', role: 'Brand system · Guidelines', year: '2026' },
+    { id: 'bible', st: 'bible', name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
       line: 'A quiet place to type the King James Bible, one verse a day.', role: 'Product · Design · Build', year: '2026' },
-    { id: 'chuck', at: 12, name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/', external: true,
+    { id: 'chuck', st: 'chuck', name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/', external: true,
       line: 'A website that keeps you looking busy at your desk.', role: 'Product · Design · Build', year: '2026' },
-    { id: 'monthlens', at: 13, name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html',
+    { id: 'monthlens', st: 'monthlens', name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html',
       urlNarrow: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용_모바일.html',
       line: 'Interactive landing template: the page opens as a chat.', role: 'Landing template', year: '2026' },
-    { id: 'monthlens-dark', at: 14, name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html',
+    { id: 'monthlens-dark', st: 'monthlensDark', name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html',
       line: 'Landing page template: dark UI.', role: 'Landing template', year: '2026' },
   ];
+  const stIndex = n => Stage.config.stations.findIndex(x => x.name === n);
+  services.forEach(sv => { sv.at = stIndex(sv.st) - (sv.lead || 0); });
+  const WEB = stIndex('web'), END = Stage.config.stations.length - 1;
   // 띠에 서비스 칸을 깐다
   const panes = services.map(sv => {
     const pane = document.createElement('div'); pane.className = 'mb-pane'; pane.dataset.id = sv.id; pane.inert = true;
@@ -2458,15 +2048,15 @@ window.ticker = (() => {
     if (using === x) exitUse();
     x.frame.src = 'about:blank'; x.frame.remove(); x.frame = null;
   }
-  // 진행값 → 띠 위치(서비스 번호 s, 실수). 넘어가는 구간은 11 표대로: 척모드로는 물러난 뒤(11.4~11.8), Monthlens 둘은 각 구간 0.2~0.8
-  const TRANS = [[11.4, 11.8], [12.2, 12.8], [13.2, 13.8]];
+  // 진행값 → 띠 위치(서비스 번호 s, 실수). 넘어가는 구간은 11 표대로: 둘째 서비스로는 화면 속에서 베젤로 물러난 뒤(그 구간 0.4~0.8), 그다음부터는 각 구간 0.2~0.8
+  const TRANS = services.slice(1).map((sv, i) => { const a = stIndex(services[i].st); return i === 0 ? [a + 0.4, a + 0.8] : [a + 0.2, a + 0.8]; });
   const sOf = p => TRANS.reduce((s, [lo, hi2]) => s + Math.max(0, Math.min(1, (p - lo) / (hi2 - lo))), 0);
   const springOut = u => 1 - Math.pow(1 - u, 3);
   let lastKey = '', curIdx = 0;
   function update(p){
     // 불러 두기·비우기: 정거장과의 거리 < 1.0
-    // 바이블타이핑은 맥북이 드러나기 전(종이가 빠지기 시작할 때, p 9.0)부터 불러 둔다: 정거장에 닿을 때 이미 떠 있게
-    panes.forEach(x => { const d = p - x.sv.at, pre = x.sv.pre || 1.0; if (d > -pre && d < 1.0 && p > 8.6) mount(x); else unmount(x); });
+    // 첫 서비스는 맥북으로 고개를 들기 시작할 때(맥북 앞 정거장 0.5 앞)부터 불러 둔다: 정거장에 닿을 때 이미 떠 있게
+    panes.forEach(x => { const d = p - x.sv.at, pre = x.sv.pre || 1.0; if (d > -pre && d < 1.0 && p > WEB - 1.4) mount(x); else unmount(x); });
     const s = sOf(p), i0 = Math.floor(s), f = s - i0, s2 = i0 + springOut(f);
     const key = s2.toFixed(4); if (key !== lastKey) { lastKey = key; strip.style.transform = `translate3d(calc(${(-s2).toFixed(4)} * (100% + var(--gap))),0,0)`; }
     const idx = Math.min(services.length - 1, Math.round(s));
@@ -2481,7 +2071,7 @@ window.ticker = (() => {
     info.querySelector('.wi-line').textContent = sv.line;
     info.querySelector('.wi-role').textContent = sv.role;
     info.querySelector('.wi-year').textContent = sv.year;
-    const a = info.querySelector('.wi-go'); a.href = sv.url.startsWith('http') ? sv.url : new URL(sv.url, location.href).href;
+    const u = sv.site || sv.url, a = info.querySelector('.wi-go'); a.href = u.startsWith('http') ? u : new URL(u, location.href).href;
   }
 
   // 사용 안내(대표님 결정): 오른쪽 위 글이 상태를 따라 바뀌고, 쓰는 동안 이 글을 눌러도 나간다. 라벨과 같은 글자이고 알약 버튼은 쓰지 않는다.
@@ -2543,7 +2133,7 @@ window.ticker = (() => {
   guideText();
   Stage.ticker.add(() => {
     const p = Stage.state.p; if (p !== lp) { lp = p; update(p); }
-    const show = !!using || (p >= 9.6 && p <= 14.25);
+    const show = !!using || (p >= WEB - 0.4 && p <= END - 0.75);
     if (show !== gShow) { gShow = show; guide.hidden = !show; }
     placeDim();
   });
@@ -2605,12 +2195,10 @@ window.ticker = (() => {
 </script>
 <script>
 (() => {
-  // 장면 table (주인 deploy-prep). 진행값 구간 [1, 2]: S1 카드 테이블 → S2 교정지. 규칙은 06_장면인터페이스, 공간은 08_공간설계 2·4절.
+  // 장면 table (주인 deploy-prep). 진행값 구간 [1, 2]: S1 카드 테이블 → 맥북 앞. 규칙은 06_장면인터페이스, 공간은 08_공간설계 2·4절.
   //  t 0~0.15  카드가 한 벌로 모인다(물리 목표만 바꾼다. 되감으면 다시 쏟아진다)
   //  t 0.15~0.25  숨: 아무것도 움직이지 않는다(큰 순간 앞의 정지)
-  //  t 0.25~0.9  카메라가 각도를 그대로 둔 채 책상 위를 시청자 쪽으로 미끄러진다. 「Selected Work」를 지나 교정지 첫머리로, 조금 다가가며(d P→0.92P)
-  //  t 0.3~0.8  불이 낮아져 밤색 방이 된다(큰 순간). 물건은 어두워지지 않고, 교정지 아래 빛웅덩이가 살아난다(world.js)
-  //  t 0.9~1  교정지 첫머리에 멈춰 있다
+  //  그 뒤 카메라·조명은 scene-web(맥북으로 고개를 든다)과 world.js(불이 낮아지고 카드 테이블이 어둠에 잠긴다)가 맡는다
   // S1 직접 조작(던지기·정렬·섞기·전체 뒤집기)은 table.js 그대로이고, 이 장면은 진행값으로 모으기·나눠 주기만 부른다.
   if (!window.Stage || !Stage.enabled) return;
   const GATHER = 0.04;
@@ -2621,69 +2209,22 @@ window.ticker = (() => {
     enter(dir){},
     leave(dir){},
     progress(t){
-      const T = window.Table, Wd = Stage.world;
-      if (T) {
-        if (t > GATHER) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
-        else if (!T.dealt) T.deal();
-      }
-      if (!Wd) return;
-      const a = Wd.station.work(), b = Wd.station.cases(), e = Wd.ease((t - 0.25) / 0.65);
-      Stage.camera.set({ th: 90, Tx: 0, Ty: 0, Tz: a.Tz + (b.Tz - a.Tz) * e, d: a.d + (b.d - a.d) * e });
-      Stage.tone(Wd.ease((t - 0.3) / 0.5));
+      const T = window.Table; if (!T) return;
+      if (t > GATHER) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
+      else if (!T.dealt) T.deal();
     },
   });
 })();
 </script>
 <script>
 (() => {
-  // 장면 cases (주인 deploy-prep). 교정지 k마다 진행값 구간 [h, h+2] (h = 2 + 2k, 마지막 장은 [h, h+1]). 규칙은 06_장면인터페이스, 공간은 08 2·4·5절, 13 합의안.
-  //  p h~h+1  자유 구간: 카메라는 교정지 첫머리에 머물고, 종이가 책상 위를 벽 쪽(화면 위)으로 1:1 밀려 읽힌다(world.js pull). 색인 막대는 화면 위에 붙어 따라온다
-  //  p h+1~h+2  다 읽은 장이 같은 방향으로 계속 밀려 화면 위로 빠지고, 아래 깔려 있던 다음 장 첫머리가 같은 자리에서 드러난다(카메라 고정)
-  //  마지막 장은 맥북 구간(scene-web) 첫 0.15 동안 빠진다
-  if (!window.Stage || !Stage.enabled) return;
-  const Wd0 = Stage.world; if (!Wd0) return;
-  Wd0.papers.forEach(pp => {
-    const layer = pp.layer, bar = layer.querySelector('.cs-bar'), wallEl = pp.wall;
-    const offTop = el => { let y = 0; while (el && el !== layer) { y += el.offsetTop; el = el.offsetParent; } return y; };
-    let barY = 0, barMax = 0, shift = -1;
-    const measure = () => { if (!bar || !wallEl) return; bar.style.transform = ''; barY = offTop(bar); barMax = Math.max(0, offTop(wallEl) + wallEl.offsetHeight - barY - bar.offsetHeight); shift = -1; };
-    const remeasure = () => { measure(); Stage.refresh(); };   // 다시 잰 막대 자리를 바로 반영
-    addEventListener('resize', remeasure); if (document.fonts) document.fonts.ready.then(remeasure);
-    if (wallEl) new ResizeObserver(remeasure).observe(wallEl);
-    measure();
-    const lastPaper = pp.k === Wd0.papers.length - 1;
-    Stage.add('cases' + (pp.k ? '-' + pp.k : ''), {
-      range: [pp.h, pp.h + (lastPaper ? 1 : 2)],
-      wake(){ measure(); },
-      sleep(){},
-      enter(dir){},
-      leave(dir){},
-      progress(t, s){
-        const Wd = Stage.world, p = s.p;
-        Stage.camera.set(Wd.station.cases());
-        Stage.tone(Wd.toneOf(p));
-        // 색인 막대 붙이기: 화면 윗변(지면 좌표)이 막대 자리를 지나면 그만큼 내려 화면 위에 붙여 둔다. 3단 지면 끝에서 멈춘다
-        if (bar && p <= pp.h + 1.05) {
-          const S = Wd.SP, a = Wd.station.cases(), viewTop = a.Tz - 0.5 * Wd.dims.H * (a.d / Stage.camera.P());
-          const sft = Math.round(Math.max(0, Math.min(barMax, (viewTop - Wd.dims.zP + Wd.pullOf(pp, p)) / S - barY)));
-          if (sft !== shift) { shift = sft; bar.style.transform = sft ? `translate3d(0,${sft}px,1px)` : ''; }
-        }
-        // 다 읽은 장이 빠질 때 색인 막대는 종이 가운데에 걸려 남지 않게 사라진다
-        if (bar) { const o = p <= pp.h + 1 ? '' : Math.max(0, 1 - (p - pp.h - 1) / 0.25).toFixed(2); if (bar.style.opacity !== o) { bar.style.opacity = o; bar.style.visibility = o === '0.00' ? 'hidden' : ''; } }
-      },
-    });
-  });
-})();
-</script>
-<script>
-(() => {
-  // 장면 web (주인 deploy-prep, 카메라 경로 수치는 card-drop 11 표). 진행값 구간 [9, 15]. 13 합의안.
-  //  p 9~10   마지막 교정지가 빠지고(첫 0.15, world.js), 카메라가 옆으로 미끄러지며 고개를 든다(θ 90→22, 0.10~0.75).
-  //           바라보는 점이 θ보다 앞서 0.55에 맥북에 닿는다. 교정지 오른쪽 옆에 처음부터 있던 열린 맥북이 드러난다
-  //  p 10~11  각도를 그대로 두고 거리만 줄여(0.12~0.80) 화면 속으로: 화면이 뷰포트의 88%(375급 92%), iframe 합성 배율 1
-  //  p 11~12  베젤과 키보드 윗줄이 보이는 거리로 물러나고(0~0.4) 기기 안 데스크톱 전환으로 척모드(0.4~0.8, web-live.js)
-  //  p 12~14  같은 거리에서 Monthlens 인터랙티브 → 다크
-  //  p 14~15  물러나며 θ 22→55, 맥북과 명함이 한 화면(0~0.35). 덮개가 닫히며 화면 빛이 꺼지고(0.35~0.75), 명함이 앞면으로(0.75~0.95, scene-hero)
+  // 장면 web (주인 deploy-prep, 카메라 경로 수치는 card-drop 11 표). 진행값 구간 [work, end]. 13 합의안, 10-21 대표님 결정(교정지 없앰).
+  //  work~web      카드가 모이고(scene-table) 숨 뒤, 카메라가 옆으로 미끄러지며 고개를 든다(θ 90→22, 0.25~0.85). 바라보는 점이 θ보다 앞선다.
+  //                카드 테이블은 불이 낮아지며 어둠에 잠기고(world.js sinkOf), 카드 구역 오른쪽 너머에 열린 맥북이 드러난다
+  //  web~web+1     각도를 그대로 두고 거리만 줄여(0.12~0.80) 화면 속으로: 화면이 뷰포트의 88%(375급 92%), iframe 합성 배율 1(bewhysee)
+  //  web+1~web+2   베젤과 키보드 윗줄이 보이는 거리로 물러나고(0~0.4) 기기 안 데스크톱 전환으로 다음 서비스(0.4~0.8, web-live.js)
+  //  ~end-1        같은 거리에서 서비스가 하나씩 넘어간다
+  //  end-1~end     물러나며 명함 중심 맺음(0~0.35). 화면이 잠들고(macbook.js onOf), 명함이 앞면으로(scene-hero)
   // 화면을 누르면 「사용 중」(web-live.js): 카메라는 그 자리에서 화면 속(배율 1)까지 다가간다(useK)
   if (!window.Stage || !Stage.enabled || !Stage.world) return;
   const desk = document.querySelector('.stage-camera > .desk');
@@ -2702,7 +2243,7 @@ window.ticker = (() => {
     G.Wi = Math.round(fill * Math.min(W.Wd, 1.6 * W.H)); G.Hi = Math.round(G.Wi / 1.6);
     G.bz = Math.round(G.Wi * 0.0148); G.chin = Math.round(G.Wi * 0.0412);   // 베젤·턱: v09.psd(은색 16형) 실측 비율(card-drop W2)
     G.lidW = G.Wi + 2 * G.bz; G.lidH = G.Hi + G.bz + G.chin; G.baseD = Math.round(G.lidW * 0.69);
-    // 자리(11 1절): 교정지(±0.46W) 오른쪽 옆. 읽는 동안에는 화면 밖에 있다
+    // 자리(11 1절): 카드 구역(±0.46W) 오른쪽 너머. 카드 테이블에서는 화면 밖에 있다
     G.cx = Math.round(W.Wd / 2 + 0.46 * W.Wd + 0.07 * W.Wd + G.lidW / 2); G.zh = Math.round(W.zP + 0.12 * W.H);
     Object.assign(mb.style, { left: (G.cx - G.lidW / 2) + 'px', top: G.zh + 'px', width: G.lidW + 'px' });
     mb.style.setProperty('--wi', G.Wi + 'px'); mb.style.setProperty('--hi', G.Hi + 'px'); mb.style.setProperty('--bz', G.bz + 'px'); mb.style.setProperty('--chin', G.chin + 'px');
@@ -2737,25 +2278,28 @@ window.ticker = (() => {
     },
   };
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
+  const ST = n => Stage.config.stations.findIndex(x => x.name === n);
+  const WEB = () => ST('web'), END = () => Stage.config.stations.length - 1;
   function path(p){
-    if (p <= 9) return Wd.station.cases();
-    if (p <= 10) {                                  // 맥북 앞으로: 바라보는 점(0.10~0.55)이 θ·거리(0.10~0.75)보다 앞선다
-      const t = p - 9, eT = ease((t - 0.10) / 0.45), eA = ease((t - 0.10) / 0.65);
-      return mix(Wd.station.cases(), cam.front(), eA, eT);
+    const w = WEB(), e = END();
+    if (p <= w - 1) return Wd.station.work();
+    if (p <= w) {                                   // 맥북 앞으로: 카드가 모이고 숨(0~0.25) 뒤, 바라보는 점(0.25~0.65)이 θ·거리(0.25~0.85)보다 앞선다
+      const t = p - (w - 1), eT = ease((t - 0.25) / 0.4), eA = ease((t - 0.25) / 0.6);
+      return mix(Wd.station.work(), cam.front(), eA, eT);
     }
-    if (p <= 11) return mix(cam.front(), cam.inside(), ease((p - 10 - 0.12) / 0.68));
-    if (p <= 12) return mix(cam.inside(), cam.bezel(), ease((p - 11) / 0.4));
-    if (p <= 14) return cam.bezel();
-    return mix(cam.bezel(), cam.end(), ease((p - 14) / 0.35));
+    if (p <= w + 1) return mix(cam.front(), cam.inside(), ease((p - w - 0.12) / 0.68));
+    if (p <= w + 2) return mix(cam.inside(), cam.bezel(), ease((p - w - 1) / 0.4));
+    if (p <= e - 1) return cam.bezel();
+    return mix(cam.bezel(), cam.end(), ease((p - (e - 1)) / 0.35));
   }
   // 화면 빛: 맥북이 드러나며 켜지고(0.55~0.85), 맺음에서 화면이 잠들며 꺼진다(대표님 결정: 덮개는 112° 그대로, 잠들기 곡선은 card-drop macbook.js의 Macbook.onOf)
-  const lightOf = p => clamp01((p - 9.55) / 0.3) * (window.Macbook && Macbook.onOf ? Macbook.onOf(p) : 1);
+  const lightOf = p => clamp01((p - WEB() + 0.45) / 0.3) * (window.Macbook && Macbook.onOf ? Macbook.onOf(p) : 1);
   // 글 격자(카메라에 붙은 화면 층): 화면 속(거리 P 근처)에서는 얹지 않고, 맥북 앞·베젤 거리에서 보인다. 맺음에서는 사라진다
-  const infoOf = (p, c) => p < 9.5 || p > 14.25 ? 0 : clamp01((c.d / P() - 1.06) / 0.1) * clamp01((p - 9.55) / 0.3) * clamp01((14.25 - p) / 0.15);
+  const infoOf = (p, c) => { const w = WEB(), e = END(); return p < w - 0.5 || p > e - 0.75 ? 0 : clamp01((c.d / P() - 1.06) / 0.1) * clamp01((p - w + 0.45) / 0.3) * clamp01((e - 0.75 - p) / 0.15); };
 
   let infoStr = '';
   Stage.add('web', {
-    range: [9, 15],
+    range: [1, Stage.config.stations.length - 1],
     wake(){ measure(); mb.classList.add('mb-on'); mb.style.visibility = ''; },
     sleep(){ mb.classList.remove('mb-on'); mb.style.visibility = 'hidden'; if (info) { infoStr = '0.000'; info.style.opacity = '0'; info.style.visibility = 'hidden'; } },
     leave(dir){ if (info) { infoStr = '0.000'; info.style.opacity = '0'; info.style.visibility = 'hidden'; } },
@@ -2765,16 +2309,15 @@ window.ticker = (() => {
       const uk = Stage.web ? Stage.web.useK : 0;
       if (uk > 0) c = mix(c, cam.inside(), uk);     // 사용 중: 그 자리에서 화면 속(배율 1)까지
       Stage.camera.set(c);
-      Stage.tone(1);
+      Stage.tone(Wd.toneOf(p));
       const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
       // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook.js의 사다리꼴(.mb-pool)과 키보드면 빛이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
-      if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * clamp01((9.5 - p) / 0.4)).toFixed(3); }
+      if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Stage.state.dk * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
       if (info) { const v = (uk > 0 ? 1 - uk : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
     },
   });
   Stage.webPath = path;
   Stage.webEnd = cam.end;
-  // 맺음 줄 자리: 키보드면 위에 인쇄돼 보이지 않게 책상 위에
   // 맺음 줄: 명함 중심 카메라에서 명함 바로 아래 책상(화면 0.6H 안팎)에 명함과 가운데를 맞춰 둔다. 맥북은 그보다 아래·오른쪽에서 시작한다
   Stage.webSign = () => { const c = (window.Hero && Hero.desk && Hero.desk.cornerAt) || { x: G.cx - W.Wd / 2 - G.lidW, z: W.Dt - 0.34 * W.H }, k = cam.end().d / P(); return { x: c.x + W.Wd / 2, z: c.z + 0.19 * W.H * k }; };
   Stage.webGeo = { G, screen, cam, setLid };

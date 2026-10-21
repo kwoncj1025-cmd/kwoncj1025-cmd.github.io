@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>bewhysee · BYC rebranding — Chanjun Kwon</title>
+<meta name="description" content="A concept rebrand for BYC, a Korean innerwear label since 1946.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500&family=Funnel+Sans:wght@400;500&display=swap">
+<style>
+/* bewhysee 사례 연구: 원본 랜딩 27컷을 원비율 그대로 세로로 이어 붙인 한 장(포트폴리오 맥북 화면 속 서비스, web-live.js).
+   머리 띠·끝 띠의 글은 옛 교정지 그대로 옮겼다. 서체 Funnel Display·Funnel Sans + SUIT(13 합의안) */
+@font-face{font-family:SUIT;font-weight:500;src:url(../../fonts/SUIT-Medium.otf) format("opentype")}
+:root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12);--soft:#9fb2e6;
+  --f-en:"Funnel Sans",SUIT,system-ui,sans-serif;--f-disp:"Funnel Display","Funnel Sans",SUIT,system-ui,sans-serif;--f-ko:SUIT,"Funnel Sans",system-ui,sans-serif;
+  --pad:max(32px,env(safe-area-inset-left,0px));color-scheme:dark}
+*{box-sizing:border-box}
+html{background:var(--nt)}
+body{margin:0;background:var(--nt);color:var(--nt-ink);font-family:var(--f-en);-webkit-font-smoothing:antialiased}
+.band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);align-items:start;padding-inline:var(--pad)}
+.head{row-gap:clamp(40px,6vh,64px);padding-block:clamp(72px,12vh,140px) clamp(56px,9vh,96px)}
+.ey{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+.ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
+h1{grid-column:1/-1;margin:0;font:500 clamp(64px,8.4vw,132px)/.86 var(--f-disp);letter-spacing:-.04em;color:var(--soft)}
+dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+dt{color:var(--nt-3);margin-bottom:6px}
+dd{margin:0}
+.text{grid-column:3/-1;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lede{margin:0;font-size:clamp(16px,1.25vw,19px);line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:34em}
+.lede b{font-weight:500;color:var(--nt-ink)}
+.ko{margin:0;font:500 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
+a{align-self:flex-start;color:var(--nt-ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.text a{margin-top:6px}
+a svg{width:11px;height:11px}
+a:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+.cuts>img,.cuts>video{display:block;width:100%;height:auto;background:#242320}
+.foot{margin-top:clamp(56px,9vh,96px);padding-top:16px;padding-bottom:clamp(72px,12vh,140px);border-top:1px solid var(--nt-line);margin-inline:var(--pad);padding-inline:0}
+.foot .go{grid-column:3/-1;display:flex;justify-content:flex-end}
+@media (max-width:900px){
+  :root{--pad:max(20px,env(safe-area-inset-left,0px))}
+  .band{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
+  .head{row-gap:32px;padding-block:72px 48px}
+  h1{font-size:clamp(56px,17vw,96px)}
+  .text,.foot .go{grid-column:1/-1}
+  .foot .go{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<header class="band head">
+  <p class="ey"><i></i>Case study</p>
+  <h1>bewhysee</h1>
+  <dl><dt>Client</dt><dd>BYC, since 1946</dd><dd>Concept project · 2026</dd></dl>
+  <dl><dt>Scope</dt><dd>Naming</dd><dd>Brand architecture</dd><dd>Identity system</dd><dd>Labels &amp; packaging</dd><dd>Online</dd></dl>
+  <div class="text">
+    <p class="lede">A concept rebrand for <b>BYC</b>, a Korean innerwear label since 1946. The new name is the old one, read out loud: be, why, see.</p>
+    <p class="ko" lang="ko">보이지 않는 옷이 보이는 이유가 된다.</p>
+    <a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">View on Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</header>
+<main class="cuts" aria-label="bewhysee 랜딩 27컷">
+<video muted loop playsinline preload="none" width="1600" height="1000" data-poster="01_poster.webp" data-poster2x="01_poster@2x.webp" aria-label="컷 01"><source data-src="01.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="01.mp4" type="video/mp4"></video>
+<img src="02.webp" srcset="02.webp 1600w, 02@2x.webp 2800w" sizes="100vw" width="1600" height="832" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="928" data-poster="03_poster.webp" data-poster2x="03_poster@2x.webp" aria-label="컷 03"><source data-src="03.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="03.mp4" type="video/mp4"></video>
+<img src="04.webp" srcset="04.webp 1600w, 04@2x.webp 2800w" sizes="100vw" width="1600" height="3232" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="608" data-poster="05_poster.webp" data-poster2x="05_poster@2x.webp" aria-label="컷 05"><source data-src="05.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="05.mp4" type="video/mp4"></video>
+<img src="06.webp" srcset="06.webp 1600w, 06@2x.webp 2800w" sizes="100vw" width="1600" height="3168" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="800" data-poster="07_poster.webp" data-poster2x="07_poster@2x.webp" aria-label="컷 07"><source data-src="07.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="07.mp4" type="video/mp4"></video>
+<img src="08.webp" srcset="08.webp 1600w, 08@2x.webp 2800w" sizes="100vw" width="1600" height="637" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="1090" data-poster="09_poster.webp" data-poster2x="09_poster@2x.webp" aria-label="컷 09"><source data-src="09.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="09.mp4" type="video/mp4"></video>
+<img src="10.webp" srcset="10.webp 1600w, 10@2x.webp 2800w" sizes="100vw" width="1600" height="2272" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="832" data-poster="11_poster.webp" data-poster2x="11_poster@2x.webp" aria-label="컷 11"><source data-src="11.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="11.mp4" type="video/mp4"></video>
+<img src="12.webp" srcset="12.webp 1600w, 12@2x.webp 2800w" sizes="100vw" width="1600" height="1760" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="608" data-poster="13_poster.webp" data-poster2x="13_poster@2x.webp" aria-label="컷 13"><source data-src="13.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="13.mp4" type="video/mp4"></video>
+<img src="14.webp" srcset="14.webp 1600w, 14@2x.webp 2800w" sizes="100vw" width="1600" height="1504" alt="" loading="lazy" decoding="async">
+<img src="15.webp" srcset="15.webp 1600w, 15@2x.webp 2800w" sizes="100vw" width="1600" height="2024" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="2166" data-poster="16_poster.webp" data-poster2x="16_poster@2x.webp" aria-label="컷 16"><source data-src="16.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="16.mp4" type="video/mp4"></video>
+<img src="17.webp" srcset="17.webp 1600w, 17@2x.webp 2800w" sizes="100vw" width="1600" height="3552" alt="" loading="lazy" decoding="async">
+<img src="18.webp" srcset="18.webp 1600w, 18@2x.webp 2800w" sizes="100vw" width="1600" height="2260" alt="" loading="lazy" decoding="async">
+<img src="19.webp" srcset="19.webp 1600w, 19@2x.webp 2800w" sizes="100vw" width="1600" height="3058" alt="" loading="lazy" decoding="async">
+<video muted loop playsinline preload="none" width="1600" height="3126" data-poster="20_poster.webp" data-poster2x="20_poster@2x.webp" aria-label="컷 20"><source data-src="20.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="20.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="1300" data-poster="21_poster.webp" data-poster2x="21_poster@2x.webp" aria-label="컷 21"><source data-src="21.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="21.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="2080" data-poster="22_poster.webp" data-poster2x="22_poster@2x.webp" aria-label="컷 22"><source data-src="22.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="22.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="1184" data-poster="23_poster.webp" data-poster2x="23_poster@2x.webp" aria-label="컷 23"><source data-src="23.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="23.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="1440" data-poster="24_poster.webp" data-poster2x="24_poster@2x.webp" aria-label="컷 24"><source data-src="24.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="24.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="1440" data-poster="25_poster.webp" data-poster2x="25_poster@2x.webp" aria-label="컷 25"><source data-src="25.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="25.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="608" data-poster="26_poster.webp" data-poster2x="26_poster@2x.webp" aria-label="컷 26"><source data-src="26.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="26.mp4" type="video/mp4"></video>
+<video muted loop playsinline preload="none" width="1600" height="960" data-poster="27_poster.webp" data-poster2x="27_poster@2x.webp" aria-label="컷 27"><source data-src="27.hevc.mp4" type="video/mp4; codecs=&quot;hvc1&quot;"><source data-src="27.mp4" type="video/mp4"></video>
+</main>
+<footer class="band foot">
+  <dl><dt>Format</dt><dd>27 cuts · 2800 px</dd><dd>One landing, cut in order</dd></dl>
+  <dl><dt>Credit</dt><dd>Concept &amp; design</dd><dd>Chanjun Kwon</dd></dl>
+  <div class="go"><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener">Behance <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+</footer>
+<script>
+// 영상 컷은 화면 가까이 오면 포스터·소스를 붙이고(한 번만), 화면에 들어온 동안만 재생한다. 움직임 줄이기면 포스터만
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, hi = (devicePixelRatio || 1) * innerWidth > 1700;
+  const arm = v => { if (v.dataset.armed) return; v.dataset.armed = '1'; v.poster = hi ? v.dataset.poster2x : v.dataset.poster; v.querySelectorAll('source').forEach(s => { s.src = s.dataset.src; }); v.load(); };
+  const near = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { arm(e.target); near.unobserve(e.target); } }), { rootMargin: '100% 0px' });
+  const seen = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting) { arm(v); if (!reduce) v.play().catch(() => {}); } else v.pause(); }));
+  document.querySelectorAll('video').forEach(v => { near.observe(v); seen.observe(v); });
+})();
+</script>
+</body>
+</html>
