@@ -376,7 +376,7 @@ html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;he
 html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
 html.stage-held #stage-root{touch-action:auto}
 /* 터치 기기: 맥북 메뉴 막대의 배경 흐림(backdrop-filter)을 반투명 바탕으로 바꾼다. 3D 변환 안의 흐림은 휴대폰에서 매 프레임 비싸다(10-21 측정, 6-macbook.css 주인 card-drop에 알림) */
-@media (pointer:coarse){html.stage-on .mb div.mb-bar{-webkit-backdrop-filter:none;backdrop-filter:none;background:linear-gradient(rgba(255,255,255,.16),rgba(255,255,255,.1))}}
+@media (pointer:coarse){html.stage-on .mb div.mb-bar{-webkit-backdrop-filter:none;backdrop-filter:none}}   /* 바탕은 6-macbook.css의 검정 그대로(10-21) */
 /* 카드 테이블이 어둠에 잠긴다(world.js --sink): 맥북으로 가며 불이 낮아지는 동안. 3D가 평면이 되지 않게 잎 요소(카드 면·글줄)에만 건다 */
 html.stage-on [data-scene="table"] :is(.tmark,.f){opacity:var(--sink,1)}
 /* 버튼 줄·작은 글 줄은 카메라가 움직이기 전에 걷고(world.js --ui), 다 걷히면 그리지 않는다 */
@@ -482,10 +482,10 @@ html.stage-on .mb .mb-screen{opacity:var(--on,1)}
 html.stage-on .mb .mb-bar{--bh:calc(var(--wi,1000px) * .0222);position:absolute;left:var(--bz);width:var(--wi);top:calc(var(--bz) - var(--bh));height:var(--bh);z-index:2;
   display:flex;align-items:center;justify-content:space-between;padding:0 calc(var(--wi,1000px) * .009);box-sizing:border-box;pointer-events:none;
   font:500 calc(var(--bh) * .5)/1 var(--f-en);letter-spacing:0;white-space:nowrap;opacity:calc(var(--on,1) * var(--light,1));
-  color:#fff;text-shadow:0 0 calc(var(--bh) * .35) rgba(0,0,0,.35);
-  /* 서비스 화면은 막대 아래에서 시작하므로(10-21) 막대 뒤에는 데스크톱 배경만 있다: 흐림 없이 남보라 배경색이 살짝 비치는 유리 */
-  background:linear-gradient(rgba(150,140,200,.16),rgba(150,140,200,.1));
-  box-shadow:inset 0 max(.5px,calc(var(--bh) * .03)) 0 rgba(255,255,255,.32),inset 0 calc(var(--bh) * -.03) 0 rgba(255,255,255,.05)}
+  color:rgba(255,255,255,.92);
+  /* 실제 노치 맥북처럼(10-21 대표님: 막대 유지, 실제 맥처럼): 앱 창이 막대 바로 아래에 붙으면 막대 줄은 검게 보이고 노치는 그 검정 속에 묻힌다.
+     밝은 유리 띠와 위 가장자리 빛줄은 화면 모서리·노치 어깨를 따라 둥근 상자처럼 떠 보여서 뺐다 */
+  background:#000}
 html.stage-on .mb .mb-bl,html.stage-on .mb .mb-br{display:flex;align-items:center;gap:calc(var(--bh) * .78)}
 html.stage-on .mb .mb-bl b{font-weight:700}
 html.stage-on .mb .mb-ap{height:calc(var(--bh) * .56);width:auto;margin-right:calc(var(--bh) * .1)}
