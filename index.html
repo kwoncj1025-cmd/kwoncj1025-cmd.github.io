@@ -2550,30 +2550,46 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     const screenMat = screenObj.material;
     const rig = new THREE.Group(); rig.add(model); scene.add(rig);
 
-    // 책상: 화면 빛만 더하는 면(투명 캔버스 위에 알파 0으로 빛을 더하면 CSS 바탕 위에 그대로 얹힌다)과 몸체 접지 그림자.
+    // 책상: 화면 빛을 얹는 면과 몸체 접지 그림자. 빛은 화면 색의 반투명 면(알파 = 빛의 세기)으로 CSS 바탕 위에 겹친다.
+    // 알파 0에 색만 더하는 방식은 크롬 합성에서 색이 알파 이하로 잘려, 빛이 그림자 알파가 있는 곳에서만 보이고 그 경계가 대각선으로 섰다(10-21).
     // 빛은 조명 계산 없이 둥글게 번지는 그림 하나로만 둔다: 면광원으로 비추면 화면 면의 연장선에서 빛이 끊겨 날카로운 대각선이 섰다(10-21 대표님 지적).
     // 그림은 원 안에서 0까지 떨어지므로 면의 네 변은 어디서도 보이지 않는다
     const fadeTex = (() => {
       const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
       const r = g.createRadialGradient(128, 128, 0, 128, 128, 126);
-      [[0, 255], [0.25, 175], [0.5, 80], [0.75, 22], [1, 0]].forEach(([o, v]) => r.addColorStop(o, `rgb(${v},${v},${v})`));
+      // 가우스에 가까운 떨어짐(가장자리에서 기울기도 0이 되게)
+      for (let i = 0; i <= 16; i++) { const u = i / 16, v = Math.round(255 * Math.exp(-4.2 * u * u) * (1 - u * u)); r.addColorStop(u, `rgb(${v},${v},${v})`); }
       g.fillStyle = r; g.fillRect(0, 0, 256, 256);
       return new THREE.CanvasTexture(c);
     })();
-    const deskMat = new THREE.MeshBasicMaterial({ color: 0x000000, map: fadeTex, depthWrite: false, toneMapped: false });
-    deskMat.blending = THREE.CustomBlending;
-    deskMat.blendEquation = THREE.AddEquation; deskMat.blendSrc = THREE.OneFactor; deskMat.blendDst = THREE.OneFactor;
-    deskMat.blendSrcAlpha = THREE.ZeroFactor; deskMat.blendDstAlpha = THREE.OneFactor;
+    const deskMat = new THREE.MeshBasicMaterial({ color: 0xffffff, alphaMap: fadeTex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+    // 책상 빛은 벽 앞(z ≥ 0)에서 끝난다: 책상이 벽에 닿는 모서리(Stage.world 원점의 줄)가 빛의 꺾임으로 읽힌다
+    renderer.localClippingEnabled = true;
+    deskMat.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 0, 1), 0)];
     const deskPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), deskMat);
-    deskPlane.rotation.x = -Math.PI / 2; deskPlane.renderOrder = -2;
-    const shTex = (() => {
-      const c = document.createElement('canvas'); c.width = 256; c.height = 192; const g = c.getContext('2d');
-      g.filter = 'blur(10px)'; g.fillStyle = '#000'; g.beginPath(); g.roundRect(28, 26, 200, 140, 14); g.fill();
+    deskPlane.rotation.x = -Math.PI / 2; deskPlane.renderOrder = -3;
+    // 벽: 첫 화면의 그 벽 자리(Stage.world: z = 0, 책상 위로 높이 H). CSS 벽은 첫 화면 폭만큼이라 맥북 뒤까지 닿지 않으므로, 같은 자리에 화면 빛만 받는 면을 둔다.
+    // 빛은 모서리(아래 끝)에서 가장 밝고 위로·옆으로 거리만큼 약해진다(반원 그림). 맥북 덮개가 가운데를 가린다
+    const wallTex = (() => {
+      const c = document.createElement('canvas'); c.width = 256; c.height = 128; const g = c.getContext('2d');
+      const r = g.createRadialGradient(128, 128, 0, 128, 128, 126);
+      for (let i = 0; i <= 16; i++) { const u = i / 16, v = Math.round(255 * Math.exp(-4.2 * u * u) * (1 - u * u)); r.addColorStop(u, `rgb(${v},${v},${v})`); }
+      g.fillStyle = r; g.fillRect(0, 0, 256, 128);
       return new THREE.CanvasTexture(c);
     })();
-    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: shTex, transparent: true, opacity: 0.85, depthWrite: false }));
-    shadow.rotation.x = -Math.PI / 2; shadow.renderOrder = -1;
-    scene.add(deskPlane, shadow);
+    const wallMat = deskMat.clone(); wallMat.alphaMap = wallTex; wallMat.clippingPlanes = [];
+    const wallPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), wallMat); wallPlane.renderOrder = -3;
+    // 접지 그림자 두 겹(사이트 그림자 문법: 짙고 좁은 그림자 + 넓고 옅은 그림자, 같은 빛에서 떨어지므로 넓은 쪽이 빛 반대편(앞)으로 조금 밀린다)
+    const shTex = blur => {
+      const c = document.createElement('canvas'); c.width = 256; c.height = 192; const g = c.getContext('2d');
+      g.filter = `blur(${blur}px)`; g.fillStyle = '#04050e'; g.beginPath(); g.roundRect(40, 34, 176, 124, 12); g.fill();
+      return new THREE.CanvasTexture(c);
+    };
+    const shMat = (blur, op) => new THREE.MeshBasicMaterial({ map: shTex(blur), transparent: true, opacity: op, depthWrite: false });
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shMat(5, 0.92));
+    const shadowWide = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shMat(22, 0.5));
+    shadow.rotation.x = shadowWide.rotation.x = -Math.PI / 2; shadowWide.renderOrder = -2; shadow.renderOrder = -1;
+    scene.add(deskPlane, wallPlane, shadowWide, shadow);
     // 화면 빛: 화면과 같은 크기·자리의 면광원(그림자는 없다)
     const area = new THREE.RectAreaLight(0xffffff, 0, 1, 1);
     scene.add(area);
@@ -2582,7 +2598,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     room.position.set(-0.35, 1, 0.55); scene.add(room);
 
     // 무대 치수가 바뀌면 다시 놓는다
-    let placeKey = '';
+    let placeKey = '', wallFall = 0.5;
     function place(){
       const { G } = Stage.webGeo, W = Stage.world.dims;
       const key = [G.Wi, G.cx, G.zh, G.chin, W.Wd, W.H].join();
@@ -2593,12 +2609,21 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       // 몸체 발자국(모델 x ±17.74, z ±12.4 → 그림자는 조금 넓게), 책상 빛 면은 맥북 둘레로 넉넉히
       const bx = rig.position.x;
       const baseZ = rig.position.z + (0 - anchor.z) * s;     // 몸체 가운데(모델 z 0)
-      shadow.scale.set(37 * s * 256 / 200, 26 * s * 192 / 140, 1);
-      shadow.position.set(bx, 0.3, baseZ);
-      // 빛 웅덩이: 몸체 가운데 조금 앞을 중심으로 덮개 폭의 2.6배·1.7배 타원, 덮개 뒤로는 거의 번지지 않는다(가운데는 몸체가 가리고 둘레로만 번진다)
+      // 그림 속 사각형(176×124)이 몸체 발자국(35.5×24.8cm)보다 조금 크게: 좁은 그림자 1.02배, 넓은 그림자 1.22배·앞으로 1.6cm
+      shadow.scale.set(36.2 * s * 256 / 176, 25.3 * s * 192 / 124, 1);
+      shadow.position.set(bx, 0.4, baseZ);
+      shadowWide.scale.set(43.3 * s * 256 / 176, 30.3 * s * 192 / 124, 1);
+      shadowWide.position.set(bx, 0.3, baseZ + 1.6 * s);
+      // 빛 웅덩이: 힌지(화면 아래 끝) 바로 밑을 중심으로 덮개 폭의 3.4배·2.8배 타원. 중심이 앞에 있으면 벽 가까이에서 타원이 급히 좁아져
+      // 모서리와 만나는 곳에 날카로운 사다리꼴이 섰다(10-21 대표님 지적). 힌지 중심이면 벽까지 넓게 번진 채 모서리에서 끝난다
       const hingeZ = rig.position.z + (HINGE[1] - anchor.z) * s;
-      deskPlane.scale.set(G.lidW * 2.6, G.lidW * 1.7, 1);
-      deskPlane.position.set(bx, 0, hingeZ + G.lidW * 0.62);
+      deskPlane.scale.set(G.lidW * 3.4, G.lidW * 2.8, 1);
+      deskPlane.position.set(bx, 0, hingeZ);
+      // 벽 빛: 맥북 바로 뒤 모서리에서 시작해 덮개 폭의 3.4배 너비·1.5배 높이로 번진다
+      wallPlane.scale.set(G.lidW * 3.4, G.lidW * 1.5, 1);
+      wallPlane.position.set(bx, G.lidW * 0.75, 0);
+      // 벽까지의 거리(덮개 폭 단위)에 따라 벽 빛이 약해진다. 데스크톱(0.9배)은 0.55, 세로 화면(3배 넘게 멀다)은 거의 0
+      wallFall = 1 / (1 + (hingeZ / G.lidW) ** 2);
       // 면광원: iframe 가운데에서 화면 법선(앞·위로 22° 누운 면의 앞쪽)을 본다
       const sc = Stage.webGeo.screen();
       area.width = G.Wi; area.height = G.Hi;
@@ -2630,8 +2655,9 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       const lit = L * gk, mixW = v => (0.5 * v / 255 + 0.5);
       area.color.setRGB(mixW(gl[0]), mixW(gl[1]), mixW(gl[2]), THREE.SRGBColorSpace);
       area.intensity = 3.2 * lit;
-      const pk = 0.16 * lit;
-      deskMat.color.setRGB(mixW(gl[0]) * pk, mixW(gl[1]) * pk, mixW(gl[2]) * pk, THREE.SRGBColorSpace);
+      deskMat.color.setRGB(mixW(gl[0]), mixW(gl[1]), mixW(gl[2]), THREE.SRGBColorSpace); deskMat.opacity = 0.2 * lit;
+      // 벽은 화면을 등지고 있어 책상에서 튄 빛만 받는다: 책상보다 옅다
+      wallMat.color.copy(deskMat.color); wallMat.opacity = 0.18 * lit * wallFall;
       room.intensity = 0.55;
       const env = 0.3 + 0.3 * lit;
       mats.forEach(m => { if (m !== screenMat) m.envMapIntensity = env; });
