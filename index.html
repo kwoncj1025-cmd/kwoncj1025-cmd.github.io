@@ -428,6 +428,7 @@ html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);
 }
 </style>
 
+<!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
 <!-- 무대: 문서 스크롤 대신 진행값으로 장면을 넘긴다(회의/스크롤장면_2026-10-20/06_장면인터페이스.md). 움직임 줄이기면 보통 문서로 보인다 -->
 <div id="stage-root"><div class="stage-camera">
 <div class="wall">
@@ -1951,14 +1952,18 @@ window.ticker = (() => {
   if (!info) { info = el('aside', 'web-info'); info.setAttribute('aria-live', 'polite'); info.style.visibility = 'hidden'; document.body.appendChild(info); }
   if (!info.querySelector('.wi-body')) {
     const arrow = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    info.innerHTML = `<p class="wi-ey"><span><i></i>Live service</span></p>` +
+    info.innerHTML = `<p class="wi-ey"><span><i></i><span class="wi-kind">Live service</span></span></p>` +
       `<div class="wi-body"><h2 class="wi-name"></h2><p class="wi-ko" lang="ko"></p><p class="wi-line"></p>` +
       `<div class="wi-meta"><dl class="wi-dl"><dt>Scope</dt><dd class="wi-role"></dd></dl><dl class="wi-dl"><dt>Year</dt><dd class="wi-year"></dd></dl></div>` +
       `<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ${arrow}</a></div>`;
   }
 
   // 화면 빛 색: 지금 화면에 떠 있는 서비스의 바탕색을 따라 방이 물든다(11 5절). 어두운 화면은 빛도 약하다. macbook3d.js가 --glow·--gk를 읽는다
-  const GLOW = { bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['168,174,214', 0.45] };
+  const GLOW = { bewhysee: ['132,138,186', 0.32], bizcopilot: ['244,245,248', 1], 'bizcopilot-story': ['244,245,248', 1], 'bizcopilot-system': ['244,245,248', 1],
+    bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['168,174,214', 0.45] };
+  // 눈썹 글: 화면 속 작업의 성격. 운영 중인 서비스만 Live service, 리브랜딩 사례는 Case study, BizCopilot은 시안·브랜드 문서
+  const KIND = { bewhysee: 'Case study', bizcopilot: 'Product concept', 'bizcopilot-story': 'Brand story', 'bizcopilot-system': 'Brand system' };
+  const kind = info.querySelector('.wi-kind');
   // 화면이 잠든다(맺음, 대표님 결정): 카메라가 물러나는 동안(마지막 정거장 앞 1 → 0.65) 켜져 있다가,
   // 실제 맥처럼 먼저 30%로 어둡게 내려앉고(0.65 → 0.52) 잠깐 머문 뒤(→ 0.42) 검게 꺼진다(→ 0.36). 그 뒤 명함이 앞면으로 넘어간다(scene-hero, 0.25 → 0.05).
   // 화면 빛(macbook3d.js의 면광원)도 같은 값으로 꺼진다. p의 순수 함수라 되감으면 다시 켜진다
@@ -1977,6 +1982,7 @@ window.ticker = (() => {
     const i = w.index; if (i === gi) return; gi = i;
     const g = GLOW[w.services[i].id] || GLOW.bible;
     mb.style.setProperty('--glow', g[0]); mb.style.setProperty('--gk', g[1]);
+    if (kind) kind.textContent = KIND[w.services[i].id] || 'Live service';
   });
 })();
 </script>
@@ -2311,7 +2317,7 @@ window.ticker = (() => {
       Stage.camera.set(c);
       Stage.tone(Wd.toneOf(p));
       const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
-      // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook.js의 사다리꼴(.mb-pool)과 키보드면 빛이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
+      // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook3d.js의 면광원(키보드면·책상)이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
       if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Stage.state.dk * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
       if (info) { const v = (uk > 0 ? 1 - uk : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
     },
@@ -2325,5 +2331,178 @@ window.ticker = (() => {
   addEventListener('resize', remeasure);
   measure();   // 보이기·숨기기는 wake·sleep만 한다(Stage.add가 지금 진행값으로 바로 부른다). 해시로 바로 들어오면 state.p가 아직 0이라 여기서 판정하면 숨겨진다
 })();
+</script>
+<script type="module">
+// MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c)
+// 맥북 몸체(card-drop, 10-21 조율 합의). 화면 속 서비스(iframe)·자리·카메라는 그대로 CSS 무대(scene-web.js, web-live.js)가 맡고,
+// 이 파일은 그 iframe을 끼운 실물 맥북만 WebGL로 그린다. 캔버스는 무대(#stage-root) 바로 아래 고정 층이라 iframe·글은 늘 그 위에 얹힌다.
+//  · 카메라: Stage.camera(θ, T, d)와 원근 P를 그대로 옮긴다. CSS 세계 (x, y, z) = three (x, −y, z), 단위 px
+//  · 정렬: 모델 화면 아래 끝 가운데를 iframe 아래 끝 가운데에 맞추고, 배율은 화면 폭(34.386cm = G.Wi px).
+//    모델 덮개는 수직에서 19.98° 누워 있어 힌지 축으로 2.02° 더 눕혀 무대의 112°(22°)와 맞춘다
+//  · 빛: 소등한 방. 화면이 유일한 광원이라 화면 크기의 면광원이 키보드면과 책상을 비추고(--light × --on × 서비스 바탕색), 그 밖은 어두운 방 반사만
+//  · WebGL이 없거나 불러오기에 실패하면 아무것도 그리지 않는다(iframe만 남는다)
+// three와 모델은 맥북 구간에 가까워지면(또는 첫 화면이 한가할 때) 불러온다. 바뀐 것이 있는 프레임에만 그린다
+if (window.Stage && Stage.enabled && Stage.webGeo) {
+  const mb = document.querySelector('.stage-camera > .desk .mb');
+  const root = document.getElementById('stage-root');
+  const T3 = 'https://cdn.jsdelivr.net/npm/three@0.160.0';
+  const SCR_W = 34.386;                                   // 모델 화면 폭(cm)
+  const HINGE = [0.37, -12.82];                           // 모델 힌지 축(y, z, cm)
+  const LEAN = -2.02 * Math.PI / 180;                     // 덮개를 더 눕히는 각(x축, 음수 = 뒤로)
+  let started = false;
+
+  const glOK = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } };
+
+  async function start(){
+    if (started) return; started = true;
+    if (!mb || !glOK()) return;
+    const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RectAreaLightUniformsLib }] = await Promise.all([
+      import(`${T3}/+esm`),
+      import(`${T3}/examples/jsm/loaders/GLTFLoader.js/+esm`),
+      import(`${T3}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
+      import(`${T3}/examples/jsm/lights/RectAreaLightUniformsLib.js/+esm`),
+    ]);
+    RectAreaLightUniformsLib.init();
+    const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(new URL('macbook/macbook.glb', document.baseURI).href);
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'mb3d'; canvas.setAttribute('aria-hidden', 'true');
+    root.before(canvas);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(45, 1, 10, 40000);
+
+    // 어두운 방의 반사: 짙은 남색 방 + 위쪽의 아주 옅은 천장 면 + 화면 자리의 밝은 면. 은색 금속은 반사할 것이 있어야 은색으로 읽힌다.
+    // 세기는 화면 빛(L)에 따라 재질의 envMapIntensity로 올린다
+    const envScene = new THREE.Scene();
+    const box = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ color: 0x05060c, side: THREE.BackSide }));
+    const ceil = new THREE.Mesh(new THREE.PlaneGeometry(6, 4), new THREE.MeshBasicMaterial({ color: 0x1c1e28 }));
+    ceil.position.set(0, 4.9, 0); ceil.rotation.x = Math.PI / 2;
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2), new THREE.MeshBasicMaterial({ color: 0xc8ccd8 }));
+    glow.position.set(0, 1.2, -2.4);
+    envScene.add(box, ceil, glow);
+    const pm = new THREE.PMREMGenerator(renderer);
+    scene.environment = pm.fromScene(envScene, 0.02).texture;
+    pm.dispose();
+
+    // 모델: 덮개를 힌지 축으로 눕힌 뒤, 화면 아래 끝 가운데를 원점에 둔다
+    const model = gltf.scene;
+    model.updateMatrixWorld(true);
+    const lid = model.getObjectByName('Lid'), screenObj = model.getObjectByName('Screen');
+    const R = new THREE.Matrix4().makeTranslation(0, HINGE[0], HINGE[1])
+      .multiply(new THREE.Matrix4().makeRotationX(LEAN))
+      .multiply(new THREE.Matrix4().makeTranslation(0, -HINGE[0], -HINGE[1]));
+    new THREE.Matrix4().copy(lid.parent.matrixWorld).invert().multiply(R).multiply(lid.matrixWorld)
+      .decompose(lid.position, lid.quaternion, lid.scale);
+    model.updateMatrixWorld(true);
+    const sb = new THREE.Box3().setFromObject(screenObj);
+    const anchor = new THREE.Vector3(0, sb.min.y, sb.max.z);   // 덮개가 뒤로 누워 있으니 아래 끝이 가장 앞(z 최대)이다
+    model.position.copy(anchor).negate();
+    const mats = new Set();
+    model.traverse(o => { if (o.isMesh) { mats.add(o.material); } });
+    const screenMat = screenObj.material;
+    const rig = new THREE.Group(); rig.add(model); scene.add(rig);
+
+    // 책상: 화면 빛만 더하는 면(투명 캔버스 위에 알파 0으로 빛을 더하면 CSS 바탕 위에 그대로 얹힌다)과 몸체 접지 그림자
+    // 빛 면은 힌지 줄에서 앞으로만 깔고, 가장자리로 갈수록 0이 되는 그림을 곱해 경계가 보이지 않게 한다(위 = 힌지 쪽)
+    const fadeTex = (() => {
+      const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+      const r = g.createRadialGradient(128, 30, 0, 128, 30, 230); [[0, 255], [0.2, 190], [0.4, 105], [0.6, 45], [0.8, 12], [1, 0]].forEach(([o, v]) => r.addColorStop(o, `rgb(${v},${v},${v})`));
+      g.fillStyle = r; g.fillRect(0, 0, 256, 256);
+      const v = g.createLinearGradient(0, 0, 0, 56); v.addColorStop(0, '#000'); v.addColorStop(1, '#fff');
+      g.globalCompositeOperation = 'multiply'; g.fillStyle = v; g.fillRect(0, 0, 256, 256);
+      return new THREE.CanvasTexture(c);
+    })();
+    const deskMat = new THREE.MeshStandardMaterial({ color: 0x464b64, map: fadeTex, roughness: 0.92, metalness: 0 });
+    deskMat.blending = THREE.CustomBlending;
+    deskMat.blendEquation = THREE.AddEquation; deskMat.blendSrc = THREE.OneFactor; deskMat.blendDst = THREE.OneFactor;
+    deskMat.blendSrcAlpha = THREE.ZeroFactor; deskMat.blendDstAlpha = THREE.OneFactor;
+    deskMat.depthWrite = false;
+    const deskPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), deskMat);
+    deskPlane.rotation.x = -Math.PI / 2; deskPlane.renderOrder = -2;
+    const shTex = (() => {
+      const c = document.createElement('canvas'); c.width = 256; c.height = 192; const g = c.getContext('2d');
+      g.filter = 'blur(10px)'; g.fillStyle = '#000'; g.beginPath(); g.roundRect(28, 26, 200, 140, 14); g.fill();
+      return new THREE.CanvasTexture(c);
+    })();
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: shTex, transparent: true, opacity: 0.85, depthWrite: false }));
+    shadow.rotation.x = -Math.PI / 2; shadow.renderOrder = -1;
+    scene.add(deskPlane, shadow);
+    // 화면 빛: 화면과 같은 크기·자리의 면광원(그림자는 없다)
+    const area = new THREE.RectAreaLight(0xffffff, 0, 1, 1);
+    scene.add(area);
+
+    // 무대 치수가 바뀌면 다시 놓는다
+    let placeKey = '';
+    function place(){
+      const { G } = Stage.webGeo, W = Stage.world.dims;
+      const key = [G.Wi, G.cx, G.zh, G.chin, W.Wd, W.H].join();
+      if (key === placeKey) return; placeKey = key;
+      const s = G.Wi / SCR_W, a = 22 * Math.PI / 180, t = G.Wi * 0.03;
+      rig.scale.setScalar(s);
+      rig.position.set(G.cx - W.Wd / 2, t + G.chin * Math.cos(a), G.zh - G.chin * Math.sin(a));
+      // 몸체 발자국(모델 x ±17.74, z ±12.4 → 그림자는 조금 넓게), 책상 빛 면은 맥북 둘레로 넉넉히
+      const bx = rig.position.x;
+      const baseZ = rig.position.z + (0 - anchor.z) * s;     // 몸체 가운데(모델 z 0)
+      shadow.scale.set(37 * s * 256 / 200, 26 * s * 192 / 140, 1);
+      shadow.position.set(bx, 0.3, baseZ);
+      const hingeZ = rig.position.z + (HINGE[1] - anchor.z) * s, deskD = G.lidW * 1.4;
+      deskPlane.scale.set(G.lidW * 4, deskD, 1);
+      deskPlane.position.set(bx, 0, hingeZ + deskD / 2);
+      // 면광원: iframe 가운데에서 화면 법선(앞·위로 22° 누운 면의 앞쪽)을 본다
+      const sc = Stage.webGeo.screen();
+      area.width = G.Wi; area.height = G.Hi;
+      area.position.set(sc.Tx, -sc.Ty, sc.Tz);
+      area.rotation.set(-a, Math.PI, 0);   // 면광원은 제 −z 쪽을 비춘다: 뒤집어 앞(+z)으로, 덮개처럼 22° 들어 올린다
+    }
+
+    let key = '';
+    function frame(){
+      const on = mb.classList.contains('mb-on');
+      canvas.style.visibility = on ? '' : 'hidden';
+      if (!on) { key = ''; return; }
+      const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
+      const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
+      const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
+      const k = [c.th, c.Tx, c.Ty, c.Tz, d, P, w, h, L.toFixed(3), onV.toFixed(3), gl.join(), gk, Stage.webGeo.G.Wi, Stage.webGeo.G.cx].join();
+      if (k === key) return; key = k;
+      if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+        renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
+      }
+      place();
+      // CSS 카메라(translateZ(P−d) rotateX(−θ) translate(−T), 원근 P)와 같은 투영: 눈은 바라보는 점에서 θ만큼 숙인 채 d 뒤
+      cam.fov = 2 * Math.atan(h / 2 / P) * 180 / Math.PI; cam.aspect = w / h; cam.updateProjectionMatrix();
+      const th = c.th * Math.PI / 180;
+      cam.rotation.set(-th, 0, 0);
+      cam.position.set(c.Tx, -c.Ty, c.Tz).add(new THREE.Vector3(0, 0, d).applyAxisAngle(new THREE.Vector3(1, 0, 0), -th));
+      // 빛: 화면이 켜진 만큼(L은 이미 잠들기 곡선을 곱했다)
+      const lit = L * gk;
+      area.color.setRGB(gl[0] / 255, gl[1] / 255, gl[2] / 255, THREE.SRGBColorSpace);
+      area.intensity = 3.2 * lit;
+      const env = 0.12 + 0.38 * lit;
+      mats.forEach(m => { if (m !== screenMat) m.envMapIntensity = env; });
+      screenMat.envMapIntensity = 0.6;
+      renderer.render(scene, cam);
+    }
+    Stage.ticker.add(frame);
+    addEventListener('resize', () => { key = ''; });
+    frame();
+  }
+
+  // 불러오기 시점: 맥북 구간 한 정거장 앞에 오거나, 첫 화면이 한가해지면(3초 뒤)
+  const web = () => Stage.config.stations.findIndex(x => x.name === 'web');
+  const near = () => Stage.state.p > web() - 1.5;
+  const go = () => start().catch(e => console.warn('macbook3d', e));
+  if (near()) go();
+  else {
+    const tick = () => { if (near()) { Stage.ticker.remove(tick); go(); } };
+    Stage.ticker.add(tick);
+    const idle = () => { Stage.ticker.remove(tick); go(); };
+    addEventListener('load', () => setTimeout(() => (window.requestIdleCallback || setTimeout)(idle), 3000), { once: true });
+  }
+}
 </script>
 
