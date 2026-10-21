@@ -482,6 +482,8 @@ html.stage-on .mb.fs .mb-screen{z-index:6}
   html.gate .gate-note{display:grid;grid-column:1;grid-row:5 / 7;align-self:start;align-content:start;justify-items:start;gap:8px;max-width:21em}
   html.gate .gate-note>*{margin:0}   /* .copy 문단 여백(눈썹·소개용)을 물려받지 않게 */
   html.gate .gate-note .gn-copy{margin-top:8px}
+  html.gate .copy{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}   /* 작업 카드 더미(.peek)가 없으니 그 몫을 줄여 이름부터 아래로 내린다. 사원증 크기는 hero.js가 이름 자리까지의 높이로 정하므로 함께 커진다(10-22 대표님 실기기 판정) */
+  html.gate .copy .mark .mk.sp~.mk{translate:.035em 0}   /* 시각 보정: 둘째 줄 「Kwon」의 K가 첫 줄 C보다 왼쪽으로 보여서 오른쪽으로 민다 */
   .gn-en{font-family:var(--f-disp);font-weight:500;font-size:22px;line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
   .gn-ko{font-family:var(--f-ko);font-size:12.5px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
   .gn-copy{margin-top:6px;display:inline-flex;align-items:center;gap:10px;border:0;background:none;padding:0;cursor:pointer;
@@ -1684,7 +1686,8 @@ window.ticker = (() => {
     const sc = hero.offsetWidth / (hero.getBoundingClientRect().width || hero.offsetWidth);   // 화면 사각형 → 배치 좌표(카메라 배율)
     const h1o = offs(h1, hero), h1Bot = h1o.y + h1.offsetHeight, titleR = h1o.x + rg.getBoundingClientRect().width * sc;
     const nameTop = offs(mk, hero).y, ov = mk.offsetHeight / 2 * 0.6;   // 명함 아래끝이 이름 첫 줄 60%까지 내려와 걸친다(이름이 명함 뒤에 깔린 깊이)
-    const ks = Math.max(0.6, Math.min(0.7 * sr.width / 300, (nameTop + ov - h1Bot - 12 - 22) / 430));   // 22: 제목 아래 보이는 목줄 최소
+    const ks = Math.max(document.documentElement.classList.contains('gate') && sr.height >= 700 ? 0.7 : 0.6, Math.min(   // 휴대폰 안내 화면(gate)은 사원증 하나가 주인공이라 더 크게(10-22 대표님). 짧은 화면(SE)은 이름을 너무 가려 그대로
+0.7 * sr.width / 300, (nameTop + ov - h1Bot - 12 - 22) / 430));   // 22: 제목 아래 보이는 목줄 최소
     hero.style.setProperty('--ks', ks.toFixed(4));
     const half = 150 * ks;
     const ax = Math.max(so.x + sr.width * 0.5, Math.min(titleR + 22 + STRAP_W0 * ks / 2, so.x + sr.width - 12 - half));
