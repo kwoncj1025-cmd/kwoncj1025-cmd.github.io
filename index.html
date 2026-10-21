@@ -561,7 +561,7 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 /* 끝 화면(10-21 대표님 결정 6, macbook.js .end-info): 히어로와 수미상관. 아래를 「Thanks for watching.」 한 줄이 글 영역 폭 그대로 가로지른다(크기는 macbook.js가 폭에 맞춰 넣는다).
    높이는 보이는 높이(macbook.js가 visualViewport로 재는 --vvh)라 휴대폰 Safari 아래 주소 막대 뒤로 큰 줄이 숨지 않는다.
    서체·색·행간·자간은 히어로 「Chanjun Kwon」(.tmark)과 같다. 그 바로 위에 작은 줄과 연락처(16px, 누르면 복사). 맥북과 명함은 그 위 가운데에 남는다 */
-.end-info{position:fixed;left:0;right:0;top:0;height:100vh;height:var(--vvh,100svh);z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0}
+.end-info{position:fixed;left:0;right:0;top:0;height:100vh;height:var(--vvh,100svh);box-sizing:border-box;z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0}
 .end-info .ei-body{grid-row:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(14px,2.2vh,28px)}
 .end-info .ei-lead{margin:0;font:500 clamp(18px,1.5vw,22px)/1.1 var(--f-disp);letter-spacing:-.02em;color:var(--nt-ink)}
 .end-info .ei-list{display:flex;gap:clamp(24px,3vw,48px);margin:0;padding:0;list-style:none}
@@ -3147,12 +3147,15 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2), new THREE.MeshBasicMaterial({ color: 0xc8ccd8 }));
     glow.position.set(0, 1.2, -2.4);
     envScene.add(box, ceil, glow);
+    // 셰이더 미리 짓기(10-21 bizcopilot, 모바일 성능): 맥북이 처음 화면에 들어오는 순간 셰이더 컴파일이 90~100ms 몰렸다(390, CPU 4배).
+    // 보이지 않는 미리 그리기는 맥북이 시야 밖이라 재질이 컴파일되지 않는다. 무대가 멈춰 있는 틈에 renderer.compile로 모든 재질을 짓는다(환경맵이 바뀌면 다시)
+    let pre = 1;
     const pm = new THREE.PMREMGenerator(renderer);
     scene.environment = pm.fromScene(envScene, 0.02).texture;
     // 금속 반사는 스튜디오 HDRI(10-21 대표님 결정)로 바꾼다. 배경에는 쓰지 않고 environment로만. 불러오기 전·실패 때는 위의 자체 방이 대신한다
     new RGBELoader().loadAsync(new URL('macbook/studio.hdr', document.baseURI).href).then(t => {
       t.mapping = THREE.EquirectangularReflectionMapping;
-      scene.environment = pm.fromEquirectangular(t).texture; t.dispose(); pm.dispose(); key = '';
+      scene.environment = pm.fromEquirectangular(t).texture; t.dispose(); pm.dispose(); key = ''; warmed = false; pre = 1;   // 환경맵 크기가 바뀌면 셰이더를 다시 짓는다: 보이기 전에 한 번 더 미리 그린다
     }).catch(() => pm.dispose());
 
     // 모델: 덮개를 힌지 축으로 눕힌 뒤, 화면 아래 끝 가운데를 원점에 둔다
@@ -3282,7 +3285,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       const mbOn = mb.classList.contains('mb-on'), on = mbOn && Stage.state.p > web() - 0.75;
       canvas.style.visibility = on ? '' : 'hidden';
       if (!on && !(mbOn && !warmed)) { key = ''; return; }
-      if (!on) warmed = true;
+      if (!on) { warmed = true; renderer.compile(scene, cam); }   // 보이지 않을 때 셰이더를 미리 짓는다(맥북 직전 p 1.4 끊김, bizcopilot 측정)
       const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
       const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
       const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
@@ -3316,6 +3319,11 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       renderer.render(scene, cam);
     }
     Stage.ticker.add(frame);
+    const idle = window.requestIdleCallback || (f => setTimeout(f, 50));
+    Stage.ticker.add(() => {
+      if (pre !== 1 || !Stage.state.settled) return; pre = 2;
+      idle(() => { if (pre !== 2) return; if (!Stage.state.settled) { pre = 1; return; } try { place(); renderer.compile(scene, cam); } catch (e) {} pre = 0; }, { timeout: 3000 });
+    });
     addEventListener('resize', () => { key = ''; });
     frame();
   }
