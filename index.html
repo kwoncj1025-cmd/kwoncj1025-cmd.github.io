@@ -3397,18 +3397,20 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
 }
 </script>
 <script type="module">
-// 이름 부풀기 3D(card-drop, 10-21 대표님 「일러스트레이터 3D Inflate 수준, 실시간 WebGL 진짜 입체」). 데스크톱(정밀 포인터)만. 휴대폰·움직임 줄이기는 hero.js의 SVG 필터 그대로.
-// 원리: 글자 마스크를 캔버스에 그려 부호 거리장(안쪽 +, 바깥 −, css px)을 CPU에서 한 번 구한다(Felzenszwalb EDT). 높이 h = A·k·sqrt(1 − (1 − d/r)²)는
-// 획 가장자리에서 둥글게 솟고 굵은 곳은 r에서 평평하게 닿는 Illustrator Inflate와 같은 돔이다. 촘촘한 평면을 꼭짓점에서 그 높이만큼 카메라 쪽으로 밀고(원근이라 윤곽도 부푼다),
-// 조각마다 높이에서 법선·주변 가림·위쪽 빛 자기 그림자를 구해 three MeshPhysicalMaterial(클리어코트 고무 광택, 맥북과 같은 studio.hdr)로 비춘다. 바닥 그림자도 거리장에서 그린다.
+// 이름 부풀기 3D(card-drop, 10-21 대표님 「일러스트레이터 3D Inflate 수준」 → 「웹 전용으로는 레이트레이싱」). 데스크톱(정밀 포인터)만. 휴대폰·움직임 줄이기는 hero.js의 SVG 필터 그대로.
+// 원리: 글자 마스크를 캔버스에 그려 부호 거리장(안쪽 +, 바깥 −, css px)을 CPU에서 한 번 구한다(Felzenszwalb EDT). 부푼 글자는 벽(z = 0) 위에 선
+// 높이장 입체다: 높이 h = A·k·sin(π/2 · d/r)라 획 가장자리에서 둥글게 솟고 굵은 곳은 r에서 평평하게 닿는다(Illustrator Inflate의 돔).
+// 셰이더가 이 입체의 3D 거리 하한(SDF)을 구하고 그 위로 실제 광선을 쏜다(레이마칭): 정면 직교 카메라라 1차 광선은 높이장에서 바로 맞고,
+// 맞은 점에서 ① 위쪽 주광으로 그림자 광선(반그림자) ② 반사 광선(다른 글자 → 벽(바탕·납작한 글자) → studio.hdr 순) ③ 법선 방향 주변 가림을 쏜다.
+// 벽에 떨어지는 그림자도 벽 위 점에서 같은 그림자 광선으로 구한다. 광선이 정해져 있어(무작위 표본 없음) 누적 없이 한 프레임에 깨끗하다.
 // 글자마다 부푼 정도 k는 hero.js(weightText 스프링)가 넘긴다. 부푼 글자만 이 캔버스가 그리고(DOM 글자는 숨김), k가 작을 때는 토큰 색과 그대로 섞여 평면 워드마크와 같다.
-// 아무 글자도 부풀지 않으면 캔버스를 감추고 그리지 않는다. three·RGBELoader·hdr는 macbook3d.js와 같은 주소라 한 번만 받는다
+// 아무 글자도 부풀지 않으면 캔버스를 감추고 그리지 않는다(마지막 프레임 이후 일 없음). three·RGBELoader·hdr는 macbook3d.js와 같은 주소라 한 번만 받는다
 const T3 = 'https://cdn.jsdelivr.net/npm/three@0.160.0';
 const fine = matchMedia('(pointer: fine)').matches, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (fine && !reduce && window.WebGL2RenderingContext) {
-  let THREE = null, renderer = null, envTex = null, booting = false, floatLinear = false;
+  let THREE = null, renderer = null, envTex = null, envS = 1, booting = false, floatLinear = false;
   const states = new Map();
-  const MAXL = 24;
+  const MAXL = 24, KN = 512;
 
   // 1차원 제곱 거리 변환(Felzenszwalb & Huttenlocher)
   function edt1(f, n, d, v, z){
@@ -3429,7 +3431,7 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     for (let y = 0; y < h; y++) { const o = y * w; for (let x = 0; x < w; x++) f[x] = g[o + x]; edt1(f, w, d, v, z); for (let x = 0; x < w; x++) g[o + x] = Math.sqrt(d[x]); }
     return g;
   }
-  // 가로·세로 상자 흐림 세 번(가우스 근사). 거리장의 능선(획이 만나는 곳의 주름)과 그림자 경계를 부드럽게 한다
+  // 가로·세로 상자 흐림 세 번(가우스 근사). 거리장의 능선(획이 만나는 곳의 주름)을 부드럽게 한다
   function blur3(a, w, h, r){
     if (r < 1) return a;
     let src = a, dst = new Float32Array(w * h);
@@ -3444,54 +3446,167 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     for (let k = 0; k < 3; k++) { pass(src, dst, true); [src, dst] = [dst, src === a ? new Float32Array(w * h) : src]; pass(src, dst, false); [src, dst] = [dst, src]; }
     return src;
   }
-  const GLSL_FN = `
-    uniform sampler2D uSdf;
-    uniform vec2 uSize; uniform float uR; uniform float uAmp;
-    uniform float uKs[${MAXL}]; uniform float uB[${MAXL + 1}]; uniform int uN;
-    float sdfAt(vec2 uv){ return texture2D(uSdf, uv).r; }
-    float softAt(vec2 uv){ return texture2D(uSdf, uv).g; }
-    float shAt(vec2 uv){ return texture2D(uSdf, uv).b; }
-    float kX(float x){ float k = 0.; for (int i = 0; i < ${MAXL}; i++) { if (i >= uN) break; if (x >= uB[i] && x < uB[i + 1]) k = uKs[i]; } return k; }
-    // 부푼 정도는 칸(x) 경계를 r의 0.6만큼 부드럽게 이어 읽는다(글자 번호 텍스처의 가장자리 잡음이 빗살을 만들었다)
-    float kId(vec2 uv){ float k = 0.; for (int i = -2; i <= 2; i++) k += kX(uv.x + float(i) * uR * .3 / uSize.x); return k / 5.; }
-    uniform float uGrow;
-    // 돔: 부풀수록 글자가 uGrow만큼 살찌고, 가장자리에서 둥글게(사인 꼴, 가장자리 기울기가 유한해 윤곽이 깨끗하다) 솟아 r에서 평평하게 닿는다
-    float dome(float d, float k){ float t = clamp((d + uGrow * k) / uR, 0., 1.); return uAmp * k * sin(t * 1.5708); }
-    float hAt(vec2 uv){ float k = kId(uv); return sdfAt(uv) + uGrow * k <= 0. ? 0. : dome(max(softAt(uv), sdfAt(uv) * .35), k); }
-  `;
+  const floatTex = (data, w, h) => {
+    const t = new THREE.DataTexture(data, w, h, THREE.RGBAFormat, floatLinear ? THREE.FloatType : THREE.HalfFloatType);
+    if (!floatLinear) { const hd = new Uint16Array(data.length); for (let i = 0; i < data.length; i++) hd[i] = THREE.DataUtils.toHalfFloat(data[i]); t.image.data = hd; }
+    t.minFilter = t.magFilter = THREE.LinearFilter; t.needsUpdate = true;
+    return t;
+  };
+
+  // 좌표는 캔버스 css px(아래 왼쪽 원점, y 위), z는 벽에서 보는 사람 쪽
+  const FRAG = `
+    uniform sampler2D uSdf; uniform sampler2D uKt; uniform sampler2D uEnv;
+    uniform vec2 uSize; uniform float uR; uniform float uAmp; uniform float uGrow; uniform float uKmax; uniform float uEnvS; uniform float uDark;
+    uniform vec3 uTok; uniform vec3 uWall; uniform vec3 uLd; uniform vec3 uShadow;
+    varying vec2 vUv;
+    const float LIP = 2.6;            // 높이장 기울기 상한(가장자리 돔 + 칸 사이 k 변화). 거리 하한을 이만큼 나눠 광선이 입체를 뚫지 않게 한다
+    const float AMB = .6, KD = .55;   // 평평한 꼭대기(법선 정면)가 토큰 색과 같아지는 몫: AMB + KD·uLd.z ≈ .96, 나머지 .04는 반사
+    vec3 tokL;
+    float hTop(){ return uAmp * uKmax + .5; }
+    // 칸마다 부푼 정도(R: 칸 경계를 r의 0.6 폭으로 이은 값, G: 그림자가 닿을 만큼 넓게 번진 값)
+    vec2 kq(vec2 p){ return texture2D(uKt, vec2(p.x / uSize.x, .5)).rg; }
+    // 높이장: dd = 발자국 부호 거리(+ 안쪽, 부풀수록 uGrow만큼 살찐다), 반환은 높이
+    float hgt(vec2 p, out float dd){
+      vec3 s = texture2D(uSdf, p / uSize).rgb; float k = kq(p).r;
+      dd = s.r + uGrow * k;
+      if (dd <= 0.) return 0.;
+      float de = s.b + uGrow * k;   // 윤곽 쪽 높이는 조금 흐린 거리로: 날카로운 거리장은 네모난 모서리에서 대각선 주름(별 모양)을 만든다
+      // 흐린 거리로 획이 만나는 능선의 주름을 지우고, 윤곽에서는 발자국 거리로 0에서 시작한다(벽에서 둥글게 솟는다. 절벽이면 테두리에 각진 띠가 생겼다)
+      float t = clamp(max(0., min(max(s.g, s.b * .35) + uGrow * k, de)) / uR, 0., 1.);
+      return uAmp * k * sin(t * 1.5708);
+    }
+    float hgt(vec2 p){ float dd; return hgt(p, dd); }
+    // 3D 거리 하한. 발자국 밖은 가로 거리(입체는 발자국 안에만 있다), 안은 높이 차 / 기울기 상한. 어디서든 가장 높은 꼭대기 위는 그 높이 차
+    float map(vec3 q){
+      float dd; float h = hgt(q.xy, dd);
+      float top = q.z - hTop();
+      return dd <= 0. ? max(-dd, top) : max((q.z - h) / LIP, top);
+    }
+    // 반그림자용 거리: 기울기로 나누지 않은 세로 틈(나누면 평평한 곳에서 2.6배 진하고 계단이 졌다). 걸음은 map으로 안전하게 간다
+    float mapP(vec3 q){
+      float dd; float h = hgt(q.xy, dd);
+      float top = q.z - hTop();
+      // 발자국 밖: 가로 거리와 그 자리 글자가 가질 수 있는 가장 높은 곳 위의 세로 틈 중 큰 쪽(가로 거리만 쓰면 조금 부푼 글자도 다 부푼 글자만큼 진한 그림자를 드리웠다)
+      return dd <= 0. ? max(max(-dd, q.z - uAmp * kq(q.xy).r - .5), top) : max(q.z - h, top);
+    }
+    vec3 nrm(vec2 p){
+      float hx = hgt(p + vec2(1., 0.)) - hgt(p - vec2(1., 0.)), hy = hgt(p + vec2(0., 1.)) - hgt(p - vec2(0., 1.));
+      return normalize(vec3(-hx, -hy, 2.));
+    }
+    // 그림자 광선: 가장 가까이 스친 거리/간 거리로 반그림자를 만든다
+    float sshadow(vec3 ro, vec3 rd){
+      float res = 1., t = 1., ht = hTop();
+      for (int i = 0; i < 32; i++) {
+        vec3 q = ro + rd * t;
+        if (q.z > ht) break;
+        float d = map(q);
+        res = min(res, 3.5 * mapP(q) / t);
+        if (res < .002) break;
+        t += clamp(d, .5, uR * .35);
+      }
+      res = clamp(res, 0., 1.);
+      return res * res * (3. - 2. * res);
+    }
+    // 주변 가림: 법선을 따라 몇 점에서 그 위 높이장까지의 세로 틈을 잰다(벽·이웃 글자가 가까우면 어둡다)
+    float aoc(vec3 p, vec3 n){
+      float o = 0., s = 1.;
+      for (int i = 1; i <= 5; i++) { float h = uR * .13 * float(i); vec3 q = p + n * h; o += max(0., h - (q.z - hgt(q.xy))) * s; s *= .7; }
+      return clamp(1. - 1.4 * o / uR, 0., 1.);
+    }
+    vec3 envc(vec3 d){
+      vec2 uv = vec2(atan(d.x, -d.z) / 6.2832 + .5, .5 - asin(clamp(d.y, -1., 1.)) / 3.1416);
+      return texture2D(uEnv, uv).rgb * uEnvS;
+    }
+    // 벽: 납작한 글자 자리면 토큰 색, 아니면 바탕색
+    vec3 wallAt(vec2 p){ float dd; hgt(p, dd); return dd > 0. ? tokL : uWall; }
+    // 반사 광선이 맞은 다른 글자(그 자리 법선의 빛만, 그 안의 반사는 생략)
+    vec3 letterAt(vec3 q){ vec3 n = nrm(q.xy); return tokL * (AMB + KD * max(dot(n, uLd), 0.)); }
+    vec3 refl(vec3 p, vec3 r){
+      float tw = r.z < 0. ? -p.z / r.z : 1e5, t = .8, ht = hTop();
+      for (int i = 0; i < 40; i++) {
+        if (t > tw) return wallAt((p + r * tw).xy);
+        vec3 q = p + r * t;
+        if (r.z > 0. && q.z > ht) break;
+        if (q.x < 0. || q.y < 0. || q.x > uSize.x || q.y > uSize.y) break;
+        float d = map(q);
+        if (d < .2) return letterAt(q);
+        t += max(d, .3);
+      }
+      return r.z < 0. ? wallAt((p + r * tw).xy) : envc(r);
+    }
+    void main(){
+      vec2 p = vUv * uSize;
+      vec2 kk = kq(p);
+      if (kk.g < .004) discard;
+      tokL = pow(uTok, vec3(2.2));
+      float dd; float h = hgt(p, dd);
+      float k = kk.r;
+      float cov = k < .012 ? 0. : clamp(dd / max(fwidth(dd), 1e-3) + .5, 0., 1.);
+      vec4 outc = vec4(0.);
+      if (cov < 1.) {
+        // 벽: 위쪽 빛으로 그림자 광선 + 글자 밑동의 접지 가림
+        float s = sshadow(vec3(p, .3), uLd);
+        // 접지 가림은 높이에 비례하는 폭·세기로(조금 부푼 글자에 같은 폭을 주면 납작한 글자에 테두리를 두른 것처럼 읽혔다)
+        float kc = min(kk.r, 1.);
+        float contact = (1. - smoothstep(0., uR * .7 * kc + .5, -dd)) * kc * kc * .14;
+        float a = clamp((1. - s) * mix(.26, .5, uDark) + contact, 0., 1.);
+        outc = vec4(uShadow * a, a);
+      }
+      if (cov > 0.) {
+        vec3 P = vec3(p, h), N = nrm(p), V = vec3(0., 0., 1.);
+        float nl = max(dot(N, uLd), 0.);
+        float sh = nl > 0. ? sshadow(P + N * .6, uLd) : 0.;
+        float ao = aoc(P, N);
+        vec3 dif = tokL * (AMB * ao + KD * nl * sh);
+        dif += tokL * tokL * .3 * (1. - sh) * ao;   // 그림자 속으로 번진 빛(고무 속 산란): 회색이 아니라 짙은 토큰 색
+        float F = .04 + .96 * pow(1. - max(N.z, 0.), 5.);
+        vec3 rc = refl(P + N * .6, reflect(-V, N));
+        vec3 Hh = normalize(uLd + V);
+        float spec = pow(max(dot(N, Hh), 0.), 110.) * sh * 1.4;
+        vec3 col = dif * (1. - F) + rc * F + vec3(spec);
+        col = pow(clamp(col, 0., 1.), vec3(1. / 2.2));
+        col = mix(uTok, col, smoothstep(.012, .22, k));
+        outc = vec4(col, 1.) * cov + outc * (1. - cov);
+      }
+      gl_FragColor = outc;
+    }`;
 
   async function boot(){
     if (booting) return; booting = true;
     const [T, { RGBELoader }] = await Promise.all([import(`${T3}/+esm`), import(`${T3}/examples/jsm/loaders/RGBELoader.js/+esm`)]);
     THREE = T;
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: true });
-    renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, premultipliedAlpha: true });
     floatLinear = renderer.extensions.has('OES_texture_float_linear');
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.NoToneMapping;   // 토큰 색을 그대로 지킨다(ACES는 밝은 라벤더를 회색으로 눌렀다)
     renderer.setClearColor(0x000000, 0);
     Object.assign(renderer.domElement.style, { position: 'absolute', pointerEvents: 'none', display: 'none' });
     renderer.domElement.setAttribute('aria-hidden', 'true');
-    const pm = new THREE.PMREMGenerator(renderer);
-    const t = await new RGBELoader().loadAsync(new URL('macbook/studio.hdr', document.baseURI).href);
-    envTex = pm.fromEquirectangular(t).texture; t.dispose(); pm.dispose();
+    // 반사 환경: 등장방형 HDR을 그대로 쓴다(위쪽 줄이 하늘). 밝기는 평균이 1 안팎이 되게 맞춘다
+    const t = await new RGBELoader().setDataType(THREE.FloatType).loadAsync(new URL('macbook/studio.hdr', document.baseURI).href);
+    const { data, width, height } = t.image; let sum = 0;
+    for (let i = 0; i < width * height; i++) sum += data[i * 4] * .2126 + data[i * 4 + 1] * .7152 + data[i * 4 + 2] * .0722;
+    envS = 0.9 / Math.max(1e-3, sum / (width * height));
+    envTex = floatTex(new Float32Array(data), width, height); envTex.wrapS = THREE.RepeatWrapping; t.dispose();
     window.Inflate3D.ok = true;
     // 거리장은 처음 부풀 때 만들면 그 순간 멈칫한다. 첫 화면 이름은 한가할 때 미리 만들어 둔다
     const pre = () => { const m = document.querySelector('.copy .mark'); if (m && m.offsetParent && innerWidth > 820 && !states.has(m)) build(m); };
     (window.requestIdleCallback || setTimeout)(pre, { timeout: 1500 });
   }
 
-  function tokenColor(mark){
-    const m = getComputedStyle(mark).color.match(/[\d.]+/g) || [159, 178, 230];
-    return [m[0] / 255, m[1] / 255, m[2] / 255];
+  const rgbOf = c => { const m = c.match(/[\d.]+/g); return m ? [m[0] / 255, m[1] / 255, m[2] / 255, m[3] === undefined ? 1 : +m[3]] : null; };
+  // 반사에 비칠 벽 색: 끝 화면은 어두운 바탕, 그 밖은 위로 올라가며 처음 칠해진 바탕
+  function wallColor(mark){
+    if (mark.closest('.end-info')) return [0.086, 0.086, 0.106];
+    for (let e = mark; e; e = e.parentElement) { const c = rgbOf(getComputedStyle(e).backgroundColor); if (c && c[3] > 0.5) return c.slice(0, 3); }
+    return [1, 1, 1];
   }
+  const lin = c => c.map(v => Math.pow(v, 2.2));
 
   function build(mark){
     const old = states.get(mark); if (old) dispose(old);
     const fs = parseFloat(getComputedStyle(mark).fontSize) || 100;
     const spans = [...mark.querySelectorAll('.mk')];
     const mw = mark.offsetWidth, mh = mark.offsetHeight, pad = Math.round(fs * 0.22);
-    const W = mw + 2 * pad, H = mh + 2 * pad, S = Math.min(1.25, Math.max(0.8, 1500 / W));   // 거리장 해상도(css px당). 셰이딩은 선형 보간이라 1 안팎이면 충분하다
+    const W = mw + 2 * pad, H = mh + 2 * pad, S = Math.min(1.25, Math.max(0.8, 1500 / W));   // 거리장 해상도(css px당). 선형 보간이라 1 안팎이면 충분하다
     const cw = Math.round(W * S), ch = Math.round(H * S);
     // 기준선: 내용 없는 inline-block의 기준선은 아래 끝이다
     const probe = document.createElement('i'); probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
@@ -3500,108 +3615,71 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
     const cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
     const g = cv.getContext('2d', { willReadFrequently: true });
     g.font = `500 ${fs * S}px "Funnel Display"`; g.textBaseline = 'alphabetic'; g.letterSpacing = '0px';
-    // 칸 i의 글자를 그 칸 자리에 그린다(빈칸은 건너뜀). 셰이더의 uKs[i]가 칸 i의 부푼 정도
-    const bounds = [];
-    spans.slice(0, MAXL).forEach((sp, i) => {
+    // 칸 i의 글자를 그 칸 자리에 그린다(빈칸은 건너뜀). 칸 경계(px)는 부푼 정도 띠(uKt)를 만들 때 쓴다
+    const bpx = [];
+    spans.slice(0, MAXL).forEach(sp => {
       const x0 = sp.offsetLeft - mark.offsetLeft, w = sp.offsetWidth;
-      bounds.push((pad + x0) / W);
+      bpx.push(pad + x0);
       const c = sp.textContent; if (!c.trim()) return;
       const adv = g.measureText(c).width / S;
       const x = pad + x0 + (w - (adv + ls)) / 2;
       g.fillStyle = '#000'; g.fillText(c, x * S, (pad + base) * S);
     });
-    const last = spans[Math.min(MAXL, spans.length) - 1]; bounds.push((pad + last.offsetLeft - mark.offsetLeft + last.offsetWidth) / W);
+    const last = spans[Math.min(MAXL, spans.length) - 1]; bpx.push(pad + last.offsetLeft - mark.offsetLeft + last.offsetWidth);
     const img = g.getImageData(0, 0, cw, ch).data;
     // 안티에일리어싱 덮임(알파)으로 경계를 픽셀 아래까지 잡는다(TinySDF 방식): 계단 없는 윤곽이라 돔 가장자리 법선에 빗살이 생기지 않는다
-    const INF = 1e20, go = new Float32Array(cw * ch), gi = new Float32Array(cw * ch), inside = new Uint8Array(cw * ch);
+    const INF = 1e20, go = new Float32Array(cw * ch), gi = new Float32Array(cw * ch);
     for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
       const a = img[(y * cw + x) * 4 + 3] / 255, j = (ch - 1 - y) * cw + x;   // 텍스처는 아래 줄부터
       go[j] = a === 1 ? 0 : a === 0 ? INF : Math.max(0, 0.5 - a) ** 2;
       gi[j] = a === 1 ? INF : a === 0 ? 0 : Math.max(0, a - 0.5) ** 2;
-      inside[j] = a >= 0.5 ? 1 : 0;
     }
     const dout = edt(go, cw, ch), din = edt(gi, cw, ch);
-    // R: 날카로운 부호 거리(윤곽·안티에일리어싱용), G: 흐린 거리(돔 높이용, 획이 만나는 능선을 지운다), B: 흐린 마스크(바닥 그림자용)
-    const raw = new Float32Array(cw * ch), msk = new Float32Array(cw * ch);
-    for (let i = 0; i < cw * ch; i++) { raw[i] = (din[i] - dout[i]) / S; msk[i] = inside[i]; }
-    const soft = blur3(raw, cw, ch, Math.max(1, Math.round(fs * 0.02 * S)));
-    const shm = blur3(msk, cw, ch, Math.max(1, Math.round(fs * 0.03 * S)));
+    // R: 날카로운 부호 거리(윤곽·안티에일리어싱·광선 거리), G: 흐린 거리(돔 안쪽 높이, 획이 만나는 능선을 지운다), B: 조금 흐린 거리(돔 가장자리, 모서리 주름을 지운다)
+    const raw = new Float32Array(cw * ch);
+    for (let i = 0; i < cw * ch; i++) raw[i] = (din[i] - dout[i]) / S;
+    const soft = blur3(raw, cw, ch, Math.max(1, Math.round(fs * 0.032 * S)));   // 네모난 획 끝의 모서리 주름(대각선 능선)이 지워질 만큼
     const sd = new Float32Array(cw * ch * 4);
-    for (let i = 0; i < cw * ch; i++) { sd[i * 4] = raw[i]; sd[i * 4 + 1] = soft[i]; sd[i * 4 + 2] = shm[i]; sd[i * 4 + 3] = 1; }
-    const sdfT = new THREE.DataTexture(sd, cw, ch, THREE.RGBAFormat, floatLinear ? THREE.FloatType : THREE.HalfFloatType);
-    if (!floatLinear) { const hd = new Uint16Array(sd.length); for (let i = 0; i < sd.length; i++) hd[i] = THREE.DataUtils.toHalfFloat(sd[i]); sdfT.image.data = hd; }
-    sdfT.minFilter = sdfT.magFilter = THREE.LinearFilter; sdfT.needsUpdate = true;
+    const edge = blur3(raw, cw, ch, Math.max(1, Math.round(fs * 0.012 * S)));
+    for (let i = 0; i < cw * ch; i++) { sd[i * 4] = raw[i]; sd[i * 4 + 1] = soft[i]; sd[i * 4 + 2] = edge[i]; }
+    const sdfT = floatTex(sd, cw, ch);
+    const kT = floatTex(new Float32Array(KN * 4), KN, 1);
 
-    const tok = tokenColor(mark);
+    const tok = rgbOf(getComputedStyle(mark).color) || [159 / 255, 178 / 255, 230 / 255];
+    const dark = mark.closest('.end-info') ? 1 : 0;
+    const L = new THREE.Vector3(-0.25, 1, 0.9).normalize();   // 위(조금 왼쪽)에서 오는 장면 빛
     const U = {
-      uSdf: { value: sdfT }, uSize: { value: new THREE.Vector2(W, H) },
-      uR: { value: fs * 0.085 }, uAmp: { value: fs * 0.07 }, uGrow: { value: fs * 0.012 },
-      uKs: { value: new Array(MAXL).fill(0) }, uB: { value: (bounds.concat(new Array(MAXL + 1).fill(2))).slice(0, MAXL + 1) }, uN: { value: Math.min(MAXL, spans.length) },
-      uTok: { value: new THREE.Vector3(...tok) }, uTanE: { value: Math.tan(42 * Math.PI / 180) },
-      uShadow: { value: new THREE.Vector3(0.063, 0.047, 0.118) }, uDark: { value: mark.closest('.end-info') ? 1 : 0 },
+      uSdf: { value: sdfT }, uKt: { value: kT }, uEnv: { value: envTex }, uSize: { value: new THREE.Vector2(W, H) },
+      uR: { value: fs * 0.085 }, uAmp: { value: fs * 0.07 }, uGrow: { value: fs * 0.012 }, uKmax: { value: 0 }, uEnvS: { value: envS }, uDark: { value: dark },
+      uTok: { value: new THREE.Vector3(tok[0], tok[1], tok[2]) }, uWall: { value: new THREE.Vector3(...lin(wallColor(mark))) }, uLd: { value: L },
+      uShadow: { value: new THREE.Vector3(0.063, 0.047, 0.118) },
     };
-    const scene = new THREE.Scene(); scene.environment = envTex;
-    const cam = new THREE.PerspectiveCamera(16, W / H, 1, 20000);
-    cam.position.set(0, 0, (H / 2) / Math.tan(8 * Math.PI / 180)); cam.lookAt(0, 0, 0);
-    const key = new THREE.DirectionalLight(0xffffff, 1.0); key.position.set(-0.25, 1, 0.9); scene.add(key);   // 위(조금 왼쪽)에서 오는 장면 빛
-    const geo = new THREE.PlaneGeometry(W, H);
-    // 바탕색의 일부를 스스로 빛나게(emissive) 두어 평평한 꼭대기가 토큰 색 그대로 보이게 하고, 나머지 몫이 빛에 따라 밝고 어두워진다(풍선 고무의 채도 유지)
-    const baseC = new THREE.Color().setRGB(...tok, THREE.SRGBColorSpace);
-    const mat = new THREE.MeshPhysicalMaterial({ color: baseC.clone().multiplyScalar(0.62), emissive: baseC.clone().multiplyScalar(0.46), roughness: 0.36, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.12, envMapIntensity: 0.85, transparent: true });
-    mat.onBeforeCompile = sh => {
-      Object.assign(sh.uniforms, U);
-      sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', '#include <common>\n' + GLSL_FN + '\nvarying vec2 vUv2;')
-        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvUv2 = uv;');   // 꼭짓점은 움직이지 않는다(밀면 가장자리 삼각형이 늘어나 톱니가 생겼다). 입체는 조각마다 높이장에서
-      sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', '#include <common>\n' + GLSL_FN + '\nuniform vec3 uTok; uniform float uTanE; varying vec2 vUv2; float vMixF; float vA; float vShade;')
-        .replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>
-          float k0 = kId(vUv2), d0 = sdfAt(vUv2) + uGrow * k0;
-          if (d0 < -1.0 || k0 < 0.012) discard;
-          vA = clamp(d0 / max(fwidth(d0), 1e-4) + .5, 0., 1.);
-          vMixF = smoothstep(0.012, 0.22, k0);
-          vec2 px = 1. / uSize;
-          float h0 = hAt(vUv2);
-          // 주변 가림: 둘레가 더 높으면 어둡다
-          float occ = 0.;
-          for (int i = 0; i < 8; i++) { float a = float(i) * .7854; vec2 o = vec2(cos(a), sin(a)) * uR * .9; occ += max(0., hAt(vUv2 + o * px) - h0) / (uR * .9); }
-          float ao = 1. - clamp(occ * .22, 0., .45);
-          // 자기 그림자: 위쪽 빛을 향해 높이장을 짧게 걸어 본다
-          float shd = 1.;
-          for (int i = 1; i <= 10; i++) { float t = float(i) * uR * .22; float hh = hAt(vUv2 + vec2(0., t) * px); shd = min(shd, 1. - clamp((hh - h0 - t * uTanE) * .35 / max(uR * .1, 1.), 0., 1.)); }
-          vShade = ao * mix(.72, 1., shd);`)
-        .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-          { vec2 e = 1. / uSize; float hx = (hAt(vUv2 + vec2(e.x, 0.)) - hAt(vUv2 - vec2(e.x, 0.))) * .5, hy = (hAt(vUv2 + vec2(0., e.y)) - hAt(vUv2 - vec2(0., e.y))) * .5;
-            normal = normalize(vec3(-hx, -hy, 1.)); }`)
-        .replace('#include <clearcoat_normal_fragment_begin>', '#include <clearcoat_normal_fragment_begin>\nclearcoatNormal = normal;')
-        .replace('#include <dithering_fragment>', `#include <dithering_fragment>
-          gl_FragColor.rgb = mix(uTok, gl_FragColor.rgb * vShade, vMixF);
-          gl_FragColor *= vA;`);
-    };
-    const mesh = new THREE.Mesh(geo, mat); mesh.renderOrder = 2; scene.add(mesh);
-    // 바닥 그림자: 위쪽 빛이라 아래로 진다. 부푼 만큼 멀고 흐리고 진하다
-    const smat = new THREE.ShaderMaterial({
-      uniforms: U, transparent: true, depthWrite: false,
-      vertexShader: 'varying vec2 vUv2; void main(){ vUv2 = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
-      fragmentShader: GLSL_FN + `uniform vec3 uShadow; uniform float uDark; varying vec2 vUv2;
-        void main(){
-          // 부푼 정도는 가로로 부드럽게 이어 읽고(칸 경계에서 끊기지 않게), 흐린 마스크를 위쪽 빛 반대(아래)로 민다
-          vec2 px = 1. / uSize; float kn = 0.;
-          for (int i = -4; i <= 4; i++) kn += kX(vUv2.x + float(i) * uR * .5 * px.x); kn /= 9.;
-          if (kn < 0.01) discard;
-          float sm = shAt(vUv2 + vec2(0., uR * .5 * kn) * px);
-          float inside = smoothstep(-.5, .5, sdfAt(vUv2));
-          float a = sm * kn * mix(.2, .45, uDark) * (1. - inside);
-          gl_FragColor = vec4(uShadow * a, a);
-        }`,
+    const mat = new THREE.ShaderMaterial({
+      uniforms: U, fragmentShader: FRAG, blending: THREE.NoBlending, depthTest: false, depthWrite: false,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }',
     });
-    const smesh = new THREE.Mesh(new THREE.PlaneGeometry(W, H), smat); smesh.position.z = -0.5; smesh.renderOrder = 1; scene.add(smesh);
-    const st = { mark, scene, cam, mesh, smesh, U, W, H, pad, key: sizeKey(mark), host: mark.offsetParent };
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat); mesh.frustumCulled = false;
+    const scene = new THREE.Scene(); scene.add(mesh);
+    const st = { mark, scene, cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), mesh, U, W, H, pad, bpx, n: Math.min(MAXL, spans.length), key: sizeKey(mark), host: mark.offsetParent };
     states.set(mark, st);
     return st;
   }
-  function dispose(st){ st.mesh.geometry.dispose(); st.mesh.material.dispose(); st.smesh.geometry.dispose(); st.smesh.material.dispose(); st.U.uSdf.value.dispose(); states.delete(st.mark); }
+  function dispose(st){ st.mesh.geometry.dispose(); st.mesh.material.dispose(); st.U.uSdf.value.dispose(); st.U.uKt.value.dispose(); states.delete(st.mark); }
   const sizeKey = m => [m.offsetWidth, m.offsetHeight, getComputedStyle(m).fontSize, getComputedStyle(m).color, [...m.querySelectorAll('.mk')].map(s => s.style.width).join()].join('|');
+
+  // 칸마다 k를 가로 띠로 펴 둔다(셰이더가 광선 한 걸음마다 칸을 뒤지지 않게). R: r의 0.6 폭으로 이은 값, G: 그림자·접지 가림이 닿는 넓이로 번진 값
+  function putK(st, ks){
+    const tex = st.U.uKt.value, d = tex.image.data, half = !floatLinear, r = st.U.uR.value;
+    const ov = (x, w, l, rr) => Math.max(0, Math.min(x + w / 2, rr) - Math.max(x - w / 2, l)) / w;
+    let km = 0;
+    for (let i = 0; i < st.n; i++) km = Math.max(km, ks[i] || 0);
+    for (let j = 0; j < KN; j++) {
+      const x = (j + 0.5) / KN * st.W; let a = 0, b = 0;
+      for (let i = 0; i < st.n; i++) { const k = Math.max(0, ks[i] || 0); if (!k) continue; a += k * ov(x, r * 0.6, st.bpx[i], st.bpx[i + 1]); b += k * ov(x, r * 4, st.bpx[i], st.bpx[i + 1]); }
+      d[j * 4] = half ? THREE.DataUtils.toHalfFloat(a) : a; d[j * 4 + 1] = half ? THREE.DataUtils.toHalfFloat(b) : b;
+    }
+    tex.needsUpdate = true; st.U.uKmax.value = km;
+  }
 
   let active = null, rebuildT = 0;
   window.Inflate3D = {
@@ -3615,18 +3693,21 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
       let st = states.get(mark);
       if (!any) { if (st && active === st) { renderer.domElement.style.display = 'none'; active = null; } return; }
       if (!st || st.key !== sizeKey(mark)) {
-        // 크기·서체·색이 바뀌면 거리장을 다시 만든다(한 번에 수십 ms). 연달아 바뀌는 동안은 기다린다
+        // 크기·서체·색이 바뀌면 거리장을 다시 만든다(약 300ms). 연달아 바뀌는 동안은 기다린다
         if (st && performance.now() - rebuildT < 250) return;
         rebuildT = performance.now(); st = build(mark);
       }
       const cv = renderer.domElement;
       if (active !== st || cv.parentNode !== st.host) {
-        st.host.appendChild(cv); renderer.setSize(st.W, st.H, false);
+        st.host.appendChild(cv);
+        // 화소 수 상한(약 240만): 넓은 화면에서도 광선 비용이 한 프레임 안에 들게
+        renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1, Math.sqrt(2.4e6 / (st.W * st.H))));
+        renderer.setSize(st.W, st.H, false);
         Object.assign(cv.style, { width: st.W + 'px', height: st.H + 'px' });   // 쌓임은 이름과 같은 층(명함이 앞을 지나가면 명함이 위)
         active = st;
       }
       cv.style.left = (st.mark.offsetLeft - st.pad) + 'px'; cv.style.top = (st.mark.offsetTop - st.pad) + 'px'; cv.style.display = '';
-      const kv = st.U.uKs.value; for (let i = 0; i < MAXL; i++) kv[i] = Math.max(0, ks[i] || 0);
+      putK(st, ks);
       renderer.render(st.scene, st.cam);
     },
     // 검수용: 지금 그림을 그대로 이미지로(같은 작업 안에서 읽어야 그리기 버퍼가 남아 있다)
