@@ -757,7 +757,8 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
     // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수. 카드 → 맥북 2.5 · 맥북 → 맺음 2.5
     seg: [2.2, 2.5, 2.5],
     notchGain: 1.5,          // 노치 휠 한 칸(약 100px)을 진행값으로 적분할 때의 배율. 빠지면 노치 입력이 NaN이 되어 버려진다(10-21 발견)
-    follow: 11,              // p가 target을 따라오는 빠르기(1/초, 지수 보간). 120Hz에서 프레임당 약 0.09
+    follow: 11,
+    maxScreensPerSec: 0.9,   // 마우스·트랙패드 입력을 따라갈 때의 최고 속도(스크롤 화면 장/초). 장면 전환(1~1.5장)이 1.1~1.7초 아래로 줄지 않는다              // p가 target을 따라오는 빠르기(1/초, 지수 보간). 120Hz에서 프레임당 약 0.09
     snapIdleMs: 450,         // 입력이 이만큼 멈추면 스냅을 따진다
     snapWithin: 0.12, snapMaxScreens: 0.25,   // 마지막 이동 방향 쪽 정거장이 0.12 안(그리고 화면 0.25장 안)이면 마저 붙는다. 되돌리는 쪽으로는 끌지 않는다
     snapSec: 0.6,
@@ -793,6 +794,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   const dropGrips = () => { let n = 0; holds.forEach((r, t) => { if (GRIP.has(r)) { holds.delete(t); n++; } }); if (n && !holds.size) { obs.enable(); root.classList.remove('stage-held'); } };
   ['pointerup', 'pointercancel'].forEach(t => addEventListener(t, () => setTimeout(dropGrips, 0), true));
 
+  const FINE = matchMedia('(pointer: fine)');
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const inFree = v => config.free.some(([a, b]) => v > a + 1e-4 && v < b - 1e-4);
   const hashOf = v => { const z = config.free.find(([a, b]) => v > a + 1e-4 && v < b - 1e-4), st = config.stations[z ? z[0] : Math.round(clamp(v, 0, last()))]; return st.hashFn ? st.hashFn() : st.hash; };
@@ -843,7 +845,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   }
 
   function tween(to, dur, ease = easeIO){
-    tw = { from: target, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000, ease };
+    tw = { from: x, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000, ease };
   }
   // 입력: 모든 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
   function input(px){
@@ -856,6 +858,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   // 손을 놓고 450ms: 끝 너머면 되돌리고, 가던 방향의 정거장이 가까우면 마저 붙고, 아니면 그 자리에 둔다(장면 중간 정지 허용).
   // 반대 방향으로는 절대 끌지 않는다: 천천히 한 칸씩 굴리는 사람이 첫 장면에 붙잡히지 않게
   function settleCheck(){
+    if (Math.abs(target - x) > 1e-3) { snapTimer = setTimeout(settleCheck, 80); return; }   // 속도 제한으로 화면이 아직 따라가는 중이면 다 따라간 뒤에 따진다
     state.input = false;
     if (target < 0 || target > last()) { tween(clamp(target, 0, last()), 0.5); return; }
     const n = state.dir > 0 ? Math.ceil(target - 1e-9) : Math.floor(target + 1e-9), d = Math.abs(target - n);
@@ -958,7 +961,11 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
       if (u >= 1) tw = null;
     } else if (x !== target) {
       const k = 1 - Math.exp(-config.follow * dt);
-      x += (target - x) * k;
+      let step = (target - x) * k;
+      // 속도 제한(마우스·트랙패드만): 세게 쓸어도 p는 스크롤 화면 maxScreensPerSec장/초보다 빨리 가지 않는다(10-21 대표님: 장면 전환이 휙휙).
+      // 조각마다 진행값 1의 px가 달라, 화면이 멈춘 짧은 조각은 빨리 지나고 장면이 움직이는 긴 조각만 천천히 흐른다. 손가락은 1:1이라 걸지 않는다
+      if (FINE.matches) { const cap = config.maxScreensPerSec * innerHeight * dt / pieceLen(x, Math.sign(step)); if (Math.abs(step) > cap) step = Math.sign(step) * cap; }
+      x += step;
       if (Math.abs(target - x) < 1e-4) x = target;
     }
     const moving = x !== px;
@@ -2475,6 +2482,9 @@ window.ticker = (() => {
     return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
   };
   const ease = bez(0.55, 0, 0.2, 1);
+  // 카메라 이동 곡선(10-21 대표님: 장면 전환이 휙휙 지나간다). ease는 가운데 기울기가 평균의 약 3배라 그 순간이 순간이동처럼 보였다.
+  // 사인형(최고 약 1.6배)으로 고르게 흐르게 한다. 글·조명 같은 나머지 전환은 ease 그대로
+  const easeCam = bez(0.37, 0, 0.63, 1);
   const LAST = () => Stage.config.stations.length - 1;
   // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 책상이 화면보다 길고, p 1~1+PAN 동안 카메라가 책상을 따라 내려간다(손가락 1:1).
   // 모으기·버튼 걷기·맥북으로 고개 들기는 그 뒤로 밀린다. 데스크톱은 PAN 0이라 그대로다
@@ -2557,7 +2567,7 @@ window.ticker = (() => {
   // 기본 경로: 장면이 아직 비어 있는 구간용
   function path(p){
     if (p <= 1) {                                    // S0→S1: 모서리를 축으로 숙인다(scene-hero가 쓰면 그쪽이 이긴다)
-      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = W.H / 2 + (st.work(0).Tz - W.H / 2) * e, a = th * Math.PI / 180;
+      const e = easeCam((p - 0.18) / 0.6), th = 90 * e, r = W.H / 2 + (st.work(0).Tz - W.H / 2) * e, a = th * Math.PI / 180;
       return { th, Tx: 0, Ty: -r * Math.cos(a), Tz: r * Math.sin(a), d: P() + (st.work().d - P()) * e };
     }
     return Stage.webPath ? Stage.webPath(p) : st.work();
@@ -2591,7 +2601,7 @@ window.ticker = (() => {
     }
     cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
   }
-  Stage.world = { dims: W, station: st, path, toneOf, nightOf, poolOp, sinkOf, measure, ease, bez, last: LAST, pan, lamp };
+  Stage.world = { dims: W, station: st, path, toneOf, nightOf, poolOp, sinkOf, measure, ease, easeCam, bez, last: LAST, pan, lamp };
   // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
   const remeasure = () => { measure(); Stage.refresh(); frame(); };
   measure(); frame();
@@ -3054,7 +3064,7 @@ window.ticker = (() => {
   // 앞서 가면 벽은 0.5에 화면 밖으로 나가고(전 0.62), 떨어지는 명함은 내내 화면 안(위 끝 117px 아래)에 있다
   function camera(t){
     const Wd = Stage.world; if (!Wd) return;
-    const D = Wd.dims, e = Wd.ease((t - 0.18) / 0.52), eT = Wd.ease((t - 0.18) / 0.36), th = 90 * e, aT = Math.PI / 2 * eT;
+    const D = Wd.dims, e = Wd.easeCam((t - 0.18) / 0.52), eT = Wd.easeCam((t - 0.18) / 0.36), th = 90 * e, aT = Math.PI / 2 * eT;
     // 끝값은 work 정거장의 바라보는 점(데스크톱 Dt/2, 모바일은 긴 책상 맨 위 H/2). 같은 값으로 끝나야 p=1에서 카메라가 튀지 않는다
     const W1 = Wd.station.work(), r = D.H / 2 + (W1.Tz - D.H / 2) * eT, d0 = Stage.camera.P(), d1 = W1.d;
     Stage.camera.set(e >= 1 ? Wd.station.work() : { th, Tx: 0, Ty: -r * Math.cos(aT), Tz: r * Math.sin(aT), d: d0 + (d1 - d0) * e });
@@ -3246,6 +3256,7 @@ window.ticker = (() => {
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
   const ST = n => Stage.config.stations.findIndex(x => x.name === n);
   const WEB = () => ST('web'), END = () => Stage.config.stations.length - 1;
+  const easeCam = Wd.easeCam;
   function path(p){
     const w = WEB(), e = END();
     if (p <= w - 1) return Wd.station.work();
@@ -3253,12 +3264,12 @@ window.ticker = (() => {
       const t = p - (w - 1);
       // 모바일(10-21 조율): 책상 맨 아래 카드 더미에서 맥북까지가 화면 반 장보다 멀어, 바라보는 점이 먼저 가면 둘 다 없는 빈 책상이 보였다.
       // 고개(θ)를 먼저 들어 더미를 화면 아래에 둔 채 맥북을 앞쪽에 들이고, 바라보는 점은 뒤따라간다. 데스크톱은 그대로
-      if (W.mobile) { const a = Wd.station.work(), b = cam.bezel(), eA = ease((t - 0.22) / 0.4), c = mix(a, b, eA, ease((t - 0.32) / 0.5));
-        c.Tx = lerp(a.Tx, b.Tx, ease((t - 0.3) / 0.38)); return c; }                   // 맥북이 책상 가운데에서 비켜 있어 좌우는 고개와 같이 옮긴다(옆 가장자리에 반쯤 걸린 프레임 방지)
-      const eT = ease((t - 0.25) / 0.4), eA = ease((t - 0.25) / 0.6);
+      if (W.mobile) { const a = Wd.station.work(), b = cam.bezel(), eA = easeCam((t - 0.22) / 0.4), c = mix(a, b, eA, easeCam((t - 0.32) / 0.5));
+        c.Tx = lerp(a.Tx, b.Tx, easeCam((t - 0.3) / 0.38)); return c; }                   // 맥북이 책상 가운데에서 비켜 있어 좌우는 고개와 같이 옮긴다(옆 가장자리에 반쯤 걸린 프레임 방지)
+      const eT = easeCam((t - 0.25) / 0.4), eA = easeCam((t - 0.25) / 0.6);
       return mix(Wd.station.work(), cam.bezel(), eA, eT);
     }
-    return mix(cam.bezel(), cam.end(), ease((p - w) / 0.35));
+    return mix(cam.bezel(), cam.end(), easeCam((p - w) / 0.35));
   }
   // 화면 빛: 맥북이 드러나며 켜지고(0.55~0.85), 맺음에서 화면이 잠들며 꺼진다(대표님 결정: 덮개는 112° 그대로, 잠들기 곡선은 card-drop macbook.js의 Macbook.onOf)
   const lightOf = p => clamp01((p - WEB() + 0.45) / 0.3) * (window.Macbook && Macbook.onOf ? Macbook.onOf(p) : 1);
