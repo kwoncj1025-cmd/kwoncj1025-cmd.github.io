@@ -608,7 +608,13 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 html:not(.stage-on) .end-info{display:none}
 /* 끝 화면의 맨 위로 버튼: 큰 줄 위, 연락처 줄 끝에 맞춘다(아래끝 높이는 macbook.js가 잰다). 데스크톱은 연락처 목록이 버튼 자리를 비운다 */
 html.end-on .totop{bottom:var(--ei-top-b,20px)}
-@media (min-width:821px){ .end-info .ei-list{margin-right:64px} html.end-on .totop{right:32px} }
+@media (min-width:821px){ .end-info .ei-list{margin-right:168px} html.end-on .totop{right:32px} }
+/* 끝까지 본 사람이 처음으로 돌아가는 단추(10-21 대표님): 맺음에서는 맨 위로 단추 위에 연락처 칸과 같은 머리글을 단다. */
+html.end-on .totop::after{content:"Back to start";position:absolute;right:0;bottom:calc(100% + 12px);white-space:nowrap;pointer-events:none;
+  font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3);transition:color .2s}
+html.end-on .totop:hover::after{color:var(--nt-ink)}
+/* 데스크톱: 단추는 머리글·값 두 줄 높이라 머리글을 단추 왼쪽 가운데에 둔다(위에 두면 연락처 머리글보다 한 줄 높이 뜬다) */
+@media (min-width:821px){ html.end-on .totop::after{bottom:auto;top:50%;right:calc(100% + 14px);translate:0 -50%} }
 </style>
 
 <!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
@@ -2409,6 +2415,8 @@ window.ticker = (() => {
   let ticking = false;
   addEventListener('scroll', () => { if (!ticking) { ticking = true; ticker.once(() => { ticking = false; tone(); topBtn(); }); } }, { passive: true });
   addEventListener('resize', tone);
+  // 해시로 맺음에 바로 들어오거나 한 번에 건너뛰면 scroll 이벤트가 정착 전에 끝난다: 정착할 때 한 번 더 따진다
+  if (STAGE) Stage.on('settle', topBtn);
   tone();
 })();
 </script>
