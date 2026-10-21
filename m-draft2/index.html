@@ -1200,12 +1200,13 @@ window.ticker = (() => {
     // 왼쪽에는 세운 「Selected Work」가 있다: 쉬는 자리는 그 오른쪽에서 시작한다(좁은 화면은 카드 폭의 30%까지 걸친다). 던지면 그 위로도 지나간다
     const mk = tfoot.querySelector('.tmark'), mkR = mk ? mk.offsetLeft + mk.offsetHeight : 0;
     const xMin = mob ? cw * 0.5 - hang : Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + (mobile ? hang : cw * 0.12));   // 오른쪽은 넓은 화면에서도 끝에 걸치게 둔다(명함처럼 화면 밖으로 조금 나간다)
-    const yMin = mob && mk ? mk.offsetTop + mk.offsetHeight + ch * 0.38 : BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - (mob ? FOOT - 4 : 6));
+    const yMin = mob && mk ? mk.offsetTop + mk.offsetHeight + ch * 0.5 + 10 : BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - (mob ? FOOT - 4 : 6));
     const OV = mob ? 0.5 : 0.45, CV = mob ? 0.65 : 0.6, TRY = mob ? 14 : 5;   // 모바일은 큰 카드 몇 장이라 조금 더 겹치고, 후보를 더 뽑아 고르게 놓는다
     const ov = (a, b) => Math.max(0, cw - Math.abs(a.x - b.x)) * Math.max(0, ch - Math.abs(a.y - b.y)) / (cw * ch);
     // 명함이 쉬는 귀퉁이(hero.js Hero.desk.spot, 벽 층 왼쪽 기준 x·책상 깊이 z = 테이블 y)는 비운다: 명함 한 장(카드의 1.04배)에 여백을 더한 사각형
     const sp = window.Hero && Hero.desk && Hero.desk.spot, nx = sp ? sp.x - table.offsetLeft : -1e6, ny = sp ? sp.z : -1e6;
-    const nw = cw * 1.04 * 0.5 + 30, nh = ch * 1.04 * 0.5 + 30;   // 여백 30: 카드 기울기(±6°)로 모서리가 나가는 만큼
+    const nw = mob ? cw * 0.6 + 12 : cw * 1.04 * 0.5 + 30, nh = mob ? cw * 0.8 + 12 : ch * 1.04 * 0.5 + 30;   // 여백 30: 카드 기울기(±6°)로 모서리가 나가는 만큼.
+    // 모바일 세로 구도는 명함이 화면 안 아래 가운데에 크게 기울어 놓인다(card-drop 실측, 390에서 세로 323px = 카드 폭의 1.6배)
     const onCard = p => Math.max(0, nw + cw / 2 - Math.abs(p.x - nx)) * Math.max(0, nh + ch / 2 - Math.abs(p.y - ny)) / (cw * ch);
     const placeOrder = L.map(i => [rnd(i, 8), i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     const spots = new Array(N), placed = [], cover = [];
@@ -1222,7 +1223,7 @@ window.ticker = (() => {
         });
         const mine = placed.reduce((s, q) => s + ov(p, q), 0);
         if (mine > CV) bad += mine - CV;                                 // 새 카드도 40%(모바일 35%) 이상 보이게
-        bad += Math.max(0, onCard(p) - (mob ? 0.25 : 0)) * 3;            // 명함 자리에는 내려앉지 않는다(모바일은 명함 아래로 4분의 1까지 깔릴 수 있다: 명함이 오른쪽 아래 넓게 차지해 카드가 왼쪽에 몰렸다)
+        bad += Math.max(0, onCard(p) - (mob ? 0.35 : 0)) * 3;            // 명함 자리에는 내려앉지 않는다(모바일은 명함이 화면 아래를 넓게 차지해, 책상 위 더미처럼 명함 아래로 3분의 1까지 깔릴 수 있다)
         const score = (n ? dmin : 0) - bad * 20 + rnd(i * 41 + k, 3) * 0.01;   // 조건을 지키는 후보 중 가장 먼 곳
         if (score > bestScore) { bestScore = score; best = p; }
       }
@@ -1246,7 +1247,7 @@ window.ticker = (() => {
     // 그래도 명함 자리에 걸친 카드는 덜 걸친 축 방향으로 밀어 낸다(막히면 다른 축으로)
     cards.forEach(c => { if (!spots[c.i]) spots[c.i] = { x: TW / 2, y: pileY(), r: 0, away: 1 }; });   // 감춘 카드: 더미 자리
     spots.forEach(s => {
-      if (s.away || (mob && onCard(s) <= 0.3)) return;
+      if (s.away || mob) return;   // 모바일은 밀어 내지 않는다: 위로 밀면 「Selected Work」를 덮었다(10-21 card-drop 캡처)
       const ox = nw + cw / 2 - Math.abs(s.x - nx), oy = nh + ch / 2 - Math.abs(s.y - ny); if (ox <= 0 || oy <= 0) return;
       const tx = s.x + (s.x < nx ? -ox : ox), ty = s.y + (s.y < ny ? -oy : oy), okx = tx >= xMin && tx <= xMax, oky = ty >= yMin && ty <= yMax;
       if ((ox <= oy && okx) || !oky) s.x = Math.min(xMax, Math.max(xMin, tx)); else s.y = ty;
@@ -1288,7 +1289,7 @@ window.ticker = (() => {
   const sortedGrid = () => {
     if (!STAGE) return gridSpots();
     // 모바일 세로 구도: 명함이 책상 아래 오른쪽을 차지하므로 격자는 명함 위에서 끝나게 한다(줄어들면 3열이 된다)
-    const sp = MOB() && window.Hero && Hero.desk && Hero.desk.spot, lim = sp ? Math.min(DESK(), sp.z - cw * 1.04 * 0.5 * 1.43 - 12 + FOOT + 8) : DESK();
+    const sp = MOB() && window.Hero && Hero.desk && Hero.desk.spot, lim = sp ? Math.min(DESK(), sp.z - cw * 0.8 - 12 + FOOT + 8) : DESK();
     let g = gridSpots(1); for (let k = 0.98; g.h > lim && k > 0.4; k -= 0.02) g = gridSpots(k);
     g.h = DESK(); return g;
   };
