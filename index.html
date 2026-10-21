@@ -711,9 +711,13 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
     tween(t, clamp(config.goSec[0] + (config.goSec[1] - config.goSec[0]) * (dist - 1) / 2, config.goSec[0], config.goSec[1]));
   }
 
-  // 휠·트랙패드: 노치 휠 한 칸은 진행값의 작은 걸음(약 100px)이고, 트랙패드는 손과 관성이 그대로 p를 민다
+  // 휠·트랙패드: 노치 휠 한 칸은 진행값의 작은 걸음(약 100px)이고, 트랙패드는 손과 관성이 그대로 p를 민다.
+  // ctrl/⌘ + 휠(트랙패드 핀치, 마우스 가로 휠에 확대를 건 설정)과 순수 가로 휠은 무대 입력이 아니고 막지도 않는다: 브라우저 확대가 그대로 돈다(10-21 대표님 제보)
   let lastWheelT = 0;
+  const ownWheel = e => !holds.size && !e.ctrlKey && !e.metaKey && Math.abs(e.deltaY) >= Math.abs(e.deltaX);
   function onWheel(e){
+    if (!ownWheel(e)) return;
+    e.preventDefault();
     const now = performance.now(), gap = now - lastWheelT; lastWheelT = now;
     const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
     const notch = e.deltaMode === 1 || (gap > 60 && Math.abs(d) >= 50 && Number.isInteger(e.deltaY) && e.deltaY % 25 === 0);
@@ -723,9 +727,9 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
   // 터치(아이폰): 끌 수 있는 요소([data-stage-ignore]) 위에서 시작한 손가락은 무대 입력이 아니다.
   // 손가락 이동을 그대로 적분하고, 뗄 때는 속도를 짧게 이어 간다
   let touchIgnored = false, touchDown = false;
+  addEventListener('wheel', onWheel, { passive: false });
   const obs = Observer.create({
-    target: window, type: 'wheel,touch', preventDefault: true, dragMinimum: 3, wheelSpeed: 1,
-    onWheel: self => onWheel(self.event),
+    target: window, type: 'touch', preventDefault: true, dragMinimum: 3,
     onPress: self => { touchIgnored = !!(self.event.target.closest && self.event.target.closest('[data-stage-ignore]')); touchDown = !touchIgnored && !holds.size; },
     onChangeY: self => { if (touchDown && /^(touch|pointer)/.test(self.event.type)) input(-self.deltaY); },
     onRelease: self => {
