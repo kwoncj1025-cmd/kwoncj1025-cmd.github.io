@@ -65,8 +65,13 @@ h1 span{display:block;color:var(--soft)}
    집게 몸통은 명함 위 모서리에서 끝나 명함 뒤로 들어가고, 고리 아랫부분만 구멍 속으로 보인다(목업과 같은 구조) */
 .ring{position:absolute;left:-27.6px;top:-3.3px;width:55.5px;height:85.5px;z-index:1;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:27.6px 3.3px;
   filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.2))}
+/* 고리는 구멍을 꿴다(10-21 대표님 「태그 뒤에 클립이 붙은 걸로 보인다」): 고리 앞다리는 명함 앞에서 내려와 구멍 위 가장자리 안으로 들어가고,
+   바닥 곡선은 구멍 속에 보이며, 구멍 아래 가장자리부터는 명함 뒤로 가려진다(그 아래를 잘라 낸다). 접촉 그림자는 같은 빛(위)의 짧은 그림자.
+   뒤집으면 보는 쪽이 바뀌므로 뒷면용 고리(.sw-b, hero.js가 복제)가 반대쪽 면 앞에 같은 규칙으로 선다 */
 .swivel{position:absolute;left:122.4px;top:-74.1px;width:55.5px;height:85.5px;pointer-events:none;user-select:none;-webkit-user-drag:none;
-  transform:translateZ(-1px);filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.22))}
+  transform:translateZ(1px);backface-visibility:hidden;-webkit-backface-visibility:hidden;clip-path:inset(0 0 1.9px 0);
+  filter:drop-shadow(0 1px 1.2px rgba(13,14,18,.32))}
+.swivel.sw-b{transform:rotateY(180deg) translateZ(1px)}
 
 .card3d{position:absolute;left:-150px;top:70.8px;z-index:2;width:300px;height:430px;perspective:1100px}
 .card{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
@@ -85,11 +90,16 @@ h1 span{display:block;color:var(--soft)}
   background:radial-gradient(40% 30% at var(--sx,30%) var(--sy,20%),rgba(255,255,255,.9),rgba(255,255,255,0) 70%),
     linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.55) 48%,rgba(255,255,255,0) 60%);
   transform:translateX(var(--shine,0%));opacity:var(--glare,.2)}
-/* 목줄이 지나가는 구멍 */
-.slot{position:absolute;left:50%;top:6px;width:46px;height:6px;margin-left:-23px;border-radius:3px;overflow:hidden;z-index:3;background:rgba(13,14,18,.14);
-  box-shadow:0 1px 0 rgba(255,255,255,.9)}
-.slot i{position:absolute;left:-4.6px;top:-80.1px;width:55.5px;height:85.5px;background:url(lanyard/swivel.webp) 0 0/100% 100% no-repeat}
-.slot::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1.5px 2px rgba(13,14,18,.55),inset 0 -1px 1px rgba(13,14,18,.2)}
+/* 목줄이 지나가는 구멍: 칠한 알약이 아니라 뚫린 구멍(.face 마스크, 명함 좌표 x 127~173, y 3.5~9.5). 구멍 속으로 뒤가 보이고,
+   위 가장자리는 안쪽으로 옅은 그늘, 아래 안 벽에는 카드 두께만큼 얇은 밝은 단면이 보인다 */
+.face{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M130 3.5H170A3 3 0 0 1 170 9.5H130A3 3 0 0 1 130 3.5Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M130 3.5H170A3 3 0 0 1 170 9.5H130A3 3 0 0 1 130 3.5Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
+  -webkit-mask-clip:no-clip;mask-clip:no-clip}
+/* 구멍 너머는 명함이 벽에 드리운 그림자 속이라 바탕보다 어둡다(흰 벽이 그대로 비치면 다시 밝은 알약으로 읽혔다) */
+.slot{position:absolute;left:50%;top:3.5px;width:46px;height:6px;margin-left:-23px;border-radius:3px;z-index:3;pointer-events:none;
+  background:linear-gradient(rgba(26,28,40,.5),rgba(26,28,40,.34));
+  box-shadow:inset 0 1.4px 1.6px -0.4px rgba(13,14,18,.55),inset 0 -1px 0 rgba(255,255,255,.95),inset 0 -1.7px 0 rgba(200,204,218,.95)}
+.slot i{display:none}
 
 .row{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
 .photo{border-radius:15px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
@@ -1356,6 +1366,8 @@ window.ticker = (() => {
   const STG = !!(window.Stage && Stage.enabled) && !still;
   const T_CARRY = 0.10;                        // 이때부터 명함은 고리를 떠나 세계 좌표(.carry)에서 그린다
   const card3d = card.parentElement, swivel = card.querySelector('.swivel'), slotIs = [...card.querySelectorAll('.slot i')];
+  // 뒷면용 고리: 뒤집으면 보는 쪽 면 앞에 고리 앞다리가 와야 한다(1-hero.css .sw-b)
+  const swivelB = swivel && (card.querySelector('.swivel.sw-b') || (() => { const c = swivel.cloneNode(); c.classList.add('sw-b'); swivel.after(c); return c; })());
   // D링은 끈에 박음질돼 있어 끈 끝 방향으로 돈다(명함과 따로). 그래서 명함과 함께 도는 hang 밖, 끈 끝(badge)에 둔다.
   // 스위블·집게·명함은 D링 아래 막대(이음, 고정점에서 24.7px)를 축으로 phi만큼 매달린다(10-21 대표님 판정: 집게 앞 꺾임)
   const ringEl = badge.querySelector('.ring'), RING_J = 24.7;
@@ -1435,7 +1447,7 @@ window.ticker = (() => {
       carryOn = on;
       if (on) { carry.appendChild(card3d); Object.assign(card3d.style, { left: '0px', top: '0px', scale: 'none', perspective: 'none', transformStyle: 'preserve-3d', transformOrigin: '0 0' }); card.style.transform = ''; }
       else { hang.appendChild(card3d); ['left', 'top', 'scale', 'perspective', 'transformStyle', 'transformOrigin', 'transform'].forEach(k => { card3d.style[k] = ''; }); slotIs.forEach(i => { i.style.transform = i.style.visibility = ''; }); }
-      clasp.style.display = on ? 'block' : ''; swivel.style.visibility = on ? 'hidden' : ''; carry.style.display = on ? '' : 'none';
+      clasp.style.display = on ? 'block' : ''; swivel.style.visibility = swivelB.style.visibility = on ? 'hidden' : ''; carry.style.display = on ? '' : 'none';
     }
     gate.style.transform = on ? `rotate(${gateDeg(ct).toFixed(2)}deg)` : '';
     if (!on) return null;
@@ -2597,7 +2609,23 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shMat(5, 0.92));
     const shadowWide = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shMat(22, 0.5));
     shadow.rotation.x = shadowWide.rotation.x = -Math.PI / 2; shadowWide.renderOrder = -2; shadow.renderOrder = -1;
-    scene.add(deskPlane, wallPlane, shadowWide, shadow);
+    // 방의 두 면(10-21 대표님: 맥북 뒤에 배경이 있어 3D로 읽히게). 화면 빛은 위·앞에서 내려오므로 책상 면이 벽 면보다 한 단계 밝고,
+    // 두 면이 만나는 모서리에는 옅은 구석 그늘이 진다. 면은 시야 밖까지 넓게 깔아 가장자리가 보이지 않게 한다
+    const BIG = 60000;
+    const deskTone = new THREE.Mesh(new THREE.PlaneGeometry(BIG, BIG), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+    deskTone.material.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 0, 1), 0)];
+    deskTone.rotation.x = -Math.PI / 2; deskTone.renderOrder = -5;
+    const shadeTex = (() => {   // 아래(모서리) 짙음 → 위로 0
+      const c = document.createElement('canvas'); c.width = 4; c.height = 128; const g = c.getContext('2d');
+      const v = g.createLinearGradient(0, 128, 0, 0); for (let i = 0; i <= 8; i++) { const u = i / 8; { const k = Math.round(255 * (1 - u) ** 2.2); v.addColorStop(u, `rgb(${k},${k},${k})`); } }
+      g.fillStyle = v; g.fillRect(0, 0, 4, 128);
+      const t = new THREE.CanvasTexture(c); return t;
+    })();
+    const shadeMat = new THREE.MeshBasicMaterial({ color: 0x02030a, alphaMap: shadeTex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
+    const wallShade = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shadeMat), deskShade = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shadeMat);
+    deskShade.rotation.x = Math.PI / 2;   // 책상 위에 눕혀, 그림 아래 끝(짙음)이 모서리(z = 0) 쪽으로
+    wallShade.renderOrder = deskShade.renderOrder = -4;
+    scene.add(deskTone, wallShade, deskShade, deskPlane, wallPlane, shadowWide, shadow);
     // 화면 빛: 화면과 같은 크기·자리의 면광원(그림자는 없다)
     const area = new THREE.RectAreaLight(0xffffff, 0, 1, 1);
     scene.add(area);
@@ -2630,6 +2658,10 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       // 벽 빛: 맥북 바로 뒤 모서리에서 시작해 덮개 폭의 3.4배 너비·1.5배 높이로 번진다
       wallPlane.scale.set(G.lidW * 3.4, G.lidW * 1.5, 1);
       wallPlane.position.set(bx, G.lidW * 0.75, 0);
+      // 구석 그늘: 모서리에서 벽 위로·책상 앞으로 덮개 폭의 0.22만큼 옅어진다
+      const sh = G.lidW * 0.32;   // (10-21 deploy-prep: 0.22 → 0.32, 구석 그늘이 스크린샷에서 읽히게)
+      wallShade.scale.set(BIG, sh, 1); wallShade.position.set(bx, sh / 2, 0.5);
+      deskShade.scale.set(BIG, sh, 1); deskShade.position.set(bx, 0.5, sh / 2);
       // 벽까지의 거리(덮개 폭 단위)에 따라 벽 빛이 약해진다. 데스크톱(0.9배)은 0.55, 세로 화면(3배 넘게 멀다)은 거의 0
       wallFall = 1 / (1 + (hingeZ / G.lidW) ** 2);
       // 면광원: iframe 가운데에서 화면 법선(앞·위로 22° 누운 면의 앞쪽)을 본다
@@ -2665,7 +2697,10 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       area.intensity = 3.2 * lit;
       deskMat.color.setRGB(mixW(gl[0]), mixW(gl[1]), mixW(gl[2]), THREE.SRGBColorSpace); deskMat.opacity = 0.2 * lit;
       // 벽은 화면을 등지고 있어 책상에서 튄 빛만 받는다: 책상보다 옅다
-      wallMat.color.copy(deskMat.color); wallMat.opacity = 0.18 * lit * wallFall;
+      wallMat.color.copy(deskMat.color); wallMat.opacity = Math.min(1, 0.85 * lit * wallFall);   // (10-21 deploy-prep: 0.42 → 0.85, 벽에 둥근 번짐이 보이게)
+      // 책상 면은 벽보다 한 단계 밝다(빛이 닿는 각도 차). 화면이 꺼져도 방에 남은 빛만큼 아주 옅게 남는다
+      deskTone.material.color.copy(deskMat.color); deskTone.material.opacity = 0.03 + 0.07 * lit;   // (10-21 deploy-prep: 벽과 책상의 밝기 차를 한 단계 더)
+      shadeMat.opacity = 0.5 + 0.3 * lit;
       room.intensity = 0.55;
       const env = 0.3 + 0.3 * lit;
       mats.forEach(m => { if (m !== screenMat) m.envMapIntensity = env; });
