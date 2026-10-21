@@ -289,7 +289,8 @@ html.stage-held .peek{visibility:hidden}   /* 맥북을 써 보는 동안 */
   .tmeta{left:calc(var(--pl) + var(--mk,0px) + 16px)}
   .pile{--cw:min(36vw,170px,24svh)}
   /* 모바일 세로 책상(무대, 10-21 대표님 선택): 카드는 모두 화면 폭의 44%, 「Selected Work」는 책상 위 끝에 가로로 인쇄한다 */
-  html.stage-on .pile{--cw:min(44vw,200px)}
+  html.stage-on .pile{--cw:min(52vw,26svh,240px)}   /* 세로 구도(10-21 19): 책상 한 장에 6~8장을 크게. 나머지는 섞기로 나온다(.away) */
+  html.stage-on .pc.away{visibility:hidden;pointer-events:none}
   html.stage-on .tmark{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto;transform:none;line-height:.86}
   html.stage-on .tmeta{left:var(--pl)}
   .back{padding:12px 10px 9px}
@@ -335,26 +336,26 @@ html.stage-held .peek{visibility:hidden}   /* 맥북을 써 보는 동안 */
   color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
 .copy .mark .mk{display:inline-block;text-align:center;transform-origin:50% 80%}   /* 글자 칸 폭은 hero.js가 기본 굵기 폭으로 고정한다(굵어져도 줄이 출렁이지 않게) */
 @media (max-width:820px){
-  /* 세로 화면(10-21 대표님 실기기 판정 「아까 구조에서 이름만 아래, 확 키워서 화면 끝까지」): 위에 눈썹·제목, 그 아래 목줄에 걸린 명함, 아래에 소개·상태,
-     맨 아래 「Chanjun Kwon」은 바깥 여백 없이 화면 폭 꽉 찬 한 줄(크기는 hero.js가 폭에 맞춘다).
-     목줄은 제목 오른쪽을 지나 내려온다: 고정점이 화면 폭의 64%(hero.js), 제목은 그 왼쪽에 들도록 24px. 줄 길이는 명함 아래끝이 소개 글 바로 위에 오도록 hero.js가 잰다.
-     높이는 Safari 아래 주소 막대를 뺀 보이는 높이(100svh) 기준이라 이름이 막대 뒤에 숨지 않는다 */
+  /* 세로 화면(10-21 23시 대표님 「웹의 3D 경험을 모바일로」, 19_모바일_세로구도): 카메라가 사원증에 다가선 구도. 사원증이 화면 폭의 약 70%로 주인공,
+     큰 이름은 그 뒤에 두 줄(「Chanjun」/「Kwon」)로 깔리고 사원증 아래끝이 첫 줄에 걸친다. 위 구석에 눈썹·제목, 아래 구석에 줄인 소개·상태.
+     명함 축소율(--ks)·목줄 고정점·길이는 hero.js가 제목·이름 자리를 재서 정한다: 줄은 제목 오른쪽을 지나고, 명함 윗끝은 제목 아래, 아래끝은 이름 첫 줄 중간.
+     이름 크기는 core.js가 넓은 줄(「Chanjun」)이 화면 폭에 꽉 차게 맞춘다. 높이는 Safari 아래 주소 막대를 뺀 보이는 높이(100svh) 기준 */
   .stage{min-height:max(540px,100svh)}
   .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto auto;
-    padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(72px + env(safe-area-inset-bottom,0px))}   /* 아래 72px: 작업 카드 더미(.peek)가 이름에 걸리지 않게 */
+    padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(72px + env(safe-area-inset-bottom,0px))}   /* 아래 72px: 작업 카드 더미(.peek)가 글에 걸리지 않게 */
   .copy .eyebrow{grid-column:1;grid-row:1}
-  .copy h1{grid-column:1;grid-row:2;margin-top:12px;font-size:24px;max-width:none}
-  .copy .intro{grid-column:1;grid-row:4;justify-self:start;max-width:none;margin:0 0 8px;font-size:13px}
-  .copy .meta{grid-column:1;grid-row:5;justify-self:start;margin:0 0 14px}
-  .copy .mark{grid-row:6;margin:0 -20px;justify-self:start}
+  .copy h1{grid-column:1;grid-row:2;margin-top:12px;font-size:24px;max-width:none;justify-self:start}
+  .copy .mark{grid-row:4;margin:0 -20px 16px;justify-self:start}   /* 여백 없이 화면 폭 그대로(10-21 대표님 「화면 끝까지 채우게」) */
+  .copy .mark:not(.mfit) .mk.sp{display:block;height:0}   /* 이름 사이 빈칸에서 줄을 나눈다(두 줄). hero.js가 글자 폭을 재는 동안(.mfit)은 한 줄 */
+  .copy .intro{grid-column:1;grid-row:5;justify-self:start;max-width:21em;margin:0 0 8px;font-size:11.5px}
+  .copy .meta{grid-column:1;grid-row:6;justify-self:start;margin:0}
   .copy .intro .ko{display:none}   /* 좁은 화면에선 영문 소개만 남긴다 */
-  .copy .intro .en{font-size:13px}
-  .card3d{top:48.1px;scale:.68;transform-origin:150px 0;--card-sm:13.4px}   /* 명함 작은 글: 9.1px ÷ 축소율 */
-  .ring,.clasp{scale:.68}
+  .copy .intro .en{font-size:11.5px;line-height:1.5;color:var(--ink-2)}
+  .card3d{top:calc(70.8px * var(--ks,.68));scale:var(--ks,.68);transform-origin:150px 0;--card-sm:calc(9.1px / var(--ks,.68))}   /* 명함 작은 글: 9.1px ÷ 축소율 */
+  .ring,.clasp{scale:var(--ks,.68)}
 }
-/* 세로 화면이 길면 명함을 키운다. hero.js가 이 축소율(KS)을 읽는다 */
-@media (max-width:820px) and (min-height:760px){ .card3d{top:52.4px;scale:.74;--card-sm:12.3px} .ring,.clasp{scale:.74} }
-@media (max-width:820px) and (min-height:860px){ .card3d{top:57.3px;scale:.81;--card-sm:11.3px} .ring,.clasp{scale:.81} }
+/* 짧은 세로 화면(SE 등 667 높이): 소개 글을 빼서 그 높이를 사원증에 준다(상태 한 줄은 남긴다) */
+@media (max-width:820px) and (max-height:719px){ .copy .intro{display:none} }
 /* 무대 골격: 문서 스크롤을 없애고 100dvh 무대 하나에 장면 층을 쌓는다.
    stage-off(움직임 줄이기, GSAP 실패)에서는 무대 요소가 보통 블록이라 지금의 문서 스크롤 판이 그대로 보인다 */
 html.stage-on, html.stage-on body{height:100%;overflow:hidden;overscroll-behavior:none}
@@ -558,11 +559,12 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
      범위·연도는 접는다(이름과 한 줄 소개만, 원 사이트 링크는 남긴다) */
   /* 10-21 조율: 눈썹 글은 목록 바로 위에 붙이고, 글 묶음 전체를 화면 위 빈자리의 세로 가운데에 둔다(위 빈 어둠이 1/4쯤 남던 것).
      맥북은 힌지~키보드 첫 줄 자름이 화면 아래끝이라 바닥에 선다 */
-  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr auto auto auto 1fr;
-    padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(100dvh - var(--scr-top,62dvh) + 36px)}
-  html.stage-on body .web-info .wi-ey{grid-row:2}
-  html.stage-on body .web-info .wi-list{grid-row:3;margin-top:12px}
-  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:4;align-self:start;margin-top:clamp(12px,2.4dvh,22px);gap:8px}
+  /* 19 세로 구도(10-21 대표님 승인): 맥북이 위, 글은 몸체 앞 끝 아래 책상 위(--txt-top = scene-web.js가 잰 몸체 앞 끝 + 간격) */
+  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto 1fr;align-content:start;
+    padding:var(--txt-top,60dvh) 20px 0}
+  html.stage-on body .web-info .wi-ey{grid-row:1}
+  html.stage-on body .web-info .wi-list{grid-row:2;margin-top:10px}
+  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:3;align-self:start;margin-top:clamp(10px,2dvh,20px);gap:8px}
   html.stage-on body .web-info .wi-meta{display:none}
   html.stage-on body .web-info .wi-name{font-size:clamp(32px,9vw,40px)}
   html.stage-on body .web-info .wi-line{font-size:13.5px}
@@ -618,6 +620,8 @@ html.end-on .totop::after{content:"Back to start";position:absolute;right:0;bott
 html.end-on .totop:hover::after{color:var(--nt-ink)}
 /* 데스크톱: 단추는 머리글·값 두 줄 높이라 머리글을 단추 왼쪽 가운데에 둔다(위에 두면 연락처 머리글보다 한 줄 높이 뜬다) */
 @media (min-width:821px){ html.end-on .totop::after{bottom:auto;top:50%;right:calc(100% + 14px);translate:0 -50%} }
+/* 820 이하(10-21 조율 19): 머리글이 연락처 값 열 옆에 붙어 흐릿하게 겹쳐 보였다. 글은 빼고 단추만 「Let's make something.」 줄 오른쪽 끝에 둔다 */
+@media (max-width:820px){ html.end-on .totop{bottom:var(--ei-lead-b,var(--ei-top-b,20px))} html.end-on .totop::after{content:none} }
 </style>
 
 <!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
@@ -1071,12 +1075,13 @@ window.ticker = (() => {
       mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
       box.style.setProperty('--mk', mark.offsetHeight + 'px'); return;
     }
-    // 첫 화면 이름: 데스크톱은 좌우 여백 안, 세로 화면(820 이하, 10-21 대표님 「화면 끝까지 채우게」)은 여백 없이 화면 폭 그대로(5-hero-layout.css가 바깥으로 뺀다)
+    // 첫 화면 이름: 데스크톱은 좌우 여백 안, 세로 화면(820 이하, 10-21 대표님 「화면 끝까지 채우게」)은 여백 없이 화면 폭 그대로(5-hero-layout.css가 바깥으로 뺀다). 세로 화면은 두 줄 중 넓은 「Chanjun」 기준
     const cs = getComputedStyle(mark.parentElement), avail = mark.parentElement.clientWidth - (innerWidth <= 820 ? 0 : parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight));
     mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
     mark.dispatchEvent(new Event('mk-fit'));   // 이름 높이가 바뀌면 hero.js가 목줄 길이를 다시 잰다
   });
   fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
+  marks.forEach(m => m.addEventListener('mk-split', fit));   // hero.js가 이름을 글자 칸으로 나눈 뒤(세로 화면은 두 줄) 다시 맞춘다
   // 책상 높이는 table.js가 나중에 정한다(무대: 화면 한 장, 모바일 1.2장). 높이가 바뀌면 세운 제목을 다시 맞춘다
   if (window.ResizeObserver) { let h = 0; const box = document.querySelector('.tfoot'); if (box) new ResizeObserver(() => { if (box.clientHeight !== h) { h = box.clientHeight; fit(); } }).observe(box); }
 })();
@@ -1168,78 +1173,56 @@ window.ticker = (() => {
   // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
   let seed = 0;
   const rnd = (i, s) => { const x = Math.sin(i * 127.1 + (s + seed * 7) * 311.7) * 43758.5453; return x - Math.floor(x); };
-  // 모바일 세로 책상: 두 갈래로 느슨하게 흘려 놓는다. 갈래마다 아래 끝을 따로 재서 짧은 쪽에 놓으므로 줄이 맞지 않고,
-  // 대표작은 가운데에 걸쳐 두 갈래를 끊는다. 가로 흔들림·겹침·기울기(±6°)를 카드마다 달리 해 2열 격자로 읽히지 않게 한다(크기는 모두 같다)
-  const mobileSpots = () => {
-    const mk = tfoot.querySelector('.tmark'), top = mk ? mk.offsetTop + mk.offsetHeight : BAR + 60;
-    const seqIdx = cards.map(c => c.i).filter(i => !FEAT.has(i)), F = [...FEAT];
-    [0, 7, 13].forEach((at, k) => { if (F[k] != null) seqIdx.splice(Math.min(at, seqIdx.length), 0, F[k]); });
-    const D = Math.PI / 180, spots = new Array(N);
-    let hL = top - ch * 0.1, hR = top + ch * 0.32;
-    seqIdx.forEach((i, n) => {
-      const c = cards[i], w = cw * c.sz, h = ch * c.sz;
-      let x, y0;
-      if (FEAT.has(i)) {
-        x = TW / 2 + (rnd(i, 21) - 0.5) * 0.18 * TW;
-        y0 = Math.max(hL, hR) - h * (0.16 + rnd(i, 22) * 0.08);
-        hL = hR = y0 + h * (0.86 + rnd(i, 23) * 0.06);
-        if (rnd(i, 24) < 0.5) hL -= ch * 0.18; else hR -= ch * 0.18;        // 다음 두 장이 같은 높이에서 시작하지 않게
-      } else {
-        const L = hL <= hR, cx = TW * (L ? 0.29 : 0.71) + (rnd(i, 25) - 0.5) * 0.13 * TW;
-        x = Math.min(TW - w * 0.42, Math.max(w * 0.42, cx));                 // 가장자리 밖으로는 카드 폭의 8%까지만 걸친다
-        y0 = (L ? hL : hR) - h * (0.18 + rnd(i, 26) * 0.16);
-        if (L) hL = y0 + h; else hR = y0 + h;
-      }
-      const r = (FEAT.has(i) ? (rnd(i, 27) - 0.5) * 8 : (rnd(i, 27) - 0.5) * 12) * D;
-      spots[i] = { x, y: y0 + h / 2, r };
-    });
-    spots.h = Math.round(Math.max(hL, hR) + ch * 0.95 + FOOT);           // 맨 아래는 명함(오른쪽 아래, 반쯤 걸침)과 작은 글 줄 자리
-    // 명함(Hero.desk.spot, 책상 맨 아래 오른쪽)에 걸친 카드는 비켜 둔다: 왼쪽으로 옮기고, 그래도 걸치면 명함 위로 올린다.
-    // 명함은 카드보다 세로로 길고(300×430) 기울어 놓이므로 상자를 그만큼 키운다(배포본에서 대표작 모서리가 걸쳤다, 10-21 점검)
-    const sp = window.Hero && Hero.desk && Hero.desk.spot;
-    if (sp) {
-      const nx = sp.x - table.offsetLeft, ny = sp.z, nw = cw * 1.04 * 0.5 + 44, nh = cw * 1.04 * 0.5 * 1.43 + 44;
-      cards.forEach(c => {
-        const q = spots[c.i], hw = cw * c.sz / 2, hh = ch * c.sz / 2, hit = () => Math.abs(q.x - nx) < nw + hw && Math.abs(q.y - ny) < nh + hh;
-        if (!hit()) return;
-        const tx = nx - nw - hw; if (tx >= hw * 0.84) q.x = tx; else q.y = Math.min(q.y, ny - nh - hh);
-      });
-    }
-    const zk = c => spots[c.i].y + (rnd(c.i, 10) - 0.5) * ch * 0.6;
-    spots.zc = cards.slice().sort((a, b) => zk(a) - zk(b)); spots.seq = spots.zc.map(c => spots[c.i]);
-    return spots;
+  // 모바일 세로 구도(10-21 대표님: 평면 시안 반려, 같은 3D 무대에 세로 화면 배치. 19_모바일_세로구도): 책상은 세로 화면 한 장이고,
+  // 카드는 적게(6~8장) 크게 놓는다. 나머지는 책상에 두지 않고(.away), 섞기를 누르면 다음 묶음이 나온다(여러 번 섞으면 19장을 다 본다).
+  // 두 갈래로 엇갈려 놓고 갈래마다 아래로 겹쳐 내려간다. 가로 흔들림·겹침·기울기를 카드마다 달리 해 격자로 읽히지 않게 한다(크기는 모두 같다)
+  const MPERM = [...FEAT, ...cards.map(c => c.i).filter(i => !FEAT.has(i)).sort((a, b) => rnd(a, 31) - rnd(b, 31))];
+  let mobSet = null;
+  const mobCount = () => { const mk = tfoot.querySelector('.tmark'), top = mk ? mk.offsetTop + mk.offsetHeight : BAR + 60, room = TH - top - FOOT;
+    return Math.max(6, Math.min(8, 2 * Math.floor(room / (ch * 0.75)))); };
+  // 지금 책상에 놓을 묶음을 정해 둔다(섞을 때마다 다음 묶음). 놓지 않는 카드는 감추고, 쌓는 순서에서 맨 아래로 보낸다
+  const setAway = () => {
+    if (!MOB()) { if (mobSet) { mobSet = null; cards.forEach(c => { c.el.classList.remove('away'); c.el.tabIndex = 0; }); } return; }
+    const n = mobCount(), at = (seed * n) % N; mobSet = new Set(Array.from({ length: n }, (_, k) => MPERM[(at + k) % N]));
+    cards.forEach(c => { const a = !mobSet.has(c.i); c.el.classList.toggle('away', a); c.el.tabIndex = a ? -1 : 0; });
+    order = [...order.filter(c => !mobSet.has(c.i)), ...order.filter(c => mobSet.has(c.i))]; restack();
   };
+  const onDesk = c => !mobSet || mobSet.has(c.i);
   const scatterSpots = () => {
-    if (MOB()) return mobileSpots();
+    // 모바일 세로 구도: 책상 위 묶음(L)만 흩는다. 감춘 카드는 더미 자리에 둔다. 「Selected Work」는 위에 가로로 인쇄되어 있어 그 아래에서 시작한다
+    const mob = MOB(); setAway();
+    const L = cards.filter(onDesk).map(c => c.i);
     // 손으로 던진 듯이: 카드마다 후보 자리를 몇 곳만 뽑아 그중 덜 붐비는 곳을 고른다(후보가 적어 가끔 뭉치고 빈다).
     // 두 카드가 겹치는 넓이는 45% 안, 한 카드를 덮는 넓이의 합은 60% 안이라 어느 그림이든 40% 이상 보인다.
     // 위쪽 BAR는 비우고 아래는 워드마크 위까지 화면 끝까지 흩는다(10-21 대표님: 글자 위로도 지나가게)
     const hang = mobile ? cw * 0.15 : 0;   // 좁은 화면은 카드가 양옆으로 15%까지 걸쳐 나가게 해서 겹침을 줄인다
     // 왼쪽에는 세운 「Selected Work」가 있다: 쉬는 자리는 그 오른쪽에서 시작한다(좁은 화면은 카드 폭의 30%까지 걸친다). 던지면 그 위로도 지나간다
     const mk = tfoot.querySelector('.tmark'), mkR = mk ? mk.offsetLeft + mk.offsetHeight : 0;
-    const xMin = Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + (mobile ? hang : cw * 0.12));   // 오른쪽은 넓은 화면에서도 끝에 걸치게 둔다(명함처럼 화면 밖으로 조금 나간다)
-    const yMin = BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - 6);
+    const xMin = mob ? cw * 0.5 - hang : Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + (mobile ? hang : cw * 0.12));   // 오른쪽은 넓은 화면에서도 끝에 걸치게 둔다(명함처럼 화면 밖으로 조금 나간다)
+    const yMin = mob && mk ? mk.offsetTop + mk.offsetHeight + ch * 0.5 + 10 : BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - (mob ? FOOT - 4 : 6));
+    const OV = mob ? 0.5 : 0.45, CV = mob ? 0.65 : 0.6, TRY = mob ? 14 : 5;   // 모바일은 큰 카드 몇 장이라 조금 더 겹치고, 후보를 더 뽑아 고르게 놓는다
     const ov = (a, b) => Math.max(0, cw - Math.abs(a.x - b.x)) * Math.max(0, ch - Math.abs(a.y - b.y)) / (cw * ch);
     // 명함이 쉬는 귀퉁이(hero.js Hero.desk.spot, 벽 층 왼쪽 기준 x·책상 깊이 z = 테이블 y)는 비운다: 명함 한 장(카드의 1.04배)에 여백을 더한 사각형
     const sp = window.Hero && Hero.desk && Hero.desk.spot, nx = sp ? sp.x - table.offsetLeft : -1e6, ny = sp ? sp.z : -1e6;
-    const nw = cw * 1.04 * 0.5 + 30, nh = ch * 1.04 * 0.5 + 30;   // 여백 30: 카드 기울기(±6°)로 모서리가 나가는 만큼
+    const nw = mob ? cw * 0.6 + 12 : cw * 1.04 * 0.5 + 30, nh = mob ? cw * 0.8 + 12 : ch * 1.04 * 0.5 + 30;   // 여백 30: 카드 기울기(±6°)로 모서리가 나가는 만큼.
+    // 모바일 세로 구도는 명함이 화면 안 아래 가운데에 크게 기울어 놓인다(card-drop 실측, 390에서 세로 323px = 카드 폭의 1.6배)
     const onCard = p => Math.max(0, nw + cw / 2 - Math.abs(p.x - nx)) * Math.max(0, nh + ch / 2 - Math.abs(p.y - ny)) / (cw * ch);
-    const placeOrder = cards.map((c, i) => [rnd(i, 8), i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
+    const placeOrder = L.map(i => [rnd(i, 8), i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     const spots = new Array(N), placed = [], cover = [];
     placeOrder.forEach((i, n) => {
       let best = null, bestScore = -Infinity;
-      for (let k = 0; k < 5; k++) {
+      for (let k = 0; k < TRY; k++) {
         const p = { x: xMin + rnd(i * 41 + k, 1) * (xMax - xMin), y: yMin + rnd(i * 41 + k, 2) * (yMax - yMin) };
         let dmin = Infinity, omax = 0, bad = 0;
         placed.forEach((q, m) => {
           dmin = Math.min(dmin, Math.hypot((p.x - q.x) / cw, (p.y - q.y) / ch));
           const o = ov(p, q); omax = Math.max(omax, o);
-          if (o > 0.45) bad += o - 0.45;
-          if (cover[m] + o > 0.6) bad += cover[m] + o - 0.6;          // 이미 놓인 카드가 너무 가려지지 않게
+          if (o > OV) bad += o - OV;
+          if (cover[m] + o > CV) bad += cover[m] + o - CV;          // 이미 놓인 카드가 너무 가려지지 않게
         });
         const mine = placed.reduce((s, q) => s + ov(p, q), 0);
-        if (mine > 0.6) bad += mine - 0.6;                               // 새 카드도 40% 이상 보이게
-        bad += onCard(p) * 3;                                            // 명함 자리에는 내려앉지 않는다
+        if (mine > CV) bad += mine - CV;                                 // 새 카드도 40%(모바일 35%) 이상 보이게
+        bad += Math.max(0, onCard(p) - (mob ? 0.35 : 0)) * 3;            // 명함 자리에는 내려앉지 않는다(모바일은 명함이 화면 아래를 넓게 차지해, 책상 위 더미처럼 명함 아래로 3분의 1까지 깔릴 수 있다)
         const score = (n ? dmin : 0) - bad * 20 + rnd(i * 41 + k, 3) * 0.01;   // 조건을 지키는 후보 중 가장 먼 곳
         if (score > bestScore) { bestScore = score; best = p; }
       }
@@ -1251,7 +1234,7 @@ window.ticker = (() => {
     for (let it = 0; it < 60; it++) {
       let moved = false;
       for (let a = 0; a < N; a++) for (let b = a + 1; b < N; b++) {
-        const p = spots[a], q = spots[b], o = ov(p, q); if (o <= 0.43) continue;
+        const p = spots[a], q = spots[b]; if (!p || !q) continue; const o = ov(p, q); if (o <= OV - 0.02) continue;
         const ox = cw - Math.abs(p.x - q.x), oy = ch - Math.abs(p.y - q.y), step = 3;
         if (ox / cw < oy / ch) { const d = p.x < q.x ? -step : step; p.x += d; q.x -= d; }
         else { const d = p.y < q.y ? -step : step; p.y += d; q.y -= d; }
@@ -1261,7 +1244,9 @@ window.ticker = (() => {
       if (!moved) break;
     }
     // 그래도 명함 자리에 걸친 카드는 덜 걸친 축 방향으로 밀어 낸다(막히면 다른 축으로)
+    cards.forEach(c => { if (!spots[c.i]) spots[c.i] = { x: TW / 2, y: pileY(), r: 0, away: 1 }; });   // 감춘 카드: 더미 자리
     spots.forEach(s => {
+      if (s.away || mob) return;   // 모바일은 밀어 내지 않는다: 위로 밀면 「Selected Work」를 덮었다(10-21 card-drop 캡처)
       const ox = nw + cw / 2 - Math.abs(s.x - nx), oy = nh + ch / 2 - Math.abs(s.y - ny); if (ox <= 0 || oy <= 0) return;
       const tx = s.x + (s.x < nx ? -ox : ox), ty = s.y + (s.y < ny ? -oy : oy), okx = tx >= xMin && tx <= xMax, oky = ty >= yMin && ty <= yMax;
       if ((ox <= oy && okx) || !oky) s.x = Math.min(xMax, Math.max(xMin, tx)); else s.y = ty;
@@ -1278,7 +1263,7 @@ window.ticker = (() => {
     });
     // 대체로 아래쪽 자리가 위에 오되, 쌓일 순서에 무작위를 섞어 가지런하지 않게. 자리 순서(seq)만 정해 두고
     // 실제 쌓기는 나눠 줄 때 한 장씩 올린다(한꺼번에 다시 쌓으면 밑장이 먼저 튀어나오는 것처럼 보인다)
-    const zk = c => spots[c.i].y + (rnd(c.i, 10) - 0.5) * ch * 0.9;
+    const zk = c => onDesk(c) ? spots[c.i].y + (rnd(c.i, 10) - 0.5) * ch * 0.9 : -1e9;
     spots.zc = cards.slice().sort((a, b) => zk(a) - zk(b)); spots.seq = spots.zc.map(c => spots[c.i]);
     return spots;
   };
@@ -1292,29 +1277,31 @@ window.ticker = (() => {
     }
     const gap = (mobile ? 14 : 28) * k, cols = Math.max(2, Math.floor((xR - xL + gap) / (cwk + gap))), w = cols * cwk + (cols - 1) * gap;
     const x0 = xL + Math.max(0, (xR - xL - w) / 2) + cwk / 2;
-    return { h: BAR + 24 + Math.ceil(N / cols) * (chk + gap) + FOOT + 8, k,
-             at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cwk + gap), y: BAR + 24 + chk / 2 + Math.floor(i / cols) * (chk + gap), r: 0 })) };
+    // 모바일 세로 구도: 책상 위 묶음만 번호순으로 놓는다(감춘 카드는 더미 자리). 위쪽은 가로로 인쇄한 「Selected Work」 아래에서 시작한다
+    const L = cards.filter(onDesk), mk = MOB() && tfoot.querySelector('.tmark'), y0 = mk ? mk.offsetTop + mk.offsetHeight + 16 : BAR + 24;
+    return { h: y0 + Math.ceil(L.length / cols) * (chk + gap) + FOOT + 8, k,
+             at: cards.map(c => { const n = L.indexOf(c); return n < 0 ? { x: TW / 2, y: pileY(), r: 0 } : { x: x0 + (n % cols) * (cwk + gap), y: y0 + chk / 2 + Math.floor(n / cols) * (chk + gap), r: 0 }; }) };
   };
-  // 무대의 책상은 화면 한 장(모바일 1.2장)이라 길어질 수 없다. 정렬 격자가 넘치면 카드를 그만큼 줄여 한 장 안에 담는다
-  let mobH = 0;
-  const DESK = () => MOB() && mobH ? mobH : Math.round(innerHeight * (innerWidth <= 820 ? 1.2 : 1));
+  // 무대의 책상은 화면 한 장이라 길어질 수 없다(모바일 세로 구도도 한 장). 정렬 격자가 넘치면 카드를 그만큼 줄여 한 장 안에 담는다
+  const DESK = () => Math.round(innerHeight);
   let K = 1;
   const sortedGrid = () => {
     if (!STAGE) return gridSpots();
-    let g = gridSpots(1); for (let k = 0.98; g.h > DESK() && k > 0.4; k -= 0.02) g = gridSpots(k);
+    // 모바일 세로 구도: 명함이 책상 아래 오른쪽을 차지하므로 격자는 명함 위에서 끝나게 한다(줄어들면 3열이 된다)
+    const sp = MOB() && window.Hero && Hero.desk && Hero.desk.spot, lim = sp ? Math.min(DESK(), sp.z - cw * 0.8 - 12 + FOOT + 8) : DESK();
+    let g = gridSpots(1); for (let k = 0.98; g.h > lim && k > 0.4; k -= 0.02) g = gridSpots(k);
     g.h = DESK(); return g;
   };
 
   // 흩은 상태도 화면보다 위아래로 넉넉하게(화면의 1.3배·모바일 1.7배, 정렬 격자보다 길지는 않게). 정렬과 높이 차이가 덜 나게 한다
-  const scatterH = () => { table.style.height = ''; measure(); K = 1;
-    if (MOB()) mobH = mobileSpots().h;                 // 모바일 세로 책상: 카드가 다 놓이는 길이
+  const scatterH = () => { table.style.height = ''; measure(); K = 1; setAway();
     const h = STAGE ? DESK() : Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * (mobile ? 1.7 : 1.3))));
     table.style.height = h + 'px'; TH = h; };
   // 처음엔 테이블 아래 가운데에 한 벌로 쌓여 있다가, 화면에 들어오면 흩은 자리로 던져진다
   scatterH();
   // 한 벌이 놓이는 자리: 데스크톱은 책상 62% 높이. 모바일 세로 책상은 명함이 떨어지는 맨 위 화면 안이고, 책상을 다 내려간 뒤(p>1) 모을 때는 맨 아래 화면 가운데
-  const pileY = () => MOB() ? Math.min(TH * 0.62, innerHeight * 0.56) : TH * 0.62;
-  const gatherY = () => MOB() && Stage.state.p > 1.001 ? TH - innerHeight * 0.5 : pileY();
+  const pileY = () => MOB() ? TH * 0.56 : TH * 0.62;
+  const gatherY = pileY;
   order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = pileY() + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
   restack();
   const FR = 0.935, FRR = 0.88;
@@ -1634,9 +1621,28 @@ window.ticker = (() => {
 
   // 첫 화면 좌표의 자리(카메라가 기울어 있어도 맞도록 화면 사각형 대신 배치 값으로 잰다)
   const offs = (el, root) => { let x = 0, y = 0; for (let n = el; n && n !== root; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; };
+  // 세로 화면(10-21 23시, 19_모바일_세로구도): 사원증을 화면 폭의 약 70%로 키우되, 윗끝은 제목 아래·아래끝은 이름 첫 줄 중간에 들도록 줄인다(짧은 화면).
+  // 목줄 고정점은 제목 오른쪽 끝을 비켜 지나게 오른쪽으로, 명함 오른쪽 끝이 화면 안에 남는 데까지. 축소율은 CSS 변수 --ks로 명함·고리에 건다
+  let mob = null;
+  function mobileFit(so, sr){
+    hero.style.removeProperty('--ks'); mob = null;
+    if (hero.offsetWidth > 820) return;
+    const h1 = hero.querySelector('.copy h1'), mk = hero.querySelector('.copy .mark');
+    if (!h1 || !mk) return;
+    const rg = document.createRange(); rg.selectNodeContents(h1);
+    const sc = hero.offsetWidth / (hero.getBoundingClientRect().width || hero.offsetWidth);   // 화면 사각형 → 배치 좌표(카메라 배율)
+    const h1o = offs(h1, hero), h1Bot = h1o.y + h1.offsetHeight, titleR = h1o.x + rg.getBoundingClientRect().width * sc;
+    const nameTop = offs(mk, hero).y, ov = mk.offsetHeight / 2 * 0.6;   // 명함 아래끝이 이름 첫 줄 60%까지 내려와 걸친다(이름이 명함 뒤에 깔린 깊이)
+    const ks = Math.max(0.6, Math.min(0.7 * sr.width / 300, (nameTop + ov - h1Bot - 12 - 22) / 430));   // 22: 제목 아래 보이는 목줄 최소
+    hero.style.setProperty('--ks', ks.toFixed(4));
+    const half = 150 * ks;
+    const ax = Math.max(so.x + sr.width * 0.5, Math.min(titleR + 22 + STRAP_W0 * ks / 2, so.x + sr.width - 12 - half));
+    mob = { ax, h1Bot, cardBot: nameTop + ov };
+  }
   function resize(){
     const so = offs(stage, hero), r = { width: hero.offsetWidth, height: hero.offsetHeight }, sr = { width: stage.offsetWidth, height: stage.offsetHeight };
-    const nUP = Math.round(sr.height * 0.5), nAX = so.x + sr.width * (r.width <= 820 ? 0.64 : 0.5), nAY = so.y - 14 - nUP;   // 세로 화면은 제목 오른쪽으로 줄이 지나게 64%
+    mobileFit(so, sr);
+    const nUP = Math.round(sr.height * 0.5), nAX = mob ? mob.ax : so.x + sr.width * 0.5, nAY = so.y - 14 - nUP;
     if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
     KS = parseFloat(getComputedStyle(card.parentElement).scale) || 1; STRAP_W = STRAP_W0 * KS;
     CT = parseFloat(getComputedStyle(card.parentElement).top) || 70.8;
@@ -1645,12 +1651,10 @@ window.ticker = (() => {
     // 보이는 길이(옛 16마디 식 그대로). 세로 화면(820 이하, 10-21 대표님 실기기 판정): 명함 아래끝이 소개 글 28px 위에 오도록 가장 길게,
     // 단 명함 윗끝은 제목 아래 16px보다 내려간다(명함이 제목 오른쪽 끝과 가로로 겹치므로). 이름 크기는 core.js가 화면 폭에 맞춘다
     LV = 15 * Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / 15));
-    if (W <= 820) {
-      const h1 = hero.querySelector('.copy h1'), it = hero.querySelector('.copy .intro');
-      if (h1 && it) {
-        const top0 = so.y - 14 + CT, lo = offs(h1, hero).y + h1.offsetHeight + 16 - top0, hi = offs(it, hero).y - 28 - 430 * KS - top0;
-        LV = Math.round(Math.max(36, lo, Math.min(hi, SH * 0.42)));
-      }
+    if (mob) {
+      // 명함 윗끝(top0 + LV)은 제목 아래 12px보다 아래, 아래끝은 이름 첫 줄에 걸치는 자리(mob.cardBot)
+      const top0 = so.y - 14 + CT, lo = mob.h1Bot + 12 - top0, hi = mob.cardBot - 430 * KS - top0;
+      LV = Math.round(Math.max(22, lo, hi));
     }
     seg0 = (LV + UP) / (N - 1); if (!drag) seg = seg0;
     const a = anchor();
@@ -1779,7 +1783,12 @@ window.ticker = (() => {
   // 왼쪽은 세로 「Selected Work」 인쇄를 덮어 조율 결정으로 옮김). 깊이는 「@chanjun.kwon」 줄 위
   // 세로 화면(820 이하)은 책상이 화면보다 길고, 맨 아래 「@chanjun.kwon」 줄 위에 명함 자리가 비어 있다(table.js). 데스크톱과 같이 그 줄 바로 위에 멈춘다.
   // 더미(맨 위 화면 안)를 친 뒤 책상을 따라 길게 미끄러져 내려가고, 카메라가 책상을 내려가면(p 1~1.18) 그 자리에서 다시 만난다
-  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta });
+  // 세로 화면(10-21 조율, 19 세로 구도): 책상이 화면 폭과 같아 오른쪽 끝에 걸치면 반 넘게 잘린다. 기울어진 명함의 가로 반폭만큼 들여 오른쪽 끝이 화면 안 16px에 들게
+  const sideCorner = g => {
+    if (innerWidth > 820) return { x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta };
+    const a = desk.b + 0.14, bh = g.hw * Math.abs(Math.cos(a)) + g.hh * Math.abs(Math.sin(a));
+    return { x: g.tl + g.TW - 16 - bh, z: g.zMeta };
+  };
   const target = g => {
     if (!desk.moved) { const c = sideCorner(g); desk.x = c.x; desk.z = c.z; }
     // 카드를 모을 때도 같은 귀퉁이로 밀린다(사용자가 옮겨 둔 명함만 움직인다). 밀리며 살짝 돈다
@@ -1792,12 +1801,12 @@ window.ticker = (() => {
   // 데스크톱: 맥북 왼쪽 옆(몸체 왼쪽 끝에서 덮개 폭의 0.16만큼, 10-21 끝 화면에서 둘을 한 덩어리로 모으며 0.3에서 좁힘 떨어지고, 깊이는 키보드면 가운데 줄).
   // 세로 화면(820 이하): 옆에 두면 맥북이 잘리므로 맥북 앞 책상(몸체 앞 끝에서 덮개 폭의 0.18 앞, 가운데에서 살짝 왼쪽)
   // 끝 화면(10-21 조율: 명함이 화면 높이 1/12로 작아 맥북과 한 묶음으로 읽히지 않음): 데스크톱은 맺음 자리에서 명함을 1.6배로 키워 둔다.
-  // 어둠에 잠긴 동안 자리를 옮길 때 같이 바뀌어 움직임은 보이지 않는다. 세로 화면은 이미 맥북 앞 가까이에 있어 그대로
-  const endScale = () => innerWidth <= 820 ? 1 : 1.6;
+  // 어둠에 잠긴 동안 자리를 옮길 때 같이 바뀌어 움직임은 보이지 않는다. 세로 화면(10-21 23시 세로 구도)은 맥북 아래 한 줄로 쌓는 구도라 1.3배, 가운데 가까이
+  const endScale = () => innerWidth <= 820 ? (innerHeight < 760 ? 1 : 1.3) : 1.6;   // 짧은 세로 화면(667)은 1.3배면 「Let's make something.」에 5px까지 붙었다
   function endSpot(g){
     const wg = Stage.webGeo; if (!wg || !wg.G.lidW) return null;
     const G = wg.G; g = Object.assign({}, g, { hw: g.hw * endScale(), hh: g.hh * endScale() });
-    if (innerWidth <= 820) return { x: G.cx - 0.12 * G.lidW, z: G.zh + G.baseD + 0.18 * G.lidW + g.hh };
+    if (innerWidth <= 820) return { x: G.cx - 0.05 * G.lidW, z: G.zh + G.baseD + 0.16 * G.lidW + g.hh };
     return { x: G.cx - G.lidW / 2 - 0.16 * G.lidW - g.hw, z: G.zh + 0.42 * G.baseD };
   }
   // ct에 대한 순수 함수: 고리에서 빠짐(0.15~0.20) → 자유 낙하(0.20~0.30) → 아래 모서리를 축으로 앞으로 엎어짐(0.30~0.46)
@@ -2301,8 +2310,9 @@ window.ticker = (() => {
   function weightText(mark, isOn, cardOn, wave){
     if (!mark || reduce) return;
     const W0 = 500, W1 = 600, txt = mark.textContent; mark.textContent = '';
-    const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = 'mk'; e.textContent = ch === ' ' ? '\u00a0' : ch; mark.appendChild(e); return { e, k: 0, v: 0, shown: '', f: ch.trim() ? inflateFilter() : null }; });
+    const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = ch === ' ' ? 'mk sp' : 'mk'; e.textContent = ch === ' ' ? '\u00a0' : ch; mark.appendChild(e); return { e, k: 0, v: 0, shown: '', f: ch.trim() ? inflateFilter() : null }; });
     const fit = () => {
+      mark.classList.add('mfit');   // 재는 동안은 한 줄(세로 화면의 줄 나눔 빈칸도 글자 한 칸으로 잰다)
       ls.forEach(l => { l.e.style.width = ''; l.e.style.fontVariationSettings = ''; l.e.style.filter = ''; l.e.style.transform = ''; });
       // 칸 폭은 글자 크기(em) 기준으로 둔다: 화면 폭(14vw)이 바뀌어도 다시 잴 필요가 없고, 잰 시점의 화면 크기에 묶이지 않는다
       const fs = parseFloat(getComputedStyle(mark).fontSize) || 1, k = mark.offsetWidth / (mark.getBoundingClientRect().width || mark.offsetWidth || 1);
@@ -2311,8 +2321,10 @@ window.ticker = (() => {
       mark.textContent = txt; const nat = mark.offsetWidth; mark.textContent = ''; ls.forEach(l => mark.appendChild(l.e));   // 같은 요소에서 통짜 폭을 잰다
       const f = sum && nat ? nat / sum : 1;
       ls.forEach((l, i) => { l.e.style.width = (ws[i] * f / fs).toFixed(4) + 'em'; });
+      mark.classList.remove('mfit');
       ls.forEach(l => { l.shown = ''; });
       mark.dispatchEvent(new Event('mk-fit'));   // 칸 폭이 바뀌었다(글꼴 도착 등): 폭에 맞춰 크기를 정하는 쪽이 다시 잰다
+      mark.dispatchEvent(new Event('mk-split'));   // 글자를 칸으로 나눴다: 세로 화면은 빈칸에서 두 줄이 되므로 core.js가 크기를 다시 맞춘다
       kick();
     };
     let px = 0, py = 0, haveP = false, raf = 0, idle = 0, lx = NaN, ly = NaN, lt = 0, glOn = false;
@@ -2527,7 +2539,7 @@ window.ticker = (() => {
     hero: () => ({ th: 0, Tx: 0, Ty: -W.H / 2, Tz: 0, d: P() }),
     // 모바일 세로 책상은 배율 1(d = P)로 책상 맨 위에서 시작해 맨 아래까지 내려간다. 인자 u(0~1)를 주면 그 자리, 없으면 지금 p의 자리
     work: u => {
-      if (!pan()) return { th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() * (W.mobile ? 1.2 : 1) };
+      if (!pan()) return { th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() };   // 모바일 세로 구도도 책상 한 장을 배율 1로 내려다본다(10-21 19)
       const k = u == null ? panU(Stage.state.p) : u;
       return { th: 90, Tx: 0, Ty: 0, Tz: W.H / 2 + k * (W.Dt - W.H), d: P() };
     },
@@ -2771,6 +2783,9 @@ window.ticker = (() => {
     // 맨 위로 버튼(totop.js, 끝에서 보인다)이 큰 줄 끝 마침표를 덮지 않게, 끝 화면에서는 연락처 줄 높이로 올린다(6-macbook.css html.end-on .totop)
     const eb = endInfo.querySelector('.ei-body'), ev = eb.querySelector('.ei-list li:last-child .ei-v');
     document.documentElement.style.setProperty('--ei-top-b', Math.round(innerHeight - (ev || eb).getBoundingClientRect().bottom - 4) + 'px');
+    // 820 이하: 머리글 없이 단추만 「Let's make something.」 줄 오른쪽 끝에 맞춘다(단추 40px의 세로 가운데 = 그 줄 가운데, 10-21 조율 19)
+    const lr = eb.querySelector('.ei-lead').getBoundingClientRect();
+    document.documentElement.style.setProperty('--ei-lead-b', Math.round(innerHeight - (lr.top + lr.bottom) / 2 - 20) + 'px');
   };
   fitMark(); addEventListener('resize', fitMark); if (window.visualViewport) visualViewport.addEventListener('resize', fitMark); document.fonts.load('500 1em "Funnel Display"').then(fitMark, () => {});
   const endOf = p => { const e = Stage.config.stations.length - 1; return Math.max(0, Math.min(1, (p - (e - 0.35)) / 0.25)); };
@@ -3032,7 +3047,7 @@ window.ticker = (() => {
     const r = mb.querySelector('.mb-screen').getBoundingClientRect();
     const x = Math.min(innerWidth - 20, Math.max(20, r.left + r.width / 2));
     // 마우스로 쓰는 동안은 화면 바로 아래(덮개 턱), 터치는 늘 화면 바로 위(아래는 덮개 턱이 얇아 키보드에 얹힌다, 375 실측)
-    const below = using && HOVER.matches, y = below ? Math.min(innerHeight - 10, r.bottom + 14) : Math.max(10, r.top - 8);
+    const below = using && HOVER.matches, y = below ? Math.min(innerHeight - 10, r.bottom + 14) : Math.max(10, r.top - (narrow() ? 26 : 8));   // 위(820 이하): WebGL 덮개 테두리가 DOM 화면보다 약 16px 위까지 그려진다(19 세로 구도에서 글이 테두리에 걸렸다)
     const key = [x, y, below ? 1 : 0].map(v => v.toFixed(1)).join(); if (key === noteKey) return; noteKey = key;
     note.style.transform = `translate3d(calc(${x.toFixed(1)}px - 50%),calc(${y.toFixed(1)}px - ${below ? 0 : 100}%),0)`; note.classList.add('on');
   }
@@ -3169,9 +3184,9 @@ window.ticker = (() => {
     mb.style.setProperty('--gap', Math.round(G.Wi * 0.06) + 'px');
     mb.style.setProperty('--ls', (G.Wi / (W.mobile ? 1280 : 1728)).toFixed(5));   // 화면 속 서비스의 논리 해상도 배율(stage.css .mb-pane iframe)
     Object.assign(base.style, { width: G.lidW + 'px', height: G.baseD + 'px' });
-    // 모바일 글 격자는 화면 위 빈자리에 놓는다: 메뉴 막대 위끝(뷰포트 y)을 알려 준다(6-macbook.css --scr-top)
+    // 모바일 글 격자는 맥북 몸체 앞 끝 아래에 놓는다: 그 뷰포트 y를 알려 준다(6-macbook.css --txt-top)
     if (W.mobile) mobDlv = mobPick();
-    if (info) { if (W.mobile) info.style.setProperty('--scr-top', Math.round(W.H / 2 + mobDl() - G.Hi / 2 - G.Wi * 0.0222) + 'px'); else info.style.removeProperty('--scr-top'); }
+    if (info) { if (W.mobile) info.style.setProperty('--txt-top', txtTop + 'px'); else info.style.removeProperty('--txt-top'); }
     Object.assign(lid.style, { width: G.lidW + 'px', height: G.lidH + 'px', top: -G.lidH + 'px' });
     setLid(OPEN);
   }
@@ -3217,14 +3232,8 @@ window.ticker = (() => {
       return { th: 80, Tx: (gl + gr) / 2, Ty: 0, Tz: (e.z + G.zh) / 2 + EZ * W.H * k, d };
     },
   };
-  // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리 mobDl(배율 1이라 px 그대로). measure가 정한다.
-  //  · 낮은 화면: 화면 아래끝이 힌지와 키보드 첫 줄 사이(힌지에서 화면 폭의 5.8%)를 자른다
-  //  · 키 큰 휴대폰(보이는 높이 > 폭 1.9배, 10-21 조율 「나」): 맥북을 올려 키보드 윗줄 몇 개가 보이게 하고, 화면 아래끝이 키보드 줄 사이 틈을 자르게 한다.
-  //    틈 자리는 힌지에서 몸체를 따라 잰 거리(덮개 폭 비율, 390·430 렌더에서 실측 보정): 기능키 줄 뒤 0.122 · 숫자 줄 0.178 · Q 줄 0.233. 윗줄 세 개(기능키·숫자·Q)까지만 보인다.
-  //    투영(stage.js 카메라: rotateX(−θ), 거리 P, θ = 덮개 기울기)에서 몸체 위 점 u의 화면 y = H/2 + (R + u·sinθ)·P/(P − u·cosθ), R = 화면 가운데→힌지(덮개 위) + mobDl.
-  //    그 y가 H가 되는 R을 풀고, 위 글 묶음의 위아래 여백이 0.11H 안에 들 때까지 줄을 늘린다(최대 Q 줄까지)
+  // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리 mobDl(배율 1이라 px 그대로). measure가 mobPick으로 정한다
   const EW = 0.5, EH = 1.35 / 0.55, EZ = 0.08;   // 끝 화면 덩어리 폭 비율 · 세로 자리
-  const KB_GAPS = [0.122, 0.178, 0.233];
   let mobDlv = 0;
   // 화면 아래를 가리는 높이(10-21 대표님 실기기 판정 「아래로 많이 처짐」): iOS 26 Safari는 주소 막대가 페이지 위에 떠 있어 innerHeight가 막대 뒤까지 잰다.
   // 100svh와의 차이 · safe-area 아래 · iOS 26 Safari(홈 화면 앱 제외)의 떠 있는 막대 몫(88px) 중 큰 값. ?obs=90 으로 흉내 낼 수 있다
@@ -3237,20 +3246,25 @@ window.ticker = (() => {
     const ios26 = /iPhone/.test(ua) && v >= 26 && !/CriOS|FxiOS|EdgiOS/.test(ua) && !navigator.standalone;
     return Math.max(0, W.H - svh, sb, ios26 ? 88 : 0);
   }
+  // 19 모바일 세로 구도(10-21 대표님 승인 「같은 3D 무대, 세로 화면용 카메라·배치만」): 맥북 화면이 위쪽에서 폭의 92%를 채우고(배율 1),
+  // 이름·목록·소개는 몸체 앞 끝 아래 책상 위에 놓는다. 맥북과 글 묶음 전체를 보이는 높이(주소 막대 제외) 안에서 세로 가운데에 둔다.
+  // 몸체 앞 끝(힌지에서 몸체를 따라 u = 몸체 깊이)의 화면 y = H/2 + (r + mobDl + u·sinθ)·P/(P − u·cosθ)
+  let txtTop = 0;
   function mobPick(){
-    const r = G.Hi / 2 + G.chin, Hv = W.H - obscuredBottom();   // Hv: 실제로 보이는 높이(맥북 아래 자름이 여기 온다)
-    const a = TH * Math.PI / 180, Pp = P(), sn = Math.sin(a), cs = Math.cos(a);
-    const cut = g => { const u = g * G.lidW; return (Hv - W.H / 2) * (Pp - u * cs) / Pp - u * sn - r; };
-    if (Hv <= 1.9 * W.Wd) return cut(0.054);   // 힌지와 기능키 줄 사이(키보드 우물 위 알루미늄 띠). 올라가도 투영으로 맞춘다
+    const r = G.Hi / 2 + G.chin, Hv = W.H - obscuredBottom(), lip = G.Wi * 0.0222;
+    const a = TH * Math.PI / 180, Pp = P(), sn = Math.sin(a), cs = Math.cos(a), u = G.baseD, f = Pp / (Pp - u * cs);
     const ib = info && info.querySelector('.wi-body'), ie = info && info.querySelector('.wi-ey');
-    const T = Math.max(0.2 * Hv, ib && ie ? ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top : 0);
-    let dl = 0;
-    for (const g of KB_GAPS) {
-      dl = cut(g);
-      const top = W.H / 2 + dl - G.Hi / 2 - G.Wi * 0.0222;
-      if ((top - 36 - T) / 2 <= 0.11 * Hv) break;
-    }
+    const T = ib && ie ? Math.max(0, ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top) : 0.3 * Hv;
+    const minTop = safeTop() + 40, GAP = Math.round(Math.min(32, 0.035 * Hv));   // 위: 써 보기 안내 한 줄 자리
+    const dlOf = top => top + lip + G.Hi / 2 - W.H / 2, frontOf = dl => W.H / 2 + (r + dl + u * sn) * f;
+    let top = minTop;
+    for (let k = 0; k < 3; k++) { const h = frontOf(dlOf(top)) - top + GAP + T; top = Math.max(minTop, Math.round((Hv - h) / 2)); }
+    const dl = dlOf(top); txtTop = Math.round(frontOf(dl) + GAP);
     return dl;
+  }
+  function safeTop(){
+    const pr = document.createElement('div'); pr.style.cssText = 'position:fixed;padding-top:env(safe-area-inset-top,0px);visibility:hidden';
+    document.body.appendChild(pr); const v = parseFloat(getComputedStyle(pr).paddingTop) || 0; pr.remove(); return v;
   }
   const mobDl = () => mobDlv;
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
