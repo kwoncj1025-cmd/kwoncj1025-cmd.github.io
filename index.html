@@ -161,7 +161,14 @@ h1 span{display:block;color:var(--soft)}
 .dsh{position:absolute;left:0;top:0;width:300px;height:430px;border-radius:22px;transform-origin:0 0;background:rgb(37,34,75);opacity:0;pointer-events:none;will-change:transform,opacity}
 .dsh.s{filter:blur(22px)}
 .dsh.c{filter:blur(4px)}
-
+/* 터치 화면(10-22 아이폰 버벅임): 유리 반사(::after)·무지개 테두리(::before)를 합성 층으로 올려 흔들리는 동안 이동·불투명도만 바뀌게 하고(다시 칠하는 --rim·--sx·--sy는 hero.js가 멈춘 뒤 한 번 쓴다),
+   이름 글자는 transform으로만 부푼다. 많이 부푼 글자(.up)에는 옅은 그늘을 한 번 붙인다 */
+@media not all and (hover:hover) and (pointer:fine){
+  .face::after{will-change:transform,opacity}
+  .face::before{will-change:opacity}
+  .mark .mk,.ei-mark .mk{will-change:transform}
+  .mark .mk.up,.ei-mark .mk.up{text-shadow:0 .05em .08em rgba(43,39,91,.18)}
+}
 /* ── 작업: 카드 테이블. 들어오면 덱이 쏟아지고, 아무 카드나 잡아 던지며, 누르면 명함처럼 뒤집혀 뒷면에 작업 정보가 나온다 ── */
 .work{position:relative}
 .table{position:relative;height:100vh;min-height:640px;overflow:hidden}   /* 폭 제한 없음: 넓은 화면에서도 카드가 뷰포트 끝까지 퍼진다(10-21 대표님: 히어로처럼 시원하게) */
@@ -1613,6 +1620,19 @@ window.ticker = (() => {
   const PEEK = 30, PEEK_AT = 42, PEEK_HOLD = 50, MAG_PULL = 0.03, MAG_TILT = 0.00006;
   // 커서 자석(데스크톱): 카드 밖 120px 안쪽에 커서가 오면 그쪽으로 아주 약하게 끌려 기운다
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce && !still;
+  const touchUI = !matchMedia('(hover: hover) and (pointer: fine)').matches;   // 터치 화면(10-22 아이폰 버벅임 대책의 기준)
+  // 면 변수 쓰기(10-22): 같은 값은 다시 쓰지 않는다. 면 전체를 다시 칠하는 변수(--rim 테두리 원뿔, --sx·--sy 반사 원 자리)는
+  // 터치 화면에서 흔들리는 동안 미뤘다가 멈추면(150ms 조용) 한 번에 맞춘다. --glare·--shine·--rimO는 합성 층의 불투명도·이동이라 매 프레임 써도 가볍다
+  const fvPend = new Map(); let fvT = 0;
+  const fv = (el, name, val, heavy) => {
+    if (heavy && touchUI) {
+      let m = fvPend.get(el); if (!m) fvPend.set(el, m = {}); m[name] = val;
+      clearTimeout(fvT); fvT = setTimeout(() => { fvPend.forEach((m, e) => { for (const n in m) fv(e, n, m[n]); }); fvPend.clear(); }, 150);
+      return;
+    }
+    const c = el._fv || (el._fv = {});
+    if (c[name] !== val) { c[name] = val; el.style.setProperty(name, val); }
+  };
   let magT = 0, mag = 0;
 
   let AX = 0, AY = -14, SH = 600;
@@ -1870,11 +1890,11 @@ window.ticker = (() => {
     // 유리 반사: 넘어지는 동안 빛줄기가 한 번 지나간다
     const sw = Math.sin(Math.PI * sa);
     faces.forEach(fc => {
-      fc.style.setProperty('--rim', `${(q.b * 57.3 * 0.6 + sa * 120) % 360}deg`);
-      fc.style.setProperty('--rimO', (0.3 + sw * 0.45).toFixed(3));
-      fc.style.setProperty('--glare', (0.2 + sw * 0.5).toFixed(3));
-      fc.style.setProperty('--sx', '50%'); fc.style.setProperty('--sy', `${(20 + sa * 30).toFixed(1)}%`);
-      fc.style.setProperty('--shine', `${(-40 + sa * 80).toFixed(1)}%`);
+      fv(fc, '--rim', `${((q.b * 57.3 * 0.6 + sa * 120) % 360).toFixed(1)}deg`, true);
+      fv(fc, '--rimO', (0.3 + sw * 0.45).toFixed(3));
+      fv(fc, '--glare', (0.2 + sw * 0.5).toFixed(3));
+      fv(fc, '--sx', '50%', true); fv(fc, '--sy', `${(20 + sa * 30).toFixed(1)}%`, true);
+      fv(fc, '--shine', `${(-40 + sa * 80).toFixed(1)}%`);
     });
     return q;
   }
@@ -2095,9 +2115,43 @@ window.ticker = (() => {
   // 벽 그림자: 화면 왼쪽 위 바깥의 점광원이 명함과 목줄을 뒤쪽 벽에 비춘다. 광원에서 멀수록 그림자가 벌어져(SK) 흔들릴 때 명함과 다른 각도로 움직인다.
   // 모양은 화면 밖(-OFF)에 그리고 그림자만 화면 안으로 옮겨 흐림을 준다(canvas filter 없이 모든 브라우저에서 같은 결과)
   const SH_SK = 0.045, SH_OX = 14, SH_OY = 22, SH_OFF = 30000;
+  // 터치 화면(10-22 아이폰 버벅임): 캔버스 흐림(shadowBlur)은 CPU가 매 프레임 넓은 면을 흐린다(2초에 177번).
+  // 명함 그림자는 한 번 흐려 둔 그림(스프라이트)을 옮겨 찍고, 줄 그림자는 흐림 없이 넓고 옅은 선 두 겹으로 그린다
+  let shSpr = null, shKey = '';
+  const SPR_PAD = 70;
+  function shadowSprite(){
+    const key = KS.toFixed(4) + '|' + dpr;
+    if (shSpr && shKey === key) return shSpr;
+    const w = 300 * KS, h = 434 * KS, c = document.createElement('canvas'), g = c.getContext('2d');
+    c.width = Math.ceil((w + 2 * SPR_PAD) * dpr); c.height = Math.ceil((h + 2 * SPR_PAD) * dpr);
+    g.shadowOffsetX = SH_OFF;
+    g.setTransform(dpr, 0, 0, dpr, SPR_PAD * dpr - SH_OFF, SPR_PAD * dpr);
+    g.beginPath(); g.roundRect(0, 0, w, h, 22 * KS); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#000';
+    g.shadowColor = 'rgba(43,39,91,0.10)'; g.shadowBlur = 48 * dpr; g.fill();
+    g.shadowBlur = 20 * dpr; g.fill();
+    shSpr = c; shKey = key; return c;
+  }
+  function drawShadowLite(P, ph, ry, cs, k, tx, ty){
+    ctx.save();
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
+    ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]);
+    for (let i = 1; i < N; i++) ctx.lineTo(P[i][0], P[i][1]);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'butt';
+    ctx.lineWidth = STRAP_W * 0.8 * 1.9; ctx.strokeStyle = 'rgba(43,39,91,.035)'; ctx.stroke();
+    ctx.lineWidth = STRAP_W * 0.8 * 1.15; ctx.strokeStyle = 'rgba(43,39,91,.05)'; ctx.stroke();
+    const al = cs ? cs.al : 1;
+    if (al > 0.005) {
+      const E = P[N - 1], cw = Math.max(0.02, Math.abs(Math.cos(ry * Math.PI / 180))), spr = shadowSprite();
+      ctx.translate(E[0] + (cs ? cs.dx : 0), E[1] + (cs ? cs.dy : 0)); ctx.rotate(ph); ctx.scale(cw, 1);
+      ctx.globalAlpha = al;
+      ctx.drawImage(spr, -150 * KS - SPR_PAD, CT - 4 * KS - SPR_PAD, spr.width / dpr, spr.height / dpr);
+    }
+    ctx.restore();
+  }
   function drawShadow(P, ph, ry, cs){
     const lx = W * 0.12, ly = -H * 0.9, k = 1 + SH_SK;
     const tx = dpr * (SH_OX - lx * SH_SK) - SH_OFF, ty = dpr * (SH_OY - ly * SH_SK);
+    if (touchUI) return drawShadowLite(P, ph, ry, cs, k, tx + SH_OFF, ty);
     ctx.save();
     ctx.shadowOffsetX = SH_OFF; ctx.shadowColor = 'rgba(43,39,91,.11)';
     // 목줄: 휘어진 줄 그대로
@@ -2202,12 +2256,12 @@ window.ticker = (() => {
       const deg = ph * 180 / Math.PI, tilt = Math.min(1, (Math.abs(t) + Math.abs(deg)) / 35);
       const sv = Math.sin(ryv * Math.PI / 180);
       faces.forEach(f => {
-        f.style.setProperty('--rim', `${(ryv * 2 + deg * 3) % 360}deg`);
-        f.style.setProperty('--rimO', (0.3 + tilt * 0.6).toFixed(3));
-        f.style.setProperty('--glare', (0.2 + tilt * 0.65).toFixed(3));   // 가만히 있어도 유리 질감은 읽히게, 기울수록 강해짐
-        f.style.setProperty('--sx', `${50 - sv * 45}%`);
-        f.style.setProperty('--sy', `${20 + rxv * 3}%`);
-        f.style.setProperty('--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
+        fv(f, '--rim', `${((ryv * 2 + deg * 3) % 360).toFixed(1)}deg`, true);
+        fv(f, '--rimO', (0.3 + tilt * 0.6).toFixed(3));
+        fv(f, '--glare', (0.2 + tilt * 0.65).toFixed(3));   // 가만히 있어도 유리 질감은 읽히게, 기울수록 강해짐
+        fv(f, '--sx', `${(50 - sv * 45).toFixed(1)}%`, true);
+        fv(f, '--sy', `${(20 + rxv * 3).toFixed(1)}%`, true);
+        fv(f, '--shine', `${(-sv * 40 - deg * 1.2).toFixed(1)}%`);
       });
     }
     if (STG && Stage.camera.th > 86) return;               // 다 숙이면 벽은 보이지 않는다: 줄·벽 그림자는 그리지 않는다
@@ -2363,6 +2417,14 @@ window.ticker = (() => {
         const q = Math.max(0, l.k), key = q < 0.012 ? '' : q.toFixed(3);
         if (key === l.shown) return; l.shown = key;
         if (gl) { l.e.style.filter = ''; l.e.style.transform = ''; l.e.style.fontVariationSettings = ''; l.e.style.opacity = key && l.f ? '0' : ''; return; }
+        // 터치 화면(10-22 대표님 「아이폰에서 명찰이 버벅인다」): iOS 사파리는 HTML에 건 SVG 필터를 CPU로 다시 그린다(파도 2초에 속성 쓰기 약 460번).
+        // 빛 필터와 굵기 변화 없이 크기·떠오름(transform, GPU 합성)으로만 부풀고, 그늘은 일정 이상 부풀 때 한 번 붙였다 뗀다(.up)
+        if (touchUI) {
+          if (!key || !l.f) { l.e.style.transform = ''; l.e.classList.remove('up'); return; }
+          l.e.style.transform = `translate3d(0,${(-0.035 * q).toFixed(4)}em,0) scale(${(1 + 0.09 * q).toFixed(4)})`;
+          l.e.classList.toggle('up', q > 0.3);
+          return;
+        }
         l.e.style.opacity = '';
         if (!key || !l.f) { l.e.style.filter = ''; l.e.style.transform = ''; l.e.style.fontVariationSettings = ''; return; }
         l.f.set(q, fs);
@@ -2387,6 +2449,7 @@ window.ticker = (() => {
     if (wave) {
       // 데스크톱은 첫 파도를 WebGL 입체로 보이려고 로드 직후 미리 깨우고, 거리장이 준비될 때까지(최대 2.5초 더) 기다린다
       const gl3 = () => fine && window.Inflate3D && window.WebGL2RenderingContext;
+      if (window.Hero) Hero.wave = () => { wv0 = performance.now(); kick(); };   // 검수용: 파도 한 번 바로
       const tryWave = () => {
         const calm = isOn() && ct === 0 && !document.hidden && performance.now() - nearT > 2000;
         if (calm && !wv0) { wv0 = performance.now(); kick(); }
