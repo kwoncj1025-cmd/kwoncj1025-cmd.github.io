@@ -27,14 +27,14 @@
 /* 레이아웃: 왼쪽은 소개 글, 오른쪽은 화면 위에서 내려오는 목줄에 걸린 유리 사원증 */
 :root{
   --bg:#ffffff;
-  --ink:#0d0e12;
-  --ink-2:#5f6170;
-  --ink-3:#9a9cab;
-  --soft:#9fb2e6;
-  --dot:#7d8fe0;
+  --ink:#0e0e12;
+  --ink-2:#61606f;
+  --ink-3:#9c9baa;
+  --soft:#a8afe5;
+  --dot:#8b8ade;
   --live:#4cc38a;
-  --strap:#15161b;
-  --line:rgba(13,14,18,.08);
+  --strap:#16161b;
+  --line:rgba(14,14,18,.08);
   --f-en:"Funnel Sans",SUIT,system-ui,sans-serif;
   --f-disp:"Funnel Display","Funnel Sans",SUIT,system-ui,sans-serif;
   --f-ko:SUIT,"Funnel Sans",system-ui,sans-serif;
@@ -66,10 +66,10 @@ h1 span{display:block;color:var(--soft)}
    D링(.ring)은 끈과 함께 앞을 본 채 흔들림만 따라가고, 회전 고리 머리부터 아래(.swivel)는 명함 3D 층 안에서 비틀림·뒤집기를 같이 한다.
    좌표: 끈 끝(hang 원점) = 원본 y 1430, 명함 위 모서리 = 1666(70.8 아래), 구멍 1686~1706 · x ±66(가운데 2001) */
 .ring{position:absolute;left:-30px;top:-6px;width:60px;height:36px;z-index:1;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:30px 6px;
-  filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.2))}
+  filter:drop-shadow(0 1.5px 1.5px rgba(14,14,18,.2))}
 .swivel{position:absolute;left:120px;top:-52.8px;width:60px;height:66.6px;pointer-events:none;user-select:none;-webkit-user-drag:none;
   transform:translateZ(1px);backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  filter:drop-shadow(0 1px 1.2px rgba(13,14,18,.32))}
+  filter:drop-shadow(0 1px 1.2px rgba(14,14,18,.32))}
 .swivel.sw-b{transform:rotateY(180deg) translateZ(1px)}
 
 .card3d{position:absolute;left:-150px;top:70.8px;z-index:2;width:300px;height:430px;perspective:1100px}
@@ -82,7 +82,7 @@ h1 span{display:block;color:var(--soft)}
 .face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
   background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(242,243,248,.82) 46%,rgba(233,236,246,.88));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.6),
-    0 1px 1px rgba(13,14,18,.05),0 22px 44px -18px rgba(40,46,80,.32),0 50px 90px -40px rgba(40,46,80,.24);
+    0 1px 1px rgba(14,14,18,.05),0 22px 44px -18px rgba(46,44,79,.32),0 50px 90px -40px rgba(46,44,79,.24);
   padding:30px 16px 16px;display:flex;flex-direction:column}
 .back{transform:rotateY(180deg)}
 .face::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
@@ -99,10 +99,10 @@ h1 span{display:block;color:var(--soft)}
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M133.2 6H166.8A3 3 0 0 1 166.8 12H133.2A3 3 0 0 1 133.2 6Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
   -webkit-mask-clip:no-clip;mask-clip:no-clip}
 .slot{position:absolute;left:50%;top:6px;width:39.6px;height:6px;margin-left:-19.8px;border-radius:3px;z-index:3;pointer-events:none;
-  box-shadow:inset 0 1.4px 1.6px -0.4px rgba(13,14,18,.55),inset 0 -1px 0 rgba(255,255,255,.95),inset 0 -1.7px 0 rgba(200,204,218,.95)}
+  box-shadow:inset 0 1.4px 1.6px -0.4px rgba(14,14,18,.55),inset 0 -1px 0 rgba(255,255,255,.95),inset 0 -1.7px 0 rgba(200,204,218,.95)}
 /* 앞다리가 명함 앞을 지나는 자리의 접촉 그림자(같은 위쪽 빛, 다리 바로 아래로 짧게). 앞뒤 모두 몸통 다리(구멍 왼끝에서 26.6px): 뒷면용 고리도 화면에서 같은 쪽에 다리가 온다 */
 .slot i{position:absolute;left:26.6px;top:-5.6px;width:8px;height:4px;margin-left:-4px;border-radius:50%;
-  background:radial-gradient(closest-side,rgba(13,14,18,.38),rgba(13,14,18,0))}
+  background:radial-gradient(closest-side,rgba(14,14,18,.38),rgba(14,14,18,0))}
 
 /* 명함 작은 글(10-21 점검표 ⑦): 화면에서 9px 아래로 내려가지 않게. 데스크톱 11px(카메라 원근으로 약 .83배 → 9.1px), 세로 화면은 명함 축소율로 나눈 값(5-hero-layout.css --card-sm) */
 .row{display:flex;justify-content:space-between;align-items:center;font-size:var(--card-sm,11px);letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
@@ -121,8 +121,8 @@ h1 span{display:block;color:var(--soft)}
 .contact{margin-top:20px;display:grid;position:relative;z-index:3;border-bottom:1px solid var(--line)}
 /* 줄 전체가 버튼: 오른쪽 아이콘이 할 일을 말한다(복사 / 열기) */
 .crow{all:unset;box-sizing:border-box;display:grid;grid-template-columns:50px minmax(0,1fr) 16px;align-items:center;gap:8px;padding:11px 6px;margin:0 -2px;border-top:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--ink);transition:background .15s}
-.crow:hover{background:rgba(13,14,18,.045)}
-.crow:active{background:rgba(13,14,18,.08)}
+.crow:hover{background:rgba(14,14,18,.045)}
+.crow:active{background:rgba(14,14,18,.08)}
 .crow:focus-visible{outline:2px solid var(--dot);outline-offset:-2px}
 .crow .k,.issue .k{font-size:var(--card-sm,11px);letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;transition:color .15s}
 .crow .v{font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -149,14 +149,14 @@ h1 span{display:block;color:var(--soft)}
 /* 무대(scene-hero): 집게가 열리고 명함이 책상으로 떨어진다(hero.js가 만든다).
    집게는 .swivel과 같은 그림을 게이트·몸통 두 장으로 나눠 hang 좌표에 겹치고(위끝 = 끈 끝 아래 18px), 게이트만 나사 축으로 돈다 */
 .clasp{position:absolute;left:-30px;top:18px;width:60px;height:66.6px;z-index:1;display:none;pointer-events:none;transform-origin:30px -18px;
-  filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.22))}
+  filter:drop-shadow(0 1.5px 1.5px rgba(14,14,18,.22))}
 .clasp img{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
 .clasp .gate{transform-origin:43.75% 41%}   /* 나사 축(원본 고리 그림의 87.5, 91) */
 /* 고리를 떠난 명함과 책상 그림자는 hero 층 바로 아래(3D)에 둔다. 벽이 숨어도(다 숙인 뒤) 보이도록 visibility를 되살린다 */
 .carry{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;visibility:visible;pointer-events:none}
 .carry .card3d{pointer-events:auto}
 .carry .face{background-color:rgba(255,255,255,var(--op,0))}
-.dsh{position:absolute;left:0;top:0;width:300px;height:430px;border-radius:22px;transform-origin:0 0;background:rgb(30,36,76);opacity:0;pointer-events:none;will-change:transform,opacity}
+.dsh{position:absolute;left:0;top:0;width:300px;height:430px;border-radius:22px;transform-origin:0 0;background:rgb(37,34,75);opacity:0;pointer-events:none;will-change:transform,opacity}
 .dsh.s{filter:blur(22px)}
 .dsh.c{filter:blur(4px)}
 
@@ -169,7 +169,7 @@ h1 span{display:block;color:var(--soft)}
 .tbar .r{display:flex;align-items:center;gap:8px;margin-left:auto}
 .tbar .ey{display:flex;align-items:center;gap:8px}
 .tbar .ey i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
-.sort.ghost{background:rgba(13,14,18,.06);color:var(--ink)}
+.sort.ghost{background:rgba(14,14,18,.06);color:var(--ink)}
 /* 「Selected Work」는 90° 세워 책상 왼쪽 가장자리를 따라 아래에서 위로 인쇄한다(10-21 대표님 결정, 서체·라벤더 그대로). 가운데가 비어 카드가 넓게 흩어진다.
    글자 크기는 책상 높이에 맞춘다(core.js fit, 세운 두께는 --mk). 작은 글 줄은 세운 글자 오른쪽 아래 구석에 놓인다.
    .tfoot은 쌓임 맥락을 만들지 않는다(z-index 없음): 큰 워드마크만 카드(.pile z 3) 아래에 깔린다.
@@ -183,7 +183,7 @@ h1 span{display:block;color:var(--soft)}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
 /* ── 밤색 방: 카드 테이블(흰 책상) 다음은 조명을 낮춘 남보라 밤색 방이다. 같은 서체·연보라·라벨 체계를 쓴다.
    무대에서는 맥북 구간, 무대가 꺼지면(stage-off) 작업 목록(.web-list)이 이 방에 놓인다. 바탕은 경계 앞뒤에서만 바뀐다 ── */
-:root{--nt:#0e1022;--nt-ink:#e9ecf5;--nt-2:rgba(233,236,245,.62);--nt-3:rgba(233,236,245,.38);--nt-line:rgba(233,236,245,.12)}
+:root{--nt:#110f21;--nt-ink:#eaebf5;--nt-2:rgba(234,235,245,.62);--nt-3:rgba(234,235,245,.38);--nt-line:rgba(234,235,245,.12)}
 body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
 /* 작업 목록의 눈썹 글(stage-off) */
 .wl-ey{display:flex;align-items:center;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
@@ -219,21 +219,21 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .flip{position:relative;transform-style:preserve-3d}
 .f{border-radius:18px;padding:7px;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;
   background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(242,243,248,.9) 46%,rgba(233,236,246,.94));
-  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(13,14,18,.05),0 14px 30px -18px rgba(40,46,80,.34),0 30px 60px -40px rgba(40,46,80,.24)}
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 1px 1px rgba(14,14,18,.05),0 14px 30px -18px rgba(46,44,79,.34),0 30px 60px -40px rgba(46,44,79,.24)}
 .f::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
   background:conic-gradient(from var(--rim,0deg),#c9f1ff,#e7d4ff,#ffe1f0,#fff3c8,#d2ffe8,#c9f1ff);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:var(--rimO,.35)}
 .f::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;z-index:2;
   background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.7) 48%,rgba(255,255,255,0) 60%);
   transform:translateX(var(--shine,0%));opacity:var(--glint,.25)}
-.front .im{border-radius:12px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#e9ecf5}
+.front .im{border-radius:12px;overflow:hidden;aspect-ratio:4/5;max-width:100%;background:#eaebf5}
 .front img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-.front .sh{position:absolute;inset:7px;border-radius:12px;background:#0d0e12;opacity:0;pointer-events:none;z-index:1}
+.front .sh{position:absolute;inset:7px;border-radius:12px;background:#0e0e12;opacity:0;pointer-events:none;z-index:1}
 /* 스크롤 신호: 첫 화면 아래 가장자리에 다음 구역의 카드가 반쯤 보이며 오르내린다. 누르면 그 구역으로 */
 .peek{position:fixed;left:50%;bottom:0;z-index:20;display:flex;align-items:flex-end;border:0;background:none;padding:0 0 env(safe-area-inset-bottom,0px);cursor:pointer;
   transform:translate(-50%,46%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
-.peek i{display:block;width:58px;aspect-ratio:4/5;border-radius:10px;border:4px solid rgba(255,255,255,.95);background:#e9ecf5 center/cover no-repeat;
-  box-shadow:0 10px 24px -10px rgba(40,46,80,.45),0 0 0 1px rgba(160,170,210,.35);animation:bob 2.6s ease-in-out infinite}
+.peek i{display:block;width:58px;aspect-ratio:4/5;border-radius:10px;border:4px solid rgba(255,255,255,.95);background:#eaebf5 center/cover no-repeat;
+  box-shadow:0 10px 24px -10px rgba(46,44,79,.45),0 0 0 1px rgba(167,168,209,.35);animation:bob 2.6s ease-in-out infinite}
 .peek i:nth-child(1){transform:rotate(-9deg);margin-right:-18px;animation-delay:.15s}
 .peek i:nth-child(2){position:relative;z-index:1;margin-bottom:10px}
 .peek i:nth-child(3){transform:rotate(9deg);margin-left:-18px;animation-delay:.3s}
@@ -313,7 +313,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .copy .intro .ko{margin-top:10px;color:var(--ink-2)}
 .copy .mark{grid-column:1 / -1;grid-row:5;margin:0;font-family:var(--f-disp);font-weight:500;font-size:14vw;line-height:.78;letter-spacing:-.055em;
   color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
-.copy .mark .mk{display:inline-block;text-align:center}   /* 글자 칸 폭은 hero.js가 기본 굵기 폭으로 고정한다(굵어져도 줄이 출렁이지 않게) */
+.copy .mark .mk{display:inline-block;text-align:center;transform-origin:50% 80%}   /* 글자 칸 폭은 hero.js가 기본 굵기 폭으로 고정한다(굵어져도 줄이 출렁이지 않게) */
 @media (max-width:820px){
   /* 세로 화면(10-21 대표님 실기기 판정 「아까 구조에서 이름만 아래, 확 키워서 화면 끝까지」): 위에 눈썹·제목, 그 아래 목줄에 걸린 명함, 아래에 소개·상태,
      맨 아래 「Chanjun Kwon」은 바깥 여백 없이 화면 폭 꽉 찬 한 줄(크기는 hero.js가 폭에 맞춘다).
@@ -352,7 +352,7 @@ html.stage-on .desk{top:50%;transform-origin:50% 0;transform:rotateX(90deg)}   /
 /* 빛웅덩이: 소등 뒤 책상 면만 바탕보다 한두 단계 밝다(08 4절). 위치·투명도는 world.js */
 .pool{display:none}
 html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;height:140vh;pointer-events:none;opacity:0;
-  background:radial-gradient(closest-side,rgba(52,60,118,.9),rgba(40,46,96,.55) 55%,rgba(34,42,92,0) 100%)}
+  background:radial-gradient(closest-side,rgba(62,57,116,.9),rgba(49,43,94,.55) 55%,rgba(43,39,91,0) 100%)}
 html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
 html.stage-held #stage-root{touch-action:auto}
 /* 터치 기기: 맥북 메뉴 막대의 배경 흐림(backdrop-filter)을 반투명 바탕으로 바꾼다. 3D 변환 안의 흐림은 휴대폰에서 매 프레임 비싸다(10-21 측정, 6-macbook.css 주인 card-drop에 알림) */
@@ -415,14 +415,14 @@ html.stage-on .mb:not(.mb-on){display:none}
 html.stage-on :is(.web-tip,.web-note){display:block;position:fixed;left:0;top:0;z-index:46;pointer-events:none;white-space:nowrap;
   font-size:13.5px;line-height:1.3;letter-spacing:.01em;color:var(--nt-ink);opacity:0;transition:opacity .18s ease-out}
 html.stage-on :is(.web-tip,.web-note).on{opacity:1}
-html.stage-on .web-tip{color:#fff;text-shadow:0 0 2px rgba(6,7,16,.55),0 1px 12px rgba(6,7,16,.6)}
+html.stage-on .web-tip{color:#fff;text-shadow:0 0 2px rgba(7,7,16,.55),0 1px 12px rgba(7,7,16,.6)}
 html.stage-on .web-note{color:var(--nt-2)}
 html.stage-on .web-note.is-using{color:var(--nt-ink)}
 /* 쓰는 동안 화면 밖을 살짝 어둡게: 화면 자리에 놓인 빈 상자의 바깥 그림자. 누르기는 그대로 통과한다(밖을 누르면 나가기) */
-html.stage-on .web-dim{display:block;position:fixed;z-index:45;pointer-events:none;visibility:hidden;opacity:0;box-shadow:0 0 0 200vmax rgba(6,7,16,.5)}
+html.stage-on .web-dim{display:block;position:fixed;z-index:45;pointer-events:none;visibility:hidden;opacity:0;box-shadow:0 0 0 200vmax rgba(7,7,16,.5)}
 /* 들어간 직후 나가는 법이 한 번만 밝아졌다 가라앉는다 */
 html.stage-on .web-note.is-cue{animation:webNoteCue 1.6s cubic-bezier(.3,0,.2,1) .25s 1 both}
-@keyframes webNoteCue{0%{color:var(--nt-ink);text-shadow:none}25%{color:#fff;text-shadow:0 0 14px rgba(233,236,245,.55)}100%{color:var(--nt-ink);text-shadow:none}}
+@keyframes webNoteCue{0%{color:var(--nt-ink);text-shadow:none}25%{color:#fff;text-shadow:0 0 14px rgba(234,235,245,.55)}100%{color:var(--nt-ink);text-shadow:none}}
 @media (prefers-reduced-motion:reduce){html.stage-on .web-note.is-cue{animation:none}html.stage-on :is(.web-tip,.web-note){transition:none}}
 /* 불러오는 동안의 화면은 꺼진 맥 화면(검정). 문서가 뜨면 짧게 켜진다 */
 html.stage-on .mb-pane iframe{transition:opacity .35s ease-out}
@@ -433,7 +433,7 @@ html.stage-on .mb.fs .mb-screen{z-index:6}
 .web-close{display:none}
 @media (max-width:820px){
   html.stage-on .web-close{display:grid;place-items:center;position:fixed;z-index:47;top:calc(env(safe-area-inset-top,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 10px);
-    width:36px;height:36px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(10,11,16,.62);color:#fff;cursor:pointer;
+    width:36px;height:36px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(11,11,16,.62);color:#fff;cursor:pointer;
     -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 0 .5px rgba(255,255,255,.18);
     opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s}
   html.stage-on.web-fs .web-close{opacity:1;visibility:visible;transition:opacity .25s ease-out .3s,visibility 0s}
@@ -510,7 +510,7 @@ html.stage-on body .web-info .wi-gh{display:flex;align-items:center;gap:7px;marg
 html.stage-on body .web-info .wi-gh~.wi-gh{margin-top:clamp(14px,2.4vh,22px)}
 html.stage-on body .web-info .wi-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#3ddc84}
 html.stage-on body .web-info .wi-item{all:unset;box-sizing:border-box;display:block;padding:clamp(3px,.55vh,5px) 0;cursor:pointer;pointer-events:auto;
-  color:rgba(233,236,245,.4);transition:color .2s}
+  color:rgba(234,235,245,.4);transition:color .2s}
 html.stage-on body .web-info .wi-iname{font:500 clamp(17px,min(1.45vw,2.4vh),21px)/1.15 var(--f-disp);letter-spacing:-.025em;white-space:nowrap}
 html.stage-on body .web-info .wi-sub{padding-left:16px}
 html.stage-on body .web-info .wi-sub .wi-iname{font-size:clamp(14px,min(1.1vw,1.9vh),16px);letter-spacing:-.015em}
@@ -576,7 +576,7 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 .end-info .ei-item:hover .ei-v{color:var(--soft)}
 .end-info .ei-item:focus-visible{outline:2px solid var(--soft);outline-offset:4px;border-radius:2px}
 .end-info .ei-mark{grid-row:3;margin:0;font-family:var(--f-disp);font-weight:500;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
-.end-info .ei-mark .mk{display:inline-block;text-align:center}
+.end-info .ei-mark .mk{display:inline-block;text-align:center;transform-origin:50% 80%}
 .end-info .ei-live{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media (max-width:820px){
   .end-info{padding:0 20px calc(22px + env(safe-area-inset-bottom,0px))}
@@ -2000,7 +2000,7 @@ window.ticker = (() => {
     const lx = W * 0.12, ly = -H * 0.9, k = 1 + SH_SK;
     const tx = dpr * (SH_OX - lx * SH_SK) - SH_OFF, ty = dpr * (SH_OY - ly * SH_SK);
     ctx.save();
-    ctx.shadowOffsetX = SH_OFF; ctx.shadowColor = 'rgba(34,42,92,.11)';
+    ctx.shadowOffsetX = SH_OFF; ctx.shadowColor = 'rgba(43,39,91,.11)';
     // 목줄: 휘어진 줄 그대로
     ctx.setTransform(dpr * k, 0, 0, dpr * k, tx, ty);
     ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]);
@@ -2018,8 +2018,8 @@ window.ticker = (() => {
       ctx.beginPath(); ctx.roundRect(-150 * KS, CT - 4 * KS, 300 * KS, 434 * KS, 22 * KS);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.fillStyle = '#000';
-      ctx.shadowColor = `rgba(34,42,92,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (48 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 넓은 반그늘
-      ctx.shadowColor = `rgba(34,42,92,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (20 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 본그늘
+      ctx.shadowColor = `rgba(43,39,91,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (48 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 넓은 반그늘
+      ctx.shadowColor = `rgba(43,39,91,${(0.10 * al).toFixed(4)})`; ctx.shadowBlur = (20 + (cs ? cs.sp : 0)) * dpr; ctx.fill();   // 본그늘
     }
     ctx.restore();
   }
@@ -2057,10 +2057,10 @@ window.ticker = (() => {
       ctx.beginPath(); ctx.moveTo(LX[0], LY[0]);
       for (let i = 1; i < N; i++) ctx.lineTo(LX[i], LY[i]);
       for (let i = N - 1; i >= 0; i--) ctx.lineTo(RX[i], RY[i]);
-      ctx.closePath(); ctx.fillStyle = '#15161b'; ctx.fill();
+      ctx.closePath(); ctx.fillStyle = '#16161b'; ctx.fill();
     }
     // 인쇄 글자: 끈 결 위에 screen 으로 얹어 결이 글자에도 비친다
-    ctx.font = `600 ${(11.5 * KS).toFixed(1)}px "Funnel Sans", sans-serif`; ctx.fillStyle = '#8496cc'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `600 ${(11.5 * KS).toFixed(1)}px "Funnel Sans", sans-serif`; ctx.fillStyle = '#8e93cb'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.globalCompositeOperation = 'screen';
     let acc = 0, ci = 0, next = UP + 14 * KS;   // 글자는 화면에 보이는 자리(옛 고정점 아래)부터
     for (let i = 0; i < N - 2; i++) {
@@ -2167,17 +2167,51 @@ window.ticker = (() => {
     },
     get t(){ return ct; },
   };
-  // 이름 굵기(10-21 대표님 선택): 커서에 가까운 글자가 굵어진다(Funnel Display 굵기 축 500 → 700). 커서가 없는 터치 기기와 명함을 끄는 동안에는
-  // 명함이 커서 대신 굵기를 끌고 간다. 경계 없이 거리에 따라 줄어들고(가우스), 다가갈 때는 빠르게, 떠나면 관성 있게 천천히 돌아온다.
-  // 글자마다 기본 굵기(500)일 때의 폭으로 칸을 고정해 굵어져도 줄이 출렁이지 않는다. 움직임 줄이기에서는 쓰지 않는다
-  // 같은 손을 끝 화면 큰 줄(「Thanks for watching.」, macbook.js)도 쓴다: Hero.weightText(요소, 보이는지)
+  // 이름 부풀기(10-21 대표님 요청 「일러스트레이터 3D Inflate처럼 풍선처럼 부풀었다가 마우스 빠지면 바람 빠지고」).
+  // 커서에 가까운 글자가 풍선처럼 솟는다: 글자 알파를 흐려 돔 모양 높이를 만들고, 장면과 같은 위쪽 빛(08 4절)으로 확산광·반사광을 얹어
+  // 위 가장자리는 밝고 아래는 그늘진 통통한 입체로 읽힌다. 바닥에는 떠오른 만큼 옅은 그림자가 진다. 색은 원래 글자색(토큰)에 빛을 곱해 토큰을 따라간다.
+  // 부풀 때는 살짝 넘쳤다 자리 잡는 스프링, 빠질 때는 늘어지듯 느린 감쇠(약 0.9초). 굵기도 500 → 600으로 조금 따라 붙어 부피를 돕는다.
+  // 거리는 경계 없는 가우스. 커서가 없는 터치 기기와 명함을 끄는 동안에는 명함이 커서 대신 끌고 간다. 움직임 줄이기에서는 쓰지 않는다.
+  // 필터는 부푼 글자에만 걸고 납작해지면 뗀다(휴대폰 비용). 같은 손을 끝 화면 큰 줄(「Thanks for watching.」, macbook.js)도 쓴다: Hero.weightText(요소, 보이는지)
   const cardMoving = () => ticker.awake('badge');
+  let infSvg = null, infN = 0;
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, at, kids) => { const e = document.createElementNS(SVGNS, tag); for (const k in at) e.setAttribute(k, at[k]); (kids || []).forEach(c => e.appendChild(c)); return e; };
+  function inflateFilter(){
+    if (!infSvg) { infSvg = sv('svg', { width: 0, height: 0, 'aria-hidden': 'true', style: 'position:absolute;width:0;height:0;overflow:hidden' }); infSvg.appendChild(sv('defs')); document.body.appendChild(infSvg); }
+    const id = 'inflate-' + (++infN), light = () => sv('feDistantLight', { azimuth: 270, elevation: 52 });   // 빛: 위쪽(화면 위)에서 52° 내려온다
+    const blur = sv('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: 0, result: 'h' });
+    const spec = sv('feSpecularLighting', { in: 'h', surfaceScale: 0, specularConstant: 0.9, specularExponent: 22, 'lighting-color': '#fff', result: 'sp' }, [light()]);
+    const diff = sv('feDiffuseLighting', { in: 'h', surfaceScale: 0, diffuseConstant: 1, 'lighting-color': '#fff', result: 'df' }, [light()]);
+    const shade = sv('feComposite', { in: 'SourceGraphic', in2: 'df', operator: 'arithmetic', k1: 0, k2: 1, k3: 0, k4: 0, result: 'sh' });   // 글자색 × (빛 기울기): 평평한 꼭대기는 원래 색
+    const gloss = sv('feComposite', { in: 'sp', in2: 'SourceAlpha', operator: 'in', result: 'g' });
+    const lit = sv('feComposite', { in: 'g', in2: 'sh', operator: 'arithmetic', k1: 0, k2: 0, k3: 1, k4: 0, result: 'l' });   // 반사광 더하기
+    const body = sv('feComposite', { in: 'l', in2: 'SourceAlpha', operator: 'in', result: 'b' });
+    const sBlur = sv('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: 0, result: 'sa' });
+    const sOff = sv('feOffset', { in: 'sa', dx: 0, dy: 0, result: 'so' });
+    const sCol = sv('feColorMatrix', { in: 'so', type: 'matrix', values: '0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.12  0 0 0 0 0', result: 'sc' });   // 그림자: 푸른 기운 도는 어둠
+    const merge = sv('feMerge', {}, [sv('feMergeNode', { in: 'sc' }), sv('feMergeNode', { in: 'b' })]);
+    const f = sv('filter', { id, x: '-30%', y: '-30%', width: '160%', height: '170%', 'color-interpolation-filters': 'sRGB' }, [blur, spec, diff, shade, gloss, lit, body, sBlur, sOff, sCol, merge]);
+    infSvg.firstChild.appendChild(f);
+    // k(0~1, 넘침 허용)와 글자 크기 fs(px)로 모양을 정한다: 돔 반경은 획 굵기의 약 1/3, 높이·빛은 k에 비례
+    const set = (k, fs) => {
+      const q = Math.max(0, k), r = (fs * 0.03 * Math.min(1.2, q) + 0.4).toFixed(2), z = (fs * 0.06 * q).toFixed(2);
+      blur.setAttribute('stdDeviation', r);
+      spec.setAttribute('surfaceScale', z); diff.setAttribute('surfaceScale', z);
+      // 확산광: 평평한 면(법선이 화면을 향함)은 sin 52° ≈ 0.79. 그 값에서 원래 색이 되도록 k2를 맞추고, 기울기만 밝고 어둡게 한다
+      const a = 0.9 * Math.min(1, q); shade.setAttribute('k1', a.toFixed(3)); shade.setAttribute('k2', (1 - 0.79 * a).toFixed(3));
+      lit.setAttribute('k2', (0.55 * Math.min(1.2, q)).toFixed(3));
+      sBlur.setAttribute('stdDeviation', (fs * 0.035 * q + 0.5).toFixed(2)); sOff.setAttribute('dy', (fs * 0.05 * q).toFixed(2));
+      sCol.setAttribute('values', `0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.12  0 0 0 ${(0.22 * Math.min(1, q)).toFixed(3)} 0`);
+    };
+    return { id, set };
+  }
   function weightText(mark, isOn, cardOn){
     if (!mark || reduce) return;
-    const W0 = 500, W1 = 700, txt = mark.textContent; mark.textContent = '';
-    const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = 'mk'; e.textContent = ch === ' ' ? ' ' : ch; mark.appendChild(e); return { e, w: W0, shown: W0 }; });
+    const W0 = 500, W1 = 600, txt = mark.textContent; mark.textContent = '';
+    const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = 'mk'; e.textContent = ch === ' ' ? '\u00a0' : ch; mark.appendChild(e); return { e, k: 0, v: 0, shown: '', f: ch.trim() ? inflateFilter() : null }; });
     const fit = () => {
-      ls.forEach(l => { l.e.style.width = ''; l.e.style.fontVariationSettings = ''; });
+      ls.forEach(l => { l.e.style.width = ''; l.e.style.fontVariationSettings = ''; l.e.style.filter = ''; l.e.style.transform = ''; });
       // 칸 폭은 글자 크기(em) 기준으로 둔다: 화면 폭(14vw)이 바뀌어도 다시 잴 필요가 없고, 잰 시점의 화면 크기에 묶이지 않는다
       const fs = parseFloat(getComputedStyle(mark).fontSize) || 1, k = mark.offsetWidth / (mark.getBoundingClientRect().width || mark.offsetWidth || 1);
       // 글자를 칸으로 나누면 글자 사이 커닝이 빠져 이름이 1~2% 길어진다. 통짜 문장 폭에 맞춰 칸을 같은 비율로 줄인다
@@ -2185,7 +2219,7 @@ window.ticker = (() => {
       mark.textContent = txt; const nat = mark.offsetWidth; mark.textContent = ''; ls.forEach(l => mark.appendChild(l.e));   // 같은 요소에서 통짜 폭을 잰다
       const f = sum && nat ? nat / sum : 1;
       ls.forEach((l, i) => { l.e.style.width = (ws[i] * f / fs).toFixed(4) + 'em'; });
-      ls.forEach(l => { l.shown = -1; });
+      ls.forEach(l => { l.shown = ''; });
       mark.dispatchEvent(new Event('mk-fit'));   // 칸 폭이 바뀌었다(글꼴 도착 등): 폭에 맞춰 크기를 정하는 쪽이 다시 잰다
       kick();
     };
@@ -2196,26 +2230,36 @@ window.ticker = (() => {
     };
     const step = () => {
       raf = 0; if (!isOn()) return;
-      const now = performance.now(), dt = Math.min(64, lt ? now - lt : 16); lt = now;
-      // 시간 기준 감쇠(화면 주사율과 무관): 다가갈 때 70ms, 떠날 때 600ms
-      const kUp = 1 - Math.exp(-dt / 70), kDn = 1 - Math.exp(-dt / 600);
-      const p = src(), mr = mark.getBoundingClientRect(), R = mr.height * 0.95;
+      const now = performance.now(), dt = Math.min(48, lt ? now - lt : 16) / 1000; lt = now;
+      const p = src(), mr = mark.getBoundingClientRect(), R = mr.height * 0.9, fs = parseFloat(getComputedStyle(mark).fontSize) || 100;
       let busy = false;
-      // 글자 자리는 먼저 한꺼번에 읽고 굵기는 그 뒤에 쓴다(읽기·쓰기를 번갈아 하면 글자마다 배치를 다시 계산한다)
+      // 글자 자리는 먼저 한꺼번에 읽고 모양은 그 뒤에 쓴다(읽기·쓰기를 번갈아 하면 글자마다 배치를 다시 계산한다)
       const cs = p ? ls.map(l => { const r = l.e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }) : null;
       ls.forEach((l, i) => {
-        let t = W0;
-        if (p) { const dx = p[0] - cs[i][0], dy = p[1] - cs[i][1]; t = W0 + (W1 - W0) * Math.exp(-(dx * dx + dy * dy) / (R * R)); }
-        l.w += (t - l.w) * (t > l.w ? kUp : kDn);
-        if (Math.abs(t - l.w) > 0.5) busy = true;
-        const v = Math.round(l.w); if (v !== l.shown) { l.shown = v; l.e.style.fontVariationSettings = `"wght" ${v}`; }
+        let t = 0;
+        if (p) { const dx = p[0] - cs[i][0], dy = p[1] - cs[i][1]; t = Math.exp(-(dx * dx + dy * dy) / (R * R)); }
+        if (t > l.k + 0.002 || l.v > 0.01) {   // 부풀기: 덜 감쇠된 스프링(ω 15, ζ 0.42)이라 살짝 넘쳤다 자리 잡는다
+          const w = 15, z = 0.42; l.v += (w * w * (t - l.k) - 2 * z * w * l.v) * dt; l.k += l.v * dt;
+          if (l.k < t && l.v < 0) { /* 넘친 뒤 되돌아오는 중 */ }
+        } else { l.v = 0; l.k += (t - l.k) * (1 - Math.exp(-dt / 0.45)); }   // 바람 빠지기: 늘어지듯 느린 감쇠(τ 0.45초, 0.9초면 거의 납작)
+        if (Math.abs(t - l.k) > 0.004 || Math.abs(l.v) > 0.01) busy = true;
+        const q = Math.max(0, l.k), key = q < 0.012 ? '' : q.toFixed(3);
+        if (key === l.shown) return; l.shown = key;
+        if (!key || !l.f) { l.e.style.filter = ''; l.e.style.transform = ''; l.e.style.fontVariationSettings = ''; return; }
+        l.f.set(q, fs);
+        l.e.style.filter = `url(#${l.f.id})`;
+        l.e.style.transform = `translateY(${(-0.025 * q).toFixed(4)}em) scale(${(1 + 0.07 * q).toFixed(4)})`;   // 바닥에서 부풀어 오르며 살짝 떠오른다
+        l.e.style.fontVariationSettings = `"wght" ${Math.round(W0 + (W1 - W0) * Math.min(1, q))}`;
       });
       const moved = p && (Math.abs(p[0] - lx) > 0.3 || Math.abs(p[1] - ly) > 0.3); if (p) { lx = p[0]; ly = p[1]; }
       idle = busy || moved ? 0 : idle + 1;
-      if (idle < 30) raf = requestAnimationFrame(step); else lt = 0;
+      if (idle < 20) raf = requestAnimationFrame(step); else lt = 0;
     };
     function kick(){ idle = 0; if (!raf) raf = requestAnimationFrame(step); }
-    addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { px = e.clientX; py = e.clientY; haveP = true; } kick(); }, { passive: true });
+    addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || e.buttons) { px = e.clientX; py = e.clientY; haveP = true; } kick(); }, { passive: true });
+    // 터치(10-21): 명함은 줄에 매달려 이름까지 내려오지 못하므로, 손가락이 닿아 있는 동안은 손가락 밑 글자가 부푼다. 떼면 바람이 빠진다
+    addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') { px = e.clientX; py = e.clientY; haveP = true; kick(); } }, { passive: true });
+    ['pointerup', 'pointercancel'].forEach(t => addEventListener(t, e => { if (e.pointerType !== 'mouse') { haveP = false; kick(); } }, { passive: true }));
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) { haveP = false; kick(); } });
     ['pointerdown', 'pointerup', 'wheel', 'touchmove', 'scroll'].forEach(t => addEventListener(t, kick, { passive: true }));
     fit(); document.fonts.load('500 1em "Funnel Display"').then(fit, () => {});   // 서체가 도착하면 그 글자 폭으로 한 번 더 잰다
@@ -3146,10 +3190,10 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     // 어두운 방의 반사: 짙은 남색 방 + 위쪽의 아주 옅은 천장 면 + 화면 자리의 밝은 면. 은색 금속은 반사할 것이 있어야 은색으로 읽힌다.
     // 세기는 화면 빛(L)에 따라 재질의 envMapIntensity로 올린다
     const envScene = new THREE.Scene();
-    const box = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ color: 0x05060c, side: THREE.BackSide }));
-    const ceil = new THREE.Mesh(new THREE.PlaneGeometry(6, 4), new THREE.MeshBasicMaterial({ color: 0x1c1e28 }));
+    const box = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ color: 0x06060c, side: THREE.BackSide }));
+    const ceil = new THREE.Mesh(new THREE.PlaneGeometry(6, 4), new THREE.MeshBasicMaterial({ color: 0x1e1d28 }));
     ceil.position.set(0, 4.9, 0); ceil.rotation.x = Math.PI / 2;
-    const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2), new THREE.MeshBasicMaterial({ color: 0xc8ccd8 }));
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2), new THREE.MeshBasicMaterial({ color: 0xcacbd8 }));
     glow.position.set(0, 1.2, -2.4);
     envScene.add(box, ceil, glow);
     // 셰이더 미리 짓기(10-21 bizcopilot, 모바일 성능): 맥북이 처음 화면에 들어오는 순간 셰이더 컴파일이 90~100ms 몰렸다(390, CPU 4배).
@@ -3213,7 +3257,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     // 접지 그림자 두 겹(사이트 그림자 문법: 짙고 좁은 그림자 + 넓고 옅은 그림자, 같은 빛에서 떨어지므로 넓은 쪽이 빛 반대편(앞)으로 조금 밀린다)
     const shTex = blur => {
       const c = document.createElement('canvas'); c.width = 256; c.height = 192; const g = c.getContext('2d');
-      g.filter = `blur(${blur}px)`; g.fillStyle = '#04050e'; g.beginPath(); g.roundRect(40, 34, 176, 124, 12); g.fill();
+      g.filter = `blur(${blur}px)`; g.fillStyle = '#05050e'; g.beginPath(); g.roundRect(40, 34, 176, 124, 12); g.fill();
       return new THREE.CanvasTexture(c);
     };
     const shMat = (blur, op) => new THREE.MeshBasicMaterial({ map: shTex(blur), transparent: true, opacity: op, depthWrite: false });
@@ -3232,7 +3276,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       g.fillStyle = v; g.fillRect(0, 0, 4, 128);
       const t = new THREE.CanvasTexture(c); return t;
     })();
-    const shadeMat = new THREE.MeshBasicMaterial({ color: 0x02030a, alphaMap: shadeTex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
+    const shadeMat = new THREE.MeshBasicMaterial({ color: 0x03030a, alphaMap: shadeTex, transparent: true, opacity: 0, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
     const wallShade = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shadeMat), deskShade = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shadeMat);
     deskShade.rotation.x = Math.PI / 2;   // 책상 위에 눕혀, 그림 아래 끝(짙음)이 모서리(z = 0) 쪽으로
     wallShade.renderOrder = deskShade.renderOrder = -4;
@@ -3241,7 +3285,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     const area = new THREE.RectAreaLight(0xffffff, 0, 1, 1);
     scene.add(area);
     // 방에 남은 빛: 화면이 꺼져도 알루미늄 윤곽이 읽히도록 위·앞에서 오는 옅은 무채색 빛(맺음에서 검은 덩어리로만 보였다, 10-21 조율 검수)
-    const room = new THREE.DirectionalLight(0xd4d7e0, 0);
+    const room = new THREE.DirectionalLight(0xd5d6e0, 0);
     room.position.set(-0.35, 1, 0.55); scene.add(room);
 
     // 무대 치수가 바뀌면 다시 놓는다
