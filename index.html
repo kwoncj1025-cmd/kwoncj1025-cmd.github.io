@@ -2395,7 +2395,9 @@ window.ticker = (() => {
     G.bz = Math.round(G.Wi * 0.0148); G.chin = Math.round(G.Wi * 0.0412);   // 베젤·턱: v09.psd(은색 16형) 실측 비율(card-drop W2)
     G.lidW = G.Wi + 2 * G.bz; G.lidH = G.Hi + G.bz + G.chin; G.baseD = Math.round(G.lidW * 0.69);
     // 자리(11 1절): 카드 구역(±0.46W) 오른쪽 너머. 카드 테이블에서는 화면 밖에 있다
-    G.cx = Math.round(W.Wd / 2 + 0.46 * W.Wd + 0.07 * W.Wd + G.lidW / 2); G.zh = Math.round(W.zP + 0.12 * W.H);
+    // 힌지는 벽에서 덮개 폭의 0.9배(실물 약 32cm) 앞에 둔다(10-21 대표님: 맥북 뒤로 우리 방 벽과 책상 모서리가 보이게).
+    // 베젤 거리 카메라에서 모서리 선이 화면 높이 45~50% 안팎(1440 y≈430)에 와서, 왼쪽 목록과 아래 글 격자 사이를 지나고 덮개 뒤로 이어진다
+    G.cx = Math.round(W.Wd / 2 + 0.46 * W.Wd + 0.07 * W.Wd + G.lidW / 2); G.zh = Math.round(0.9 * G.lidW);
     Object.assign(mb.style, { left: (G.cx - G.lidW / 2) + 'px', top: G.zh + 'px', width: G.lidW + 'px' });
     mb.style.setProperty('--wi', G.Wi + 'px'); mb.style.setProperty('--hi', G.Hi + 'px'); mb.style.setProperty('--bz', G.bz + 'px'); mb.style.setProperty('--chin', G.chin + 'px');
     mb.style.setProperty('--gap', Math.round(G.Wi * 0.06) + 'px');
@@ -2478,6 +2480,7 @@ window.ticker = (() => {
 </script>
 <script type="module">
 // MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c)
+// Reflection HDRI: studio_small_09 by Poly Haven (polyhaven.com, CC0), 256×128로 줄임(macbook/studio.hdr)
 // 맥북 몸체(card-drop, 10-21 조율 합의). 화면 속 서비스(iframe)·자리·카메라는 그대로 CSS 무대(scene-web.js, web-live.js)가 맡고,
 // 이 파일은 그 iframe을 끼운 실물 맥북만 WebGL로 그린다. 캔버스는 무대(#stage-root) 바로 아래 고정 층이라 iframe·글은 늘 그 위에 얹힌다.
 //  · 카메라: Stage.camera(θ, T, d)와 원근 P를 그대로 옮긴다. CSS 세계 (x, y, z) = three (x, −y, z), 단위 px
@@ -2500,11 +2503,12 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
   async function start(){
     if (started) return; started = true;
     if (!mb || !glOK()) return;
-    const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RectAreaLightUniformsLib }] = await Promise.all([
+    const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RectAreaLightUniformsLib }, { RGBELoader }] = await Promise.all([
       import(`${T3}/+esm`),
       import(`${T3}/examples/jsm/loaders/GLTFLoader.js/+esm`),
       import(`${T3}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
       import(`${T3}/examples/jsm/lights/RectAreaLightUniformsLib.js/+esm`),
+      import(`${T3}/examples/jsm/loaders/RGBELoader.js/+esm`),
     ]);
     RectAreaLightUniformsLib.init();
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(new URL('macbook/macbook.glb', document.baseURI).href);
@@ -2530,7 +2534,11 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     envScene.add(box, ceil, glow);
     const pm = new THREE.PMREMGenerator(renderer);
     scene.environment = pm.fromScene(envScene, 0.02).texture;
-    pm.dispose();
+    // 금속 반사는 스튜디오 HDRI(10-21 대표님 결정)로 바꾼다. 배경에는 쓰지 않고 environment로만. 불러오기 전·실패 때는 위의 자체 방이 대신한다
+    new RGBELoader().loadAsync(new URL('macbook/studio.hdr', document.baseURI).href).then(t => {
+      t.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = pm.fromEquirectangular(t).texture; t.dispose(); pm.dispose(); key = '';
+    }).catch(() => pm.dispose());
 
     // 모델: 덮개를 힌지 축으로 눕힌 뒤, 화면 아래 끝 가운데를 원점에 둔다
     const model = gltf.scene;
