@@ -2331,7 +2331,9 @@ window.ticker = (() => {
     let wv0 = 0, nearT = -1e9;   // 파도 시작 시각, 커서가 이름 근처에 있던 마지막 시각
     const WD = 1700, WA = 0.85, WS = 1.15;   // 파도 한 번의 길이(ms), 마루 높이, 마루 반폭(글자 수)
     const src = () => {
-      if (cardOn() || (!fine && !haveP)) { const r = card.getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; }
+      // 터치 화면은 명함을 따라 부풀지 않는다(10-22 대표님: 히어로 명찰 흔들림이 버벅인다). 세로 구도에서 명함이 이름 위에 걸쳐
+      // 흔들리는 동안 글자 SVG 빛 필터를 매 프레임 다시 그렸고, 아이폰 사파리는 이 필터를 CPU로 그린다. 손가락 밑 글자와 파도는 그대로
+      if (cardOn() && fine) { const r = card.getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; }
       return haveP ? [px, py] : null;
     };
     const step = () => {
