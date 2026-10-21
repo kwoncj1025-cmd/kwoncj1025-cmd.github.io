@@ -248,12 +248,16 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .peek.gone{opacity:0;transform:translate(-50%,110%);pointer-events:none}
 .peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
 @keyframes bob{50%{translate:0 -9px}}
-/* 처음 온 사람이 카드만 만지다 떠나지 않게(10-21 대표님): 카드 더미 오른쪽에 「Scroll ↓」 한 줄. 화면 아래 끝에서 14px 위, 더미와 함께 사라진다 */
-.peek-t{position:absolute;left:calc(100% + 14px);bottom:calc(46% + 14px);display:flex;align-items:center;gap:6px;white-space:nowrap;
-  font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
-.peek-t svg{width:12px;height:12px;animation:bob 2.6s ease-in-out infinite}
+/* 처음 온 사람이 카드만 만지다 떠나지 않게(10-21 대표님): 카드 더미 오른쪽에 아래 화살표 셋을 세로로. 위에서 아래로 차례로 진해지며 흘러내린다.
+   선은 사이트 아이콘과 같은 1.4px 둥근 끝, 색은 보조 글색. 더미와 함께 사라진다 */
+.peek-t{position:absolute;left:calc(100% + 16px);bottom:calc(46% + 8px);display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-2)}
+.peek-t svg{display:block;width:14px;height:8px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;
+  opacity:.18;animation:chev 1.8s cubic-bezier(.45,0,.55,1) infinite}
+.peek-t svg:nth-child(2){animation-delay:.18s}
+.peek-t svg:nth-child(3){animation-delay:.36s}
+@keyframes chev{0%,100%{opacity:.18;translate:0 -2px}35%{opacity:1;translate:0 1px}70%{opacity:.18;translate:0 2px}}
 .peek:hover .peek-t{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){.peek i,.peek-t svg{animation:none}}
+@media (prefers-reduced-motion:reduce){.peek i,.peek-t svg{animation:none}.peek-t svg{opacity:.7}}
 /* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
 .back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
 .back .row{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
@@ -713,7 +717,7 @@ html.end-on .totop{bottom:var(--ei-top-b,20px)}
   <dl class="wi-dl"><dt>Service</dt><dd class="wi-ko"></dd><dd class="wi-line"></dd></dl>
   <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
 </aside>
-<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i><span class="peek-t" aria-hidden="true">Scroll<svg viewBox="0 0 14 14" fill="none"><path d="M7 2.5v9M7 11.5l-4-4M7 11.5l4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg></span></button>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
