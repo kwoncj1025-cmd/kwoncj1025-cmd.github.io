@@ -2189,7 +2189,7 @@ window.ticker = (() => {
     const body = sv('feComposite', { in: 'l', in2: 'SourceAlpha', operator: 'in', result: 'b' });
     const sBlur = sv('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: 0, result: 'sa' });
     const sOff = sv('feOffset', { in: 'sa', dx: 0, dy: 0, result: 'so' });
-    const sCol = sv('feColorMatrix', { in: 'so', type: 'matrix', values: '0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.12  0 0 0 0 0', result: 'sc' });   // 그림자: 푸른 기운 도는 어둠
+    const sCol = sv('feColorMatrix', { in: 'so', type: 'matrix', values: '0 0 0 0 0.063  0 0 0 0 0.047  0 0 0 0 0.118  0 0 0 0 0', result: 'sc' });   // 그림자: 푸른 기운 도는 어둠
     const merge = sv('feMerge', {}, [sv('feMergeNode', { in: 'sc' }), sv('feMergeNode', { in: 'b' })]);
     const f = sv('filter', { id, x: '-30%', y: '-30%', width: '160%', height: '170%', 'color-interpolation-filters': 'sRGB' }, [blur, spec, diff, shade, gloss, lit, body, sBlur, sOff, sCol, merge]);
     infSvg.firstChild.appendChild(f);
@@ -2202,7 +2202,7 @@ window.ticker = (() => {
       const a = 0.9 * Math.min(1, q); shade.setAttribute('k1', a.toFixed(3)); shade.setAttribute('k2', (1 - 0.79 * a).toFixed(3));
       lit.setAttribute('k2', (0.55 * Math.min(1.2, q)).toFixed(3));
       sBlur.setAttribute('stdDeviation', (fs * 0.035 * q + 0.5).toFixed(2)); sOff.setAttribute('dy', (fs * 0.05 * q).toFixed(2));
-      sCol.setAttribute('values', `0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.12  0 0 0 ${(0.22 * Math.min(1, q)).toFixed(3)} 0`);
+      sCol.setAttribute('values', `0 0 0 0 0.063  0 0 0 0 0.047  0 0 0 0 0.118  0 0 0 ${(0.22 * Math.min(1, q)).toFixed(3)} 0`);
     };
     return { id, set };
   }
