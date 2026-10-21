@@ -2679,17 +2679,17 @@ window.ticker = (() => {
   }
   // iframe: 고른 서비스(와 바꾸는 동안 앞 서비스)만 둔다
   // 휴대폰(10-21 조율, 모바일 성능): iframe을 붙이는 일(문서 만들기·첫 탐색)을 스크롤 밖으로 뺀다.
-  //  · 정거장에 닿았거나(0.004 안: 스냅으로 미끄러지는 끝자락에 붙이면 그 미끄럼이 끊겼다) 손가락이 멈춰 무대가 가라앉았을 때만 붙인다. 그 전에는 꺼진 화면(검정)이 그대로 보인다
+  //  · 맥북 정거장에서 무대가 완전히 멈춘 뒤에만 붙인다(붙이는 순간 메인 스레드가 0.3~0.5초 막힌다: 미끄러지는 끝자락이나 중간에 멈춘 틈에 붙이면 다음 손짓이 끊겼다). 그 전에는 꺼진 화면(검정)이 그대로 보인다
   //  · 붙이기는 그 프레임에서 하지 않고 다음 틈(setTimeout)으로 미룬다
   //  · 서비스를 바꾸는 동안 앞 서비스를 남기지 않고, 띠가 다 밀린 뒤 고른 것 하나만 붙인다(동시에 1개)
   let mountT = 0;
   function sync(){
     const p = Stage.state.p, on = live(p);
     if (!narrow()) { panes.forEach((x, i) => { if (on && (i === sel || (anim && i === prev))) mount(x); else unmount(x); }); return; }
-    const ready = on && !anim && (Math.abs(p - WEB) < 0.004 || Stage.state.settled);
+    const ready = on && !anim && Stage.state.settled && Math.abs(p - WEB) < 0.02;
     panes.forEach((x, i) => { if (!(on && i === sel)) unmount(x); });
     const x = panes[sel];
-    if (ready && !x.frame && !mountT) mountT = setTimeout(() => { mountT = 0; const p2 = Stage.state.p; if (live(p2) && !anim && panes[sel] === x && (Math.abs(p2 - WEB) < 0.004 || Stage.state.settled)) mount(x); }, 60);
+    if (ready && !x.frame && !mountT) mountT = setTimeout(() => { mountT = 0; const p2 = Stage.state.p; if (live(p2) && !anim && panes[sel] === x && Stage.state.settled && Math.abs(p2 - WEB) < 0.02) mount(x); }, 60);
   }
   function update(p){
     if (anim) {
@@ -3288,7 +3288,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       const mbOn = mb.classList.contains('mb-on'), on = mbOn && Stage.state.p > web() - 0.75;
       canvas.style.visibility = on ? '' : 'hidden';
       if (!on && !(mbOn && !warmed)) { key = ''; return; }
-      if (!on) { warmed = true; renderer.compile(scene, cam); }   // 보이지 않을 때 셰이더를 미리 짓는다(맥북 직전 p 1.4 끊김, bizcopilot 측정)
+      if (!on) warmed = true;   // 셰이더 컴파일은 아래 「미리 짓기」(무대가 멈춘 틈)가 맡는다. 여기서 하면 스크롤 도중(맥북 장면이 깨는 p 1.33)에 몰린다
       const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
       const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
       const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
