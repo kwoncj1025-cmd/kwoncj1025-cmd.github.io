@@ -1590,7 +1590,8 @@ window.ticker = (() => {
     // 숙이는 동안(0.24~0.72) 서서히 줄어 원근으로 읽힌다
     const pc = document.querySelector('#work .pc'), cw = pc ? pc.offsetWidth : 200, sd = Math.min(1, cw * 1.04 / (300 * KS));
     const mk = tb && tb.querySelector('.tmark'), mTop = mk ? offs(mk, tb).y : Dt - 0.2 * innerHeight;
-    const hw = 150 * KS * sd, hh = 215 * KS * sd, zMax = mTop - hh * 1.12 - 10;   // 「Selected Work」 인쇄에 걸리지 않는 끝(기울기 여유 12%)
+    // 「Selected Work」 인쇄에 걸리지 않는 끝(기울기 여유 12%). 인쇄가 책상 위쪽에 있으면(세로 화면: 맨 위 가로 인쇄) 아래 끝은 책상 끝이다
+    const hw = 150 * KS * sd, hh = 215 * KS * sd, zMax = (mTop > Dt * 0.5 ? mTop : Dt) - hh * 1.12 - 10;
     // 귀퉁이 자리는 그 위 「19 posts · @chanjun.kwon」 줄에도 걸리지 않게 한다
     const mt = tb && tb.querySelector('.tmeta'), zMeta = mt ? offs(mt, tb).y - hh * 1.12 - 14 : zMax;
     return { Hw, Dt, tl, TW, pa, sd, hw, hh, zMax, zMeta: Math.min(zMax, zMeta) };
@@ -1599,8 +1600,9 @@ window.ticker = (() => {
   const pileSpot = g => ({ x: g.tl + g.pa.x + 0.02 * innerWidth, z: Math.min(g.zMax, g.pa.y - 0.03 * g.Dt) });
   // 밀려나 멈추는 책상 앞 오른쪽 귀퉁이(10-21 대표님 결정: 작업 카드 밖, 화면 오른쪽 끝에 반쯤 걸쳐 작업보다 먼저 눈에 들지 않게.
   // 왼쪽은 세로 「Selected Work」 인쇄를 덮어 조율 결정으로 옮김). 깊이는 「@chanjun.kwon」 줄 위
-  // 세로 화면(820 이하)은 책상이 화면보다 길어 「@chanjun.kwon」 줄이 책상 맨 아래에 있다. 명함은 work 첫 화면(책상 맨 위 화면 높이) 아래쪽 귀퉁이에 멈춘다
-  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: innerWidth <= 820 ? Math.min(g.zMeta, innerHeight * 0.94 - g.hh * 1.12) : g.zMeta });
+  // 세로 화면(820 이하)은 책상이 화면보다 길고, 맨 아래 「@chanjun.kwon」 줄 위에 명함 자리가 비어 있다(table.js). 데스크톱과 같이 그 줄 바로 위에 멈춘다.
+  // 더미(맨 위 화면 안)를 친 뒤 책상을 따라 길게 미끄러져 내려가고, 카메라가 책상을 내려가면(p 1~1.18) 그 자리에서 다시 만난다
+  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta });
   const target = g => {
     if (!desk.moved) { const c = sideCorner(g); desk.x = c.x; desk.z = c.z; }
     // 카드를 모을 때도 같은 귀퉁이로 밀린다(사용자가 옮겨 둔 명함만 움직인다). 밀리며 살짝 돈다
@@ -2707,7 +2709,9 @@ window.ticker = (() => {
     Hero.desk.face(ease((s.p - (end - 0.25)) / 0.2));
     // 잠기는 구간은 work를 떠나자마자(1.05~1.30). 명함 자리(책상 앞 오른쪽)는 맥북 뒤라, 카메라가 맥북 쪽으로 돌면 화면에 겹친다.
     // 맥북은 WebGL이라 DOM 명함을 가리지 못해 명함이 화면을 뚫고 지나가 보였다(10-21 대표님 화면, 겹침은 p≈1.36부터) → 겹치기 전에 다 잠긴다
-    if (web > 0) Hero.desk.show(1 - ease((s.p - (web - 0.95)) / 0.25) + ease((s.p - (end - 1)) / 0.3));
+    // 세로 화면은 카메라가 긴 책상을 따라 내려가 맨 아래 명함을 만나는 구간(p 1~1.18)이 있어, 그 뒤(1.22~1.47)에 잠긴다
+    const dim0 = innerWidth <= 820 ? web - 0.78 : web - 0.95;
+    if (web > 0) Hero.desk.show(1 - ease((s.p - dim0) / 0.25) + ease((s.p - (end - 1)) / 0.3));
     // 맺음 자리: 명함이 다 잠긴 뒤(맥북 앞 정거장 0.2 앞)부터 맥북 왼쪽 여백에 있다. 보이지 않는 동안 바뀌므로 되감아도 순간 이동이 보이지 않는다
     if (web > 0 && Hero.desk.end) Hero.desk.end(s.p >= web - 0.2);
   });
@@ -2774,7 +2778,7 @@ window.ticker = (() => {
     mb.style.setProperty('--ls', (G.Wi / (W.mobile ? 1280 : 1728)).toFixed(5));   // 화면 속 서비스의 논리 해상도 배율(stage.css .mb-pane iframe)
     Object.assign(base.style, { width: G.lidW + 'px', height: G.baseD + 'px' });
     // 모바일 글 격자는 화면 위 빈자리에 놓는다: 메뉴 막대 위끝(뷰포트 y)을 알려 준다(6-macbook.css --scr-top)
-    if (W.mobile) mobBelow = mobPick();
+    if (W.mobile) mobDlv = mobPick();
     if (info) { if (W.mobile) info.style.setProperty('--scr-top', Math.round(W.H / 2 + mobDl() - G.Hi / 2 - G.Wi * 0.0222) + 'px'); else info.style.removeProperty('--scr-top'); }
     Object.assign(lid.style, { width: G.lidW + 'px', height: G.lidH + 'px', top: -G.lidH + 'px' });
     setLid(OPEN);
@@ -2816,18 +2820,29 @@ window.ticker = (() => {
       return { th: 80, Tx: (e.x + mx) / 2 + (W.mobile ? 0 : 0.05) * W.Wd * k, Ty: 0, Tz: (e.z + G.zh) / 2 + (W.mobile ? -0.02 : -0.064) * W.H * k, d };
     },
   };
-  // 키 큰 휴대폰(높이 > 폭 2배, 10-21 조율 「나」): 맥북을 올려 키보드 윗줄 몇 개가 보이게 하고, 글 묶음이 위아래로 고르게 오게 한다.
-  // 자르는 선은 키보드 줄 사이 틈(화면 아래끝에서 화면 폭 비율로 실측: 기능키 줄 뒤 0.103 · 숫자 줄 0.138 · Q 줄 0.173 · A 줄 0.209). 낮은 화면은 힌지~첫 줄 사이(0.058, 힌지 기준)
-  const ROW_GAPS = [0.103, 0.138, 0.173, 0.209];
-  let mobBelow = 0;   // 화면 아래끝 → 뷰포트 아래끝(px). measure가 정한다
+  // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리 mobDl(배율 1이라 px 그대로). measure가 정한다.
+  //  · 낮은 화면: 화면 아래끝이 힌지와 키보드 첫 줄 사이(힌지에서 화면 폭의 5.8%)를 자른다
+  //  · 키 큰 휴대폰(높이 > 폭 2배, 10-21 조율 「나」): 맥북을 올려 키보드 윗줄 몇 개가 보이게 하고, 화면 아래끝이 키보드 줄 사이 틈을 자르게 한다.
+  //    틈 자리는 힌지에서 몸체를 따라 잰 거리(덮개 폭 비율, 390 렌더에서 투영을 거꾸로 풀어 실측): 기능키 줄 뒤 0.105 · 숫자 줄 0.161 · Q 줄 0.213 · A 줄 0.265.
+  //    투영(stage.js 카메라: rotateX(−θ), 거리 P, θ = 덮개 기울기)에서 몸체 위 점 u의 화면 y = H/2 + (R + u·sinθ)·P/(P − u·cosθ), R = 화면 가운데→힌지(덮개 위) + mobDl.
+  //    그 y가 H가 되는 R을 풀고, 위 글 묶음의 위아래 여백이 0.11H 안에 들 때까지 줄을 늘린다(최대 A 줄까지)
+  const KB_GAPS = [0.105, 0.161, 0.213, 0.265];
+  let mobDlv = 0;
   function mobPick(){
-    if (W.H <= 2 * W.Wd) return G.chin + Math.round(G.Wi * 0.058);
+    const r = G.Hi / 2 + G.chin;
+    if (W.H <= 2 * W.Wd) return W.H / 2 - r - Math.round(G.Wi * 0.058);
+    const a = TH * Math.PI / 180, Pp = P(), sn = Math.sin(a), cs = Math.cos(a);
     const ib = info && info.querySelector('.wi-body'), ie = info && info.querySelector('.wi-ey');
-    const T = ib && ie ? Math.max(0, ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top) : 0;   // 글이 아직 비어 있으면(첫 측정) 아래 0.2H로 본다
-    for (const g of ROW_GAPS) { const top = W.H - g * G.Wi - G.Hi - G.Wi * 0.0222, m = (top - 36 - Math.max(T, 0.2 * W.H)) / 2; if (m <= 0.11 * W.H) return Math.round(g * G.Wi); }
-    return Math.round(ROW_GAPS[ROW_GAPS.length - 1] * G.Wi);
+    const T = Math.max(0.2 * W.H, ib && ie ? ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top : 0);
+    let dl = 0;
+    for (const g of KB_GAPS) {
+      const u = g * G.lidW, R = (W.H / 2) * (Pp - u * cs) / Pp - u * sn; dl = R - r;
+      const top = W.H / 2 + dl - G.Hi / 2 - G.Wi * 0.0222;
+      if ((top - 36 - T) / 2 <= 0.11 * W.H) break;
+    }
+    return dl;
   }
-  const mobDl = () => W.H / 2 - G.Hi / 2 - mobBelow;   // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리(배율 1이라 px 그대로)
+  const mobDl = () => mobDlv;
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
   const ST = n => Stage.config.stations.findIndex(x => x.name === n);
   const WEB = () => ST('web'), END = () => Stage.config.stations.length - 1;
