@@ -2848,6 +2848,8 @@ window.ticker = (() => {
   const easeIO = u => u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
   // 맥북이 드러날 때(정거장 0.5 앞)부터 맺음으로 물러나 화면이 잠들기 전까지 화면을 띄운다
   const live = p => p > WEB - 0.5 && p < END - 0.35;
+  // 써 보기는 맥북 정거장 근처에서만(10-21 대표님 제보: 맺음 화면에서 맥북을 누르면 빈 화면으로 들어가 무대가 잠겼다). 범위는 화면 위 안내 글과 같다
+  const usable = p => p >= WEB - 0.4 && p <= END - 0.75;
   function select(v, opts = {}){
     const i = idxOf(v); if (i < 0) return;
     if (i === sel && !opts.force) return;
@@ -2968,7 +2970,7 @@ window.ticker = (() => {
     Stage.refresh();                                 // scene-web이 useK로 카메라를 화면 속까지 당긴다(모바일은 카메라 대신 위의 상자)
   });
   function enterUse(){
-    const x = panes[sel]; if (!x || using) return;
+    const x = panes[sel]; if (!x || using || !usable(Stage.state.p)) return;
     if (ARTIFACT && x.sv.external) { window.open(x.sv.url, '_blank', 'noopener'); return; }
     if (!x.frame) mount(x);
     using = x; hold = Stage.hold('web');
@@ -3016,6 +3018,7 @@ window.ticker = (() => {
   }
   Stage.ticker.add(() => {
     const p = Stage.state.p; if (p !== lp || anim) { lp = p; update(p); }
+    if (hit.hidden === usable(p)) hit.hidden = !usable(p);   // 범위 밖에서는 덮개를 치워 누름이 책상·명함으로 간다
     if (tipOn && (p < WEB - 0.4 || p > END - 0.75)) { tipOn = false; tip.classList.remove('on'); }
     placeNote(p); placeDim();
   });
