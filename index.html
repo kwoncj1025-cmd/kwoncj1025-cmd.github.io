@@ -1707,9 +1707,12 @@ window.ticker = (() => {
   };
   // 데스크톱: 맥북 왼쪽 옆(몸체 왼쪽 끝에서 덮개 폭의 0.16만큼, 10-21 끝 화면에서 둘을 한 덩어리로 모으며 0.3에서 좁힘 떨어지고, 깊이는 키보드면 가운데 줄).
   // 세로 화면(820 이하): 옆에 두면 맥북이 잘리므로 맥북 앞 책상(몸체 앞 끝에서 덮개 폭의 0.18 앞, 가운데에서 살짝 왼쪽)
+  // 끝 화면(10-21 조율: 명함이 화면 높이 1/12로 작아 맥북과 한 묶음으로 읽히지 않음): 데스크톱은 맺음 자리에서 명함을 1.6배로 키워 둔다.
+  // 어둠에 잠긴 동안 자리를 옮길 때 같이 바뀌어 움직임은 보이지 않는다. 세로 화면은 이미 맥북 앞 가까이에 있어 그대로
+  const endScale = () => innerWidth <= 820 ? 1 : 1.6;
   function endSpot(g){
     const wg = Stage.webGeo; if (!wg || !wg.G.lidW) return null;
-    const G = wg.G;
+    const G = wg.G; g = Object.assign({}, g, { hw: g.hw * endScale(), hh: g.hh * endScale() });
     if (innerWidth <= 820) return { x: G.cx - 0.12 * G.lidW, z: G.zh + G.baseD + 0.18 * G.lidW + g.hh };
     return { x: G.cx - G.lidW / 2 - 0.16 * G.lidW - g.hw, z: G.zh + 0.42 * G.baseD };
   }
@@ -1717,7 +1720,7 @@ window.ticker = (() => {
   // → 책상 위를 미끄러지며 반 바퀴 돌아 더미 위에 멈춤(0.46~0.86, 회전은 0.40부터).
   // 스크럽에서 정거장 스냅이 ±0.12 안에서만 붙으므로, 미끄러짐을 0.86까지 이어 손 밑에서 멈춘 구간이 생기지 않게 한다
   function pose(t, g){
-    const sc = 1 + (g.sd - 1) * ss(0.24, 0.72, t), h = 215 * KS * sc, a0 = anchor(), floor = g.Hw - 1.5;
+    const sc = (1 + (g.sd - 1) * ss(0.24, 0.72, t)) * (desk.ek ? endScale() : 1), h = 215 * KS * sc, a0 = anchor(), floor = g.Hw - 1.5;
     const sl = ss(0.15, 0.20, t);
     const cx = a0.x + 5 * KS * sl, cy0 = a0.y + seg0 * (N - 1) + CT + 215 * KS + 4 * KS * sl;
     const yb0 = cy0 + h, D = Math.max(0, floor - yb0);
@@ -2154,7 +2157,7 @@ window.ticker = (() => {
       // 귀퉁이에 밀려난 명함 가운데의 세계 좌표(08 1절 축: 원점 = 모서리 가운데, x 오른쪽, z 시청자 쪽). 맺음 카메라가 이 점을 겨눈다
       get cornerAt(){ const g = geo(), k = desk.ck, e = desk.ek; desk.ck = 1; desk.ek = 0; const t = target(g); desk.ck = k; desk.ek = e; return { x: t.x - (heroLayer.offsetWidth || innerWidth) / 2, z: t.z }; },
       // 맺음 자리(맥북 왼쪽 여백)의 세계 좌표. 맺음 카메라와 맺음 줄이 이 점을 겨눈다
-      get hw(){ return geo().hw; },
+      get hw(){ return geo().hw * endScale(); },   // 끝 화면 명함 반폭(cam.end가 묶음 폭을 잰다)
       get endAt(){ const g = geo(), e = endSpot(g); return e ? { x: e.x - (heroLayer.offsetWidth || innerWidth) / 2, z: e.z } : this.cornerAt; },
       // 맺음 자리로 옮김(0 귀퉁이, 1 맥북 왼쪽). 명함이 보이지 않는 동안에만 바뀐다(scene-hero)
       end(k){ k = k ? 1 : 0; if (k !== desk.ek) { desk.ek = k; wakeBadge(); } },
@@ -2222,7 +2225,7 @@ window.ticker = (() => {
   if (window.Hero) Hero.weightText = (el, isOn) => weightText(el, isOn, () => false);
 
   new IntersectionObserver(es => { const e = es[es.length - 1]; heroIn = e.isIntersecting && e.intersectionRatio > 0; if (heroIn) wakeBadge(); }, { threshold: [0, 0.001] }).observe(hero);
-  addEventListener('scroll', () => { const r = hero.getBoundingClientRect(); heroIn = r.bottom > 0 && r.top < innerHeight; if (heroIn) wakeBadge(); }, { passive: true });   // 관찰자가 늦을 때를 위한 보조
+  addEventListener('scroll', () => { if (STG && ct >= 1) return; const r = hero.getBoundingClientRect(); heroIn = r.bottom > 0 && r.top < innerHeight; if (heroIn) wakeBadge(); }, { passive: true });   // 관찰자가 늦을 때를 위한 보조. 벽을 넘어간 뒤(무대 ct 1)에는 world.js가 보내는 scroll마다 배치를 강제하지 않게 건너뛴다(bizcopilot 측정 40ms)
   ['pointerdown', 'pointermove'].forEach(t => hero.addEventListener(t, wakeBadge, { capture: true, passive: true }));
   addEventListener('resize', wakeBadge);
   ['toBack', 'toFront'].forEach(id => document.getElementById(id).addEventListener('click', wakeBadge));
@@ -2676,17 +2679,17 @@ window.ticker = (() => {
   }
   // iframe: 고른 서비스(와 바꾸는 동안 앞 서비스)만 둔다
   // 휴대폰(10-21 조율, 모바일 성능): iframe을 붙이는 일(문서 만들기·첫 탐색)을 스크롤 밖으로 뺀다.
-  //  · 정거장에 거의 닿았거나(0.06 안) 손가락이 멈춰 무대가 가라앉았을 때만 붙인다. 그 전에는 꺼진 화면(검정)이 그대로 보인다
+  //  · 정거장에 닿았거나(0.004 안: 스냅으로 미끄러지는 끝자락에 붙이면 그 미끄럼이 끊겼다) 손가락이 멈춰 무대가 가라앉았을 때만 붙인다. 그 전에는 꺼진 화면(검정)이 그대로 보인다
   //  · 붙이기는 그 프레임에서 하지 않고 다음 틈(setTimeout)으로 미룬다
   //  · 서비스를 바꾸는 동안 앞 서비스를 남기지 않고, 띠가 다 밀린 뒤 고른 것 하나만 붙인다(동시에 1개)
   let mountT = 0;
   function sync(){
     const p = Stage.state.p, on = live(p);
     if (!narrow()) { panes.forEach((x, i) => { if (on && (i === sel || (anim && i === prev))) mount(x); else unmount(x); }); return; }
-    const ready = on && !anim && (Math.abs(p - WEB) < 0.06 || Stage.state.settled);
+    const ready = on && !anim && (Math.abs(p - WEB) < 0.004 || Stage.state.settled);
     panes.forEach((x, i) => { if (!(on && i === sel)) unmount(x); });
     const x = panes[sel];
-    if (ready && !x.frame && !mountT) mountT = setTimeout(() => { mountT = 0; const p2 = Stage.state.p; if (live(p2) && !anim && panes[sel] === x && (Math.abs(p2 - WEB) < 0.06 || Stage.state.settled)) mount(x); }, 60);
+    if (ready && !x.frame && !mountT) mountT = setTimeout(() => { mountT = 0; const p2 = Stage.state.p; if (live(p2) && !anim && panes[sel] === x && (Math.abs(p2 - WEB) < 0.004 || Stage.state.settled)) mount(x); }, 60);
   }
   function update(p){
     if (anim) {
@@ -3011,7 +3014,7 @@ window.ticker = (() => {
   //    틈 자리는 힌지에서 몸체를 따라 잰 거리(덮개 폭 비율, 390·430 렌더에서 실측 보정): 기능키 줄 뒤 0.122 · 숫자 줄 0.178 · Q 줄 0.233. 윗줄 세 개(기능키·숫자·Q)까지만 보인다.
   //    투영(stage.js 카메라: rotateX(−θ), 거리 P, θ = 덮개 기울기)에서 몸체 위 점 u의 화면 y = H/2 + (R + u·sinθ)·P/(P − u·cosθ), R = 화면 가운데→힌지(덮개 위) + mobDl.
   //    그 y가 H가 되는 R을 풀고, 위 글 묶음의 위아래 여백이 0.11H 안에 들 때까지 줄을 늘린다(최대 Q 줄까지)
-  const EW = 0.5, EH = 1.35 / 0.55, EZ = 0.1;   // 끝 화면 덩어리 폭 비율 · 세로 자리
+  const EW = 0.5, EH = 1.35 / 0.55, EZ = 0.08;   // 끝 화면 덩어리 폭 비율 · 세로 자리
   const KB_GAPS = [0.122, 0.178, 0.233];
   let mobDlv = 0;
   // 화면 아래를 가리는 높이(10-21 대표님 실기기 판정 「아래로 많이 처짐」): iOS 26 Safari는 주소 막대가 페이지 위에 떠 있어 innerHeight가 막대 뒤까지 잰다.
