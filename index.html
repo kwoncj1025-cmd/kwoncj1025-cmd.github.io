@@ -272,6 +272,10 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   .tfoot{--pl:max(20px,env(safe-area-inset-left,0px));--pr:max(20px,env(safe-area-inset-right,0px));--pb:calc(40px + env(safe-area-inset-bottom,0px))}
   .tmeta{left:calc(var(--pl) + var(--mk,0px) + 16px)}
   .pile{--cw:min(36vw,170px,24svh)}
+  /* 모바일 세로 책상(무대, 10-21 대표님 선택): 카드는 화면 폭의 44%(대표작 1.3배는 table.js), 「Selected Work」는 책상 위 끝에 가로로 인쇄한다 */
+  html.stage-on .pile{--cw:min(44vw,200px)}
+  html.stage-on .tmark{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto;transform:none;line-height:.86}
+  html.stage-on .tmeta{left:var(--pl)}
   .back{padding:12px 10px 9px}
   .back .sub{display:none}
   .back .row{font-size:7.5px}
@@ -417,6 +421,20 @@ html.stage-on .web-note.is-cue{animation:webNoteCue 1.6s cubic-bezier(.3,0,.2,1)
 /* 불러오는 동안의 화면은 꺼진 맥 화면(검정). 문서가 뜨면 짧게 켜진다 */
 html.stage-on .mb-pane iframe{transition:opacity .35s ease-out}
 html.stage-on .mb-pane iframe.is-loading{opacity:0}
+/* 모바일 써 보기 = 전체 화면(web-live.js fsBegin): 화면 사각형이 덮개 안에서 커져 휴대폰 화면을 덮는다. 그동안 메뉴 막대·턱 글은 화면 아래로 들어가고,
+   닫기는 늘 보이는 오른쪽 위 단추 하나다. 서비스 바탕이 밝든 어둡든 읽히게 반투명 먹색 원에 흰 ×(가운데 뜨는 상자·알약 없음) */
+html.stage-on .mb.fs .mb-screen{z-index:6}
+.web-close{display:none}
+@media (max-width:820px){
+  html.stage-on .web-close{display:grid;place-items:center;position:fixed;z-index:47;top:calc(env(safe-area-inset-top,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 10px);
+    width:36px;height:36px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(10,11,16,.62);color:#fff;cursor:pointer;
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 0 .5px rgba(255,255,255,.18);
+    opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s}
+  html.stage-on.web-fs .web-close{opacity:1;visibility:visible;transition:opacity .25s ease-out .3s,visibility 0s}
+  html.stage-on .web-close svg{width:14px;height:14px}
+  html.stage-on .web-close:focus-visible{outline:2px solid var(--soft);outline-offset:2px}
+  html.stage-on.web-fs :is(.peek,.totop){visibility:hidden}
+}
 /* 맥북(card-drop, 10-21 조율 합의): 몸체·덮개·힌지는 macbook3d.js가 WebGL로 그리고(MahdiEdits 3D 모델), CSS 무대에는 화면(iframe)만 남는다.
    캔버스는 무대 바로 아래 고정 층이라, 덮개 자리의 CSS 면은 투명하게 두고 iframe만 모델 화면 자리에 얹는다.
    WebGL이 없으면 iframe만 보인다 */
@@ -505,11 +523,17 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
   html.stage-on body .web-info .wi-iname,html.stage-on body .web-info .wi-sub .wi-iname{font-size:16px}
 }
 @media (max-width:820px){
-  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto 1fr;padding:32px 20px 24px}
-  /* 375급: 맥북이 화면 아래 절반을 차지하므로 글은 눈썹 바로 아래에 둔다 */
-  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:3;align-self:start;margin-top:14px;gap:10px}
-  html.stage-on body .web-info .wi-name{font-size:36px}
+  /* 10-21 대표님 「맥북 유지 + 써 보기 전체 화면」(16 4항): 카메라가 덮개에 붙어 화면이 폭의 92%로 아래쪽에 선다(scene-web.js 모바일 베젤).
+     글은 그 위 빈자리에 둔다: 눈썹은 위 끝, 목록(가로 한 줄)과 이름·한 줄 소개는 화면 바로 위에 모은다(--scr-top = 메뉴 막대 위끝, 그 위 안내 글 한 줄 자리를 비운다).
+     범위·연도는 접는다(이름과 한 줄 소개만, 원 사이트 링크는 남긴다) */
+  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto 1fr auto auto;
+    padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(100dvh - var(--scr-top,62dvh) + 44px)}
+  html.stage-on body .web-info .wi-list{grid-row:3}
+  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:4;align-self:end;margin-top:clamp(12px,2.4dvh,22px);gap:8px}
+  html.stage-on body .web-info .wi-meta{display:none}
+  html.stage-on body .web-info .wi-name{font-size:clamp(32px,9vw,40px)}
   html.stage-on body .web-info .wi-line{font-size:13.5px}
+  html.stage-on body .web-info .wi-go{margin-top:2px}
 }
 </style>
 
@@ -645,6 +669,7 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
         alias: ['bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
+    split: null,             // 구간 하나를 둘로 나눠 앞부분만 다른 스크롤 거리로: [구간, 앞부분 진행값 길이, 앞부분 화면 수]. 모바일 세로 책상을 따라 내려가는 구간(world.js가 정한다)
     free: [],                // 자유 구간 [시작, 끝, 화면 수](지금은 없다. 긴 문서는 맥북 화면 속 iframe이 스스로 스크롤한다)
     // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수. 카드 → 맥북 2.5 · 맥북 → 맺음 2.5
     seg: [2.2, 2.5, 2.5],
@@ -689,17 +714,29 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
   // 구간 i([i, i+1])에서 진행값 1이 몇 px인가
   const segPx = i => { i = clamp(i, 0, last() - 1); const f = config.free.find(z => z[0] === i); return (config.seg[i] == null && f ? f[2] : config.seg[i] || 1) * innerHeight; };
 
-  // 스크롤 px를 진행값에 적분한다. 구간 경계를 넘으면 다음 구간의 거리로 이어서 센다. 양 끝 너머는 고무줄(갈수록 무겁다)
+  // 조각: [시작, 끝, 진행값 1의 px]. 보통은 구간 하나가 조각 하나이고, split이 있으면 그 구간을 두 조각으로 나눈다(뒷조각은 원래 빠르기)
+  const pieces = () => {
+    const out = [], sp = config.split;
+    for (let i = 0; i < last(); i++) {
+      const L = segPx(i);
+      if (sp && sp[0] === i && sp[1] > 0 && sp[1] < 1) { const m = i + sp[1]; out.push([i, m, sp[2] * innerHeight / sp[1]], [m, i + 1, L]); }
+      else out.push([i, i + 1, L]);
+    }
+    return out;
+  };
+  // v 바로 앞(dir<0) 또는 바로 뒤(dir>0) 조각의 진행값 1당 px
+  const pieceLen = (v, dir) => { const ps = pieces(), q = ps.find(([a, b]) => dir > 0 ? v >= a - 1e-9 && v < b - 1e-9 : v > a + 1e-9 && v <= b + 1e-9); return q ? q[2] : segPx(clamp(Math.floor(v), 0, last() - 1)); };
+  // 스크롤 px를 진행값에 적분한다. 조각 경계를 넘으면 다음 조각의 거리로 이어서 센다. 양 끝 너머는 고무줄(갈수록 무겁다)
   function advance(t, px){
-    let guard = 8;
+    let guard = 12;
     while (px && guard--) {
       const dir = Math.sign(px);
       if ((t <= 0 && dir < 0) || (t >= last() && dir > 0)) {
         const over = t < 0 ? -t : t > last() ? t - last() : 0, len = segPx(dir < 0 ? 0 : last() - 1);
         return t + (px / len) * Math.max(0, 1 - over / config.rubber) * 0.5;
       }
-      const i = dir > 0 ? Math.floor(t + 1e-9) : Math.ceil(t - 1e-9) - 1, len = segPx(i);
-      const edge = dir > 0 ? i + 1 : i, room = (edge - t) * len;          // 이 구간 끝까지 남은 px(부호 포함)
+      const q = pieces().find(([a, b]) => dir > 0 ? t >= a - 1e-9 && t < b - 1e-9 : t > a + 1e-9 && t <= b + 1e-9); if (!q) return t;
+      const len = q[2], edge = dir > 0 ? q[1] : q[0], room = (edge - t) * len;   // 이 조각 끝까지 남은 px(부호 포함)
       if (Math.abs(px) <= Math.abs(room)) return t + px / len;
       t = edge; px -= room;
     }
@@ -723,7 +760,7 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
     state.input = false;
     if (target < 0 || target > last()) { tween(clamp(target, 0, last()), 0.5); return; }
     const n = state.dir > 0 ? Math.ceil(target - 1e-9) : Math.floor(target + 1e-9), d = Math.abs(target - n);
-    const lim = Math.min(config.snapWithin, config.snapMaxScreens * innerHeight / segPx(state.dir > 0 ? n - 1 : n));
+    const lim = Math.min(config.snapWithin, config.snapMaxScreens * innerHeight / pieceLen(n, state.dir > 0 ? -1 : 1));
     if (d > 1e-4 && d <= lim) tween(n, config.snapSec);
   }
   function go(to, { instant = false } = {}){
@@ -914,6 +951,12 @@ window.ticker = (() => {
   const marks = [...document.querySelectorAll('.copy .mark, .tfoot .tmark')];
   const fit = () => marks.forEach(mark => {
     mark.style.fontSize = '100px';
+    if (mark.classList.contains('tmark') && innerWidth <= 820 && document.documentElement.classList.contains('stage-on')) {
+      // 모바일 세로 책상: 제목은 책상 위 끝에 가로로 눕힌다(4-cards.css). 좌우 여백 안 폭에 맞추고, 세운 두께(--mk)는 쓰지 않는다
+      const box = mark.parentElement, avail = box.clientWidth - 2 * mark.offsetLeft;   // 왼쪽 여백(--pl, left로 이미 계산됨)을 오른쪽에도 둔다
+      mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
+      box.style.setProperty('--mk', '0px'); return;
+    }
     if (mark.classList.contains('tmark')) {
       // 작업 구역 제목은 세워 놓았다(2-table.css): 책상 높이에서 아래 여백과 위 버튼 줄 자리를 뺀 길이에 맞추고, 세운 두께를 --mk로 알린다
       const box = mark.parentElement, avail = box.clientHeight - parseFloat(getComputedStyle(mark).bottom) - (innerWidth <= 820 ? 84 : 104);   // bottom은 계산된 px(--pb)
@@ -953,6 +996,9 @@ window.ticker = (() => {
   else peekState();
   peek.addEventListener('click', () => window.Stage && Stage.enabled ? Stage.go('work') : work.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
   const N = ITEMS.length;
+  // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 무대 + 820 이하. 데스크톱 흩뿌림·조작은 그대로다
+  const MOB = () => STAGE && innerWidth <= 820;
+  const FEAT = new Set([0, 1, 4]);                   // 대표작(bewhysee·OURZ\·BizCopilot)은 모바일 책상에서 1.3배
   const hasKo = s => /[가-힣]/.test(s), pad = n => String(n).padStart(2, '0');
   const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
   const ARROW = '<svg viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -972,7 +1018,7 @@ window.ticker = (() => {
     pile.appendChild(el);
     return { el, flipEl: el.firstElementChild, sh: el.querySelector('.sh'), back: el.querySelector('.back'), link: el.querySelector('.ft a'), i,
              j1: ((i * 37) % 11 - 5) / 5, j2: ((i * 53) % 9 - 4) / 4,
-             x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0, lift: 0, fl: 0, flT: 0, flV: 0, peekT: 0, hov: 0, hside: 1 };
+             x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0, lift: 0, fl: 0, flT: 0, flV: 0, peekT: 0, hov: 0, hside: 1, sz: 1 };
   });
   let order = cards.slice().reverse();               // 뒤에 있을수록 위
   const restack = () => order.forEach((o, k) => { o.el.style.zIndex = k + 1; });
@@ -996,11 +1042,45 @@ window.ticker = (() => {
     mobile = innerWidth <= 820; BAR = mobile ? 64 : 84;
     cw = cards[0].el.offsetWidth || cw; ch = cards[0].el.offsetHeight || ch;
     TW = table.clientWidth; TH = table.clientHeight; FOOT = (() => { const m = tfoot.querySelector('.tmeta'); return m ? TH - m.offsetTop + 8 : 0; })();   // 아래 작은 글 줄까지(제목은 세워 왼쪽에 있다)
+    // 모바일 세로 책상: 카드마다 크기를 조금씩 다르게(대표작 1.3배, 나머지 0.94~1.04). 카드 위에서 시작한 손가락도 먼저 무대 스크롤이 받고, 끌기·길게 누르기로 정해질 때 카드가 가져간다
+    const m = MOB();
+    cards.forEach(c => { c.sz = m ? (FEAT.has(c.i) ? 1.3 : 0.94 + rnd(c.i, 11) * 0.1) : 1; c.el.toggleAttribute('data-stage-ignore', !m); });
   };
   // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
   let seed = 0;
   const rnd = (i, s) => { const x = Math.sin(i * 127.1 + (s + seed * 7) * 311.7) * 43758.5453; return x - Math.floor(x); };
+  // 모바일 세로 책상: 두 갈래로 느슨하게 흘려 놓는다. 갈래마다 아래 끝을 따로 재서 짧은 쪽에 놓으므로 줄이 맞지 않고,
+  // 대표작은 가운데에 걸쳐 두 갈래를 끊는다. 가로 흔들림·겹침·기울기(±6°)·크기를 카드마다 달리 해 2열 격자로 읽히지 않게 한다
+  const mobileSpots = () => {
+    const mk = tfoot.querySelector('.tmark'), top = mk ? mk.offsetTop + mk.offsetHeight : BAR + 60;
+    const seqIdx = cards.map(c => c.i).filter(i => !FEAT.has(i)), F = [...FEAT];
+    [0, 7, 13].forEach((at, k) => { if (F[k] != null) seqIdx.splice(Math.min(at, seqIdx.length), 0, F[k]); });
+    const D = Math.PI / 180, spots = new Array(N);
+    let hL = top - ch * 0.1, hR = top + ch * 0.32;
+    seqIdx.forEach((i, n) => {
+      const c = cards[i], w = cw * c.sz, h = ch * c.sz;
+      let x, y0;
+      if (FEAT.has(i)) {
+        x = TW / 2 + (rnd(i, 21) - 0.5) * 0.18 * TW;
+        y0 = Math.max(hL, hR) - h * (0.16 + rnd(i, 22) * 0.08);
+        hL = hR = y0 + h * (0.86 + rnd(i, 23) * 0.06);
+        if (rnd(i, 24) < 0.5) hL -= ch * 0.18; else hR -= ch * 0.18;        // 다음 두 장이 같은 높이에서 시작하지 않게
+      } else {
+        const L = hL <= hR, cx = TW * (L ? 0.29 : 0.71) + (rnd(i, 25) - 0.5) * 0.13 * TW;
+        x = Math.min(TW - w * 0.42, Math.max(w * 0.42, cx));                 // 가장자리 밖으로는 카드 폭의 8%까지만 걸친다
+        y0 = (L ? hL : hR) - h * (0.18 + rnd(i, 26) * 0.16);
+        if (L) hL = y0 + h; else hR = y0 + h;
+      }
+      const r = (FEAT.has(i) ? (rnd(i, 27) - 0.5) * 8 : (rnd(i, 27) - 0.5) * 12) * D;
+      spots[i] = { x, y: y0 + h / 2, r };
+    });
+    spots.h = Math.round(Math.max(hL, hR) + ch * 0.95 + FOOT);           // 맨 아래는 명함(오른쪽 아래, 반쯤 걸침)과 작은 글 줄 자리
+    const zk = c => spots[c.i].y + (rnd(c.i, 10) - 0.5) * ch * 0.6;
+    spots.zc = cards.slice().sort((a, b) => zk(a) - zk(b)); spots.seq = spots.zc.map(c => spots[c.i]);
+    return spots;
+  };
   const scatterSpots = () => {
+    if (MOB()) return mobileSpots();
     // 손으로 던진 듯이: 카드마다 후보 자리를 몇 곳만 뽑아 그중 덜 붐비는 곳을 고른다(후보가 적어 가끔 뭉치고 빈다).
     // 두 카드가 겹치는 넓이는 45% 안, 한 카드를 덮는 넓이의 합은 60% 안이라 어느 그림이든 40% 이상 보인다.
     // 위쪽 BAR는 비우고 아래는 워드마크 위까지 화면 끝까지 흩는다(10-21 대표님: 글자 위로도 지나가게)
@@ -1080,7 +1160,8 @@ window.ticker = (() => {
              at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cwk + gap), y: BAR + 24 + chk / 2 + Math.floor(i / cols) * (chk + gap), r: 0 })) };
   };
   // 무대의 책상은 화면 한 장(모바일 1.2장)이라 길어질 수 없다. 정렬 격자가 넘치면 카드를 그만큼 줄여 한 장 안에 담는다
-  const DESK = () => Math.round(innerHeight * (innerWidth <= 820 ? 1.2 : 1));
+  let mobH = 0;
+  const DESK = () => MOB() && mobH ? mobH : Math.round(innerHeight * (innerWidth <= 820 ? 1.2 : 1));
   let K = 1;
   const sortedGrid = () => {
     if (!STAGE) return gridSpots();
@@ -1089,11 +1170,16 @@ window.ticker = (() => {
   };
 
   // 흩은 상태도 화면보다 위아래로 넉넉하게(화면의 1.3배·모바일 1.7배, 정렬 격자보다 길지는 않게). 정렬과 높이 차이가 덜 나게 한다
-  const scatterH = () => { table.style.height = ''; measure(); K = 1; const h = STAGE ? DESK() : Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * (mobile ? 1.7 : 1.3))));
+  const scatterH = () => { table.style.height = ''; measure(); K = 1;
+    if (MOB()) mobH = mobileSpots().h;                 // 모바일 세로 책상: 카드가 다 놓이는 길이
+    const h = STAGE ? DESK() : Math.round(Math.min(gridSpots().h, Math.max(TH, innerHeight * (mobile ? 1.7 : 1.3))));
     table.style.height = h + 'px'; TH = h; };
   // 처음엔 테이블 아래 가운데에 한 벌로 쌓여 있다가, 화면에 들어오면 흩은 자리로 던져진다
   scatterH();
-  order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = TH * 0.62 + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
+  // 한 벌이 놓이는 자리: 데스크톱은 책상 62% 높이. 모바일 세로 책상은 명함이 떨어지는 맨 위 화면 안이고, 책상을 다 내려간 뒤(p>1) 모을 때는 맨 아래 화면 가운데
+  const pileY = () => MOB() ? Math.min(TH * 0.62, innerHeight * 0.56) : TH * 0.62;
+  const gatherY = () => MOB() && Stage.state.p > 1.001 ? TH - innerHeight * 0.5 : pileY();
+  order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = pileY() + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
   restack();
   const FR = 0.935, FRR = 0.88;
   const tossTo = (c, s, delay) => setTimeout(() => {
@@ -1118,7 +1204,7 @@ window.ticker = (() => {
   // 되감기: 위로 올라가 테이블이 화면 아래로 빠지면 카드가 다시 한 벌로 모이고, 내려오면 다시 쏟아진다
   const regather = () => {
     dealt = false; dealtAt = 0;
-    order.slice().reverse().forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: TW / 2 - k * 1.2, y: TH * 0.62 + k * 1.6, r: (k ? c.j1 * 3 : 0) * Math.PI / 180 }; });
+    order.slice().reverse().forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: TW / 2 - k * 1.2, y: gatherY() + k * 1.6, r: (k ? c.j1 * 3 : 0) * Math.PI / 180 }; });
   };
   const checkDeal = () => {
     if (STAGE) return;
@@ -1172,7 +1258,7 @@ window.ticker = (() => {
     seed++;
     const perm = cards.map((c, i) => [rnd(i, 9), c]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     order = perm; restack();
-    const cx = TW / 2, cy = BAR + (TH - BAR) * 0.48;
+    const cx = TW / 2, cy = MOB() ? Math.max(BAR + ch, Math.min(TH - ch, Stage.camera.Tz || TH / 2)) : BAR + (TH - BAR) * 0.48;   // 모바일은 지금 보고 있는 화면 가운데에서 섞는다
     perm.forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: cx - (N - 1 - k) * 1.2, y: cy + (N - 1 - k) * 1.6, r: (rnd(k, 4) - 0.5) * 0.08 }; });
     setTimeout(() => {
       dealFromTop(scatterSpots(), 120, 45);
@@ -1201,18 +1287,34 @@ window.ticker = (() => {
     ev.preventDefault(); ev.stopPropagation(); ui.click();
   }, true);
   cards.forEach(c => {
+    // 모바일 세로 책상의 손가락: 누르면 카드가 손가락 쪽으로 들려 커진다. 그 뒤
+    //  · 처음 8px을 세로로 밀면 책상 스크롤(무대가 이미 받고 있다): 카드를 내려놓는다
+    //  · 옆으로 밀거나 0.2초 버티면 카드를 집는다(무대 입력 멈춤). 집은 뒤에는 어느 쪽으로든 끌고, 놓으면 던져진다
+    //  · 움직이지 않고 0.6초 누르고 있으면 뒤집힌다. 짧게 눌렀다 떼면 그 자리에 내려놓는다
+    const grab = () => { if (!drag || drag.c !== c || !drag.pending) return; drag.pending = false; if (!stageHold) stageHold = Stage.hold('card'); };
+    const dropPending = () => { clearTimeout(drag.gt); clearTimeout(drag.ft); try { c.el.releasePointerCapture(drag.id); } catch (_) {} drag = null; c.el.classList.remove('held'); wake(); };
     c.el.addEventListener('pointerdown', ev => {
       if (ev.button > 0 || ev.target.closest('a') || uiAt(ev.clientX, ev.clientY)) return;
       ev.preventDefault();
-      if (window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
+      const touchDesk = MOB() && ev.pointerType !== 'mouse';
+      if (!touchDesk && window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
       const [px, py] = local(ev), dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
-      drag = { c, id: ev.pointerId, lx: dx * co - dy * si, ly: dx * si + dy * co, px, py, x0: px, y0: py, vx: 0, vy: 0, vr: 0, t: performance.now(), moved: false };
+      drag = { c, id: ev.pointerId, lx: dx * co - dy * si, ly: dx * si + dy * co, px, py, x0: px, y0: py, vx: 0, vy: 0, vr: 0, t: performance.now(), moved: false, pending: touchDesk, flipped: false };
+      if (touchDesk) {
+        drag.gt = setTimeout(grab, 200);
+        drag.ft = setTimeout(() => { if (drag && drag.c === c && !drag.moved) { grab(); setFlip(c, !c.flT); drag.flipped = true; } }, 600);
+      }
       c.vx = c.vy = c.vr = 0; c.toss = 0; c.home = null; c.el.classList.add('held'); touched = true;
-      c.el.setPointerCapture(ev.pointerId); raise(c);
+      c.el.setPointerCapture(ev.pointerId); raise(c); wake();
     });
     c.el.addEventListener('pointermove', ev => {
       if (!drag || drag.c !== c || ev.pointerId !== drag.id) return;
       const [px, py] = local(ev), now = performance.now(), dt = Math.max(4, now - drag.t) / 16.67;
+      if (drag.pending) {
+        const mx = px - drag.x0, my = py - drag.y0; if (Math.hypot(mx, my) < 8) return;
+        if (Math.abs(my) > Math.abs(mx)) { dropPending(); return; }   // 세로: 책상 스크롤
+        grab();                                                         // 옆: 집기
+      }
       if (!drag.moved && Math.hypot(px - drag.x0, py - drag.y0) < 6) return;
       drag.moved = true;
       // 큰 이동은 잘게 나눠 계산해 튀지 않게 하고, 한 번에 도는 각도에 상한을 둔다
@@ -1231,9 +1333,10 @@ window.ticker = (() => {
     });
     const end = ev => {
       if (!drag || drag.c !== c || ev.pointerId !== drag.id) return;
-      const d0 = drag; drag = null; c.el.classList.remove('held');
+      const d0 = drag; drag = null; c.el.classList.remove('held'); clearTimeout(d0.gt); clearTimeout(d0.ft);
       if (stageHold) { Stage.release(stageHold); stageHold = 0; }
-      if (!d0.moved) { setFlip(c, !c.flT); c.flV += 0; c.kick = 1; return; }   // 누름: 뒤집기
+      if (d0.pending !== undefined && MOB() && ev.pointerType !== 'mouse') { if (!d0.moved) { wake(); return; } }   // 모바일: 짧게 누르면 내려놓기, 길게 누르면 이미 뒤집혔다
+      else if (!d0.moved) { setFlip(c, !c.flT); c.flV += 0; c.kick = 1; return; }   // 누름: 뒤집기
       if (performance.now() - d0.t > 90) { d0.vx *= 0.3; d0.vy *= 0.3; d0.vr *= 0.3; }   // 멈췄다 놓으면 그 자리에
       const sp = Math.hypot(d0.vx, d0.vy), cap = sp > 55 ? 55 / sp : 1;          // 아무리 세게 던져도 화면을 몇 번씩 가로지르지 않게
       c.vx = d0.vx * cap; c.vy = d0.vy * cap; c.vr = Math.max(-0.12, Math.min(0.12, d0.vr));
@@ -1283,7 +1386,8 @@ window.ticker = (() => {
       // 움직이는 속도만큼 유리판이 기울고, 손에 든 카드는 들려 그림자가 커진다
       const vx = held ? drag.vx : c.vx, vy = held ? drag.vy : c.vy;
       const txT = Math.max(-16, Math.min(16, vx * 0.9)), tyT = Math.max(-16, Math.min(16, -vy * 0.9));
-      const liftT = held ? 1 : Math.max(flipLift * 0.8, c.hov * 0.35, Math.min(1, Math.hypot(c.vx, c.vy) / 30));
+      const pressed = drag && drag.c === c;                // 모바일: 누르는 순간부터 들린다
+      const liftT = held || (pressed && MOB()) ? 1 : Math.max(flipLift * 0.8, c.hov * 0.35, Math.min(1, Math.hypot(c.vx, c.vy) / 30));
       c.tx += (txT - c.tx) * 0.2;
       c.ty += (tyT - c.ty) * 0.2;
       c.lift += (liftT - c.lift) * 0.15;
@@ -1295,7 +1399,10 @@ window.ticker = (() => {
           !near0(c.flT + hoverPeek + c.peekT - c.fl, 0.05) || !near0(c.flV, 0.02) ||
           !near0(txT - c.tx, 0.01) || !near0(tyT - c.ty, 0.01) || !near0(liftT - c.lift, 0.002) || !near0(K - c.ks, 0.001)) busy = true;
       const st = c.el.style;
-      put(c, '_tf', `translate3d(${(c.x - cw / 2).toFixed(1)}px,${(c.y - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${((1 + c.lift * 0.05) * c.ks).toFixed(4)})`, v => { st.transform = v; });
+      // 모바일은 들릴 때 더 커지고(14%), 누른 손가락 쪽으로 조금 다가온다
+      const mob = MOB(), grow = mob ? 0.14 : 0.05, toward = pressed && !held && mob ? 0.18 * c.lift : 0;
+      const ox = toward ? (drag.px - c.x) * toward : 0, oy = toward ? (drag.py - c.y) * toward : 0;
+      put(c, '_tf', `translate3d(${(c.x + ox - cw / 2).toFixed(1)}px,${(c.y + oy - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${((1 + c.lift * grow) * c.ks * c.sz).toFixed(4)})`, v => { st.transform = v; });
       put(c, '_ff', `rotateY(${c.fl.toFixed(2)}deg)`, v => { c.flipEl.style.transform = v; });
       put(c, '_so', (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3), v => { c.sh.style.opacity = v; });
       put(c, '_rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`, v => st.setProperty('--rim', v));
@@ -1315,7 +1422,7 @@ window.ticker = (() => {
     gather(){ if (drag) return; if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
       flipAllBtn.setAttribute('aria-pressed', 'false'); regather(); wake(); },
     get dealt(){ return dealt; },
-    get pileAt(){ return { x: TW / 2, y: TH * 0.62 }; },        // 한 벌이 놓이는 자리(테이블 좌표)
+    get pileAt(){ return { x: TW / 2, y: pileY() }; },          // 한 벌이 놓이는 자리(테이블 좌표)
   };
 })();
 </script>
@@ -1475,7 +1582,8 @@ window.ticker = (() => {
   const pileSpot = g => ({ x: g.tl + g.pa.x + 0.02 * innerWidth, z: Math.min(g.zMax, g.pa.y - 0.03 * g.Dt) });
   // 밀려나 멈추는 책상 앞 오른쪽 귀퉁이(10-21 대표님 결정: 작업 카드 밖, 화면 오른쪽 끝에 반쯤 걸쳐 작업보다 먼저 눈에 들지 않게.
   // 왼쪽은 세로 「Selected Work」 인쇄를 덮어 조율 결정으로 옮김). 깊이는 「@chanjun.kwon」 줄 위
-  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta });
+  // 세로 화면(820 이하)은 책상이 화면보다 길어 「@chanjun.kwon」 줄이 책상 맨 아래에 있다. 명함은 work 첫 화면(책상 맨 위 화면 높이) 아래쪽 귀퉁이에 멈춘다
+  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: innerWidth <= 820 ? Math.min(g.zMeta, innerHeight * 0.94 - g.hh * 1.12) : g.zMeta });
   const target = g => {
     if (!desk.moved) { const c = sideCorner(g); desk.x = c.x; desk.z = c.z; }
     // 카드를 모을 때도 같은 귀퉁이로 밀린다(사용자가 옮겨 둔 명함만 움직인다). 밀리며 살짝 돈다
@@ -1914,7 +2022,11 @@ window.ticker = (() => {
       ls.forEach(l => { l.e.style.width = ''; l.e.style.fontVariationSettings = ''; });
       // 칸 폭은 글자 크기(em) 기준으로 둔다: 화면 폭(14vw)이 바뀌어도 다시 잴 필요가 없고, 잰 시점의 화면 크기에 묶이지 않는다
       const fs = parseFloat(getComputedStyle(mark).fontSize) || 1, k = mark.offsetWidth / (mark.getBoundingClientRect().width || mark.offsetWidth || 1);
-      ls.forEach(l => { l.e.style.width = (l.e.getBoundingClientRect().width * k / fs).toFixed(4) + 'em'; });
+      // 글자를 칸으로 나누면 글자 사이 커닝이 빠져 이름이 1~2% 길어진다. 통짜 문장 폭에 맞춰 칸을 같은 비율로 줄인다
+      const ws = ls.map(l => l.e.getBoundingClientRect().width * k), sum = ws.reduce((a, b) => a + b, 0);
+      mark.textContent = txt; const nat = mark.offsetWidth; mark.textContent = ''; ls.forEach(l => mark.appendChild(l.e));   // 같은 요소에서 통짜 폭을 잰다
+      const f = sum && nat ? nat / sum : 1;
+      ls.forEach((l, i) => { l.e.style.width = (ws[i] * f / fs).toFixed(4) + 'em'; });
       ls.forEach(l => { l.shown = -1; });
       kick();
     };
@@ -2029,20 +2141,32 @@ window.ticker = (() => {
   };
   const ease = bez(0.55, 0, 0.2, 1);
   const LAST = () => Stage.config.stations.length - 1;
+  // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 책상이 화면보다 길고, p 1~1+PAN 동안 카메라가 책상을 따라 내려간다(손가락 1:1).
+  // 모으기·버튼 걷기·맥북으로 고개 들기는 그 뒤로 밀린다. 데스크톱은 PAN 0이라 그대로다
+  const PANP = 0.18;
+  const pan = () => (W.mobile && W.Dt > W.H + 4 ? PANP : 0);
+  const panU = p => { const a = pan(); return a ? Math.max(0, Math.min(1, (p - 1) / a)) : 0; };
   const WEB = () => Stage.config.stations.findIndex(x => x.name === 'web');
 
   function measure(){
     W.H = innerHeight; W.Wd = innerWidth; W.mobile = innerWidth <= 820;
-    W.Dt = table.offsetHeight;                       // 카드 구역 깊이 = 책상 한 장(table.js가 화면 한 장, 모바일 1.2장으로 둔다)
+    W.Dt = table.offsetHeight;                       // 카드 구역 깊이(table.js가 데스크톱은 화면 한 장, 모바일은 카드가 다 놓이는 세로 길이로 둔다)
     W.zP = Math.round(W.Dt + 0.15 * W.H);            // 「Selected Work」 너머: 맥북 자리의 기준 깊이(scene-web)
     desk.style.height = Math.round(W.zP + 0.12 * W.H + 0.75 * W.Wd + 0.6 * W.H) + 'px';
     lastP = NaN; lastPlace = '';
+    // 책상을 따라 내려가는 구간의 스크롤 거리 = 책상에서 화면 밖에 있는 길이(손가락과 1:1)
+    Stage.config.split = pan() ? [1, pan(), (W.Dt - W.H) / W.H] : null;
   }
   // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
   const P = () => Stage.camera.P();
   const st = {
     hero: () => ({ th: 0, Tx: 0, Ty: -W.H / 2, Tz: 0, d: P() }),
-    work: () => ({ th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() * (W.mobile ? 1.2 : 1) }),
+    // 모바일 세로 책상은 배율 1(d = P)로 책상 맨 위에서 시작해 맨 아래까지 내려간다. 인자 u(0~1)를 주면 그 자리, 없으면 지금 p의 자리
+    work: u => {
+      if (!pan()) return { th: 90, Tx: 0, Ty: 0, Tz: W.Dt / 2, d: P() * (W.mobile ? 1.2 : 1) };
+      const k = u == null ? panU(Stage.state.p) : u;
+      return { th: 90, Tx: 0, Ty: 0, Tz: W.H / 2 + k * (W.Dt - W.H), d: P() };
+    },
     // 맺음: 카드 한 장 크기(S1과 같은 거리)로, 명함을 화면 (0.44W, 0.56H)에 둔다. 맥북 구간이 있으면 scene-web이 맺음 카메라를 정한다
     end: () => {
       const th = 88, d = st.work().d, k = d / P(), c = window.Hero && Hero.desk && Hero.desk.cornerAt;
@@ -2065,7 +2189,7 @@ window.ticker = (() => {
   // 카드 테이블은 불이 낮아지는 동안(맥북으로 가는 구간 0.3~0.75) 어둠에 잠긴다. 카드 면(.f)·글줄 같은 잎 요소의 투명도만 바꾼다(조상 opacity는 3D를 평면으로 만든다)
   const sinkOf = p => p <= 1 ? 1 : 1 - ease((p - 1.3) / 0.45);
   // 버튼 줄·작은 글 줄은 카메라가 움직이기 전(모으기·숨 1.02~1.17)에 걷는다. 카메라가 기우는 동안 남아 있으면 GPU에서 버튼이 화면 아래까지 긴 띠로 늘어져 그려졌다(10-21 대표님 제보)
-  const uiOf = p => p <= 1.02 ? 1 : Math.max(0, 1 - (p - 1.02) / 0.15);
+  const uiOf = p => { const a = 1.02 + pan(), w = pan() ? 0.05 : 0.15; return p <= a ? 1 : Math.max(0, 1 - (p - a) / w); };
   let lastPlace = '';
   function place(p){
     const k = sinkOf(p).toFixed(3), ui = uiOf(p).toFixed(3), key = k + '|' + ui + '|' + (p > LAST() - 0.2 ? 1 : 0); if (key === lastPlace) return; lastPlace = key;
@@ -2080,7 +2204,7 @@ window.ticker = (() => {
   // 기본 경로: 장면이 아직 비어 있는 구간용
   function path(p){
     if (p <= 1) {                                    // S0→S1: 모서리를 축으로 숙인다(scene-hero가 쓰면 그쪽이 이긴다)
-      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = W.H / 2 + (W.Dt / 2 - W.H / 2) * e, a = th * Math.PI / 180;
+      const e = ease((p - 0.18) / 0.6), th = 90 * e, r = W.H / 2 + (st.work(0).Tz - W.H / 2) * e, a = th * Math.PI / 180;
       return { th, Tx: 0, Ty: -r * Math.cos(a), Tz: r * Math.sin(a), d: P() + (st.work().d - P()) * e };
     }
     return Stage.webPath ? Stage.webPath(p) : st.work();
@@ -2092,7 +2216,7 @@ window.ticker = (() => {
   const DEAL = [0.5, 1.04];
   function cards(p){
     const T = window.Table; if (!T) return;
-    const want = p >= DEAL[0] && p <= DEAL[1];
+    const want = p >= DEAL[0] && p <= DEAL[1] + pan();
     if (want !== T.dealt) want ? T.deal() : T.gather();
   }
   let lastP = NaN;
@@ -2109,7 +2233,7 @@ window.ticker = (() => {
     }
     cam.setThisFrame = false; Stage.state._toneSet = false; Stage.state._poolSet = false;
   }
-  Stage.world = { dims: W, station: st, path, toneOf, sinkOf, measure, ease, bez, last: LAST };
+  Stage.world = { dims: W, station: st, path, toneOf, sinkOf, measure, ease, bez, last: LAST, pan };
   // 다시 잰 뒤에는 장면 progress를 먼저 다시 부른다. 그래야 장면이 쓴 카메라·조명(예: 맺음)을 기본 경로가 덮지 않는다
   const remeasure = () => { measure(); Stage.refresh(); frame(); };
   measure(); frame();
@@ -2393,6 +2517,33 @@ window.ticker = (() => {
     Object.assign(dim.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', opacity: k.toFixed(3), visibility: 'visible' });
   }
 
+  // 모바일 써 보기(10-21 대표님 「맥북 유지 + 써 보기 전체 화면」, 16 4항·17 4-나): 카메라는 그대로 두고 화면 사각형(.mb-screen)이 덮개 안에서 그대로 커져
+  // 휴대폰 전체 화면이 된다. 덮개 면은 카메라와 정면으로 마주 보므로(θ = 덮개 기울기) 덮개 좌표의 상자를 뷰포트 상자로 바로 옮길 수 있다(배율 s 하나).
+  // iframe은 부모를 옮기지 않고(옮기면 서비스가 처음부터 다시 뜬다) 논리 크기만 뷰포트 크기(배율 1 = 모바일 배치)로 바꾼다. 닫으면 같은 길로 돌아간다
+  const scr = mb.querySelector('.mb-screen'), close = document.createElement('button');
+  close.type = 'button'; close.className = 'web-close'; close.setAttribute('aria-label', '써 보기 닫기');
+  close.innerHTML = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  document.body.append(close);
+  let fs = null;
+  function fsBegin(x){
+    const r = scr.getBoundingClientRect(), W0 = scr.offsetWidth, H0 = scr.offsetHeight, L0 = scr.offsetLeft, T0 = scr.offsetTop, s = r.width / W0, VW = innerWidth, VH = innerHeight;
+    fs = { x, L0, T0, W0, H0, s, VW, VH, L1: L0 - r.left / s, T1: T0 - r.top / s, W1: VW / s, H1: VH / s, k: -1 };
+    mb.classList.add('fs'); document.documentElement.classList.add('web-fs');
+    fsApply(useK.v);
+  }
+  function fsApply(k){
+    if (!fs || k === fs.k) return; fs.k = k;
+    const L = fs.L0 + (fs.L1 - fs.L0) * k, T = fs.T0 + (fs.T1 - fs.T0) * k, Wb = fs.W0 + (fs.W1 - fs.W0) * k, Hb = fs.H0 + (fs.H1 - fs.H0) * k;
+    Object.assign(scr.style, { left: L.toFixed(2) + 'px', top: T.toFixed(2) + 'px', width: Wb.toFixed(2) + 'px', height: Hb.toFixed(2) + 'px', borderRadius: (k > 0.999 ? 0 : 6 * (1 - k) / fs.s).toFixed(2) + 'px' });
+    const f = fs.x.frame; if (f) Object.assign(f.style, { width: fs.VW + 'px', height: fs.VH + 'px', transform: `scale(${(Wb / fs.VW).toFixed(5)})` });
+  }
+  function fsEnd(){
+    if (!fs) return; const f = fs.x.frame;
+    ['left', 'top', 'width', 'height', 'borderRadius'].forEach(k => { scr.style[k] = ''; });
+    if (f) ['width', 'height', 'transform'].forEach(k => { f.style[k] = ''; });
+    mb.classList.remove('fs'); document.documentElement.classList.remove('web-fs'); fs = null;
+  }
+
   // 사용 중
   let using = null, hold = 0;
   const useK = { v: 0, to: 0, t0: 0, from: 0, dur: 600 };
@@ -2403,7 +2554,8 @@ window.ticker = (() => {
     if (useK.v === useK.to) return;
     const u = Math.min(1, (performance.now() - useK.t0) / useK.dur), e = u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
     useK.v = u >= 1 ? useK.to : useK.from + (useK.to - useK.from) * e;
-    Stage.refresh();                                 // scene-web이 useK로 카메라를 화면 속까지 당긴다
+    if (fs) { fsApply(useK.v); if (useK.v === 0 && !using) fsEnd(); }
+    Stage.refresh();                                 // scene-web이 useK로 카메라를 화면 속까지 당긴다(모바일은 카메라 대신 위의 상자)
   });
   function enterUse(){
     const x = panes[sel]; if (!x || using) return;
@@ -2411,8 +2563,9 @@ window.ticker = (() => {
     if (!x.frame) mount(x);
     using = x; hold = Stage.hold('web');
     x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using');
+    if (narrow()) { if (!fs) fsBegin(x); else fs.x = x; }
     tipOn = false; tip.classList.remove('on'); noteText(); note.classList.remove('is-cue'); void note.offsetWidth; note.classList.add('is-cue');
-    animUse(1, 600);
+    animUse(1, narrow() ? 560 : 600);
     setTimeout(() => { if (using === x && x.frame) x.frame.focus(); }, 60);
   }
   function exitUse(){
@@ -2421,9 +2574,12 @@ window.ticker = (() => {
     mb.classList.remove('using'); document.documentElement.classList.remove('web-using'); noteText(); note.classList.remove('is-cue');
     hit.focus({ preventScroll: true });
     if (hold) { Stage.release(hold); hold = 0; }
-    animUse(0, 450);
+    animUse(0, fs ? 520 : 450);
   }
   hit.addEventListener('click', e => { e.stopPropagation(); enterUse(); });
+  close.addEventListener('click', e => { e.stopPropagation(); exitUse(); });
+  // 전체 화면 중 회전·주소창 변화로 뷰포트가 바뀌면 나온다(상자 계산이 그 크기 기준이다)
+  addEventListener('resize', () => { if (fs && (Math.abs(innerWidth - fs.VW) > 1 || Math.abs(innerHeight - fs.VH) > 80)) exitUse(); });
   hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterUse(); } });
   bezel.addEventListener('click', e => { if (using && !e.target.closest('.mb-screen')) { e.stopPropagation(); exitUse(); } });
   // 화면 밖 아무 곳: iframe 안 클릭은 부모에 오지 않으므로, 부모가 받는 클릭은 모두 「밖」이다
@@ -2439,7 +2595,7 @@ window.ticker = (() => {
   let lp = NaN, noteKey = '';
   noteText();
   function placeNote(p){
-    const show = !!using || (!HOVER.matches && p >= WEB - 0.4 && p <= END - 0.75 && useK.v < 0.01);
+    const show = (!!using && !fs) || (!HOVER.matches && !fs && p >= WEB - 0.4 && p <= END - 0.75 && useK.v < 0.01);
     if (!show) { if (noteKey !== '0') { noteKey = '0'; note.classList.remove('on'); } return; }
     const r = mb.querySelector('.mb-screen').getBoundingClientRect();
     const x = Math.min(innerWidth - 20, Math.max(20, r.left + r.width / 2));
@@ -2475,7 +2631,8 @@ window.ticker = (() => {
   function camera(t){
     const Wd = Stage.world; if (!Wd) return;
     const D = Wd.dims, e = Wd.ease((t - 0.18) / 0.52), eT = Wd.ease((t - 0.18) / 0.36), th = 90 * e, aT = Math.PI / 2 * eT;
-    const r = D.H / 2 + (D.Dt / 2 - D.H / 2) * eT, d0 = Stage.camera.P(), d1 = Wd.station.work().d;
+    // 끝값은 work 정거장의 바라보는 점(데스크톱 Dt/2, 모바일은 긴 책상 맨 위 H/2). 같은 값으로 끝나야 p=1에서 카메라가 튀지 않는다
+    const W1 = Wd.station.work(), r = D.H / 2 + (W1.Tz - D.H / 2) * eT, d0 = Stage.camera.P(), d1 = W1.d;
     Stage.camera.set(e >= 1 ? Wd.station.work() : { th, Tx: 0, Ty: -r * Math.cos(aT), Tz: r * Math.sin(aT), d: d0 + (d1 - d0) * e });
   }
   Stage.add('hero', {
@@ -2528,7 +2685,8 @@ window.ticker = (() => {
     leave(dir){},
     progress(t){
       const T = window.Table; if (!T) return;
-      if (t > GATHER) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
+      const g = GATHER + (Stage.world && Stage.world.pan ? Stage.world.pan() : 0);   // 모바일 세로 책상은 책상을 다 내려간 뒤에 모은다
+      if (t > g) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
       else if (!T.dealt) T.deal();
     },
   });
@@ -2570,6 +2728,8 @@ window.ticker = (() => {
     mb.style.setProperty('--gap', Math.round(G.Wi * 0.06) + 'px');
     mb.style.setProperty('--ls', (G.Wi / (W.mobile ? 1280 : 1728)).toFixed(5));   // 화면 속 서비스의 논리 해상도 배율(stage.css .mb-pane iframe)
     Object.assign(base.style, { width: G.lidW + 'px', height: G.baseD + 'px' });
+    // 모바일 글 격자는 화면 위 빈자리에 놓는다: 메뉴 막대 위끝(뷰포트 y)을 알려 준다(6-macbook.css --scr-top)
+    if (info) { if (W.mobile) info.style.setProperty('--scr-top', Math.round(W.H / 2 + mobDl() - G.Hi / 2 - G.Wi * 0.0222) + 'px'); else info.style.removeProperty('--scr-top'); }
     Object.assign(lid.style, { width: G.lidW + 'px', height: G.lidH + 'px', top: -G.lidH + 'px' });
     setLid(OPEN);
   }
@@ -2589,7 +2749,16 @@ window.ticker = (() => {
     // 가로로 넓은 모바일 폭(800×700 등)은 폭 기준이면 맥북이 화면 높이를 다 차지해 위쪽 글 격자가 화면을 덮는다: 맞춤 폭을 높이로 제한한다(card-drop 실측, 375×812는 그대로)
     front: () => { const s = screen(), d = G.lidW * P() / (W.mobile ? Math.min(0.8 * W.Wd, 0.5 * W.H) : 0.46 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.09 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.1 : 0.15) * W.H * k, Tz: s.Tz, d }; },
     // 베젤 거리(맥북 정거장): 화면 폭이 뷰포트의 52%(10-21 card-drop 제안, 맥북 뒤로 벽·책상 모서리가 보이게. 예전 66%), 키보드 윗줄이 아래에 걸린다. 서비스가 바뀌면 글 격자도 바뀌므로 맥북은 오른쪽, 글은 왼쪽 아래(375급은 화면 폭 86%, 글은 아래)
-    bezel: () => { const s = screen(), d = G.Wi * P() / (W.mobile ? Math.min(0.86 * W.Wd, 0.56 * W.H) : 0.52 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.16 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.12 : 0.12) * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d }; },
+    bezel: () => {
+      const s = screen();
+      if (W.mobile) {
+        // 820 이하(10-21 대표님 「맥북 유지 + 써 보기 전체 화면」, 16 4항): 카메라를 덮개에 붙인다. 거리 P = 배율 1이라 화면이 폭의 92%(G.Wi).
+        // 바라보는 점을 덮개를 따라 위로 옮겨 화면을 아래로 내리고, 힌지 줄과 키보드 첫 줄 사이(MOB_CUT)에서 화면 아래끝이 몸체를 자른다
+        const a = TH * Math.PI / 180, dl = mobDl();
+        return { th: TH, Tx: s.Tx, Ty: s.Ty - dl * Math.cos(a), Tz: s.Tz - dl * Math.sin(a), d: P() };
+      }
+      const d = G.Wi * P() / (0.52 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - 0.16 * W.Wd * k, Ty: s.Ty + 0.12 * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d };
+    },
     // 맺음: θ 80 내려다보기로 명함(앞면, 왼쪽 위)과 화면이 잠든 맥북(가운데 아래)을 책상 위 평면 배치로 한 화면에 잡는다(card-drop 시험식).
     // θ 55에서는 명함이 맥북 뒤(벽 쪽)에 가려 어둠에 뜬 조각으로 읽혔다
     end: () => {
@@ -2599,6 +2768,9 @@ window.ticker = (() => {
       return { th: 80, Tx: (e.x + mx) / 2 + (W.mobile ? 0 : 0.05) * W.Wd * k, Ty: 0, Tz: (e.z + G.zh) / 2 + (W.mobile ? -0.02 : -0.064) * W.H * k, d };
     },
   };
+  // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리(배율 1이라 px 그대로). 힌지가 아래끝에서 MOB_CUT 위에 온다
+  const MOB_CUT = () => Math.round(G.Wi * 0.058);
+  const mobDl = () => W.H / 2 - G.Hi / 2 - G.chin - MOB_CUT();
   const mix = (a, b, t, tT = t) => ({ th: lerp(a.th, b.th, t), Tx: lerp(a.Tx, b.Tx, tT), Ty: lerp(a.Ty, b.Ty, tT), Tz: lerp(a.Tz, b.Tz, tT), d: lerp(a.d, b.d, t) });
   const ST = n => Stage.config.stations.findIndex(x => x.name === n);
   const WEB = () => ST('web'), END = () => Stage.config.stations.length - 1;
@@ -2627,13 +2799,13 @@ window.ticker = (() => {
     progress(t, s){
       const p = s.p; let c = path(p);
       const uk = Stage.web ? Stage.web.useK : 0;
-      if (uk > 0) c = mix(c, cam.inside(), uk);     // 사용 중: 그 자리에서 화면 속(배율 1)까지
+      if (uk > 0 && !W.mobile) c = mix(c, cam.inside(), uk);     // 사용 중: 그 자리에서 화면 속(배율 1)까지. 모바일은 카메라를 두고 화면 사각형이 전체 화면으로 커진다(web-live.js)
       Stage.camera.set(c);
       Stage.tone(Wd.toneOf(p));
       const L = lightOf(p); mb.style.setProperty('--light', L.toFixed(3));
       // 둥근 빛웅덩이는 맥북 구간에서 끈다: 화면 빛은 macbook3d.js의 면광원(키보드면·책상)이 맡는다(11 반려 목록 「흐린 원형 화면 빛」)
       if (pool) { Stage.state._poolSet = true; pool.style.opacity = (0.5 * Stage.state.dk * clamp01((WEB() - 0.5 - p) / 0.4)).toFixed(3); }
-      if (info) { const v = (uk > 0 ? 1 - uk : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
+      if (info) { const v = (uk > 0 ? (W.mobile ? 1 - clamp01(uk / 0.3) : 1 - uk) : 1) * infoOf(p, c), str = v.toFixed(3); if (str !== infoStr) { infoStr = str; info.style.opacity = str; info.style.visibility = v > 0.01 ? 'visible' : 'hidden'; } }
     },
   });
   Stage.webPath = path;
