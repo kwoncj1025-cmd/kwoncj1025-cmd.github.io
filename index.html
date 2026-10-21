@@ -248,7 +248,12 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .peek.gone{opacity:0;transform:translate(-50%,110%);pointer-events:none}
 .peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
 @keyframes bob{50%{translate:0 -9px}}
-@media (prefers-reduced-motion:reduce){.peek i{animation:none}}
+/* 처음 온 사람이 카드만 만지다 떠나지 않게(10-21 대표님): 카드 더미 오른쪽에 「Scroll ↓」 한 줄. 화면 아래 끝에서 14px 위, 더미와 함께 사라진다 */
+.peek-t{position:absolute;left:calc(100% + 14px);bottom:calc(46% + 14px);display:flex;align-items:center;gap:6px;white-space:nowrap;
+  font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.peek-t svg{width:12px;height:12px;animation:bob 2.6s ease-in-out infinite}
+.peek:hover .peek-t{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.peek i,.peek-t svg{animation:none}}
 /* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
 .back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
 .back .row{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
@@ -708,7 +713,7 @@ html.end-on .totop{bottom:var(--ei-top-b,20px)}
   <dl class="wi-dl"><dt>Service</dt><dd class="wi-ko"></dd><dd class="wi-line"></dd></dl>
   <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
 </aside>
-<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i></button>
+<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i><span class="peek-t" aria-hidden="true">Scroll<svg viewBox="0 0 14 14" fill="none"><path d="M7 2.5v9M7 11.5l-4-4M7 11.5l4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
@@ -1047,7 +1052,7 @@ window.ticker = (() => {
   const work = document.getElementById('work'), table = work.querySelector('.table'), pile = document.getElementById('pile'), sortBtn = document.getElementById('sort');
   const peek = document.getElementById('peek');
   const STAGE = !!(window.Stage && Stage.enabled);   // 무대: 문서 스크롤 대신 장면이 나눠 주기·모으기를 부르고, 책상은 화면 한 장
-  [...peek.children].forEach((el, k) => { el.style.backgroundImage = `url(work/${ITEMS[k].c}.webp)`; });
+  [...peek.querySelectorAll('i')].forEach((el, k) => { el.style.backgroundImage = `url(work/${ITEMS[k].c}.webp)`; });
   const peekState = () => peek.classList.toggle('gone', STAGE ? Stage.state.p > 0.04 : scrollY > 80 || work.getBoundingClientRect().top < innerHeight * 0.9);
   if (STAGE) { let pp = -1; Stage.ticker.add(() => { const p = Stage.state.p > 0.04; if (p !== pp) { pp = p; peekState(); } }); }
   // 무대: 카드 사진(19장, 합쳐 약 450KB)은 첫 화면(벽)에서는 보이지 않으므로 첫 화면 요청에서 뺀다(GitHub Pages 429).
