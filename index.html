@@ -746,7 +746,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
       { name: 'hero', hash: '' },
       { name: 'work', hash: 'work' },
       { name: 'web', hash: 'web', hashFn: () => (window.Stage && Stage.web && Stage.web.hash) || 'web',
-        alias: ['bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
+        alias: ['bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'picketing', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
     split: null,             // 구간 안 일부 범위만 다른 스크롤 거리로: [[시작 p, 끝 p, 화면 수], …]. 모바일 책상 내려가기·모으기 뒤 숨(world.js가 정한다). 나머지는 seg 빠르기
@@ -2622,7 +2622,7 @@ window.ticker = (() => {
     bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['168,174,214', 0.45] };
   // 작업 성격(목록 묶음과 읽기 이름). 운영 중인 서비스만 Live service, 리브랜딩 사례는 Case study, BizCopilot은 시안·브랜드 문서.
   // 눈썹 글은 목록 제목(Selected work)이 된다
-  const KIND = { bewhysee: 'Case study', bizcopilot: 'Product concept', 'bizcopilot-story': 'Brand story', 'bizcopilot-system': 'Brand system' };
+  const KIND = { bewhysee: 'Case study', bizcopilot: 'Product concept', 'bizcopilot-story': 'Brand story', 'bizcopilot-system': 'Brand system', picketing: 'Brand system' };
   const kind = info.querySelector('.wi-kind'); if (kind) kind.textContent = 'Selected work';
   // 화면이 잠든다(맺음, 대표님 결정): 카메라가 물러나는 동안(마지막 정거장 앞 1 → 0.65) 켜져 있다가,
   // 실제 맥처럼 먼저 30%로 어둡게 내려앉고(0.65 → 0.52) 잠깐 머문 뒤(→ 0.42) 검게 꺼진다(→ 0.36). 그 뒤 명함이 앞면으로 넘어간다(scene-hero, 0.25 → 0.05).
@@ -2755,7 +2755,7 @@ window.ticker = (() => {
   const info = document.querySelector('.web-info');
   const ARTIFACT = document.documentElement.hasAttribute('data-artifact');
   const narrow = () => innerWidth <= 820;
-  // id는 그 서비스의 주소 해시이기도 하다(stage.js web 정거장 alias와 같은 목록). 순서(10-21 대표님 결정): bewhysee → BizCopilot(아이덴티티 C·브랜드 스토리·브랜드 시스템) → 바이블타이핑 → 척모드 → Monthlens 둘.
+  // id는 그 서비스의 주소 해시이기도 하다(stage.js web 정거장 alias와 같은 목록). 순서(10-21 대표님 결정): bewhysee → BizCopilot(아이덴티티 C·브랜드 스토리·브랜드 시스템) → Picketing 브랜드 시스템(v2, 원 사이트가 iframe을 막아 사본) → 바이블타이핑 → 척모드 → Monthlens 둘.
   // BizCopilot 셋은 원본끼리 서로 잇는 링크가 없는 독립 문서라 화면도 셋으로 나눴다(하나로 묶으면 둘째·셋째 장으로 갈 길이 없다)
   // site: 글 격자 「Open」이 여는 주소(없으면 url). bewhysee는 비핸스 원 게시물
   const services = [
@@ -2768,6 +2768,8 @@ window.ticker = (() => {
       line: 'The story behind the BizCopilot identity.', role: 'Brand story', year: '2026' },
     { id: 'bizcopilot-system', name: 'Brand System', ko: '비즈코파일럿 브랜드 시스템', url: 'web/bizcopilot/system/',
       line: 'The BizCopilot design system and guidelines.', role: 'Brand system · Guidelines', year: '2026' },
+    { id: 'picketing', name: 'Picketing', ko: '픽켓팅', url: 'web/picketing/v2/', site: 'https://picketing-brand.pages.dev/v2/',
+      line: 'The brand system shared by Picketing and its AI agent, Picket.', role: 'Brand system · Logo · Guidelines', year: '2026' },
     { id: 'bible', name: 'Bible Typing', ko: '바이블타이핑', url: 'https://kingjesus.kr/', external: true,
       line: 'A quiet place to type the King James Bible, one verse a day.', role: 'Product · Design · Build', year: '2026' },
     { id: 'chuck', name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/', external: true,
