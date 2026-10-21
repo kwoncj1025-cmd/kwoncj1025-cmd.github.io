@@ -211,6 +211,14 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .sort svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .sort .i-scatter,.sort[aria-pressed="true"] .i-grid{display:none}.sort[aria-pressed="true"] .i-scatter{display:block}
 .sort:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
+/* 버튼 이름을 아이콘 아래에 늘 보인다(10-21 대표님: 사람들이 이 버튼들을 못 볼 수 있다). 글은 title을 그대로 쓰므로 정렬하면 Sort → Scatter로 바뀐다.
+   눈썹 글과 같은 작은 대문자, 보조 글색. 버튼이 커지거나 눌릴 때 같이 움직이지 않게 위치만 버튼에 붙인다 */
+.tbar .sort{position:relative;overflow:visible}
+.tbar .sort::after{content:attr(title);position:absolute;top:calc(100% + 8px);left:50%;translate:-50% 0;white-space:nowrap;pointer-events:none;
+  font:500 10px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.tbar .sort:hover::after{color:var(--ink)}
+.tbar .r{gap:26px}
+@media (max-width:820px){.tbar .sort::after{content:none}.tbar .r{gap:8px}}   /* 휴대폰은 버튼 줄 바로 아래가 세로 워드마크라 글이 닿는다 */
 /* 더미 상자 자체는 누르기를 받지 않는다(카드만 받는다): 3D 무대의 375급에서 빈 더미 영역이 위의 정렬 버튼·글 줄 클릭까지 가로챘다 */
 .pile{position:absolute;inset:0;z-index:3;perspective:1600px;--cw:min(196px,15vw,27vh);pointer-events:none}
 .pile>.pc{pointer-events:auto}
@@ -2246,7 +2254,9 @@ window.ticker = (() => {
     };
     return { id, set };
   }
-  function weightText(mark, isOn, cardOn){
+  // 파도(10-21 대표님 「이름이 3D라는 힌트가 없어. 호버 없이도 한 번씩 파도타기처럼」): wave면 첫 화면에 머무는 동안 6~8초마다
+  // 부풀기 마루(글자 2~3개 폭)가 왼쪽에서 오른쪽으로 한 번 지나간다. 커서가 이름 근처에 있거나 2초 안에 있었으면 쉰다
+  function weightText(mark, isOn, cardOn, wave){
     if (!mark || reduce) return;
     const W0 = 500, W1 = 600, txt = mark.textContent; mark.textContent = '';
     const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = 'mk'; e.textContent = ch === ' ' ? '\u00a0' : ch; mark.appendChild(e); return { e, k: 0, v: 0, shown: '', f: ch.trim() ? inflateFilter() : null }; });
@@ -2264,6 +2274,8 @@ window.ticker = (() => {
       kick();
     };
     let px = 0, py = 0, haveP = false, raf = 0, idle = 0, lx = NaN, ly = NaN, lt = 0, glOn = false;
+    let wv0 = 0, nearT = -1e9;   // 파도 시작 시각, 커서가 이름 근처에 있던 마지막 시각
+    const WD = 1700, WA = 0.85, WS = 1.15;   // 파도 한 번의 길이(ms), 마루 높이, 마루 반폭(글자 수)
     const src = () => {
       if (cardOn() || (!fine && !haveP)) { const r = card.getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; }
       return haveP ? [px, py] : null;
@@ -2273,6 +2285,9 @@ window.ticker = (() => {
       const now = performance.now(), dt = Math.min(48, lt ? now - lt : 16) / 1000; lt = now;
       const p = src(), mr = mark.getBoundingClientRect(), R = mr.height * 0.9, fs = parseFloat(getComputedStyle(mark).fontSize) || 100;
       let busy = false;
+      // 파도 마루 자리(글자 번호). 양 끝 바깥에서 들어와 바깥으로 나간다
+      let wc = null;
+      if (wv0) { const e = (now - wv0) / WD; if (e >= 1) wv0 = 0; else { wc = -2.5 + e * (ls.length + 5); busy = true; } }
       // 글자 자리는 먼저 한꺼번에 읽고 모양은 그 뒤에 쓴다(읽기·쓰기를 번갈아 하면 글자마다 배치를 다시 계산한다)
       const cs = p ? ls.map(l => { const r = l.e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }) : null;
       // 데스크톱은 WebGL 입체(inflate3d.js)가 준비되면 그쪽이 부푼 글자를 그리고, 여기서는 그 글자를 숨기기만 한다
@@ -2281,10 +2296,12 @@ window.ticker = (() => {
       ls.forEach((l, i) => {
         let t = 0;
         if (p) { const dx = p[0] - cs[i][0], dy = p[1] - cs[i][1]; t = Math.exp(-(dx * dx + dy * dy) / (R * R)); }
+        if (t > 0.05) nearT = now;
+        if (wc !== null) { const u = (i - wc) / WS; t = Math.max(t, WA * Math.exp(-u * u)); }
         if (t > l.k + 0.002 || l.v > 0.01) {   // 부풀기: 덜 감쇠된 스프링(ω 15, ζ 0.42)이라 살짝 넘쳤다 자리 잡는다
           const w = 15, z = 0.42; l.v += (w * w * (t - l.k) - 2 * z * w * l.v) * dt; l.k += l.v * dt;
           if (l.k < t && l.v < 0) { /* 넘친 뒤 되돌아오는 중 */ }
-        } else { l.v = 0; l.k += (t - l.k) * (1 - Math.exp(-dt / 0.45)); }   // 바람 빠지기: 늘어지듯 느린 감쇠(τ 0.45초, 0.9초면 거의 납작)
+        } else { l.v = 0; l.k += (t - l.k) * (1 - Math.exp(-dt / (wc !== null ? 0.16 : 0.45))); }   // 바람 빠지기: 늘어지듯 느린 감쇠(τ 0.45초, 0.9초면 거의 납작). 파도가 지나가는 동안은 τ 0.16초(꼬리가 길면 마루가 글자 8개로 퍼졌다)
         if (Math.abs(t - l.k) > 0.004 || Math.abs(l.v) > 0.01) busy = true;
         const q = Math.max(0, l.k), key = q < 0.012 ? '' : q.toFixed(3);
         if (key === l.shown) return; l.shown = key;
@@ -2310,9 +2327,25 @@ window.ticker = (() => {
     ['pointerdown', 'pointerup', 'wheel', 'touchmove', 'scroll'].forEach(t => addEventListener(t, kick, { passive: true }));
     fit(); document.fonts.load('500 1em "Funnel Display"').then(fit, () => {});   // 서체가 도착하면 그 글자 폭으로 한 번 더 잰다
     if (!fine) setInterval(() => { if (isOn() && cardMoving()) kick(); }, 500);   // 터치: 흔들리는 명함을 따라가도록 가끔 깨운다. 명함 루프가 잠들었으면(멈춤) 깨우지 않는다
+    if (wave) {
+      // 데스크톱은 첫 파도를 WebGL 입체로 보이려고 로드 직후 미리 깨우고, 거리장이 준비될 때까지(최대 2.5초 더) 기다린다
+      const gl3 = () => fine && window.Inflate3D && window.WebGL2RenderingContext;
+      const tryWave = () => {
+        const calm = isOn() && ct === 0 && !document.hidden && performance.now() - nearT > 2000;
+        if (calm && !wv0) { wv0 = performance.now(); kick(); }
+        setTimeout(tryWave, 6000 + Math.random() * 2000);
+      };
+      const first = () => {
+        if (gl3()) Inflate3D.warm();
+        const t0 = performance.now();
+        const wait = () => (!gl3() || (Inflate3D.ok && Inflate3D.has(mark)) || performance.now() - t0 > 2500) ? tryWave() : setTimeout(wait, 150);
+        setTimeout(wait, 1500);
+      };
+      if (document.readyState === 'complete') first(); else addEventListener('load', first, { once: true });
+    }
   }
   { const hm = document.querySelector('.copy .mark'); if (hm) hm.addEventListener('mk-fit', () => { if (innerWidth <= 820) resize(); }); }   // 세로 화면 이름 크기·목줄 길이는 이름 폭에 달려 있다
-  weightText(document.querySelector('.copy .mark'), () => heroIn, () => (drag || press) && ct === 0);
+  weightText(document.querySelector('.copy .mark'), () => heroIn, () => (drag || press) && ct === 0, true);
   if (window.Hero) Hero.weightText = (el, isOn) => weightText(el, isOn, () => false);
 
   new IntersectionObserver(es => { const e = es[es.length - 1]; heroIn = e.isIntersecting && e.intersectionRatio > 0; if (heroIn) wakeBadge(); }, { threshold: [0, 0.001] }).observe(hero);
@@ -3856,6 +3889,8 @@ if (fine && !reduce && window.WebGL2RenderingContext) {
   window.Inflate3D = {
     ok: false,
     get samples(){ return acc; },   // 검수용: 지금까지 쌓인 표본 수(-1 = 움직이는 중)
+    warm: () => go(),                  // 이름 파도(hero.js)가 첫 파도 전에 미리 깨운다
+    has: mark => states.has(mark),     // 그 표식의 거리장이 이미 만들어졌는가
     // hero.js가 이 표식을 쓸 수 있는지 묻는다(데스크톱 폭에서 준비가 끝났을 때만)
     ready: mark => window.Inflate3D.ok && innerWidth > 820 && !!mark && !!mark.offsetParent,
     // ks: 글자(칸)마다 부푼 정도. 하나도 부풀지 않으면 감추고 그리지 않는다
