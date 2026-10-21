@@ -2271,9 +2271,10 @@ window.ticker = (() => {
   const cam = {
     inside: () => ({ th: TH, ...screen(), d: P() }),
     // 맥북 앞: 덮개 폭이 화면의 46%(원근 P 고정이라 키보드면이 1.7~2배로 커지므로 덮개를 작게 잡는다, card-drop 1120·375 실측), 맥북은 가운데에서 살짝 오른쪽 아래
-    front: () => { const s = screen(), d = G.lidW * P() / ((W.mobile ? 0.8 : 0.46) * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.09 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.1 : 0.15) * W.H * k, Tz: s.Tz, d }; },
+    // 가로로 넓은 모바일 폭(800×700 등)은 폭 기준이면 맥북이 화면 높이를 다 차지해 위쪽 글 격자가 화면을 덮는다: 맞춤 폭을 높이로 제한한다(card-drop 실측, 375×812는 그대로)
+    front: () => { const s = screen(), d = G.lidW * P() / (W.mobile ? Math.min(0.8 * W.Wd, 0.5 * W.H) : 0.46 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.09 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.1 : 0.15) * W.H * k, Tz: s.Tz, d }; },
     // 베젤 거리: 화면 폭이 뷰포트의 66%, 키보드 윗줄이 아래에 걸린다. 서비스가 바뀌면 글 격자도 바뀌므로 맥북은 오른쪽, 글은 왼쪽 아래(375급은 화면 폭 86%, 글은 아래)
-    bezel: () => { const s = screen(), d = G.Wi * P() / ((W.mobile ? 0.86 : 0.66) * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.14 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.12 : 0.07) * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d }; },
+    bezel: () => { const s = screen(), d = G.Wi * P() / (W.mobile ? Math.min(0.86 * W.Wd, 0.56 * W.H) : 0.66 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - (W.mobile ? 0 : 0.14 * W.Wd * k), Ty: s.Ty + (W.mobile ? -0.12 : 0.07) * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d }; },
     // 맺음: θ 80 내려다보기로 명함(앞면, 왼쪽 위)과 화면이 잠든 맥북(가운데 아래)을 책상 위 평면 배치로 한 화면에 잡는다(card-drop 시험식).
     // θ 55에서는 명함이 맥북 뒤(벽 쪽)에 가려 어둠에 뜬 조각으로 읽혔다
     end: () => {
@@ -2434,6 +2435,9 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
     // 화면 빛: 화면과 같은 크기·자리의 면광원(그림자는 없다)
     const area = new THREE.RectAreaLight(0xffffff, 0, 1, 1);
     scene.add(area);
+    // 방에 남은 빛: 화면이 꺼져도 알루미늄 윤곽이 읽히도록 위·앞에서 오는 옅은 무채색 빛(맺음에서 검은 덩어리로만 보였다, 10-21 조율 검수)
+    const room = new THREE.DirectionalLight(0xd4d7e0, 0);
+    room.position.set(-0.35, 1, 0.55); scene.add(room);
 
     // 무대 치수가 바뀌면 다시 놓는다
     let placeKey = '';
@@ -2479,10 +2483,12 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       cam.rotation.set(-th, 0, 0);
       cam.position.set(c.Tx, -c.Ty, c.Tz).add(new THREE.Vector3(0, 0, d).applyAxisAngle(new THREE.Vector3(1, 0, 0), -th));
       // 빛: 화면이 켜진 만큼(L은 이미 잠들기 곡선을 곱했다)
-      const lit = L * gk;
-      area.color.setRGB(gl[0] / 255, gl[1] / 255, gl[2] / 255, THREE.SRGBColorSpace);
+      // 화면 빛 색은 흰빛 쪽으로 절반 섞는다: 어두운 서비스(남보라 바탕)의 색이 금속을 그대로 물들이면 알루미늄 회색이 사라진다(10-21 조율 검수)
+      const lit = L * gk, mixW = v => (0.5 * v / 255 + 0.5);
+      area.color.setRGB(mixW(gl[0]), mixW(gl[1]), mixW(gl[2]), THREE.SRGBColorSpace);
       area.intensity = 3.2 * lit;
-      const env = 0.12 + 0.38 * lit;
+      room.intensity = 0.55;
+      const env = 0.3 + 0.3 * lit;
       mats.forEach(m => { if (m !== screenMat) m.envMapIntensity = env; });
       screenMat.envMapIntensity = 0.6;
       renderer.render(scene, cam);
