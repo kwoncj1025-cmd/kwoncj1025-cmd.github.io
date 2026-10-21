@@ -561,11 +561,12 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 /* 끝 화면(10-21 대표님 결정 6, macbook.js .end-info): 히어로와 수미상관. 아래를 「Thanks for watching.」 한 줄이 글 영역 폭 그대로 가로지른다(크기는 macbook.js가 폭에 맞춰 넣는다).
    높이는 보이는 높이(macbook.js가 visualViewport로 재는 --vvh)라 휴대폰 Safari 아래 주소 막대 뒤로 큰 줄이 숨지 않는다.
    서체·색·행간·자간은 히어로 「Chanjun Kwon」(.tmark)과 같다. 그 바로 위에 작은 줄과 연락처(16px, 누르면 복사). 맥북과 명함은 그 위 가운데에 남는다 */
-.end-info{position:fixed;left:0;right:0;top:0;height:100vh;height:var(--vvh,100svh);box-sizing:border-box;z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0}
+.end-info{position:fixed;left:0;right:0;top:0;height:100vh;height:var(--vvh,100svh);box-sizing:border-box;z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0;will-change:opacity}
 .end-info .ei-body{grid-row:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(14px,2.2vh,28px)}
 .end-info .ei-lead{margin:0;font:500 clamp(18px,1.5vw,22px)/1.1 var(--f-disp);letter-spacing:-.02em;color:var(--nt-ink)}
 .end-info .ei-list{display:flex;gap:clamp(24px,3vw,48px);margin:0;padding:0;list-style:none}
-.end-info .ei-item{display:grid;gap:6px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:copy;pointer-events:auto}
+.end-info .ei-item{display:grid;gap:6px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:copy}
+.end-info.on .ei-item{pointer-events:auto}   /* 반쯤 넘게 드러났을 때만 누를 수 있다(층은 늘 그려 둔다) */
 .end-info .ei-k{position:relative;font-size:11px;line-height:1;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 .end-info .ei-ok{position:absolute;left:0;top:0;opacity:0;color:var(--soft);transition:opacity .2s}
 .end-info .ei-kt{transition:opacity .2s}
@@ -2545,7 +2546,7 @@ window.ticker = (() => {
   // 그 바로 위에 「Let's make something.」과 연락처(15~16px, 누르면 복사). 맥북과 명함은 그 위 가운데(scene-web cam.end). 카메라에 붙은 화면 층이라 .web-info와 같이 body 바로 아래에 둔다
   let endInfo = document.querySelector('.end-info');
   if (!endInfo) {
-    endInfo = el('aside', 'end-info'); endInfo.setAttribute('aria-label', 'Contact'); endInfo.style.visibility = 'hidden';
+    endInfo = el('aside', 'end-info'); endInfo.setAttribute('aria-label', 'Contact'); endInfo.inert = true;
     const rows = [['Email', 'kwoncj1025@gmail.com', 'kwoncj1025@gmail.com'], ['Phone', '010-6343-4110', '010-6343-4110'], ['Instagram', '@chanjun.kwon', 'https://instagram.com/chanjun.kwon']];
     endInfo.innerHTML = `<div class="ei-body"><p class="ei-lead">Let's make something.</p><ul class="ei-list">` +
       rows.map(([k, v, c]) => `<li><button type="button" class="ei-item" data-copy="${c}" aria-label="${k} ${v} 복사"><span class="ei-k"><span class="ei-kt">${k}</span><span class="ei-ok" aria-hidden="true">Copied</span></span><span class="ei-v">${v}</span></button></li>`).join('') +
@@ -2577,7 +2578,8 @@ window.ticker = (() => {
   if (window.Hero && Hero.weightText) Hero.weightText(eMark, () => endV > 0.01);
   Stage.ticker.add(() => {
     const v = endOf(Stage.state.p), str = v.toFixed(3); if (str === endStr) return; endStr = str; endV = v;
-    endInfo.style.opacity = str; endInfo.style.visibility = v > 0.01 ? 'visible' : 'hidden';
+    // 숨김(visibility)을 켜고 끄면 처음 드러나는 순간 큰 글 층을 새로 그리느라 휴대폰에서 한 번 멈춘다(10-21 측정 296ms). 층은 늘 그려 두고 투명도만 바꾼다
+    endInfo.style.opacity = str; endInfo.inert = v < 0.5; endInfo.classList.toggle('on', v >= 0.5);
     document.documentElement.classList.toggle('end-on', v > 0.5);
   });
 })();
