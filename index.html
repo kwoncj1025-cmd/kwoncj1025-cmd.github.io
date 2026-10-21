@@ -2108,8 +2108,21 @@ window.ticker = (() => {
     render(rope ? acc / STEP : 1);
     if (drag || press) return true;
     if (STG && ct > 0) return ct < 0.999 || deskBusy();   // 책상에 놓여 멈추면 잠든다(장면 진행·손대기가 깨운다)
-    return reduce ? !quiet() : heroIn;
+    if (reduce) return !quiet();
+    if (!heroIn) return false;
+    // 줄과 명함이 멈추면 잠든다(10-21 deploy-prep 측정: 휴대폰에서 가만히 있어도 줄 풀이·그리기가 메인 스레드의 약 30%).
+    // 남은 슬쩍 밀기(nudge)는 그 시각에 타이머로 깨운다. 손대기·스크롤·화면 진입은 원래대로 깨운다
+    if (!intro && quiet()) {
+      clearTimeout(nudgeTO);
+      if (!touched && !(STG && ct > 0) && nudgeN < NUDGE_MAX) {
+        const need = nudgeN ? NUDGE_GAP : NUDGE_FIRST;
+        nudgeTO = setTimeout(() => { idleT = Math.max(idleT, need - 1); wakeBadge(); }, Math.max(0, need - idleT) * STEP);
+      }
+      return false;
+    }
+    return true;
   }
+  let nudgeTO = 0;
   const wakeBadge = () => ticker.wake('badge');
   // 장면 손잡이(scene-hero.js·scene-table.js·scene-cases.js가 부른다). 모두 진행값에 대한 순수 함수로 쓴다
   window.Hero = {
