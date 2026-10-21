@@ -104,12 +104,13 @@ h1 span{display:block;color:var(--soft)}
 .slot i{position:absolute;left:26.6px;top:-5.6px;width:8px;height:4px;margin-left:-4px;border-radius:50%;
   background:radial-gradient(closest-side,rgba(13,14,18,.38),rgba(13,14,18,0))}
 
-.row{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
+/* 명함 작은 글(10-21 점검표 ⑦): 화면에서 9px 아래로 내려가지 않게. 데스크톱 11px(카메라 원근으로 약 .83배 → 9.1px), 세로 화면은 명함 축소율로 나눈 값(5-hero-layout.css --card-sm) */
+.row{display:flex;justify-content:space-between;align-items:center;font-size:var(--card-sm,11px);letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
 .photo{border-radius:15px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
 .photo img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.18) translateY(4%);pointer-events:none;-webkit-user-drag:none;user-select:none}
 .name{margin:14px 4px 0;font-family:var(--f-disp);font-size:26px;font-weight:500;letter-spacing:-.025em;line-height:1.1}
 .role{margin:4px 4px 0;font-size:13.5px;color:var(--ink-2)}
-.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 4px 0;border-top:1px solid var(--line);font-size:9.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 4px 0;border-top:1px solid var(--line);font-size:var(--card-sm,11px);letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
 .go{width:28px;height:28px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .2s;position:relative;z-index:3}
 .go:hover{transform:scale(1.08)}
 .go:focus-visible{outline:2px solid var(--dot);outline-offset:2px}
@@ -123,7 +124,7 @@ h1 span{display:block;color:var(--soft)}
 .crow:hover{background:rgba(13,14,18,.045)}
 .crow:active{background:rgba(13,14,18,.08)}
 .crow:focus-visible{outline:2px solid var(--dot);outline-offset:-2px}
-.crow .k,.issue .k{font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;transition:color .15s}
+.crow .k,.issue .k{font-size:var(--card-sm,11px);letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;transition:color .15s}
 .crow .v{font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crow .ic{width:15px;height:15px;fill:none;stroke:var(--ink-3);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
 .crow:hover .ic{stroke:var(--ink)}
@@ -243,12 +244,12 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 @media (prefers-reduced-motion:reduce){.peek i{animation:none}}
 /* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
 .back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
-.back .row{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
+.back .row{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
 .back .row b{font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .back h4{margin:14px 2px 0;font-family:var(--f-disp);font-weight:500;font-size:calc(var(--cw) * .092);line-height:1.12;letter-spacing:-.025em;word-break:keep-all;text-wrap:balance}
 .back h4.ko{font-family:var(--f-ko);font-weight:700;letter-spacing:-.04em;line-height:1.25;font-size:calc(var(--cw) * .082)}
 .back .sub{margin:8px 2px 0;font-family:var(--f-ko);font-size:11.5px;line-height:1.55;color:var(--ink-2);word-break:keep-all}
-.back .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:10px 2px 0;border-top:1px solid var(--line);font-size:8.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
+.back .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:10px 2px 0;border-top:1px solid var(--line);font-size:9.5px;letter-spacing:.09em;color:var(--ink-2);text-transform:uppercase}
 .back .ft a{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;pointer-events:none}
 .back .ft a svg{width:11px;height:11px}
 .pc.flipped .back .ft a{pointer-events:auto}
@@ -267,14 +268,16 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   .tfoot{--pl:max(20px,env(safe-area-inset-left,0px));--pr:max(20px,env(safe-area-inset-right,0px));--pb:calc(40px + env(safe-area-inset-bottom,0px))}
   .tmeta{left:calc(var(--pl) + var(--mk,0px) + 16px)}
   .pile{--cw:min(36vw,170px,24svh)}
-  /* 모바일 세로 책상(무대, 10-21 대표님 선택): 카드는 화면 폭의 44%(대표작 1.3배는 table.js), 「Selected Work」는 책상 위 끝에 가로로 인쇄한다 */
+  /* 모바일 세로 책상(무대, 10-21 대표님 선택): 카드는 모두 화면 폭의 44%, 「Selected Work」는 책상 위 끝에 가로로 인쇄한다 */
   html.stage-on .pile{--cw:min(44vw,200px)}
   html.stage-on .tmark{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto;transform:none;line-height:.86}
   html.stage-on .tmeta{left:var(--pl)}
   .back{padding:12px 10px 9px}
   .back .sub{display:none}
-  .back .row{font-size:7.5px}
+  .back .row,.back .ft{font-size:9px;letter-spacing:.06em}   /* 화면에서 9px 아래로 내리지 않는다(10-21 점검). 모바일 세로 책상은 배율 1 */
 }
+/* 터치 기기: 카드 면의 빛줄기(soft-light 혼합)를 끈다. 3D 무대에서 카드 19장의 혼합 합성이 휴대폰을 버벅이게 했다(10-21 측정). 테두리 무지개는 멈춘 채 남는다 */
+@media (pointer:coarse){.f::after{display:none}}
 @media (prefers-reduced-motion:reduce){
   .table{height:auto;padding:96px max(24px,env(safe-area-inset-right,0px)) 48px max(24px,env(safe-area-inset-left,0px))}
   .tbar .hint{display:none}
@@ -304,23 +307,26 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   color:var(--soft);white-space:nowrap;width:max-content;justify-self:start}
 .copy .mark .mk{display:inline-block;text-align:center}   /* 글자 칸 폭은 hero.js가 기본 굵기 폭으로 고정한다(굵어져도 줄이 출렁이지 않게) */
 @media (max-width:820px){
-  /* 세로 화면: 짧은 목줄에 걸린 명함이 위를 차지하고(줄이 제목을 가로지르지 않는다), 제목·소개는 명함 바로 아래, 이름은 맨 아래.
-     첫 줄 높이(--card-b)는 hero.js가 명함 아래끝으로 맞추고, 남는 높이는 이름 위(1fr)로 간다 */
-  .stage{min-height:max(640px,100svh)}
-  .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--card-b,320px) auto auto auto 1fr auto;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:62px}   /* 아래 62px: 작업 카드 더미(.peek)가 이름에 걸리지 않게 */
-  .copy .eyebrow{display:none}   /* 이름이 명함·워드마크에 이미 있어 좁은 화면에선 눈썹 글을 뺀다 */
-  .copy h1{grid-row:2;margin-top:0;font-size:28px}
-  .copy .intro{grid-column:1;grid-row:3;justify-self:start;max-width:none;margin:12px 0 8px;font-size:13px}
-  .copy .meta{grid-column:1;grid-row:4;justify-self:start}
-  .copy .mark{grid-row:6}
+  /* 세로 화면(10-21 대표님 실기기 판정 「아까 구조에서 이름만 아래, 확 키워서 화면 끝까지」): 위에 눈썹·제목, 그 아래 목줄에 걸린 명함, 아래에 소개·상태,
+     맨 아래 「Chanjun Kwon」은 바깥 여백 없이 화면 폭 꽉 찬 한 줄(크기는 hero.js가 폭에 맞춘다).
+     목줄은 제목 오른쪽을 지나 내려온다: 고정점이 화면 폭의 64%(hero.js), 제목은 그 왼쪽에 들도록 24px. 줄 길이는 명함 아래끝이 소개 글 바로 위에 오도록 hero.js가 잰다.
+     높이는 Safari 아래 주소 막대를 뺀 보이는 높이(100svh) 기준이라 이름이 막대 뒤에 숨지 않는다 */
+  .stage{min-height:max(540px,100svh)}
+  .copy{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto auto;
+    padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(72px + env(safe-area-inset-bottom,0px))}   /* 아래 72px: 작업 카드 더미(.peek)가 이름에 걸리지 않게 */
+  .copy .eyebrow{grid-column:1;grid-row:1}
+  .copy h1{grid-column:1;grid-row:2;margin-top:12px;font-size:24px;max-width:none}
+  .copy .intro{grid-column:1;grid-row:4;justify-self:start;max-width:none;margin:0 0 8px;font-size:13px}
+  .copy .meta{grid-column:1;grid-row:5;justify-self:start;margin:0 0 14px}
+  .copy .mark{grid-row:6;margin:0 -20px;justify-self:start}
   .copy .intro .ko{display:none}   /* 좁은 화면에선 영문 소개만 남긴다 */
   .copy .intro .en{font-size:13px}
-  .card3d{top:48.1px;scale:.68;transform-origin:150px 0}
-  .ring,.clasp{scale:.68}   /* 좁은 화면에선 명함을 줄여 아래 글과 이름이 숨 쉴 자리를 둔다 */
+  .card3d{top:48.1px;scale:.68;transform-origin:150px 0;--card-sm:13.4px}   /* 명함 작은 글: 9.1px ÷ 축소율 */
+  .ring,.clasp{scale:.68}
 }
-/* 세로 화면이 길면 명함을 키워 남는 높이를 명함이 받는다(줄은 짧은 채로). hero.js가 이 축소율(KS)을 읽는다 */
-@media (max-width:820px) and (min-height:760px){ .card3d{top:52.4px;scale:.74} .ring,.clasp{scale:.74} }
-@media (max-width:820px) and (min-height:860px){ .card3d{top:57.3px;scale:.81} .ring,.clasp{scale:.81} }
+/* 세로 화면이 길면 명함을 키운다. hero.js가 이 축소율(KS)을 읽는다 */
+@media (max-width:820px) and (min-height:760px){ .card3d{top:52.4px;scale:.74;--card-sm:12.3px} .ring,.clasp{scale:.74} }
+@media (max-width:820px) and (min-height:860px){ .card3d{top:57.3px;scale:.81;--card-sm:11.3px} .ring,.clasp{scale:.81} }
 /* 무대 골격: 문서 스크롤을 없애고 100dvh 무대 하나에 장면 층을 쌓는다.
    stage-off(움직임 줄이기, GSAP 실패)에서는 무대 요소가 보통 블록이라 지금의 문서 스크롤 판이 그대로 보인다 */
 html.stage-on, html.stage-on body{height:100%;overflow:hidden;overscroll-behavior:none}
@@ -341,6 +347,8 @@ html.stage-on .pool{display:block;position:absolute;left:50%;top:0;width:150%;he
   background:radial-gradient(closest-side,rgba(52,60,118,.9),rgba(40,46,96,.55) 55%,rgba(34,42,92,0) 100%)}
 html.stage-on .stage-layer{position:absolute;left:0;right:0;top:0;transform-style:preserve-3d;will-change:transform}
 html.stage-held #stage-root{touch-action:auto}
+/* 터치 기기: 맥북 메뉴 막대의 배경 흐림(backdrop-filter)을 반투명 바탕으로 바꾼다. 3D 변환 안의 흐림은 휴대폰에서 매 프레임 비싸다(10-21 측정, 6-macbook.css 주인 card-drop에 알림) */
+@media (pointer:coarse){html.stage-on .mb div.mb-bar{-webkit-backdrop-filter:none;backdrop-filter:none;background:linear-gradient(rgba(255,255,255,.16),rgba(255,255,255,.1))}}
 /* 카드 테이블이 어둠에 잠긴다(world.js --sink): 맥북으로 가며 불이 낮아지는 동안. 3D가 평면이 되지 않게 잎 요소(카드 면·글줄)에만 건다 */
 html.stage-on [data-scene="table"] :is(.tmark,.f){opacity:var(--sink,1)}
 /* 버튼 줄·작은 글 줄은 카메라가 움직이기 전에 걷고(world.js --ui), 다 걷히면 그리지 않는다 */
@@ -504,7 +512,8 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 @media (max-width:820px){
   /* 가로 한 줄: 세로 화면은 위쪽 글 자리가 좁아 세로로 쌓을 수 없다. 옆으로 밀어 넘기고, 묶음은 머리 대신 간격으로 나눈다 */
   html.stage-on body .web-info .wi-list{grid-column:1/-1;flex-direction:row;align-items:baseline;gap:18px;margin-top:10px;overflow-x:auto;scrollbar-width:none;
-    pointer-events:auto;margin-right:-20px;padding-right:20px;-webkit-mask:linear-gradient(90deg,#000 85%,transparent)}
+    pointer-events:auto;margin-right:-20px;padding-right:20px;--fl:0px;--fr:64px;
+    -webkit-mask:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
   html.stage-on body .web-info .wi-list::-webkit-scrollbar{display:none}
   html.stage-on body .web-info .wi-gh{display:none}
   html.stage-on body .web-info .wi-live+li{margin-left:14px}
@@ -540,6 +549,36 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
   html.stage-on body .web-info .wi-body{gap:18px}
   html.stage-on body .web-info .wi-meta{margin-top:14px}
 }
+
+/* 끝 화면(10-21 대표님 결정 6, macbook.js .end-info): 히어로와 수미상관. 아래를 「Thanks for watching.」 한 줄이 글 영역 폭 그대로 가로지른다(크기는 macbook.js가 폭에 맞춰 넣는다).
+   서체·색·행간·자간은 히어로 「Chanjun Kwon」(.tmark)과 같다. 그 바로 위에 작은 줄과 연락처(16px, 누르면 복사). 맥북과 명함은 그 위 가운데에 남는다 */
+.end-info{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0}
+.end-info .ei-body{grid-row:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(14px,2.2vh,28px)}
+.end-info .ei-lead{margin:0;font:500 clamp(18px,1.5vw,22px)/1.1 var(--f-disp);letter-spacing:-.02em;color:var(--nt-ink)}
+.end-info .ei-list{display:flex;gap:clamp(24px,3vw,48px);margin:0;padding:0;list-style:none}
+.end-info .ei-item{display:grid;gap:6px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:copy;pointer-events:auto}
+.end-info .ei-k{position:relative;font-size:11px;line-height:1;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+.end-info .ei-ok{position:absolute;left:0;top:0;opacity:0;color:var(--soft);transition:opacity .2s}
+.end-info .ei-kt{transition:opacity .2s}
+.end-info .ei-item.ok .ei-kt{opacity:0}
+.end-info .ei-item.ok .ei-ok{opacity:1}
+.end-info .ei-v{font-size:16px;line-height:1.2;color:var(--nt-ink);transition:color .2s}
+.end-info .ei-item:hover .ei-v{color:var(--soft)}
+.end-info .ei-item:focus-visible{outline:2px solid var(--soft);outline-offset:4px;border-radius:2px}
+.end-info .ei-mark{grid-row:3;margin:0;font-family:var(--f-disp);font-weight:500;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
+.end-info .ei-mark .mk{display:inline-block;text-align:center}
+.end-info .ei-live{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media (max-width:820px){
+  .end-info{padding:0 20px calc(22px + env(safe-area-inset-bottom,0px))}
+  .end-info .ei-body{flex-direction:column;align-items:flex-start;gap:16px}
+  .end-info .ei-list{flex-direction:column;gap:10px}
+  .end-info .ei-item{grid-template-columns:84px auto;align-items:baseline;gap:0}
+  .end-info .ei-v{font-size:15px}
+}
+html:not(.stage-on) .end-info{display:none}
+/* 끝 화면의 맨 위로 버튼: 큰 줄 위, 연락처 줄 끝에 맞춘다(아래끝 높이는 macbook.js가 잰다). 데스크톱은 연락처 목록이 버튼 자리를 비운다 */
+html.end-on .totop{bottom:var(--ei-top-b,20px)}
+@media (min-width:821px){ .end-info .ei-list{margin-right:64px} html.end-on .totop{right:32px} }
 </style>
 
 <!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
@@ -674,7 +713,7 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
         alias: ['bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
-    split: null,             // 구간 하나를 둘로 나눠 앞부분만 다른 스크롤 거리로: [구간, 앞부분 진행값 길이, 앞부분 화면 수]. 모바일 세로 책상을 따라 내려가는 구간(world.js가 정한다)
+    split: null,             // 구간 안 일부 범위만 다른 스크롤 거리로: [[시작 p, 끝 p, 화면 수], …]. 모바일 책상 내려가기·모으기 뒤 숨(world.js가 정한다). 나머지는 seg 빠르기
     free: [],                // 자유 구간 [시작, 끝, 화면 수](지금은 없다. 긴 문서는 맥북 화면 속 iframe이 스스로 스크롤한다)
     // 구간별 스크롤 거리(화면 높이의 몇 배가 진행값 1인가). null은 free의 화면 수. 카드 → 맥북 2.5 · 맥북 → 맺음 2.5
     seg: [2.2, 2.5, 2.5],
@@ -721,11 +760,14 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 
   // 조각: [시작, 끝, 진행값 1의 px]. 보통은 구간 하나가 조각 하나이고, split이 있으면 그 구간을 두 조각으로 나눈다(뒷조각은 원래 빠르기)
   const pieces = () => {
-    const out = [], sp = config.split;
+    const out = [], sp = (config.split || []).slice().sort((a, b) => a[0] - b[0]);
     for (let i = 0; i < last(); i++) {
-      const L = segPx(i);
-      if (sp && sp[0] === i && sp[1] > 0 && sp[1] < 1) { const m = i + sp[1]; out.push([i, m, sp[2] * innerHeight / sp[1]], [m, i + 1, L]); }
-      else out.push([i, i + 1, L]);
+      const L = segPx(i); let t = i;
+      sp.filter(([a, b]) => a >= i - 1e-9 && b <= i + 1 + 1e-9 && b > a).forEach(([a, b, n]) => {
+        if (a > t + 1e-9) out.push([t, a, L]);
+        out.push([a, b, n * innerHeight / (b - a)]); t = b;
+      });
+      if (t < i + 1 - 1e-9) out.push([t, i + 1, L]);
     }
     return out;
   };
@@ -968,8 +1010,10 @@ window.ticker = (() => {
       mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
       box.style.setProperty('--mk', mark.offsetHeight + 'px'); return;
     }
-    const cs = getComputedStyle(mark.parentElement), avail = mark.parentElement.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // 첫 화면 이름: 데스크톱은 좌우 여백 안, 세로 화면(820 이하, 10-21 대표님 「화면 끝까지 채우게」)은 여백 없이 화면 폭 그대로(5-hero-layout.css가 바깥으로 뺀다)
+    const cs = getComputedStyle(mark.parentElement), avail = mark.parentElement.clientWidth - (innerWidth <= 820 ? 0 : parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight));
     mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
+    mark.dispatchEvent(new Event('mk-fit'));   // 이름 높이가 바뀌면 hero.js가 목줄 길이를 다시 잰다
   });
   fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
   // 책상 높이는 table.js가 나중에 정한다(무대: 화면 한 장, 모바일 1.2장). 높이가 바뀌면 세운 제목을 다시 맞춘다
@@ -1003,7 +1047,7 @@ window.ticker = (() => {
   const N = ITEMS.length;
   // 모바일 세로 책상(10-21 대표님 선택, 16_모바일_연출 3항): 무대 + 820 이하. 데스크톱 흩뿌림·조작은 그대로다
   const MOB = () => STAGE && innerWidth <= 820;
-  const FEAT = new Set([0, 1, 4]);                   // 대표작(bewhysee·OURZ\·BizCopilot)은 모바일 책상에서 1.3배
+  const FEAT = new Set([0, 1, 4]);                   // 대표작(bewhysee·OURZ\·BizCopilot)은 모바일 책상에서 두 갈래 가운데에 걸쳐 놓인다(크기는 같다)
   const hasKo = s => /[가-힣]/.test(s), pad = n => String(n).padStart(2, '0');
   const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
   const ARROW = '<svg viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -1047,15 +1091,15 @@ window.ticker = (() => {
     mobile = innerWidth <= 820; BAR = mobile ? 64 : 84;
     cw = cards[0].el.offsetWidth || cw; ch = cards[0].el.offsetHeight || ch;
     TW = table.clientWidth; TH = table.clientHeight; FOOT = (() => { const m = tfoot.querySelector('.tmeta'); return m ? TH - m.offsetTop + 8 : 0; })();   // 아래 작은 글 줄까지(제목은 세워 왼쪽에 있다)
-    // 모바일 세로 책상: 카드마다 크기를 조금씩 다르게(대표작 1.3배, 나머지 0.94~1.04). 카드 위에서 시작한 손가락도 먼저 무대 스크롤이 받고, 끌기·길게 누르기로 정해질 때 카드가 가져간다
+    // 모바일 세로 책상: 카드는 모두 같은 크기(10-21 대표님 「카드 크기 제각각」 반려로 1.3배·0.94~1.04 변주를 없앰. 변주는 기울기·겹침·자리로만). 카드 위에서 시작한 손가락도 먼저 무대 스크롤이 받고, 끌기·길게 누르기로 정해질 때 카드가 가져간다
     const m = MOB();
-    cards.forEach(c => { c.sz = m ? (FEAT.has(c.i) ? 1.3 : 0.94 + rnd(c.i, 11) * 0.1) : 1; c.el.toggleAttribute('data-stage-ignore', !m); });
+    cards.forEach(c => { c.sz = 1; c.el.toggleAttribute('data-stage-ignore', !m); });
   };
   // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
   let seed = 0;
   const rnd = (i, s) => { const x = Math.sin(i * 127.1 + (s + seed * 7) * 311.7) * 43758.5453; return x - Math.floor(x); };
   // 모바일 세로 책상: 두 갈래로 느슨하게 흘려 놓는다. 갈래마다 아래 끝을 따로 재서 짧은 쪽에 놓으므로 줄이 맞지 않고,
-  // 대표작은 가운데에 걸쳐 두 갈래를 끊는다. 가로 흔들림·겹침·기울기(±6°)·크기를 카드마다 달리 해 2열 격자로 읽히지 않게 한다
+  // 대표작은 가운데에 걸쳐 두 갈래를 끊는다. 가로 흔들림·겹침·기울기(±6°)를 카드마다 달리 해 2열 격자로 읽히지 않게 한다(크기는 모두 같다)
   const mobileSpots = () => {
     const mk = tfoot.querySelector('.tmark'), top = mk ? mk.offsetTop + mk.offsetHeight : BAR + 60;
     const seqIdx = cards.map(c => c.i).filter(i => !FEAT.has(i)), F = [...FEAT];
@@ -1080,10 +1124,11 @@ window.ticker = (() => {
       spots[i] = { x, y: y0 + h / 2, r };
     });
     spots.h = Math.round(Math.max(hL, hR) + ch * 0.95 + FOOT);           // 맨 아래는 명함(오른쪽 아래, 반쯤 걸침)과 작은 글 줄 자리
-    // 명함(Hero.desk.spot, 책상 맨 아래 오른쪽)에 걸친 카드는 비켜 둔다: 왼쪽으로 옮기고, 그래도 걸치면 명함 위로 올린다(여백 30, 카드 기울기 몫)
+    // 명함(Hero.desk.spot, 책상 맨 아래 오른쪽)에 걸친 카드는 비켜 둔다: 왼쪽으로 옮기고, 그래도 걸치면 명함 위로 올린다.
+    // 명함은 카드보다 세로로 길고(300×430) 기울어 놓이므로 상자를 그만큼 키운다(배포본에서 대표작 모서리가 걸쳤다, 10-21 점검)
     const sp = window.Hero && Hero.desk && Hero.desk.spot;
     if (sp) {
-      const nx = sp.x - table.offsetLeft, ny = sp.z, nw = cw * 1.04 * 0.5 + 30, nh = ch * 1.04 * 0.5 + 30;
+      const nx = sp.x - table.offsetLeft, ny = sp.z, nw = cw * 1.04 * 0.5 + 44, nh = cw * 1.04 * 0.5 * 1.43 + 44;
       cards.forEach(c => {
         const q = spots[c.i], hw = cw * c.sz / 2, hh = ch * c.sz / 2, hit = () => Math.abs(q.x - nx) < nw + hw && Math.abs(q.y - ny) < nh + hh;
         if (!hit()) return;
@@ -1203,16 +1248,19 @@ window.ticker = (() => {
   order.slice().reverse().forEach((c, k) => { c.x = TW / 2 - k * 1.2; c.y = pileY() + k * 1.6; c.r = (k ? c.j1 * 3 : 0) * Math.PI / 180; });
   restack();
   const FR = 0.935, FRR = 0.88;
+  const FANCY = !matchMedia('(pointer: coarse)').matches;
   const tossTo = (c, s, delay) => setTimeout(() => {
     // 마찰이 FR이면 처음 속도의 1/(1-FR)배를 미끄러진다. 그만큼 역산해 던지면 정한 자리에 멈춘다
     c.vx = (s.x - c.x) * (1 - FR); c.vy = (s.y - c.y) * (1 - FR);
     let dr = s.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = dr * (1 - FRR);
-    c.toss = 1; wake();
+    c.toss = 1; c.dest = s; wake();
   }, delay);
   let sorted = false, dealt = false, dealtAt = 0;
   // 나눠 주기: 한 벌의 맨 위 카드부터 한 장씩 집어 테이블에 놓는다. 집은 카드는 그 순간 맨 위로 올라오고,
   // 먼저 놓은 카드일수록 아래에 깔리는 자리(seq 앞쪽)를 받는다
   const dealFromTop = (spots, d0, step) => {
+    // 모바일 세로 책상은 자리가 카드에 묶여 있다(대표작은 가운데 자리): 쌓일 순서(zc)대로 집어 자기 자리로 던진다
+    if (MOB()) { spots.zc.forEach((c, k) => { c.home = null; const t = d0 + k * step; setTimeout(() => raise(c), t); tossTo(c, spots[c.i], t); }); return; }
     order.slice().reverse().forEach((c, k) => {
       c.home = null; const t = d0 + k * step;
       setTimeout(() => raise(c), t); tossTo(c, spots.seq[k], t);
@@ -1387,6 +1435,8 @@ window.ticker = (() => {
         let dr = h.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = (c.vr + dr * kk) * 0.78;
       }
       if (!held) {
+        // 던진 카드는 미끄러지는 동안 정한 자리를 다시 겨눈다: 프레임 간격이 고르지 않으면 한 번에 정한 속도로는 30px쯤 어긋나 멈춰 명함 자리를 침범했다(10-21 점검)
+        if (c.toss && c.dest) { c.vx = (c.dest.x - c.x) * (1 - FR); c.vy = (c.dest.y - c.y) * (1 - FR); let dr = c.dest.r - c.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); c.vr = dr * (1 - FRR); }
         c.x += c.vx * dt; c.y += c.vy * dt; c.r += c.vr * dt;
         if (!c.home) { const fr = Math.pow(FR, dt); c.vx *= fr; c.vy *= fr; c.vr *= Math.pow(FRR, dt); }
         if (!c.home && !c.toss) {
@@ -1426,10 +1476,13 @@ window.ticker = (() => {
       put(c, '_tf', `translate3d(${(c.x + ox - cw / 2).toFixed(1)}px,${(c.y + oy - ch / 2).toFixed(1)}px,${(c.lift * 50).toFixed(1)}px) rotate(${c.r.toFixed(4)}rad) rotateY(${c.tx.toFixed(2)}deg) rotateX(${c.ty.toFixed(2)}deg) scale(${((1 + c.lift * grow) * c.ks * c.sz).toFixed(4)})`, v => { st.transform = v; });
       put(c, '_ff', `rotateY(${c.fl.toFixed(2)}deg)`, v => { c.flipEl.style.transform = v; });
       put(c, '_so', (k === top ? 0 : Math.min(0.1, (top - k) * 0.01)).toFixed(3), v => { c.sh.style.opacity = v; });
-      put(c, '_rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`, v => st.setProperty('--rim', v));
-      put(c, '_rimO', (0.35 + c.lift * 0.45).toFixed(3), v => st.setProperty('--rimO', v));
-      put(c, '_shine', `${(c.tx * -5 + c.r * 40 + c.fl * 0.3).toFixed(1)}%`, v => st.setProperty('--shine', v));
-      put(c, '_glint', (0.2 + c.lift * 0.35).toFixed(3), v => st.setProperty('--glint', v));
+      // 테두리 무지개·빛줄기는 마우스 기기에서만 움직인다. 터치 기기에서는 매 프레임 그라데이션·마스크·혼합을 다시 칠해 버벅였다(10-21 측정): 처음 값 그대로 둔다
+      if (FANCY) {
+        put(c, '_rim', `${(c.r * 57 + c.tx * 8 + c.fl * 0.6 + 210).toFixed(1)}deg`, v => st.setProperty('--rim', v));
+        put(c, '_rimO', (0.35 + c.lift * 0.45).toFixed(3), v => st.setProperty('--rimO', v));
+        put(c, '_shine', `${(c.tx * -5 + c.r * 40 + c.fl * 0.3).toFixed(1)}%`, v => st.setProperty('--shine', v));
+        put(c, '_glint', (0.2 + c.lift * 0.35).toFixed(3), v => st.setProperty('--glint', v));
+      }
     });
     if (busy) return true;
     scheduleHint(now);                                  // 모두 멈췄다: 잠들되, 남은 힌트 시각에는 다시 깨어난다
@@ -1494,19 +1547,27 @@ window.ticker = (() => {
   const offs = (el, root) => { let x = 0, y = 0; for (let n = el; n && n !== root; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; };
   function resize(){
     const so = offs(stage, hero), r = { width: hero.offsetWidth, height: hero.offsetHeight }, sr = { width: stage.offsetWidth, height: stage.offsetHeight };
-    const nUP = Math.round(sr.height * 0.5), nAX = so.x + sr.width / 2, nAY = so.y - 14 - nUP;
+    const nUP = Math.round(sr.height * 0.5), nAX = so.x + sr.width * (r.width <= 820 ? 0.64 : 0.5), nAY = so.y - 14 - nUP;   // 세로 화면은 제목 오른쪽으로 줄이 지나게 64%
     if (pts.length) pts.forEach(p => { p.x += nAX - AX; p.px += nAX - AX; p.y += nAY - AY; p.py += nAY - AY; });
     KS = parseFloat(getComputedStyle(card.parentElement).scale) || 1; STRAP_W = STRAP_W0 * KS;
     CT = parseFloat(getComputedStyle(card.parentElement).top) || 70.8;
     W = r.width; H = r.height; AX = nAX; AY = nAY; UP = nUP; SH = sr.height; dpr = Math.min(2, devicePixelRatio || 1);
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // 보이는 길이(옛 16마디 식 그대로). 세로 화면(820 이하)은 짧게(10-21 대표님: 「줄이 너무 길어」): 명함이 화면 위에 걸리고 글·이름은 그 아래 첫 화면에 들어온다
-    LV = W <= 820 ? Math.round(Math.max(36, Math.min(64, SH * 0.06))) : 15 * Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / 15));
-    // 세로 화면: 제목·소개는 명함 바로 아래(24px)에 붙이고, 남는 높이는 이름(워드마크) 위로 보낸다. 글 격자 첫 줄 높이를 명함 아래끝에 맞춘다
-    if (W <= 820) { const cp = hero.querySelector('.copy'); if (cp) { const top = offs(cp, hero).y + parseFloat(getComputedStyle(cp).paddingTop || 0); hero.style.setProperty('--card-b', Math.max(0, Math.round(so.y - 14 + LV + CT + 430 * KS + 24 - top)) + 'px'); } }
+    // 보이는 길이(옛 16마디 식 그대로). 세로 화면(820 이하, 10-21 대표님 실기기 판정): 명함 아래끝이 소개 글 28px 위에 오도록 가장 길게,
+    // 단 명함 윗끝은 제목 아래 16px보다 내려간다(명함이 제목 오른쪽 끝과 가로로 겹치므로). 이름 크기는 core.js가 화면 폭에 맞춘다
+    LV = 15 * Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / 15));
+    if (W <= 820) {
+      const h1 = hero.querySelector('.copy h1'), it = hero.querySelector('.copy .intro');
+      if (h1 && it) {
+        const top0 = so.y - 14 + CT, lo = offs(h1, hero).y + h1.offsetHeight + 16 - top0, hi = offs(it, hero).y - 28 - 430 * KS - top0;
+        LV = Math.round(Math.max(36, lo, Math.min(hi, SH * 0.42)));
+      }
+    }
     seg0 = (LV + UP) / (N - 1); if (!drag) seg = seg0;
     const a = anchor();
     if (!pts.length) {
+      // 세로 화면(10-21): 고정점이 오른쪽(64%)이고 줄이 길어, 들었다 놓는 첫 자세는 오른쪽이면 명함이 화면 밖으로, 왼쪽이면 줄이 제목을 가로지른다. 곧게 걸린 채 작게 흔들며 시작한다
+      if (intro && W <= 820) intro = false;
       if (intro) {   // 줄을 오른쪽 위로 기울여 든 자세. 카드는 손에 들린 채 수직이라, 놓으면 줄보다 늦게 따라 돈다
         const th = W < 700 ? 0.5 : 0.66;
         for (let i = 0; i < N; i++) { const s = seg * i, u = Math.max(0, s - UP), x = a.x + Math.sin(th) * u, y = a.y + Math.min(s, UP) + Math.cos(th) * u; pts.push({ x, y, px: x, py: y }); }
@@ -1514,7 +1575,7 @@ window.ticker = (() => {
       } else { for (let i = 0; i < N; i++) { const x = a.x, y = a.y + i * seg; pts.push({ x, y, px: x, py: y }); } om = reduce ? 0 : 0.0025; }
       const E = pts[N - 1]; piv.x = E.x; piv.y = E.y; }   // 축의 첫 위치를 줄 끝에 맞춰 첫 프레임 튐 방지
   }
-  resize(); addEventListener('resize', resize);
+  resize(); addEventListener('resize', resize); addEventListener('load', resize);   // load: 첫 배치가 끝난 뒤 세로 화면 목줄 길이를 다시 잰다
   if (document.fonts) document.fonts.ready.then(resize);
 
   const local = e => { const r = hero.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
@@ -1601,6 +1662,15 @@ window.ticker = (() => {
     const mt = tb && tb.querySelector('.tmeta'), zMeta = mt ? offs(mt, tb).y - hh * 1.12 - 14 : zMax;
     return { Hw, Dt, tl, TW, pa, sd, hw, hh, zMax, zMeta: Math.min(zMax, zMeta) };
   };
+  // 창 크기가 바뀌면(10-21 점검표 ⑥) 옮겨 둔 명함도 책상 폭 비율대로 다시 놓는다. 옮기지 않은 명함은 target()이 매번 귀퉁이를 다시 잰다
+  let deskTW = 0, deskTL = 0;
+  const deskRefit = () => {
+    const tb = document.querySelector('#work .table'); if (!tb) return;
+    const tw = tb.clientWidth, tl = tb.offsetLeft;
+    if (desk.moved && deskTW && tw) desk.x = tl + (desk.x - deskTL) * tw / deskTW;
+    deskTW = tw; deskTL = tl;
+  };
+  addEventListener('resize', deskRefit); addEventListener('load', deskRefit);
   // 더미를 치는 자리(08 1절: 더미 자리에서 살짝 오른쪽). 명함은 여기 떨어진 뒤 흩어지는 카드와 함께 밀려난다
   const pileSpot = g => ({ x: g.tl + g.pa.x + 0.02 * innerWidth, z: Math.min(g.zMax, g.pa.y - 0.03 * g.Dt) });
   // 밀려나 멈추는 책상 앞 오른쪽 귀퉁이(10-21 대표님 결정: 작업 카드 밖, 화면 오른쪽 끝에 반쯤 걸쳐 작업보다 먼저 눈에 들지 않게.
@@ -1617,13 +1687,13 @@ window.ticker = (() => {
     if (e) return { x: e.x, z: e.z, b: desk.b + 0.14 };
     return { x: desk.x + (cx - desk.x) * k, z: desk.z + (cz - desk.z) * k, b: desk.b + 0.14 * k };
   };
-  // 데스크톱: 맥북 왼쪽 여백(몸체 왼쪽 끝에서 덮개 폭의 0.3만큼 떨어지고, 깊이는 키보드면 가운데 줄).
+  // 데스크톱: 맥북 왼쪽 옆(몸체 왼쪽 끝에서 덮개 폭의 0.16만큼, 10-21 끝 화면에서 둘을 한 덩어리로 모으며 0.3에서 좁힘 떨어지고, 깊이는 키보드면 가운데 줄).
   // 세로 화면(820 이하): 옆에 두면 맥북이 잘리므로 맥북 앞 책상(몸체 앞 끝에서 덮개 폭의 0.18 앞, 가운데에서 살짝 왼쪽)
   function endSpot(g){
     const wg = Stage.webGeo; if (!wg || !wg.G.lidW) return null;
     const G = wg.G;
     if (innerWidth <= 820) return { x: G.cx - 0.12 * G.lidW, z: G.zh + G.baseD + 0.18 * G.lidW + g.hh };
-    return { x: G.cx - G.lidW / 2 - 0.3 * G.lidW - g.hw, z: G.zh + 0.42 * G.baseD };
+    return { x: G.cx - G.lidW / 2 - 0.16 * G.lidW - g.hw, z: G.zh + 0.42 * G.baseD };
   }
   // ct에 대한 순수 함수: 고리에서 빠짐(0.15~0.20) → 자유 낙하(0.20~0.30) → 아래 모서리를 축으로 앞으로 엎어짐(0.30~0.46)
   // → 책상 위를 미끄러지며 반 바퀴 돌아 더미 위에 멈춤(0.46~0.86, 회전은 0.40부터).
@@ -2053,6 +2123,7 @@ window.ticker = (() => {
       // 귀퉁이에 밀려난 명함 가운데의 세계 좌표(08 1절 축: 원점 = 모서리 가운데, x 오른쪽, z 시청자 쪽). 맺음 카메라가 이 점을 겨눈다
       get cornerAt(){ const g = geo(), k = desk.ck, e = desk.ek; desk.ck = 1; desk.ek = 0; const t = target(g); desk.ck = k; desk.ek = e; return { x: t.x - (heroLayer.offsetWidth || innerWidth) / 2, z: t.z }; },
       // 맺음 자리(맥북 왼쪽 여백)의 세계 좌표. 맺음 카메라와 맺음 줄이 이 점을 겨눈다
+      get hw(){ return geo().hw; },
       get endAt(){ const g = geo(), e = endSpot(g); return e ? { x: e.x - (heroLayer.offsetWidth || innerWidth) / 2, z: e.z } : this.cornerAt; },
       // 맺음 자리로 옮김(0 귀퉁이, 1 맥북 왼쪽). 명함이 보이지 않는 동안에만 바뀐다(scene-hero)
       end(k){ k = k ? 1 : 0; if (k !== desk.ek) { desk.ek = k; wakeBadge(); } },
@@ -2064,8 +2135,9 @@ window.ticker = (() => {
   // 이름 굵기(10-21 대표님 선택): 커서에 가까운 글자가 굵어진다(Funnel Display 굵기 축 500 → 700). 커서가 없는 터치 기기와 명함을 끄는 동안에는
   // 명함이 커서 대신 굵기를 끌고 간다. 경계 없이 거리에 따라 줄어들고(가우스), 다가갈 때는 빠르게, 떠나면 관성 있게 천천히 돌아온다.
   // 글자마다 기본 굵기(500)일 때의 폭으로 칸을 고정해 굵어져도 줄이 출렁이지 않는다. 움직임 줄이기에서는 쓰지 않는다
-  const mark = document.querySelector('.copy .mark');
-  if (mark && !reduce) {
+  // 같은 손을 끝 화면 큰 줄(「Thanks for watching.」, macbook.js)도 쓴다: Hero.weightText(요소, 보이는지)
+  function weightText(mark, isOn, cardOn){
+    if (!mark || reduce) return;
     const W0 = 500, W1 = 700, txt = mark.textContent; mark.textContent = '';
     const ls = [...txt].map(ch => { const e = document.createElement('span'); e.className = 'mk'; e.textContent = ch === ' ' ? ' ' : ch; mark.appendChild(e); return { e, w: W0, shown: W0 }; });
     const fit = () => {
@@ -2078,15 +2150,16 @@ window.ticker = (() => {
       const f = sum && nat ? nat / sum : 1;
       ls.forEach((l, i) => { l.e.style.width = (ws[i] * f / fs).toFixed(4) + 'em'; });
       ls.forEach(l => { l.shown = -1; });
+      mark.dispatchEvent(new Event('mk-fit'));   // 칸 폭이 바뀌었다(글꼴 도착 등): 폭에 맞춰 크기를 정하는 쪽이 다시 잰다
       kick();
     };
     let px = 0, py = 0, haveP = false, raf = 0, idle = 0, lx = NaN, ly = NaN, lt = 0;
     const src = () => {
-      if ((drag || press || (!fine && !haveP)) && ct === 0) { const r = card.getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; }
+      if (cardOn() || (!fine && !haveP)) { const r = card.getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; }
       return haveP ? [px, py] : null;
     };
     const step = () => {
-      raf = 0; if (!heroIn) return;
+      raf = 0; if (!isOn()) return;
       const now = performance.now(), dt = Math.min(64, lt ? now - lt : 16); lt = now;
       // 시간 기준 감쇠(화면 주사율과 무관): 다가갈 때 70ms, 떠날 때 600ms
       const kUp = 1 - Math.exp(-dt / 70), kDn = 1 - Math.exp(-dt / 600);
@@ -2108,8 +2181,11 @@ window.ticker = (() => {
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) { haveP = false; kick(); } });
     ['pointerdown', 'pointerup', 'wheel', 'touchmove', 'scroll'].forEach(t => addEventListener(t, kick, { passive: true }));
     fit(); document.fonts.load('500 1em "Funnel Display"').then(fit, () => {});   // 서체가 도착하면 그 글자 폭으로 한 번 더 잰다
-    if (!fine) setInterval(() => { if (heroIn) kick(); }, 500);   // 터치: 흔들리는 명함을 따라가도록 가끔 깨운다(멈추면 다시 잠든다)
+    if (!fine) setInterval(() => { if (isOn()) kick(); }, 500);   // 터치: 흔들리는 명함을 따라가도록 가끔 깨운다(멈추면 다시 잠든다)
   }
+  { const hm = document.querySelector('.copy .mark'); if (hm) hm.addEventListener('mk-fit', () => { if (innerWidth <= 820) resize(); }); }   // 세로 화면 이름 크기·목줄 길이는 이름 폭에 달려 있다
+  weightText(document.querySelector('.copy .mark'), () => heroIn, () => (drag || press) && ct === 0);
+  if (window.Hero) Hero.weightText = (el, isOn) => weightText(el, isOn, () => false);
 
   new IntersectionObserver(es => { const e = es[es.length - 1]; heroIn = e.isIntersecting && e.intersectionRatio > 0; if (heroIn) wakeBadge(); }, { threshold: [0, 0.001] }).observe(hero);
   addEventListener('scroll', () => { const r = hero.getBoundingClientRect(); heroIn = r.bottom > 0 && r.top < innerHeight; if (heroIn) wakeBadge(); }, { passive: true });   // 관찰자가 늦을 때를 위한 보조
@@ -2151,6 +2227,13 @@ window.ticker = (() => {
       if (p < 1.1) toTop.classList.remove('show');
       else if (p >= end - 0.05 || p < lastP - 0.002) toTop.classList.add('show');
       else if (p > lastP + 0.002) toTop.classList.remove('show');
+      // 맥북 정거장과 그리로 가는 구간에서는 감춘다(화면 오른쪽 아래가 맥북 화면이다). 책상 위 명함과 겹치는 자리에서도 감춘다(10-21 점검)
+      const web = Stage.config.stations.findIndex(x => x.name === 'web');
+      if (p > web - 0.8 && p < end - 0.05) toTop.classList.remove('show');
+      else if (toTop.classList.contains('show')) {
+        const nc = document.querySelector('.card3d'), b = toTop.getBoundingClientRect(), r = nc && nc.getBoundingClientRect();
+        if (r && r.width && r.left < b.right + 12 && r.right > b.left - 12 && r.top < b.bottom + 12 && r.bottom > b.top - 12) toTop.classList.remove('show');
+      }
       toTop.classList.toggle('night', s.dk > 0.5); lastP = p; return;
     }
     const y = scrollY, up = y < lastY - 2, down = y > lastY + 2, end = y + innerHeight >= document.documentElement.scrollHeight - 40;
@@ -2203,8 +2286,10 @@ window.ticker = (() => {
     W.zP = Math.round(W.Dt + 0.15 * W.H);            // 「Selected Work」 너머: 맥북 자리의 기준 깊이(scene-web)
     desk.style.height = Math.round(W.zP + 0.12 * W.H + 0.75 * W.Wd + 0.6 * W.H) + 'px';
     lastP = NaN; lastPlace = '';
-    // 책상을 따라 내려가는 구간의 스크롤 거리 = 책상에서 화면 밖에 있는 길이(손가락과 1:1)
-    Stage.config.split = pan() ? [1, pan(), (W.Dt - W.H) / W.H] : null;
+    // 책상을 따라 내려가는 구간의 스크롤 거리 = 책상에서 화면 밖에 있는 길이(손가락과 1:1).
+    // 모으기와 숨(맥북으로 고개를 들기 전, scene-web t 0.25까지)은 스크롤 화면 0.3장으로 줄인다: 흰 책상에 더미만 남은 화면이 오래 머물렀다(10-21 점검)
+    const a = pan(), BR = 1.25;
+    Stage.config.split = a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]];
   }
   // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
   const P = () => Stage.camera.P();
@@ -2238,7 +2323,8 @@ window.ticker = (() => {
   // 카드 테이블은 불이 낮아지는 동안(맥북으로 가는 구간 0.3~0.75) 어둠에 잠긴다. 카드 면(.f)·글줄 같은 잎 요소의 투명도만 바꾼다(조상 opacity는 3D를 평면으로 만든다)
   const sinkOf = p => p <= 1 ? 1 : 1 - ease((p - 1.3) / 0.45);
   // 버튼 줄·작은 글 줄은 카메라가 움직이기 전(모으기·숨 1.02~1.17)에 걷는다. 카메라가 기우는 동안 남아 있으면 GPU에서 버튼이 화면 아래까지 긴 띠로 늘어져 그려졌다(10-21 대표님 제보)
-  const uiOf = p => { const a = 1.02 + pan(), w = pan() ? 0.05 : 0.15; return p <= a ? 1 : Math.max(0, 1 - (p - a) / w); };
+  // 숙이기 시작할 때(p 0.2~0.5) 화면 아래 끝에 책상 버튼 줄이 먼저 비쳤다(10-21 점검): 명함이 더미를 친 뒤(0.55~0.7)에 나타난다
+  const uiOf = p => { const a = 1.02 + pan(), w = pan() ? 0.05 : 0.15; return p < 0.7 ? Math.max(0, Math.min(1, (p - 0.55) / 0.15)) : p <= a ? 1 : Math.max(0, 1 - (p - a) / w); };
   let lastPlace = '';
   function place(p){
     const k = sinkOf(p).toFixed(3), ui = uiOf(p).toFixed(3), key = k + '|' + ui; if (key === lastPlace) return; lastPlace = key;
@@ -2378,6 +2464,10 @@ window.ticker = (() => {
       li.appendChild(b); list.appendChild(li);
     });
     info.querySelector('.wi-ey').after(list);
+    // 모바일 가로 목록: 넘친 쪽 끝만 흐리게(더 있다는 표시). 끝까지 밀면 그쪽 흐림이 걷힌다(10-21 배포본 점검 4)
+    const edge = () => { const m = list.scrollWidth - list.clientWidth - list.scrollLeft;
+      list.style.setProperty('--fl', list.scrollLeft > 2 ? '40px' : '0px'); list.style.setProperty('--fr', m > 2 ? '64px' : '0px'); };
+    list.addEventListener('scroll', edge, { passive: true }); addEventListener('resize', edge); requestAnimationFrame(edge);
     const pick = i => { const w = Stage.web; if (w && w.select && w.index !== i) w.select(i); };
     list.addEventListener('click', e => { const b = e.target.closest('.wi-item'); if (b) pick(+b.dataset.i); });
     list.addEventListener('keydown', e => {
@@ -2397,7 +2487,11 @@ window.ticker = (() => {
     if (!list) return;
     list.querySelectorAll('.wi-item').forEach((b, k) => { if (k === i) { b.setAttribute('aria-current', 'true'); } else b.removeAttribute('aria-current'); });
     // 모바일 가로 목록: 고른 항목이 보이게 민다
-    const cur = list.querySelector('[aria-current]'); if (cur && innerWidth <= 820) list.scrollTo({ left: cur.offsetLeft - 20, behavior: 'smooth' });
+    const cur = list.querySelector('[aria-current]');
+    if (cur && innerWidth <= 820) {   // 고른 항목을 목록 가운데 쪽으로(offsetLeft는 목록이 기준 상자가 아니라 어긋났다)
+      const x = cur.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+      list.scrollTo({ left: Math.max(0, x - (list.clientWidth - cur.offsetWidth) / 2), behavior: 'smooth' });
+    }
   }
   addEventListener('web:select', e => { buildList(); mark(e.detail ? e.detail.index : Stage.web.index); });
 
@@ -2408,6 +2502,45 @@ window.ticker = (() => {
     const i = w.index; if (i === gi) return; gi = i; mark(i);
     const g = GLOW[w.services[i].id] || GLOW.bible;
     mb.style.setProperty('--glow', g[0]); mb.style.setProperty('--gk', g[1]);
+  });
+
+  // 끝 화면(10-21 대표님 결정 6): 히어로와 수미상관. 아래를 큰 한 줄 「Thanks for watching.」이 화면 폭으로 가로지르고(히어로 「Chanjun Kwon」과 같은 서체·색·굵기 모션),
+  // 그 바로 위에 「Let's make something.」과 연락처(15~16px, 누르면 복사). 맥북과 명함은 그 위 가운데(scene-web cam.end). 카메라에 붙은 화면 층이라 .web-info와 같이 body 바로 아래에 둔다
+  let endInfo = document.querySelector('.end-info');
+  if (!endInfo) {
+    endInfo = el('aside', 'end-info'); endInfo.setAttribute('aria-label', 'Contact'); endInfo.style.visibility = 'hidden';
+    const rows = [['Email', 'kwoncj1025@gmail.com', 'kwoncj1025@gmail.com'], ['Phone', '010-6343-4110', '010-6343-4110'], ['Instagram', '@chanjun.kwon', 'https://instagram.com/chanjun.kwon']];
+    endInfo.innerHTML = `<div class="ei-body"><p class="ei-lead">Let's make something.</p><ul class="ei-list">` +
+      rows.map(([k, v, c]) => `<li><button type="button" class="ei-item" data-copy="${c}" aria-label="${k} ${v} 복사"><span class="ei-k"><span class="ei-kt">${k}</span><span class="ei-ok" aria-hidden="true">Copied</span></span><span class="ei-v">${v}</span></button></li>`).join('') +
+      `</ul></div><p class="ei-mark" aria-label="Thanks for watching.">Thanks for watching.</p><span class="ei-live" role="status" aria-live="polite"></span>`;
+    document.body.appendChild(endInfo);
+    const live = endInfo.querySelector('.ei-live');
+    endInfo.addEventListener('click', e => {
+      const b = e.target.closest('.ei-item'); if (!b) return;
+      const done = () => { b.classList.add('ok'); live.textContent = 'Copied'; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); live.textContent = ''; }, 1600); };
+      const t = b.dataset.copy;
+      const legacy = () => { const a = el('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); try { if (document.execCommand('copy')) done(); } catch (_) {} a.remove(); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, legacy); else legacy();
+    });
+  }
+  // 큰 줄은 글 영역 폭에 꼭 맞춘다(서체 크기 = 폭 ÷ 문장의 em 폭). 굵기 칸은 em이라 크기가 바뀌어도 그대로 맞는다
+  const eMark = endInfo.querySelector('.ei-mark');
+  const fitMark = () => {
+    const cs = getComputedStyle(endInfo), wAvail = endInfo.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    eMark.style.fontSize = '100px'; const w100 = eMark.offsetWidth; if (!w100 || !wAvail) return;
+    eMark.style.fontSize = (wAvail / (w100 / 100)).toFixed(2) + 'px';
+    // 맨 위로 버튼(totop.js, 끝에서 보인다)이 큰 줄 끝 마침표를 덮지 않게, 끝 화면에서는 연락처 줄 높이로 올린다(6-macbook.css html.end-on .totop)
+    const eb = endInfo.querySelector('.ei-body'), ev = eb.querySelector('.ei-list li:last-child .ei-v');
+    document.documentElement.style.setProperty('--ei-top-b', Math.round(endInfo.clientHeight - (ev || eb).getBoundingClientRect().bottom - 4) + 'px');
+  };
+  fitMark(); addEventListener('resize', fitMark); document.fonts.load('500 1em "Funnel Display"').then(fitMark, () => {});
+  const endOf = p => { const e = Stage.config.stations.length - 1; return Math.max(0, Math.min(1, (p - (e - 0.35)) / 0.25)); };
+  let endStr = '', endV = 0;
+  if (window.Hero && Hero.weightText) Hero.weightText(eMark, () => endV > 0.01);
+  Stage.ticker.add(() => {
+    const v = endOf(Stage.state.p), str = v.toFixed(3); if (str === endStr) return; endStr = str; endV = v;
+    endInfo.style.opacity = str; endInfo.style.visibility = v > 0.01 ? 'visible' : 'hidden';
+    document.documentElement.classList.toggle('end-on', v > 0.5);
   });
 })();
 </script>
@@ -2668,6 +2801,7 @@ window.ticker = (() => {
   if (!window.Stage || !Stage.enabled || !window.Hero) return;
   const layer = document.querySelector('.stage-layer[data-scene="hero"]');
   layer.dataset.own = '1';
+  const copyEl = layer.querySelector('.copy');
   const DEAL = 0.5;     // 미끄러지던 명함이 더미를 치는 순간(0.5)에 흩어진다
   // 숙임 θ는 0.18~0.70, 바라보는 점 T는 그보다 앞서 0.18~0.54에 책상 쪽(모서리를 축으로 도는 호)으로 간다.
   // 같은 곡선으로 함께 가면 감속 꼬리(θ 70~90°)에서 벽이 화면 위에 납작한 띠로 오래 남아 워드마크가 가짜 이탤릭처럼 읽혔다(10-21 검수).
@@ -2688,6 +2822,9 @@ window.ticker = (() => {
     progress(t, s){
       Hero.carry(t);
       camera(t);
+      // 세로 화면(10-21 점검표 ②): 긴 책상 맨 위를 바라보느라 벽이 0.5 뒤까지 화면 위에 납작한 띠로 남아 글과 이름이 가짜 이탤릭으로 읽힌다.
+      // 벽 위 글 묶음(.copy, 3D 자식이 없는 잎 요소)만 숙이는 동안 지운다(0.26~0.4). 데스크톱은 벽이 0.5에 화면 밖으로 나가 그대로 둔다
+      if (copyEl) copyEl.style.opacity = innerWidth <= 820 ? (1 - Stage.world.ease((t - 0.26) / 0.14)).toFixed(3) : '';
       Stage.tone(0);
       const T = window.Table; if (!T) return;
       if (t >= DEAL && !T.dealt && s.dir > 0) T.deal();
@@ -2815,29 +2952,47 @@ window.ticker = (() => {
     end: () => {
       // 맺음 A(10-21 대표님 확정, card-drop 실측): 명함은 맥북과 떼어 놓은 주인공(Hero.desk.endAt: 데스크톱은 맥북 왼쪽 여백, 820 이하는 맥북 앞 책상),
       // 꺼진 덮개는 위에서 검은 유리뿐이라 은색 몸체까지 맥북 전체가 보이게 물린다(2.5P, 모바일 1.9P). 명함과 맥북 사이를 바라본다
-      const e = (window.Hero && Hero.desk && Hero.desk.endAt) || { x: G.cx - W.Wd / 2 - G.lidW, z: G.zh }, mx = G.cx - W.Wd / 2, d = (W.mobile ? 1.9 : 2.5) * P(), k = d / P();
-      return { th: 80, Tx: (e.x + mx) / 2 + (W.mobile ? 0 : 0.05) * W.Wd * k, Ty: 0, Tz: (e.z + G.zh) / 2 + (W.mobile ? -0.02 : -0.064) * W.H * k, d };
+      const e = (window.Hero && Hero.desk && Hero.desk.endAt) || { x: G.cx - W.Wd / 2 - G.lidW, z: G.zh }, mx = G.cx - W.Wd / 2;
+      if (W.mobile) { const d = 1.9 * P(), k = d / P(); return { th: 80, Tx: (e.x + mx) / 2, Ty: 0, Tz: (e.z + G.zh) / 2 + 0.1 * W.H * k, d }; }   // 아래 끝 화면 글 층 위로 올린다(10-21, 예전 −0.02)
+      // 데스크톱 끝 화면(10-21 대표님 결정 6, card-drop이 bizcopilot에 알리고 고침): 아래는 큰 줄 「Thanks for watching.」과 연락처 층(macbook.js .end-info)이다.
+      // 명함 왼쪽 끝~맥북 오른쪽 끝을 한 덩어리로 보고, 그 가로 가운데를 화면 가운데에, 세로는 위쪽 빈자리에 둔다. 거리는 덩어리 폭이 화면 폭의 EW가 되게 한다
+      const hw = (window.Hero && Hero.desk && Hero.desk.hw) || 0.13 * G.lidW, gl = e.x - hw, gr = mx + G.lidW / 2;
+      const k = Math.max((gr - gl) / (EW * W.Wd), EH * G.lidW / W.H), d = k * P();   // 폭 기준과 높이 기준(꺼진 맥북 전체 높이 ≈ 덮개 폭 1.35배가 화면 높이의 55%) 중 먼 쪽
+      return { th: 80, Tx: (gl + gr) / 2, Ty: 0, Tz: (e.z + G.zh) / 2 + EZ * W.H * k, d };
     },
   };
   // 모바일 베젤 카메라에서 화면 가운데가 뷰포트 가운데보다 내려가는 거리 mobDl(배율 1이라 px 그대로). measure가 정한다.
   //  · 낮은 화면: 화면 아래끝이 힌지와 키보드 첫 줄 사이(힌지에서 화면 폭의 5.8%)를 자른다
-  //  · 키 큰 휴대폰(높이 > 폭 2배, 10-21 조율 「나」): 맥북을 올려 키보드 윗줄 몇 개가 보이게 하고, 화면 아래끝이 키보드 줄 사이 틈을 자르게 한다.
-  //    틈 자리는 힌지에서 몸체를 따라 잰 거리(덮개 폭 비율, 390 렌더에서 투영을 거꾸로 풀어 실측): 기능키 줄 뒤 0.105 · 숫자 줄 0.161 · Q 줄 0.213 · A 줄 0.265.
+  //  · 키 큰 휴대폰(보이는 높이 > 폭 1.9배, 10-21 조율 「나」): 맥북을 올려 키보드 윗줄 몇 개가 보이게 하고, 화면 아래끝이 키보드 줄 사이 틈을 자르게 한다.
+  //    틈 자리는 힌지에서 몸체를 따라 잰 거리(덮개 폭 비율, 390·430 렌더에서 실측 보정): 기능키 줄 뒤 0.122 · 숫자 줄 0.178 · Q 줄 0.233. 윗줄 세 개(기능키·숫자·Q)까지만 보인다.
   //    투영(stage.js 카메라: rotateX(−θ), 거리 P, θ = 덮개 기울기)에서 몸체 위 점 u의 화면 y = H/2 + (R + u·sinθ)·P/(P − u·cosθ), R = 화면 가운데→힌지(덮개 위) + mobDl.
-  //    그 y가 H가 되는 R을 풀고, 위 글 묶음의 위아래 여백이 0.11H 안에 들 때까지 줄을 늘린다(최대 A 줄까지)
-  const KB_GAPS = [0.105, 0.161, 0.213, 0.265];
+  //    그 y가 H가 되는 R을 풀고, 위 글 묶음의 위아래 여백이 0.11H 안에 들 때까지 줄을 늘린다(최대 Q 줄까지)
+  const EW = 0.5, EH = 1.35 / 0.55, EZ = 0.1;   // 끝 화면 덩어리 폭 비율 · 세로 자리
+  const KB_GAPS = [0.122, 0.178, 0.233];
   let mobDlv = 0;
+  // 화면 아래를 가리는 높이(10-21 대표님 실기기 판정 「아래로 많이 처짐」): iOS 26 Safari는 주소 막대가 페이지 위에 떠 있어 innerHeight가 막대 뒤까지 잰다.
+  // 100svh와의 차이 · safe-area 아래 · iOS 26 Safari(홈 화면 앱 제외)의 떠 있는 막대 몫(88px) 중 큰 값. ?obs=90 으로 흉내 낼 수 있다
+  function obscuredBottom(){
+    const q = new URLSearchParams(location.search).get('obs'); if (q != null) return Math.max(0, +q || 0);
+    const pr = document.createElement('div');
+    pr.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:100svh;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none';
+    document.body.appendChild(pr); const sb = parseFloat(getComputedStyle(pr).paddingBottom) || 0, svh = pr.offsetHeight - sb; pr.remove();
+    const ua = navigator.userAgent, v = +((ua.match(/Version\/(\d+)/) || [])[1] || 0);
+    const ios26 = /iPhone/.test(ua) && v >= 26 && !/CriOS|FxiOS|EdgiOS/.test(ua) && !navigator.standalone;
+    return Math.max(0, W.H - svh, sb, ios26 ? 88 : 0);
+  }
   function mobPick(){
-    const r = G.Hi / 2 + G.chin;
-    if (W.H <= 2 * W.Wd) return W.H / 2 - r - Math.round(G.Wi * 0.058);
+    const r = G.Hi / 2 + G.chin, Hv = W.H - obscuredBottom();   // Hv: 실제로 보이는 높이(맥북 아래 자름이 여기 온다)
     const a = TH * Math.PI / 180, Pp = P(), sn = Math.sin(a), cs = Math.cos(a);
+    const cut = g => { const u = g * G.lidW; return (Hv - W.H / 2) * (Pp - u * cs) / Pp - u * sn - r; };
+    if (Hv <= 1.9 * W.Wd) return cut(0.054);   // 힌지와 기능키 줄 사이(키보드 우물 위 알루미늄 띠). 올라가도 투영으로 맞춘다
     const ib = info && info.querySelector('.wi-body'), ie = info && info.querySelector('.wi-ey');
-    const T = Math.max(0.2 * W.H, ib && ie ? ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top : 0);
+    const T = Math.max(0.2 * Hv, ib && ie ? ib.getBoundingClientRect().bottom - ie.getBoundingClientRect().top : 0);
     let dl = 0;
     for (const g of KB_GAPS) {
-      const u = g * G.lidW, R = (W.H / 2) * (Pp - u * cs) / Pp - u * sn; dl = R - r;
+      dl = cut(g);
       const top = W.H / 2 + dl - G.Hi / 2 - G.Wi * 0.0222;
-      window.__mobG = g; if ((top - 36 - T) / 2 <= 0.11 * W.H) break;
+      if ((top - 36 - T) / 2 <= 0.11 * Hv) break;
     }
     return dl;
   }
@@ -2849,7 +3004,12 @@ window.ticker = (() => {
     const w = WEB(), e = END();
     if (p <= w - 1) return Wd.station.work();
     if (p <= w) {                                   // 맥북으로: 카드가 모이고 숨(0~0.25) 뒤, 바라보는 점(0.25~0.65)이 θ·거리(0.25~0.85)보다 앞선다
-      const t = p - (w - 1), eT = ease((t - 0.25) / 0.4), eA = ease((t - 0.25) / 0.6);
+      const t = p - (w - 1);
+      // 모바일(10-21 조율): 책상 맨 아래 카드 더미에서 맥북까지가 화면 반 장보다 멀어, 바라보는 점이 먼저 가면 둘 다 없는 빈 책상이 보였다.
+      // 고개(θ)를 먼저 들어 더미를 화면 아래에 둔 채 맥북을 앞쪽에 들이고, 바라보는 점은 뒤따라간다. 데스크톱은 그대로
+      if (W.mobile) { const a = Wd.station.work(), b = cam.bezel(), eA = ease((t - 0.22) / 0.4), c = mix(a, b, eA, ease((t - 0.32) / 0.5));
+        c.Tx = lerp(a.Tx, b.Tx, ease((t - 0.3) / 0.38)); return c; }                   // 맥북이 책상 가운데에서 비켜 있어 좌우는 고개와 같이 옮긴다(옆 가장자리에 반쯤 걸린 프레임 방지)
+      const eT = ease((t - 0.25) / 0.4), eA = ease((t - 0.25) / 0.6);
       return mix(Wd.station.work(), cam.bezel(), eA, eT);
     }
     return mix(cam.bezel(), cam.end(), ease((p - w) / 0.35));
@@ -3070,19 +3230,22 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       area.rotation.set(-a, Math.PI, 0);   // 면광원은 제 −z 쪽을 비춘다: 뒤집어 앞(+z)으로, 덮개처럼 22° 들어 올린다
     }
 
-    let key = '';
+    let key = '', warmed = false;
     function frame(){
-      const on = mb.classList.contains('mb-on');
+      // 맥북이 화면에 들어올 수 있는 구간(맥북으로 고개를 들기 시작하는 web−0.75부터)에서만 그린다. 그 전(첫 화면·카드 책상)은 맥북이 화면 밖이고
+      // 방의 면도 불이 켜져 있어(dk 0) 보이지 않는데, 카메라가 움직일 때마다 화면 전체 WebGL을 다시 그려 휴대폰에서 버벅였다(10-21 deploy-prep 측정)
+      // 처음 한 번은 보이지 않는 채로 그려 셰이더를 미리 준비한다(보이기 시작하는 순간 첫 그리기가 몰려 끊겼다)
+      const mbOn = mb.classList.contains('mb-on'), on = mbOn && Stage.state.p > web() - 0.75;
       canvas.style.visibility = on ? '' : 'hidden';
-      if (!on) { key = ''; return; }
+      if (!on && !(mbOn && !warmed)) { key = ''; return; }
+      if (!on) warmed = true;
       const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
       const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
       const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
       const k = [c.th, c.Tx, c.Ty, c.Tz, d, P, w, h, (Stage.state.dk || 0).toFixed(3), L.toFixed(3), onV.toFixed(3), gl.join(), gk, Stage.webGeo.G.Wi, Stage.webGeo.G.cx].join();
       if (k === key) return; key = k;
-      if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
-        renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
-      }
+      const pr = Math.min(devicePixelRatio || 1, w <= 820 ? 1.5 : 2);   // 휴대폰(DPR 3)은 1.5까지: 화면 전체 캔버스라 픽셀 수가 곧 GPU 일이다
+      if (canvas.width !== Math.round(w * pr) || canvas.height !== Math.round(h * pr)) { renderer.setPixelRatio(pr); renderer.setSize(w, h, false); }
       place();
       // CSS 카메라(translateZ(P−d) rotateX(−θ) translate(−T), 원근 P)와 같은 투영: 눈은 바라보는 점에서 θ만큼 숙인 채 d 뒤
       cam.fov = 2 * Math.atan(h / 2 / P) * 180 / Math.PI; cam.aspect = w / h; cam.updateProjectionMatrix();
