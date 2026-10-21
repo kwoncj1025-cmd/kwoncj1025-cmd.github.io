@@ -169,15 +169,16 @@ h1 span{display:block;color:var(--soft)}
 .tbar .ey{display:flex;align-items:center;gap:8px}
 .tbar .ey i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
 .sort.ghost{background:rgba(13,14,18,.06);color:var(--ink)}
-/* 아래: 첫 화면과 같은 문법. 작은 글은 구석에, 이름 대신 「Selected Work」를 폭 가득 깔고 카드가 그 위로 흩어진다.
+/* 「Selected Work」는 90° 세워 책상 왼쪽 가장자리를 따라 아래에서 위로 인쇄한다(10-21 대표님 결정, 서체·라벤더 그대로). 가운데가 비어 카드가 넓게 흩어진다.
+   글자 크기는 책상 높이에 맞춘다(core.js fit, 세운 두께는 --mk). 작은 글 줄은 세운 글자 오른쪽 아래 구석에 놓인다.
    .tfoot은 쌓임 맥락을 만들지 않는다(z-index 없음): 큰 워드마크만 카드(.pile z 3) 아래에 깔린다.
    작은 글 줄(19 posts·인스타그램)은 위쪽 라벨·버튼 줄(.tbar z 40)과 같이 카드 위에 떠 있어 카드가 흩어진 자리와 상관없이 늘 눌린다(흩어진 기본 배치에서 카드가 링크를 덮었다) */
-.tfoot{position:absolute;left:0;right:0;bottom:0;pointer-events:none;
-  padding:0 max(32px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(32px,env(safe-area-inset-left,0px))}
-.tmeta{position:relative;z-index:41;display:flex;justify-content:space-between;gap:16px;margin:0 0 10px;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.tfoot{position:absolute;inset:0;pointer-events:none;
+  --pl:max(32px,env(safe-area-inset-left,0px));--pr:max(32px,env(safe-area-inset-right,0px));--pb:calc(56px + env(safe-area-inset-bottom,0px))}
+.tmeta{position:absolute;z-index:41;left:calc(var(--pl) + var(--mk,0px) + 24px);right:var(--pr);bottom:var(--pb);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;margin:0;font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
 .tmeta a{color:var(--ink);text-decoration:none;pointer-events:auto}
 .tmeta a:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-.tmark{position:relative;z-index:1;margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
+.tmark{position:absolute;z-index:1;left:var(--pl);bottom:var(--pb);transform-origin:0 100%;transform:rotate(-90deg) translateY(100%);margin:0;font-family:var(--f-disp);font-weight:500;font-size:13vw;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
 .tbar .hint{font-family:var(--f-ko);font-size:12.5px;letter-spacing:0;text-transform:none}
 /* ── 밤색 방: 카드 테이블(흰 책상) 다음은 조명을 낮춘 남보라 밤색 방이다. 같은 서체·연보라·라벨 체계를 쓴다.
    무대에서는 맥북 구간, 무대가 꺼지면(stage-off) 작업 목록(.web-list)이 이 방에 놓인다. 바탕은 경계 앞뒤에서만 바뀐다 ── */
@@ -263,7 +264,8 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
   .tbar{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
   .tbar .hint{display:none}
   .tbar .ey{display:none}
-  .tfoot{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+  .tfoot{--pl:max(20px,env(safe-area-inset-left,0px));--pr:max(20px,env(safe-area-inset-right,0px));--pb:calc(40px + env(safe-area-inset-bottom,0px))}
+  .tmeta{left:calc(var(--pl) + var(--mk,0px) + 16px)}
   .pile{--cw:min(36vw,170px,24svh)}
   .back{padding:12px 10px 9px}
   .back .sub{display:none}
@@ -882,10 +884,19 @@ window.ticker = (() => {
   // 큰 워드마크(첫 화면 이름, 작업 구역 제목)를 실제 글자 폭으로 재서 좌우 여백 안에 꼭 맞춘다
   const marks = [...document.querySelectorAll('.copy .mark, .tfoot .tmark')];
   const fit = () => marks.forEach(mark => {
+    mark.style.fontSize = '100px';
+    if (mark.classList.contains('tmark')) {
+      // 작업 구역 제목은 세워 놓았다(2-table.css): 책상 높이에서 아래 여백과 위 버튼 줄 자리를 뺀 길이에 맞추고, 세운 두께를 --mk로 알린다
+      const box = mark.parentElement, avail = box.clientHeight - parseFloat(getComputedStyle(mark).bottom) - (innerWidth <= 820 ? 84 : 104);   // bottom은 계산된 px(--pb)
+      mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
+      box.style.setProperty('--mk', mark.offsetHeight + 'px'); return;
+    }
     const cs = getComputedStyle(mark.parentElement), avail = mark.parentElement.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    mark.style.fontSize = '100px'; mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
+    mark.style.fontSize = (100 * avail / mark.scrollWidth).toFixed(2) + 'px';
   });
   fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
+  // 책상 높이는 table.js가 나중에 정한다(무대: 화면 한 장, 모바일 1.2장). 높이가 바뀌면 세운 제목을 다시 맞춘다
+  if (window.ResizeObserver) { let h = 0; const box = document.querySelector('.tfoot'); if (box) new ResizeObserver(() => { if (box.clientHeight !== h) { h = box.clientHeight; fit(); } }).observe(box); }
 })();
 </script>
 <script>
@@ -949,7 +960,7 @@ window.ticker = (() => {
   const measure = () => {
     mobile = innerWidth <= 820; BAR = mobile ? 64 : 84;
     cw = cards[0].el.offsetWidth || cw; ch = cards[0].el.offsetHeight || ch;
-    TW = table.clientWidth; TH = table.clientHeight; FOOT = tfoot.offsetHeight;
+    TW = table.clientWidth; TH = table.clientHeight; FOOT = (() => { const m = tfoot.querySelector('.tmeta'); return m ? TH - m.offsetTop + 8 : 0; })();   // 아래 작은 글 줄까지(제목은 세워 왼쪽에 있다)
   };
   // 자리 계산: 흩기 = 테이블 전체에 느슨하게 흩은 자리, 정렬 = 번호순 격자(테이블이 그 높이만큼 길어진다)
   let seed = 0;
@@ -959,9 +970,15 @@ window.ticker = (() => {
     // 두 카드가 겹치는 넓이는 45% 안, 한 카드를 덮는 넓이의 합은 60% 안이라 어느 그림이든 40% 이상 보인다.
     // 위쪽 BAR는 비우고 아래는 워드마크 위까지 화면 끝까지 흩는다(10-21 대표님: 글자 위로도 지나가게)
     const hang = mobile ? cw * 0.15 : 0;   // 좁은 화면은 카드가 양옆으로 15%까지 걸쳐 나가게 해서 겹침을 줄인다
-    const xMin = cw * 0.5 + 6 - hang, xMax = Math.max(xMin, TW - cw * 0.5 - 6 + hang);
+    // 왼쪽에는 세운 「Selected Work」가 있다: 쉬는 자리는 그 오른쪽에서 시작한다(좁은 화면은 카드 폭의 30%까지 걸친다). 던지면 그 위로도 지나간다
+    const mk = tfoot.querySelector('.tmark'), mkR = mk ? mk.offsetLeft + mk.offsetHeight : 0;
+    const xMin = Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + hang);
     const yMin = BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - 6);
     const ov = (a, b) => Math.max(0, cw - Math.abs(a.x - b.x)) * Math.max(0, ch - Math.abs(a.y - b.y)) / (cw * ch);
+    // 명함이 쉬는 귀퉁이(hero.js Hero.desk.spot, 벽 층 왼쪽 기준 x·책상 깊이 z = 테이블 y)는 비운다: 명함 한 장(카드의 1.04배)에 여백을 더한 사각형
+    const sp = window.Hero && Hero.desk && Hero.desk.spot, nx = sp ? sp.x - table.offsetLeft : -1e6, ny = sp ? sp.z : -1e6;
+    const nw = cw * 1.04 * 0.5 + 30, nh = ch * 1.04 * 0.5 + 30;   // 여백 30: 카드 기울기(±6°)로 모서리가 나가는 만큼
+    const onCard = p => Math.max(0, nw + cw / 2 - Math.abs(p.x - nx)) * Math.max(0, nh + ch / 2 - Math.abs(p.y - ny)) / (cw * ch);
     const placeOrder = cards.map((c, i) => [rnd(i, 8), i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     const spots = new Array(N), placed = [], cover = [];
     placeOrder.forEach((i, n) => {
@@ -977,6 +994,7 @@ window.ticker = (() => {
         });
         const mine = placed.reduce((s, q) => s + ov(p, q), 0);
         if (mine > 0.6) bad += mine - 0.6;                               // 새 카드도 40% 이상 보이게
+        bad += onCard(p) * 3;                                            // 명함 자리에는 내려앉지 않는다
         const score = (n ? dmin : 0) - bad * 20 + rnd(i * 41 + k, 3) * 0.01;   // 조건을 지키는 후보 중 가장 먼 곳
         if (score > bestScore) { bestScore = score; best = p; }
       }
@@ -997,6 +1015,12 @@ window.ticker = (() => {
       }
       if (!moved) break;
     }
+    // 그래도 명함 자리에 걸친 카드는 덜 걸친 축 방향으로 밀어 낸다(막히면 다른 축으로)
+    spots.forEach(s => {
+      const ox = nw + cw / 2 - Math.abs(s.x - nx), oy = nh + ch / 2 - Math.abs(s.y - ny); if (ox <= 0 || oy <= 0) return;
+      const tx = s.x + (s.x < nx ? -ox : ox), ty = s.y + (s.y < ny ? -oy : oy), okx = tx >= xMin && tx <= xMax, oky = ty >= yMin && ty <= yMax;
+      if ((ox <= oy && okx) || !oky) s.x = Math.min(xMax, Math.max(xMin, tx)); else s.y = ty;
+    });
     // 기울기: 대부분 ±7°, 네다섯 장은 10~16°. 가장자리 카드는 바깥쪽으로 기우는 쪽이 조금 더 잦다
     const D = Math.PI / 180, nBig = 4 + (rnd(0, 7) > 0.5 ? 1 : 0);
     const big = new Set(cards.map((c, i) => [rnd(i, 6), i]).sort((a, b) => a[0] - b[0]).slice(0, nBig).map(p => p[1]));
@@ -1409,11 +1433,15 @@ window.ticker = (() => {
     const mt = tb && tb.querySelector('.tmeta'), zMeta = mt ? offs(mt, tb).y - hh * 1.12 - 14 : zMax;
     return { Hw, Dt, tl, TW, pa, sd, hw, hh, zMax, zMeta: Math.min(zMax, zMeta) };
   };
+  // 더미를 치는 자리(08 1절: 더미 자리에서 살짝 오른쪽). 명함은 여기 떨어진 뒤 흩어지는 카드와 함께 밀려난다
+  const pileSpot = g => ({ x: g.tl + g.pa.x + 0.02 * innerWidth, z: Math.min(g.zMax, g.pa.y - 0.03 * g.Dt) });
+  // 밀려나 멈추는 책상 앞 오른쪽 귀퉁이(10-21 대표님 결정: 작업 카드 밖, 화면 오른쪽 끝에 반쯤 걸쳐 작업보다 먼저 눈에 들지 않게.
+  // 왼쪽은 세로 「Selected Work」 인쇄를 덮어 조율 결정으로 옮김). 깊이는 「@chanjun.kwon」 줄 위
+  const sideCorner = g => ({ x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta });
   const target = g => {
-    // 더미 위에 엎어져 멈춰 덱 맨 위의 한 장이 된다(08 1절: 더미 자리에서 살짝 오른쪽). 착지 충격으로 더미가 흩어지면 그 사이 한 장으로 남는다
-    if (!desk.moved) { desk.x = g.tl + g.pa.x + 0.02 * innerWidth; desk.z = Math.min(g.zMax, g.pa.y - 0.03 * g.Dt); }
-    // 카드를 모을 때 밀려나는 앞 오른쪽 귀퉁이(13 합의안 W7: 맺음에서 교정지 오른쪽 옆의 맥북과 한 화면에 들어온다). 밀리며 살짝 오른쪽으로 돈다
-    const k = ss(0, 1, desk.ck), cx = Math.min(innerWidth * 0.86, g.tl + g.TW - g.hw - 24), cz = Math.min(g.zMeta, g.Dt - 0.34 * innerHeight);
+    if (!desk.moved) { const c = sideCorner(g); desk.x = c.x; desk.z = c.z; }
+    // 카드를 모을 때도 같은 귀퉁이로 밀린다(사용자가 옮겨 둔 명함만 움직인다). 밀리며 살짝 돈다
+    const k = ss(0, 1, desk.ck), lc = sideCorner(g), cx = lc.x, cz = lc.z;
     // 맺음 자리(10-21 대표님 결정): 맥북과 떼어 맥북 왼쪽 책상 여백에 둔다. 맥북 구간에서 어둠에 잠긴 동안 옮겨 두므로 움직임은 보이지 않는다
     const e = desk.ek && endSpot(g);
     if (e) return { x: e.x, z: e.z, b: desk.b + 0.14 };
@@ -1439,8 +1467,9 @@ window.ticker = (() => {
     const uB = cl((t - 0.30) / 0.16), a = -Math.PI / 2 * uB * uB;
     const zb = 1 + 22 * uA + 30 * uB;
     let x = cx, y = yb - h * Math.cos(a), z = zb - h * Math.sin(a);
-    const tg = target(g), eC = 1 - (1 - cl((t - 0.46) / 0.40)) ** 3;
-    x += (tg.x - x) * eC; z += (tg.z - z) * eC;
+    // 더미를 치고(0.46~0.58) 흩어지는 카드에 함께 밀려 멈출 자리까지 간다(0.50~0.86). t의 순수 함수라 되감으면 같은 길로 돌아온다
+    const tg = target(g), pl = pileSpot(g), eC = 1 - (1 - cl((t - 0.46) / 0.12)) ** 3, kp = ss(0.50, 0.86, t);
+    x += (pl.x - x) * eC + (tg.x - pl.x) * kp; z += (pl.z - z) * eC + (tg.z - pl.z) * kp;
     const b = tg.b * (1 - (1 - cl((t - 0.40) / 0.46)) ** 2.4);
     const f0 = desk.f + (Math.PI - desk.f) * ss(0, 1, desk.fk), f = f0 * ss(0.50, 0.86, t);
     y -= (150 * KS * sc * Math.abs(Math.sin(f)) + (f ? 1 : 0)) * uB;       // 뒤집는 동안 긴 모서리가 책상을 뚫지 않게 든다
@@ -1523,8 +1552,8 @@ window.ticker = (() => {
     if (Math.abs(desk.vf) < 1e-4 && Math.abs(desk.ft - desk.f) < 1e-3) { desk.f = desk.ft; desk.vf = 0; }
     if (dpress || !(desk.vx || desk.vz)) return;
     desk.x += desk.vx; desk.z += desk.vz; desk.vx *= 0.967; desk.vz *= 0.967;
-    const g = geo(), m = g.hw + 12, mz = g.hh + 12;   // 화면 끝·인쇄 띠 안쪽에서 멈춘다
-    if (desk.x < g.tl + m || desk.x > g.tl + g.TW - m) { desk.x = Math.max(g.tl + m, Math.min(g.tl + g.TW - m, desk.x)); desk.vx *= -0.3; }
+    const g = geo(), m = g.hw + 12, mz = g.hh + 12, xr = Math.max(g.tl + g.TW - m, sideCorner(g).x);   // 화면 끝·인쇄 띠 안쪽에서 멈춘다(오른쪽은 귀퉁이 자리까지)
+    if (desk.x < g.tl + m || desk.x > xr) { desk.x = Math.max(g.tl + m, Math.min(xr, desk.x)); desk.vx *= -0.3; }
     if (desk.z < mz || desk.z > g.zMax) { desk.z = Math.max(mz, Math.min(g.zMax, desk.z)); desk.vz *= -0.3; }
     if (Math.hypot(desk.vx, desk.vz) < 0.02) desk.vx = desk.vz = 0;
   }
@@ -2417,7 +2446,8 @@ window.ticker = (() => {
     // 자리(11 1절): 카드 구역(±0.46W) 오른쪽 너머. 카드 테이블에서는 화면 밖에 있다
     // 힌지는 벽에서 덮개 폭의 0.9배(실물 약 32cm) 앞에 둔다(10-21 대표님: 맥북 뒤로 우리 방 벽과 책상 모서리가 보이게).
     // 베젤 거리 카메라에서 모서리 선이 화면 높이 45~50% 안팎(1440 y≈430)에 와서, 왼쪽 목록과 아래 글 격자 사이를 지나고 덮개 뒤로 이어진다
-    G.cx = Math.round(W.Wd / 2 + 0.46 * W.Wd + 0.07 * W.Wd + G.lidW / 2); G.zh = Math.round(0.9 * G.lidW);
+    // 375급은 카드 테이블 카메라(d 1.2P)가 책상 폭보다 넓게 보므로, 맥북을 옆으로 더 떼어 놓아야 카드 테이블에서 맥북 모서리가 비치지 않는다
+    G.cx = Math.round(W.Wd / 2 + (W.mobile ? 0.85 : 0.53) * W.Wd + G.lidW / 2); G.zh = Math.round(0.9 * G.lidW);
     Object.assign(mb.style, { left: (G.cx - G.lidW / 2) + 'px', top: G.zh + 'px', width: G.lidW + 'px' });
     mb.style.setProperty('--wi', G.Wi + 'px'); mb.style.setProperty('--hi', G.Hi + 'px'); mb.style.setProperty('--bz', G.bz + 'px'); mb.style.setProperty('--chin', G.chin + 'px');
     mb.style.setProperty('--gap', Math.round(G.Wi * 0.06) + 'px');
@@ -2687,7 +2717,7 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       const c = Stage.camera, P = c.P(), d = c.d || P, w = innerWidth, h = innerHeight;
       const L = +(mb.style.getPropertyValue('--light') || 0), onV = window.Macbook ? Macbook.on : 1;
       const gl = (mb.style.getPropertyValue('--glow') || '238,240,248').split(',').map(Number), gk = +(mb.style.getPropertyValue('--gk') || 1);
-      const k = [c.th, c.Tx, c.Ty, c.Tz, d, P, w, h, L.toFixed(3), onV.toFixed(3), gl.join(), gk, Stage.webGeo.G.Wi, Stage.webGeo.G.cx].join();
+      const k = [c.th, c.Tx, c.Ty, c.Tz, d, P, w, h, (Stage.state.dk || 0).toFixed(3), L.toFixed(3), onV.toFixed(3), gl.join(), gk, Stage.webGeo.G.Wi, Stage.webGeo.G.cx].join();
       if (k === key) return; key = k;
       if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
         renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
@@ -2707,8 +2737,10 @@ if (window.Stage && Stage.enabled && Stage.webGeo) {
       // 벽은 화면을 등지고 있어 책상에서 튄 빛만 받는다: 책상보다 옅다
       wallMat.color.copy(deskMat.color); wallMat.opacity = Math.min(1, 0.85 * lit * wallFall);   // (10-21 deploy-prep: 0.42 → 0.85, 벽에 둥근 번짐이 보이게)
       // 책상 면은 벽보다 한 단계 밝다(빛이 닿는 각도 차). 화면이 꺼져도 방에 남은 빛만큼 아주 옅게 남는다
-      deskTone.material.color.copy(deskMat.color); deskTone.material.opacity = 0.03 + 0.07 * lit;   // (10-21 deploy-prep: 벽과 책상의 밝기 차를 한 단계 더)
-      shadeMat.opacity = 0.5 + 0.3 * lit;
+      // 방의 면(책상 톤·구석 그늘)은 불이 낮아진 만큼만(Stage.state.dk) 보인다: 흰 카드 테이블 위에 회색 그늘이 깔리지 않게(10-21 deploy-prep)
+      const dk = Stage.state.dk || 0;
+      deskTone.material.color.copy(deskMat.color); deskTone.material.opacity = (0.03 + 0.07 * lit) * dk;   // (10-21 deploy-prep: 벽과 책상의 밝기 차를 한 단계 더)
+      shadeMat.opacity = (0.5 + 0.3 * lit) * dk;
       room.intensity = 0.55;
       const env = 0.3 + 0.3 * lit;
       mats.forEach(m => { if (m !== screenMat) m.envMapIntensity = env; });
