@@ -236,28 +236,20 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .front img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 /* 그늘 한 장: 더미 아래쪽 카드(--so)와, 빛웅덩이 가장자리 카드(--amb × --li)가 어두워진다. 색은 밤 방의 남보라 */
 .f>.sh{position:absolute;inset:0;border-radius:inherit;background:var(--nt);opacity:calc(var(--so,0) + var(--amb,0) * var(--li,0) * .3);pointer-events:none;z-index:1}
-/* 스크롤 신호: 첫 화면 아래 가장자리에 다음 구역의 카드가 반쯤 보이며 오르내린다. 누르면 그 구역으로 */
-.peek{position:fixed;left:50%;bottom:0;z-index:20;display:flex;align-items:flex-end;border:0;background:none;padding:0 0 env(safe-area-inset-bottom,0px);cursor:pointer;
-  transform:translate(-50%,46%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
-.peek i{display:block;width:58px;aspect-ratio:4/5;border-radius:10px;border:4px solid rgba(255,255,255,.95);background:#eaebf5 center/cover no-repeat;
-  box-shadow:0 10px 24px -10px rgba(46,44,79,.45),0 0 0 1px rgba(167,168,209,.35);animation:bob 2.6s ease-in-out infinite}
-.peek i:nth-child(1){transform:rotate(-9deg);margin-right:-18px;animation-delay:.15s}
-.peek i:nth-child(2){position:relative;z-index:1;margin-bottom:10px}
-.peek i:nth-child(3){transform:rotate(9deg);margin-left:-18px;animation-delay:.3s}
-.peek:hover{transform:translate(-50%,30%)}
-.peek.gone{opacity:0;transform:translate(-50%,110%);pointer-events:none}
-.peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px}
-@keyframes bob{50%{translate:0 -9px}}
-/* 처음 온 사람이 카드만 만지다 떠나지 않게(10-21 대표님): 카드 더미 오른쪽에 아래 화살표 셋을 세로로. 위에서 아래로 차례로 진해지며 흘러내린다.
-   선은 사이트 아이콘과 같은 1.4px 둥근 끝, 색은 보조 글색. 더미와 함께 사라진다 */
-.peek-t{position:absolute;left:calc(100% + 16px);bottom:calc(46% + 8px);display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-2)}
-.peek-t svg{display:block;width:14px;height:8px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;
-  opacity:.18;animation:chev 1.8s cubic-bezier(.45,0,.55,1) infinite}
+/* 스크롤 신호(10-21 대표님: 카드 미리보기 빼고 화살표만, 잘 보이게): 첫 화면 아래 가운데에 아래 화살표 셋을 세로로 쌓는다.
+   위에서 아래로 차례로 진해지며 흘러내린다. 선은 사이트 아이콘과 같은 둥근 끝, 색은 본문 먹색. 누르면 작업 구역으로, 첫 화면을 떠나면 사라진다 */
+.peek{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:20;display:block;margin:0;padding:4px 14px;border:0;background:none;cursor:pointer;
+  color:var(--ink);transform:translateX(-50%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
+.peek-t{display:flex;flex-direction:column;align-items:center;gap:3px}   /* 높이 44px: 1440×900에서 이름 글자 아래 64px 틈 안에 든다 */
+.peek-t svg{display:block;width:20px;height:10px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  opacity:.28;animation:chev 1.8s cubic-bezier(.45,0,.55,1) infinite}
 .peek-t svg:nth-child(2){animation-delay:.18s}
 .peek-t svg:nth-child(3){animation-delay:.36s}
-@keyframes chev{0%,100%{opacity:.18;translate:0 -2px}35%{opacity:1;translate:0 1px}70%{opacity:.18;translate:0 2px}}
-.peek:hover .peek-t{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){.peek i,.peek-t svg{animation:none}.peek-t svg{opacity:.7}}
+@keyframes chev{0%,100%{opacity:.28;translate:0 -2px}35%{opacity:1;translate:0 2px}70%{opacity:.28;translate:0 3px}}
+.peek:hover{transform:translate(-50%,3px)}
+.peek.gone{opacity:0;transform:translate(-50%,40px);pointer-events:none}
+.peek:focus-visible{outline:2px solid var(--dot);outline-offset:4px;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.peek-t svg{animation:none;opacity:.8}}
 /* 뒷면: 명함 뒷면과 같은 문법(작은 대문자 행 → 제목 → 헤어라인 아래 동작) */
 .back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;padding:16px 14px 12px}
 .back .row{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 2px}
@@ -717,7 +709,7 @@ html.end-on .totop{bottom:var(--ei-top-b,20px)}
   <dl class="wi-dl"><dt>Service</dt><dd class="wi-ko"></dd><dd class="wi-line"></dd></dl>
   <dl class="wi-dl"><dt>Role</dt><dd class="wi-role"></dd><dd class="wi-year"></dd><dd><a class="wi-go" href="#" target="_blank" rel="noopener">사이트 열기 ↗</a></dd></dl>
 </aside>
-<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><i></i><i></i><i></i><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg><svg viewBox="0 0 14 8"><path d="M1 1l6 6 6-6"/></svg></span></button>
+<button class="peek" id="peek" type="button" aria-label="아래 작업 보기"><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg></span></button>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
