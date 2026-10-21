@@ -383,8 +383,8 @@ html.stage-on .mb-back{transform:rotateY(180deg) translateZ(1px);background:line
 html.stage-on .mb-face{background:#0b0b0d;box-shadow:inset 0 0 0 1px rgba(255,255,255,calc(.05 + .05 * var(--using,0)))}
 html.stage-on .mb.using{--using:1}
 /* 화면: iframe은 뷰포트 기준 크기(--wi×--hi)로 배치하고 배율 없이 그린다. 화면 속 정거장에서 합성 배율이 1이 된다 */
-/* 위쪽은 메뉴 막대 높이(--bh, 6-macbook.css .mb-bar와 같은 식)만큼 막대 뒤로 늘린다: 리퀴드 글라스 막대에 서비스 페이지가 비친다(10-21 조율·card-drop) */
-html.stage-on .mb-screen{--bh:calc(var(--wi,1000px) * .0222);position:absolute;left:var(--bz);top:calc(var(--bz) - var(--bh));width:var(--wi);height:calc(var(--hi) + var(--bh));overflow:hidden;background:#000}
+/* 실제 맥처럼 서비스 화면은 메뉴 막대(6-macbook.css .mb-bar, 화면 면 위 끝 --bh) 바로 아래에서 시작한다. 막대 뒤로 늘렸더니 서비스 맨 윗줄이 막대에 가려졌다(10-21 대표님) */
+html.stage-on .mb-screen{position:absolute;left:var(--bz);top:var(--bz);width:var(--wi);height:var(--hi);overflow:hidden;background:#000}
 html.stage-on .mb-strip{position:absolute;inset:0;display:flex;gap:var(--gap)}
 html.stage-on .mb-pane{position:relative;flex:none;width:100%;height:100%;background:#000}
 /* 실제 맥처럼 고정 논리 해상도(MacBook Pro 16 기본 1728, 820 이하 1280)로 그리고 화면 면에 맞게 줄인다. 배율 --ls = 화면 폭/논리 폭(scene-web).
@@ -472,8 +472,8 @@ html.stage-on .mb .mb-bar{--bh:calc(var(--wi,1000px) * .0222);position:absolute;
   display:flex;align-items:center;justify-content:space-between;padding:0 calc(var(--wi,1000px) * .009);box-sizing:border-box;pointer-events:none;
   font:500 calc(var(--bh) * .5)/1 var(--f-en);letter-spacing:0;white-space:nowrap;opacity:calc(var(--on,1) * var(--light,1));
   color:#fff;text-shadow:0 0 calc(var(--bh) * .35) rgba(0,0,0,.35);
-  background:linear-gradient(rgba(255,255,255,.075),rgba(255,255,255,.025));
-  -webkit-backdrop-filter:blur(calc(var(--bh) * .3)) saturate(1.35);backdrop-filter:blur(calc(var(--bh) * .3)) saturate(1.35);
+  /* 서비스 화면은 막대 아래에서 시작하므로(10-21) 막대 뒤에는 데스크톱 배경만 있다: 흐림 없이 남보라 배경색이 살짝 비치는 유리 */
+  background:linear-gradient(rgba(150,140,200,.16),rgba(150,140,200,.1));
   box-shadow:inset 0 max(.5px,calc(var(--bh) * .03)) 0 rgba(255,255,255,.32),inset 0 calc(var(--bh) * -.03) 0 rgba(255,255,255,.05)}
 html.stage-on .mb .mb-bl,html.stage-on .mb .mb-br{display:flex;align-items:center;gap:calc(var(--bh) * .78)}
 html.stage-on .mb .mb-bl b{font-weight:700}
