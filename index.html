@@ -240,7 +240,7 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
    위에서 아래로 차례로 진해지며 흘러내린다. 선은 사이트 아이콘과 같은 둥근 끝, 색은 본문 먹색. 누르면 작업 구역으로, 첫 화면을 떠나면 사라진다 */
 .peek{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:20;display:block;margin:0;padding:4px 14px;border:0;background:none;cursor:pointer;
   color:var(--ink);transform:translateX(-50%);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
-.peek-t{display:flex;flex-direction:column;align-items:center;gap:3px}   /* 높이 44px: 1440×900에서 이름 글자 아래 64px 틈 안에 든다 */
+.peek-t{display:flex;flex-direction:column;align-items:center;gap:0}   /* 화살표 간격 10px(10-21 대표님: 조금 넓다). 묶음 높이 38px로 이름 글자 아래 64px 틈 안에 든다 */
 .peek-t svg{display:block;width:20px;height:10px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
   opacity:.28;animation:chev 1.8s cubic-bezier(.45,0,.55,1) infinite}
 .peek-t svg:nth-child(2){animation-delay:.18s}
