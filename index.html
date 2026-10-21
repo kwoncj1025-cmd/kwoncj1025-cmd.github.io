@@ -60,28 +60,24 @@ h1 span{display:block;color:var(--soft)}
 .badge{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;z-index:4}
 .hang{position:absolute;left:0;top:0;transform-origin:0 0}
 
-/* 목줄 끝 실사 D링·집게(목업 PSD 추출, 원본 0.3배).
+/* 목줄 끝 실사 D링·집게(Lanyard ID Badge 목업 PSD의 원본 레이어에서 원본 해상도로 추출, 원본 1px = 0.3 CSS px, 10-21).
+   고리는 원본 사진이 홀더 구멍을 꿴 그대로의 모습이다: 몸통 쪽 다리는 명함 위 모서리를 넘어 앞을 지나고, 게이트 쪽 다리는 명함 위끝에서 뒤로 들어가며,
+   바닥 곡선은 구멍 속에 보인다. 가림이 사진 안에 이미 들어 있어 따로 자르지 않는다(다각형으로 자른 조각이 파편처럼 보였다, 10-21 대표님).
    D링(.ring)은 끈과 함께 앞을 본 채 흔들림만 따라가고, 회전 고리 머리부터 아래(.swivel)는 명함 3D 층 안에서 비틀림·뒤집기를 같이 한다.
-   집게 몸통은 명함 위 모서리에서 끝나 명함 뒤로 들어가고, 고리 아랫부분만 구멍 속으로 보인다(목업과 같은 구조) */
-.ring{position:absolute;left:-27.6px;top:-3.3px;width:55.5px;height:85.5px;z-index:1;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:27.6px 3.3px;
+   좌표: 끈 끝(hang 원점) = 원본 y 1430, 명함 위 모서리 = 1666(70.8 아래), 구멍 1686~1706 · x ±66(가운데 2001) */
+.ring{position:absolute;left:-30px;top:-6px;width:60px;height:36px;z-index:1;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:30px 6px;
   filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.2))}
-/* 고리는 구멍을 꿴다(10-21 대표님 「태그 뒤에 클립이 붙은 걸로 보인다」 → 「더 이상해졌네」): 실물 결합대로 세 구간으로 자른다(고리 좌표, 명함 위 모서리 = y 74.1).
-   ① 명함 위 모서리 위: 고리 전체 ② 명함 위 모서리~구멍 위 가장자리(74.1~77.6): 앞다리(몸통 쪽 오른 다리 x 33~38.5)만 명함 앞을 지나고, 게이트 쪽 왼 다리는 명함 뒤로 숨는다
-   ③ 구멍(77.6~83.6, x 4.6~50.6): 바닥 곡선이 구멍 속에 보인다 ④ 구멍 아래: 명함 뒤라 보이지 않는다.
-   뒤집으면 보는 쪽이 바뀌므로 뒷면용 고리(.sw-b, hero.js가 복제)는 게이트 쪽 다리가 앞이다 */
-.swivel{position:absolute;left:122.4px;top:-74.1px;width:55.5px;height:85.5px;pointer-events:none;user-select:none;-webkit-user-drag:none;
+.swivel{position:absolute;left:120px;top:-52.8px;width:60px;height:66.6px;pointer-events:none;user-select:none;-webkit-user-drag:none;
   transform:translateZ(1px);backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  clip-path:polygon(0 0,55.5px 0,55.5px 77.6px,50.6px 77.6px,50.6px 83.6px,4.6px 83.6px,4.6px 77.6px,27px 77.6px,27px 74.1px,0 74.1px);
   filter:drop-shadow(0 1px 1.2px rgba(13,14,18,.32))}
-.swivel.sw-b{transform:rotateY(180deg) translateZ(1px);
-  clip-path:polygon(0 0,55.5px 0,55.5px 74.1px,27px 74.1px,27px 77.6px,50.6px 77.6px,50.6px 83.6px,4.6px 83.6px,4.6px 77.6px,0 77.6px)}
+.swivel.sw-b{transform:rotateY(180deg) translateZ(1px)}
 
 .card3d{position:absolute;left:-150px;top:70.8px;z-index:2;width:300px;height:430px;perspective:1100px}
 .card{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
 .card.grab{cursor:grabbing}
 /* 구멍 너머: 면 마스크 밖(카드 본체)에 둔 판. 면과 같은 평면이라 DOM 순서대로 면 아래에 깔리고 구멍으로만 보인다.
    뚫린 구멍이라 뒤의 흰 벽이 보인다(10-21: 어두운 판이면 고리 바닥이 묻혀 걸린 구조가 안 읽혔다). 위 가장자리 그늘은 .slot, 아래 20%는 카드 두께 단면 */
-.card::before{content:"";position:absolute;left:127px;top:3.5px;width:46px;height:6px;border-radius:3px;pointer-events:none;
+.card::before{content:"";position:absolute;left:130.2px;top:6px;width:39.6px;height:6px;border-radius:3px;pointer-events:none;
   background:linear-gradient(#dfe2ea 0,#f3f4f7 80%,#b4b8c6 80%,#e6e8ef 100%)}
 .face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
   background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(242,243,248,.82) 46%,rgba(233,236,246,.88));
@@ -97,17 +93,16 @@ h1 span{display:block;color:var(--soft)}
   background:radial-gradient(40% 30% at var(--sx,30%) var(--sy,20%),rgba(255,255,255,.9),rgba(255,255,255,0) 70%),
     linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.55) 48%,rgba(255,255,255,0) 60%);
   transform:translateX(var(--shine,0%));opacity:var(--glare,.2)}
-/* 목줄이 지나가는 구멍: 칠한 알약이 아니라 뚫린 구멍(.face 마스크, 명함 좌표 x 127~173, y 3.5~9.5). 구멍 속으로 뒤가 보이고,
-   위 가장자리는 안쪽으로 옅은 그늘, 아래 안 벽에는 카드 두께만큼 얇은 밝은 단면이 보인다 */
-.face{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M130 3.5H170A3 3 0 0 1 170 9.5H130A3 3 0 0 1 130 3.5Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M130 3.5H170A3 3 0 0 1 170 9.5H130A3 3 0 0 1 130 3.5Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
+/* 목줄이 지나가는 구멍: 칠한 알약이 아니라 뚫린 구멍(.face 마스크). 구멍 속으로 뒤가 보이고,
+   위 가장자리는 안쪽으로 옅은 그늘, 아래 안 벽에는 카드 두께만큼 얇은 밝은 단면이 보인다. 자리와 크기는 원본 사진의 홀더 구멍(x 130.2~169.8, y 6~12) */
+.face{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M133.2 6H166.8A3 3 0 0 1 166.8 12H133.2A3 3 0 0 1 133.2 6Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-140 -140 580 710'%3E%3Cpath fill-rule='evenodd' d='M-140-140H440V570H-140Z M133.2 6H166.8A3 3 0 0 1 166.8 12H133.2A3 3 0 0 1 133.2 6Z'/%3E%3C/svg%3E") -140px -140px/580px 710px no-repeat;
   -webkit-mask-clip:no-clip;mask-clip:no-clip}
-.slot{position:absolute;left:50%;top:3.5px;width:46px;height:6px;margin-left:-23px;border-radius:3px;z-index:3;pointer-events:none;
+.slot{position:absolute;left:50%;top:6px;width:39.6px;height:6px;margin-left:-19.8px;border-radius:3px;z-index:3;pointer-events:none;
   box-shadow:inset 0 1.4px 1.6px -0.4px rgba(13,14,18,.55),inset 0 -1px 0 rgba(255,255,255,.95),inset 0 -1.7px 0 rgba(200,204,218,.95)}
-/* 앞다리가 명함 앞을 지나는 자리의 접촉 그림자(같은 위쪽 빛, 다리 바로 아래로 짧게). 앞면은 몸통 다리(구멍 왼끝에서 31px), 뒷면은 게이트 다리(12px) */
-.slot i{position:absolute;left:31px;top:-3.2px;width:9px;height:4px;margin-left:-4.5px;border-radius:50%;
+/* 앞다리가 명함 앞을 지나는 자리의 접촉 그림자(같은 위쪽 빛, 다리 바로 아래로 짧게). 앞뒤 모두 몸통 다리(구멍 왼끝에서 26.6px): 뒷면용 고리도 화면에서 같은 쪽에 다리가 온다 */
+.slot i{position:absolute;left:26.6px;top:-5.6px;width:8px;height:4px;margin-left:-4px;border-radius:50%;
   background:radial-gradient(closest-side,rgba(13,14,18,.38),rgba(13,14,18,0))}
-.back .slot i{left:12px}
 
 .row{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;padding:0 4px 10px}
 .photo{border-radius:15px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
@@ -151,11 +146,11 @@ h1 span{display:block;color:var(--soft)}
 .still .stage{min-height:760px}
 
 /* 무대(scene-hero): 집게가 열리고 명함이 책상으로 떨어진다(hero.js가 만든다).
-   집게는 .ring과 같은 틀에서 뒤판·게이트·몸통 세 장을 겹치고, 게이트만 나사 축(clasp.json)으로 돈다 */
-.clasp{position:absolute;left:-27.6px;top:-3.3px;width:55.5px;height:85.5px;z-index:1;display:none;pointer-events:none;transform-origin:27.6px 3.3px;
+   집게는 .swivel과 같은 그림을 게이트·몸통 두 장으로 나눠 hang 좌표에 겹치고(위끝 = 끈 끝 아래 18px), 게이트만 나사 축으로 돈다 */
+.clasp{position:absolute;left:-30px;top:18px;width:60px;height:66.6px;z-index:1;display:none;pointer-events:none;transform-origin:30px -18px;
   filter:drop-shadow(0 1.5px 1.5px rgba(13,14,18,.22))}
 .clasp img{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
-.clasp .gate{transform-origin:44.14% 56.14%}
+.clasp .gate{transform-origin:43.75% 41%}   /* 나사 축(원본 고리 그림의 87.5, 91) */
 /* 고리를 떠난 명함과 책상 그림자는 hero 층 바로 아래(3D)에 둔다. 벽이 숨어도(다 숙인 뒤) 보이도록 visibility를 되살린다 */
 .carry{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;visibility:visible;pointer-events:none}
 .carry .card3d{pointer-events:auto}
@@ -526,14 +521,29 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
   /* 10-21 대표님 「맥북 유지 + 써 보기 전체 화면」(16 4항): 카메라가 덮개에 붙어 화면이 폭의 92%로 아래쪽에 선다(scene-web.js 모바일 베젤).
      글은 그 위 빈자리에 둔다: 눈썹은 위 끝, 목록(가로 한 줄)과 이름·한 줄 소개는 화면 바로 위에 모은다(--scr-top = 메뉴 막대 위끝, 그 위 안내 글 한 줄 자리를 비운다).
      범위·연도는 접는다(이름과 한 줄 소개만, 원 사이트 링크는 남긴다) */
-  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto 1fr auto auto;
-    padding:calc(env(safe-area-inset-top,0px) + 28px) 20px calc(100dvh - var(--scr-top,62dvh) + 44px)}
-  html.stage-on body .web-info .wi-list{grid-row:3}
-  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:4;align-self:end;margin-top:clamp(12px,2.4dvh,22px);gap:8px}
+  /* 10-21 조율: 눈썹 글은 목록 바로 위에 붙이고, 글 묶음 전체를 화면 위 빈자리의 세로 가운데에 둔다(위 빈 어둠이 1/4쯤 남던 것).
+     맥북은 힌지~키보드 첫 줄 자름이 화면 아래끝이라 바닥에 선다 */
+  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr auto auto auto 1fr;
+    padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(100dvh - var(--scr-top,62dvh) + 36px)}
+  html.stage-on body .web-info .wi-ey{grid-row:2}
+  html.stage-on body .web-info .wi-list{grid-row:3;margin-top:12px}
+  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:4;align-self:start;margin-top:clamp(12px,2.4dvh,22px);gap:8px}
   html.stage-on body .web-info .wi-meta{display:none}
   html.stage-on body .web-info .wi-name{font-size:clamp(32px,9vw,40px)}
   html.stage-on body .web-info .wi-line{font-size:13.5px}
   html.stage-on body .web-info .wi-go{margin-top:2px}
+}
+
+/* 데스크톱 여백(10-21 대표님 「왼쪽은 글들이 너무 붙어서 여백이 없다」): 바깥 여백 8vw(1440 약 115, 1728 약 138). 맥북 덮개 오른쪽 끝도 같은 거리(scene-web.js 베젤 카메라).
+   목록 줄·묶음 사이와 아래 설명 묶음의 아래 여백을 넓혀 화면 끝에 붙어 보이지 않게 한다 */
+@media (min-width:821px){
+  html.stage-on body .web-info{padding:clamp(36px,6vh,64px) max(8vw,env(safe-area-inset-right,0px)) clamp(56px,8vh,112px) max(8vw,env(safe-area-inset-left,0px))}
+  html.stage-on body .web-info .wi-list{margin-top:clamp(24px,4vh,56px)}
+  html.stage-on body .web-info .wi-item{padding-block:clamp(4px,.6vh,9px)}
+  html.stage-on body .web-info .wi-gh{margin-bottom:10px}
+  html.stage-on body .web-info .wi-gh~.wi-gh{margin-top:clamp(20px,3vh,40px)}
+  html.stage-on body .web-info .wi-body{gap:18px}
+  html.stage-on body .web-info .wi-meta{margin-top:14px}
 }
 </style>
 
@@ -546,10 +556,10 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
     <canvas id="strap"></canvas>
   <div class="badge" id="badge">
     <div class="hang" id="hang">
-      <img class="ring" src="lanyard/ring.webp" alt="" width="56" height="86" draggable="false">
+      <img class="ring" src="lanyard/ring2.webp" alt="" width="60" height="36" draggable="false">
       <div class="card3d">
         <div class="card" id="card">
-          <img class="swivel" src="lanyard/swivel.webp" alt="" width="56" height="86" draggable="false">
+          <img class="swivel" src="lanyard/swivel2.webp" alt="" width="60" height="67" draggable="false">
           <section class="face front" aria-label="명함 앞면">
             <span class="slot"><i></i></span>
             <div class="row"><span>Designer · AI Maker</span><span>#01</span></div>
@@ -1154,8 +1164,14 @@ window.ticker = (() => {
   };
   const gridSpots = (k = 1) => {
     const cwk = cw * k, chk = ch * k;
-    const gap = (mobile ? 14 : 28) * k, cols = Math.max(2, Math.floor((TW - 48 + gap) / (cwk + gap))), w = cols * cwk + (cols - 1) * gap;
-    const x0 = (TW - w) / 2 + cwk / 2;
+    // 격자가 놓이는 띠: 세운 「Selected Work」 오른쪽부터, 명함(오른쪽 귀퉁이) 왼쪽까지. 폭 제한을 푼 뒤 격자가 왼쪽 끝부터 깔려 워드마크를 덮고 명함이 3행을 가렸다(10-21 대표님)
+    let xL = 24, xR = TW - 24;
+    if (STAGE && !MOB()) {
+      const mk = tfoot.querySelector('.tmark'); if (mk) xL = Math.max(xL, mk.offsetLeft + mk.offsetHeight + 24);
+      const sp = window.Hero && Hero.desk && Hero.desk.spot; if (sp) { const nx = sp.x - table.offsetLeft; if (nx < TW + cw) xR = Math.min(xR, nx - cw * 1.04 * 0.5 - 20); }
+    }
+    const gap = (mobile ? 14 : 28) * k, cols = Math.max(2, Math.floor((xR - xL + gap) / (cwk + gap))), w = cols * cwk + (cols - 1) * gap;
+    const x0 = xL + Math.max(0, (xR - xL - w) / 2) + cwk / 2;
     return { h: BAR + 24 + Math.ceil(N / cols) * (chk + gap) + FOOT + 8, k,
              at: cards.map((c, i) => ({ x: x0 + (i % cols) * (cwk + gap), y: BAR + 24 + chk / 2 + Math.floor(i / cols) * (chk + gap), r: 0 })) };
   };
@@ -1502,8 +1518,8 @@ window.ticker = (() => {
   let stageHold = 0;
   card.addEventListener('pointerdown', e => {
     touched = true; if (peekT) { peekT = 0; flipT = 0; }   // 한 번이라도 만지면 힌트는 영구히 멈춘다
-    if (e.target.closest('button,a')) return;
-    if (STG && ct > 0) { if (ct >= 0.999) deskDown(e); else e.preventDefault(); return; }   // 떨어지는 동안은 잡지 않고, 책상에 놓인 뒤에는 책상 위에서 끈다
+    if (STG && ct > 0) { if (ct >= 0.999) deskDown(e); else if (!e.target.closest('button,a')) e.preventDefault(); return; }   // 책상 위: 명함 면이 거의 복사 버튼이라 버튼 위에서도 끌기를 먼저 받는다(움직이지 않으면 버튼 클릭 그대로, 10-21 deploy-prep)
+    if (e.target.closest('button,a')) return;   // 떨어지는 동안은 잡지 않고, 책상에 놓인 뒤에는 책상 위에서 끈다
     e.preventDefault();
     if (window.Stage && Stage.enabled && !stageHold) stageHold = Stage.hold('badge');   // 잡은 동안 무대 입력 멈춤
     const P = local(e), A = pts[N - 1];
@@ -1545,15 +1561,16 @@ window.ticker = (() => {
   const swivelB = swivel && (card.querySelector('.swivel.sw-b') || (() => { const c = swivel.cloneNode(); c.classList.add('sw-b'); swivel.after(c); return c; })());
   // D링은 끈에 박음질돼 있어 끈 끝 방향으로 돈다(명함과 따로). 그래서 명함과 함께 도는 hang 밖, 끈 끝(badge)에 둔다.
   // 스위블·집게·명함은 D링 아래 막대(이음, 고정점에서 24.7px)를 축으로 phi만큼 매달린다(10-21 대표님 판정: 집게 앞 꺾임)
-  const ringEl = badge.querySelector('.ring'), RING_J = 24.7;
+  const ringEl = badge.querySelector('.ring'), RING_J = 24.9;
   if (ringEl && ringEl.parentElement !== badge) badge.insertBefore(ringEl, badge.firstChild);
   const heroLayer = hero.closest('.stage-layer');
   let ct = 0, carryOn = false, clasp = null, gate = null, carry = null, shS = null, shC = null;
   const cl = v => Math.max(0, Math.min(1, v)), ss = (a, b, v) => { const u = cl((v - a) / (b - a)); return u * u * (3 - 2 * u); };
   if (STG) {
-    // 집게(방아쇠형 스냅 훅): 뒤판 → 게이트 → 몸통 순서로 겹쳐 swivel.webp와 같은 틀에 둔다. 게이트만 나사 축으로 돈다
+    // 집게(방아쇠형 스냅 훅): 게이트 → 몸통 순서로 겹쳐 swivel2.webp와 같은 틀에 둔다. 게이트만 나사 축으로 돈다.
+    // 걸려 있을 때는 홀더 뒤로 숨던 게이트 다리 끝을 이어 그려 두어(clasp2-gate), 명함이 빠진 뒤에도 고리 전체가 온전하다
     clasp = document.createElement('div'); clasp.className = 'clasp'; clasp.setAttribute('aria-hidden', 'true');
-    clasp.innerHTML = ['back', 'gate', 'body'].map(k => `<img class="${k}" src="lanyard/clasp-${k}.webp" alt="" width="56" height="86" draggable="false">`).join('');
+    clasp.innerHTML = ['gate', 'body'].map(k => `<img class="${k}" src="lanyard/clasp2-${k}.webp" alt="" width="60" height="67" draggable="false">`).join('');
     gate = clasp.querySelector('.gate'); hang.insertBefore(clasp, card3d);
     carry = document.createElement('div'); carry.className = 'carry'; carry.style.display = 'none';
     carry.innerHTML = '<i class="dsh s"></i><i class="dsh c"></i>'; [shS, shC] = carry.children;
@@ -1563,7 +1580,7 @@ window.ticker = (() => {
   const gateDeg = t => t < 0.20 ? 16 * (1 - (1 - cl((t - 0.12) / 0.05)) ** 3) : 16 * (1 - cl((t - 0.20) / 0.035)) ** 2;
 
   // 책상 위 명함 자세(hero 층 좌표: x 오른쪽, z 시청자 쪽). 사용자가 S1에서 옮기거나 뒤집으면 여기 남고, 착지 경로의 끝이 된다
-  const desk = { x: 0, z: 0, b: 186 * Math.PI / 180, f: 0, ft: 0, vf: 0, vx: 0, vz: 0, moved: false, ck: 0, fk: 0, vk: 1, ek: 0 };
+  const desk = { x: 0, z: 0, b: 186 * Math.PI / 180, f: 0, ft: 0, vf: 0, vx: 0, vz: 0, vb: 0, moved: false, ck: 0, fk: 0, vk: 1, ek: 0 };
   const geo = () => {
     const tb = document.querySelector('#work .table'), Wd = Stage.world && Stage.world.dims;
     const Hw = heroLayer.parentElement.offsetHeight || innerHeight, Dt = (Wd && Wd.Dt) || innerHeight;
@@ -1667,43 +1684,69 @@ window.ticker = (() => {
   // S1 책상 위: 짧게 누르면 뒤집고, 끌면 책상 위로 옮겨지며 놓으면 카드처럼 미끄러져 멈춘다
   let dpress = null;
   const camScale = () => { const c = Stage.camera; return c.P() / (c.d || c.P()); };
+  // 책상 위 명함 끌기(10-21 대표님 「내 카드도 움직일 수 있게」): 카드(table.js)와 같은 손맛. 잡은 점이 손을 따라오고 명함은 그 점을 축으로 돌며 끌려가고,
+  // 놓으면 그 속도로 미끄러진다(마찰·최고 속도·회전 마찰이 카드와 같다. 이 루프는 120Hz라 프레임당 값의 제곱근). 화면 회전은 −b(위에서 본 rotateY)
+  let justDragged = 0;
+  card.addEventListener('click', e => { if (performance.now() - justDragged < 350) { e.preventDefault(); e.stopPropagation(); } }, true);   // 끌고 놓은 뒤 버튼(복사·QR)이 눌리지 않게
   function deskDown(e){
-    e.preventDefault();
+    const onBtn = !!e.target.closest('button,a');
+    if (!onBtn) e.preventDefault();
     if (!stageHold) stageHold = Stage.hold('badge');
     const g = geo(); target(g);
-    dpress = { id: e.pointerId, sx: e.clientX, sy: e.clientY, x0: desk.x, z0: desk.z, moved: false, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vz: 0 };
-    desk.vx = desk.vz = 0;
+    const s = camScale(), r = card3d.getBoundingClientRect(), gx = (e.clientX - (r.left + r.width / 2)) / s, gz = (e.clientY - (r.top + r.height / 2)) / s;
+    const a = desk.b, co = Math.cos(a), si = Math.sin(a);   // 화면 회전 −b를 되돌린 명함 좌표의 잡은 점
+    dpress = { id: e.pointerId, sx: e.clientX, sy: e.clientY, x0: desk.x, z0: desk.z, moved: false, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vz: 0, vb: 0, onBtn,
+               gx: gx * co - gz * si, gz: gx * si + gz * co, px: desk.x + gx, pz: desk.z + gz, p0x: desk.x + gx, p0z: desk.z + gz };
+    desk.vx = desk.vz = desk.vb = 0;
     try { card.setPointerCapture(e.pointerId); } catch {}
     wakeBadge();
   }
   card.addEventListener('pointermove', e => {
     if (!dpress || e.pointerId !== dpress.id) return;
-    if (!dpress.moved && Math.hypot(e.clientX - dpress.sx, e.clientY - dpress.sy) > 4) { dpress.moved = true; desk.moved = true; card.classList.add('grab'); }
+    if (!dpress.moved && Math.hypot(e.clientX - dpress.sx, e.clientY - dpress.sy) > 6) { dpress.moved = true; desk.moved = true; card.classList.add('grab'); }
     if (!dpress.moved) return;
     const s = camScale(), now = performance.now(), dt = Math.max(4, now - dpress.lt) / STEP;
-    desk.x = dpress.x0 + (e.clientX - dpress.sx) / s; desk.z = dpress.z0 + (e.clientY - dpress.sy) / s;
-    dpress.vx = dpress.vx * 0.5 + (e.clientX - dpress.lx) / s / dt * 0.5; dpress.vz = dpress.vz * 0.5 + (e.clientY - dpress.ly) / s / dt * 0.5;
-    dpress.lx = e.clientX; dpress.ly = e.clientY; dpress.lt = now; wakeBadge();
+    const px = dpress.p0x + (e.clientX - dpress.sx) / s, pz = dpress.p0z + (e.clientY - dpress.sy) / s, W2 = (300 * KS * geo().sd) ** 2;
+    // table.js와 같은 끌기: 큰 이동은 잘게 나눠 계산하고, 한 번에 도는 각도에 상한을 둔다
+    const steps = Math.max(1, Math.ceil(Math.hypot(px - dpress.px, pz - dpress.pz) / 10)), ox = desk.x, oz = desk.z;
+    let qx = dpress.px, qz = dpress.pz, db = 0;
+    for (let n = 1; n <= steps; n++) {
+      const tx = dpress.px + (px - dpress.px) * n / steps, tz = dpress.pz + (pz - dpress.pz) * n / steps, mx = tx - qx, mz = tz - qz;
+      let r = -desk.b; const co = Math.cos(r), si = Math.sin(r), ax = dpress.gx * co - dpress.gz * si, az = dpress.gx * si + dpress.gz * co;
+      const d = Math.max(-0.05, Math.min(0.05, (ax * mz - az * mx) / (ax * ax + az * az + W2 * 0.35) * 0.65));
+      r += d; desk.b = -r; db -= d; qx = tx; qz = tz;
+      const co2 = Math.cos(r), si2 = Math.sin(r);
+      desk.x = tx - (dpress.gx * co2 - dpress.gz * si2); desk.z = tz - (dpress.gx * si2 + dpress.gz * co2);
+    }
+    dpress.vx = dpress.vx * 0.5 + (desk.x - ox) / dt * 0.5; dpress.vz = dpress.vz * 0.5 + (desk.z - oz) / dt * 0.5; dpress.vb = dpress.vb * 0.5 + db / dt * 0.5;
+    dpress.px = px; dpress.pz = pz; dpress.lx = e.clientX; dpress.ly = e.clientY; dpress.lt = now; wakeBadge();
   });
   const deskUp = e => {
     if (!dpress || e.pointerId !== dpress.id) return;
     if (stageHold) { Stage.release(stageHold); stageHold = 0; }
-    if (!dpress.moved && e.type === 'pointerup') desk.ft = desk.ft ? 0 : Math.PI;
-    else if (performance.now() - dpress.lt < 80) { const v = Math.hypot(dpress.vx, dpress.vz), cap = 14, k = v > cap ? cap / v : 1; desk.vx = dpress.vx * k; desk.vz = dpress.vz * k; }
+    if (!dpress.moved && e.type === 'pointerup') { if (!dpress.onBtn) desk.ft = desk.ft ? 0 : Math.PI; }   // 버튼 위 짧은 누름은 버튼(복사 등)이 받는다
+    else if (dpress.moved) {
+      justDragged = performance.now();
+      if (performance.now() - dpress.lt < 90) {                                   // 멈췄다 놓으면 그 자리에(카드와 같다)
+        const v = Math.hypot(dpress.vx, dpress.vz), cap = 27.5, k = v > cap ? cap / v : 1;   // 카드의 프레임당 55
+        desk.vx = dpress.vx * k; desk.vz = dpress.vz * k; desk.vb = Math.max(-0.06, Math.min(0.06, dpress.vb));
+      }
+    }
     dpress = null; card.classList.remove('grab'); wakeBadge();
   };
   card.addEventListener('pointerup', deskUp); card.addEventListener('pointercancel', deskUp);
   function deskStep(){
     desk.vf += (desk.ft - desk.f) * 0.02 - desk.vf * 0.16; desk.f += desk.vf;
     if (Math.abs(desk.vf) < 1e-4 && Math.abs(desk.ft - desk.f) < 1e-3) { desk.f = desk.ft; desk.vf = 0; }
-    if (dpress || !(desk.vx || desk.vz)) return;
+    if (dpress || !(desk.vx || desk.vz || desk.vb)) return;
     desk.x += desk.vx; desk.z += desk.vz; desk.vx *= 0.967; desk.vz *= 0.967;
+    desk.b += desk.vb; desk.vb *= 0.938; if (Math.abs(desk.vb) < 1e-4) desk.vb = 0;
     const g = geo(), m = g.hw + 12, mz = g.hh + 12, xr = Math.max(g.tl + g.TW - m, sideCorner(g).x);   // 화면 끝·인쇄 띠 안쪽에서 멈춘다(오른쪽은 귀퉁이 자리까지)
     if (desk.x < g.tl + m || desk.x > xr) { desk.x = Math.max(g.tl + m, Math.min(xr, desk.x)); desk.vx *= -0.3; }
     if (desk.z < mz || desk.z > g.zMax) { desk.z = Math.max(mz, Math.min(g.zMax, desk.z)); desk.vz *= -0.3; }
     if (Math.hypot(desk.vx, desk.vz) < 0.02) desk.vx = desk.vz = 0;
   }
-  const deskBusy = () => !!dpress || desk.vf !== 0 || desk.f !== desk.ft || !!(desk.vx || desk.vz);
+  const deskBusy = () => !!dpress || desk.vf !== 0 || desk.f !== desk.ft || !!(desk.vx || desk.vz || desk.vb);
 
   if (fine) {
     addEventListener('pointermove', e => {
@@ -2757,7 +2800,9 @@ window.ticker = (() => {
         const a = TH * Math.PI / 180, dl = mobDl();
         return { th: TH, Tx: s.Tx, Ty: s.Ty - dl * Math.cos(a), Tz: s.Tz - dl * Math.sin(a), d: P() };
       }
-      const d = G.Wi * P() / (0.52 * W.Wd), k = d / P(); return { th: TH, Tx: s.Tx - 0.16 * W.Wd * k, Ty: s.Ty + 0.12 * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d };
+      // 덮개 오른쪽 끝을 왼쪽 글 격자의 바깥 여백(8vw, 6-macbook.css .web-info)과 같은 거리에 둔다(10-21 대표님: 「맥북은 아주 살짝만 왼쪽으로, 왼쪽 글엔 여백」. 예전 고정 0.16W는 1728에서 덮개가 오른쪽 끝 약 110px)
+      const d = G.Wi * P() / (0.52 * W.Wd), k = d / P(), xc = W.Wd * (1 - 0.08) - G.lidW / (2 * k);
+      return { th: TH, Tx: s.Tx - (xc - W.Wd / 2) * k, Ty: s.Ty + 0.12 * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d };
     },
     // 맺음: θ 80 내려다보기로 명함(앞면, 왼쪽 위)과 화면이 잠든 맥북(가운데 아래)을 책상 위 평면 배치로 한 화면에 잡는다(card-drop 시험식).
     // θ 55에서는 명함이 맥북 뒤(벽 쪽)에 가려 어둠에 뜬 조각으로 읽혔다
