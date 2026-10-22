@@ -363,6 +363,23 @@ html.stage-held .peek{visibility:hidden}   /* 맥북을 써 보는 동안 */
 }
 /* 짧은 세로 화면(SE 등 667 높이): 소개 글을 빼서 그 높이를 사원증에 준다(상태 한 줄은 남긴다) */
 @media (max-width:820px) and (max-height:719px){ .copy .intro{display:none} }
+/* 넓은 화면(10-22 대표님 「어떤 환경에서든 동일하게 보여지기만 하면 돼」): CSS 폭 1920을 1배로 두고, 그 위로는 첫 화면을 폭에 비례해 키운다(2560 → 1.333배, 4K 100%의 3840 → 2배).
+   배율 --hs는 길이 비 100vw ÷ 1920px를 tan(atan2())로 숫자로 만든 값(Chrome 111·Safari 15.4·Firefox 118부터). 1920 이하는 이 블록 밖이라 그대로다.
+   사원증·고리는 세로 화면과 같은 경로(scale → hero.js가 읽는 KS → 목줄 폭·무늬·사원증 그림·책상 낙하 크기), 글·여백은 1920의 px에 --hs를 곱한다.
+   제목은 1921 이상에서 clamp 상한 44px가 되므로 44px × --hs가 곧 비례값. 큰 이름은 core.js가 여백 안 폭에 맞춰 이미 비례하고, 목줄 보이는 길이는 hero.js(LV × KS) */
+@media (min-width:1921px){
+  .hero{--hs:tan(atan2(100vw,1920px))}
+  .copy{padding:calc(32px * var(--hs) + env(safe-area-inset-top,0px)) max(calc(32px * var(--hs)),env(safe-area-inset-right,0px)) calc(64px * var(--hs)) max(calc(32px * var(--hs)),env(safe-area-inset-left,0px))}
+  .copy .eyebrow,.copy .meta{font-size:calc(11px * var(--hs));gap:calc(8px * var(--hs))}
+  .copy .eyebrow i,.copy .meta i{width:calc(5px * var(--hs));height:calc(5px * var(--hs))}
+  .copy h1{margin-top:calc(18px * var(--hs));font-size:calc(44px * var(--hs))}
+  .copy .intro{margin-top:calc(13px * var(--hs));max-width:calc(300px * var(--hs));font-size:calc(13.5px * var(--hs))}
+  .copy .intro .en{font-size:calc(14px * var(--hs))}
+  .copy .intro .ko{margin-top:calc(10px * var(--hs))}
+  .copy .meta{margin-bottom:calc(10px * var(--hs))}
+  .card3d{top:calc(70.8px * var(--hs));scale:var(--hs);transform-origin:150px 0}
+  .ring,.clasp{scale:var(--hs)}
+}
 /* 무대 골격: 문서 스크롤을 없애고 100dvh 무대 하나에 장면 층을 쌓는다.
    stage-off(움직임 줄이기, GSAP 실패)에서는 무대 요소가 보통 블록이라 지금의 문서 스크롤 판이 그대로 보인다 */
 html.stage-on, html.stage-on body{height:100%;overflow:hidden;overscroll-behavior:none}
@@ -1704,7 +1721,7 @@ window.ticker = (() => {
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // 보이는 길이(옛 16마디 식 그대로). 세로 화면(820 이하, 10-21 대표님 실기기 판정): 명함 아래끝이 소개 글 28px 위에 오도록 가장 길게,
     // 단 명함 윗끝은 제목 아래 16px보다 내려간다(명함이 제목 오른쪽 끝과 가로로 겹치므로). 이름 크기는 core.js가 화면 폭에 맞춘다
-    LV = 15 * Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / 15));
+    LV = 15 * Math.max(10, Math.min(16.5, (SH * 0.36 - 49) / 15)) * Math.max(1, KS);   // 넓은 화면(1921 이상, 5-hero-layout.css --hs)은 사원증과 같은 배율로 길어진다. 세로 화면(KS<1)은 아래 mob 식이 정한다
     if (mob) {
       // 명함 윗끝(top0 + LV)은 제목 아래 12px보다 아래, 아래끝은 이름 첫 줄에 걸치는 자리(mob.cardBot)
       const top0 = so.y - 14 + CT, lo = mob.h1Bot + 12 - top0, hi = mob.cardBot - 430 * KS - top0;
