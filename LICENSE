@@ -1,0 +1,15 @@
+Copyright (c) 2026 Chanjun Kwon (권찬준). All rights reserved.
+
+This repository holds the published build of Chanjun Kwon's personal portfolio
+site (https://kwoncj1025-cmd.github.io/). It is public only so that GitHub Pages
+can serve it.
+
+No license is granted. You may view the site in a browser. You may not copy,
+modify, redistribute, host, or reuse any part of this repository — the code,
+the design, the 3D scene and models, the photographs, the typefaces' subsets,
+or the text — in whole or in part, without the author's prior written permission.
+
+Third-party components keep their own licenses: GSAP (Webflow), Three.js (MIT),
+SUIT typeface (SIL OFL, see fonts/LICENSE).
+
+Contact: kwoncj1025@gmail.com
