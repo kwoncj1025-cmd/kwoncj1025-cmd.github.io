@@ -756,8 +756,8 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
 <section class="web-list" aria-label="작업">
   <p class="wl-ey"><span><i></i>Work</span></p>
   <ul>
-    <li><a href="web/bewhysee/" target="_blank" rel="noopener">bewhysee ↗</a><span>A concept rebrand for BYC, a Korean innerwear label since 1946.</span></li>
     <li><a href="web/ourz/" target="_blank" rel="noopener">OURZ\ ↗</a><span>A rebrand for OURZ\, a platform that helps foreigners belong to real apartment life in Korea.</span></li>
+    <li><a href="web/bewhysee/" target="_blank" rel="noopener">bewhysee ↗</a><span>A concept rebrand for BYC, a Korean innerwear label since 1946.</span></li>
     <li><a href="web/bizcopilot/c/" target="_blank" rel="noopener">BizCopilot ↗</a><span>A brand identity concept for BizCopilot, a Korean business support service.</span></li>
     <li><a href="web/bizcopilot/story/" target="_blank" rel="noopener">BizCopilot · Brand Story ↗</a><span>The story behind the BizCopilot identity.</span></li>
     <li><a href="web/bizcopilot/system/" target="_blank" rel="noopener">BizCopilot · Brand System ↗</a><span>The BizCopilot design system and guidelines.</span></li>
@@ -808,7 +808,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
       { name: 'hero', hash: '' },
       { name: 'work', hash: 'work' },
       { name: 'web', hash: 'web', hashFn: () => (window.Stage && Stage.web && Stage.web.hash) || 'web',
-        alias: ['bewhysee', 'ourz', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'picketing', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
+        alias: ['ourz', 'bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'picketing', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
     split: null,             // 구간 안 일부 범위만 다른 스크롤 거리로: [[시작 p, 끝 p, 화면 수], …]. 모바일 책상 내려가기·모으기 뒤 숨(world.js가 정한다). 나머지는 seg 빠르기
@@ -2941,15 +2941,15 @@ window.ticker = (() => {
   const info = document.querySelector('.web-info');
   const ARTIFACT = document.documentElement.hasAttribute('data-artifact');
   const narrow = () => innerWidth <= 820;
-  // id는 그 서비스의 주소 해시이기도 하다(stage.js web 정거장 alias와 같은 목록). 순서(10-21 대표님 결정, 10-27 OURZ\ 추가): bewhysee → OURZ\ → BizCopilot(아이덴티티 C·브랜드 스토리·브랜드 시스템) → Picketing 브랜드 시스템(v2, 원 사이트가 iframe을 막아 사본) → 바이블타이핑 → 척모드 → Monthlens 둘.
+  // id는 그 서비스의 주소 해시이기도 하다(stage.js web 정거장 alias와 같은 목록). 순서(10-21 대표님 결정, 10-27 OURZ\를 맨 위로): OURZ\ → bewhysee → BizCopilot(아이덴티티 C·브랜드 스토리·브랜드 시스템) → Picketing 브랜드 시스템(v2, 원 사이트가 iframe을 막아 사본) → 바이블타이핑 → 척모드 → Monthlens 둘.
   // BizCopilot 셋은 원본끼리 서로 잇는 링크가 없는 독립 문서라 화면도 셋으로 나눴다(하나로 묶으면 둘째·셋째 장으로 갈 길이 없다)
   // site: 글 격자 「Open」이 여는 주소(없으면 url). bewhysee는 비핸스 원 게시물
   const services = [
+    { id: 'ourz', name: 'OURZ\\', ko: '', url: 'web/ourz/',
+      line: 'A rebrand for OURZ\\, a platform that helps foreigners belong to real apartment life in Korea.', role: 'Brand identity · Motion', year: '2026' },
     { id: 'bewhysee', name: 'bewhysee', ko: '비와이씨', url: 'web/bewhysee/',
       site: 'https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29',
       line: 'A concept rebrand for BYC, a Korean innerwear label since 1946.', role: 'Naming · Identity · Packaging', year: '2026' },
-    { id: 'ourz', name: 'OURZ\\', ko: '', url: 'web/ourz/',
-      line: 'A rebrand for OURZ\\, a platform that helps foreigners belong to real apartment life in Korea.', role: 'Brand identity · Motion', year: '2026' },
     { id: 'bizcopilot', name: 'BizCopilot', ko: '비즈코파일럿', url: 'web/bizcopilot/c/',
       line: 'A brand identity concept for BizCopilot, a Korean business support service.', role: 'Brand identity · Landing · Ad creative', year: '2026' },
     { id: 'bizcopilot-story', name: 'Brand Story', ko: '비즈코파일럿 브랜드 스토리', url: 'web/bizcopilot/story/',
