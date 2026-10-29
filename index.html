@@ -187,7 +187,6 @@ h1 span{display:block;color:var(--soft)}
 .tbar .r{display:flex;align-items:center;gap:8px;margin-left:auto}
 .tbar .ey{display:flex;align-items:center;gap:8px}
 .tbar .ey i{width:5px;height:5px;border-radius:50%;background:var(--dot)}
-.sort.ghost{background:rgba(14,14,18,.06);color:var(--ink)}
 /* 「Selected Work」는 90° 세워 책상 왼쪽 가장자리를 따라 아래에서 위로 인쇄한다(10-21 대표님 결정, 서체·라벤더 그대로). 가운데가 비어 카드가 넓게 흩어진다.
    글자 크기는 책상 높이에 맞춘다(core.js fit, 세운 두께는 --mk). 작은 글 줄은 세운 글자 오른쪽 아래 구석에 놓인다.
    .tfoot은 쌓임 맥락을 만들지 않는다(z-index 없음): 큰 워드마크만 카드(.pile z 3) 아래에 깔린다.
@@ -203,7 +202,8 @@ h1 span{display:block;color:var(--soft)}
 html.stage-on .tbar,html.stage-on .tmeta{color:var(--ink-2)}
 /* ── 밤색 방: 카드 테이블(흰 책상) 다음은 조명을 낮춘 남보라 밤색 방이다. 같은 서체·연보라·라벨 체계를 쓴다.
    무대에서는 맥북 구간, 무대가 꺼지면(stage-off) 작업 목록(.web-list)이 이 방에 놓인다. 바탕은 경계 앞뒤에서만 바뀐다 ── */
-:root{--nt:#110f21;--nt-ink:#eaebf5;--nt-2:rgba(234,235,245,.62);--nt-3:rgba(234,235,245,.38);--nt-line:rgba(234,235,245,.12)}
+:root{--nt:#110f21;--nt-ink:#eaebf5;--nt-2:rgba(234,235,245,.62);--nt-3:rgba(234,235,245,.38);--nt-line:rgba(234,235,245,.12);
+  --nt-hi:rgba(234,235,245,.86);--nt-mid:rgba(234,235,245,.72);--nt-body:rgba(234,235,245,.66)}   /* 맥북 왼쪽 패널의 중심 문장·메타 값·탭 본문(10-29 구현명세) */
 body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))}
 /* 작업 목록의 눈썹 글(stage-off) */
 .wl-ey{display:flex;align-items:center;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
@@ -223,20 +223,48 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 .totop:hover{transform:translateY(-2px)}
 .totop:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.totop{transition:opacity .2s}}
+/* 끝 화면에서는 아래층 글자 링크 「Back to start ↑」가 맡으므로 떠 있는 원은 숨긴다(10-29 대표님 승인) */
+html.end-on .totop{opacity:0;pointer-events:none}
 
-.sort{pointer-events:auto;border:0;background:var(--ink);color:#fff;width:36px;height:36px;padding:0;border-radius:50%;display:inline-grid;place-items:center;cursor:pointer;transition:transform .2s}
-.sort:hover{transform:scale(1.06)}.sort:active{transform:scale(.94)}
-.sort svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.sort .i-scatter,.sort[aria-pressed="true"] .i-grid{display:none}.sort[aria-pressed="true"] .i-scatter{display:block}
-.sort:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
-/* 버튼 이름을 아이콘 아래에 늘 보인다(10-21 대표님: 사람들이 이 버튼들을 못 볼 수 있다). 글은 title을 그대로 쓰므로 정렬하면 Sort → Scatter로 바뀐다.
-   눈썹 글과 같은 작은 대문자, 보조 글색. 버튼이 커지거나 눌릴 때 같이 움직이지 않게 위치만 버튼에 붙인다 */
-.tbar .sort{position:relative;overflow:visible}
-.tbar .sort::after{content:attr(title);position:absolute;top:calc(100% + 8px);left:50%;translate:-50% 0;white-space:nowrap;pointer-events:none;
-  font:500 10px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
-.tbar .sort:hover::after{color:var(--ink)}
-.tbar .r{gap:26px}
-@media (max-width:820px){.tbar .sort::after{content:none}.tbar .r{gap:8px}}   /* 휴대폰은 버튼 줄 바로 아래가 세로 워드마크라 글이 닿는다 */
+/* 카드 버튼(10-29 로제 컨셉 v2 18판, 구현명세 4절): 둥근 틀 하나에 Show details · 구분선 · Shuffle · Sort. 막대 전체가 무채색이고 카드보다 한 단계 물러선다.
+   주 동작(Show details)은 진한 굵은 글자로만, 켜진 상태(Sort → Scatter)는 옅은 바탕 한 가지로 구분한다. 초점 테두리는 키보드일 때만 */
+.tbar .r{position:relative;top:-4px}   /* 틀 위끝을 화면 위 24에(막대 줄은 28에서 시작한다). 왼쪽 머리 줄은 그대로 */
+.cg{pointer-events:auto;display:flex;align-items:center;height:36px;padding:3px;box-sizing:border-box;border-radius:99px;
+  background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(14,14,18,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cg-b{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:99px;white-space:nowrap;
+  font:500 13px/1 var(--f-en);letter-spacing:0;text-transform:none;color:var(--ink-2);transition:background-color .2s,color .2s}
+.cg-b svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;color:var(--ink-3)}
+.cg-b:hover{background:rgba(14,14,18,.05)}
+.cg-b:focus{outline:none}
+.cg-b:focus-visible{outline:2px solid var(--ink-2);outline-offset:2px}
+.cg-pri{padding:0 12px 0 10px;font-weight:600;color:var(--ink)}
+.cg-pri svg{color:currentColor}
+.cg-div{width:1px;height:16px;margin:0 4px;background:rgba(14,14,18,.12);flex:none}
+#sort[aria-pressed="true"]{background:rgba(14,14,18,.08);color:var(--ink)}
+#sort[aria-pressed="true"] svg{color:var(--ink-2)}
+#sort .i-scatter,#sort[aria-pressed="true"] .i-grid{display:none}
+#sort[aria-pressed="true"] .i-scatter{display:block}
+@media (max-width:820px){.cg-t{display:none}.cg-b{padding:0 8px}}
+/* 카드 안내(10-29 21판 B, 구현명세 4절 끝, table.js tips): 카드 더미(.pile z 3) 위 덮개 층. 자리는 table.js가 고른 카드를 따라 transform으로 쓴다.
+   꼬리표는 검은 칠 + 꽉 찬 흰 테 2px + 바깥 1px 옅은 먹 + 그림자: 검은 카드 위에서는 흰 테가, 밝은 카드 위에서는 검은 칠이 경계가 된다.
+   궤적은 흰 4px 실선 위에 먹 1.5px 점선(5·6). 누르기는 모두 통과한다 */
+.ctips{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .25s}
+.ctips.on{opacity:1}
+.ctips.away{opacity:0;transition-duration:.15s}
+.ct-throw{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;fill:none;stroke-linecap:round}
+.ct-throw .u{stroke:#fff;stroke-width:4;opacity:.9}
+.ct-throw .d{stroke:#121218;stroke-width:1.5;stroke-dasharray:5 6}
+.ct-dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:#121218;
+  box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(18,18,24,.18),0 3px 8px rgba(10,10,16,.45)}
+.ct-tag{position:absolute;left:0;top:0;margin:0;display:flex;align-items:center;gap:8px;height:36px;box-sizing:border-box;padding:10px 14px 10px 12px;border-radius:99px;white-space:nowrap;
+  font:600 13px/1 var(--f-en);letter-spacing:0;color:#fff;background:#121218;
+  box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(18,18,24,.18),0 8px 22px rgba(10,10,16,.45)}
+.ct-tag svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ct-2{padding-left:14px}
+.ctips:not(.s2) .ct-2,.ctips.s2 :is(.ct-throw,.ct-dot,.ct-1){display:none}
+@media (max-width:820px){.ctips{display:none}}   /* 휴대폰은 이번 범위 밖 */
+@media (prefers-reduced-motion:reduce){.ctips{transition:none}}   /* 휴대폰은 이번 범위 밖: 글 없이 아이콘만 */
+@media (prefers-reduced-motion:reduce){.cg-b{transition:none}}
 /* 더미 상자 자체는 누르기를 받지 않는다(카드만 받는다): 3D 무대의 375급에서 빈 더미 영역이 위의 정렬 버튼·글 줄 클릭까지 가로챘다 */
 .pile{position:absolute;inset:0;z-index:3;perspective:1600px;--cw:min(196px,15vw,27vh);pointer-events:none}
 .pile>.pc{pointer-events:auto}
@@ -560,87 +588,105 @@ html.stage-on .mb .mb-notch::after{left:100%;background:radial-gradient(circle a
 html.stage-on .mb .mb-chin{z-index:5;color:rgba(255,255,255,.22);font-size:max(9px,calc(var(--chin) * .26))}
 html.stage-on .mb .mb-back{display:none}
 
-/* 글 격자(card-drop W6, 11 6절): 카메라에 붙은 화면 층. 케이스 스터디 머리글과 같은 4칸 격자와 라벨 체계.
-   맥북이 가운데에서 오른쪽(2~4칸)을 차지하므로 글은 1칸에 아래로 모은다. 위 끝 띠는 왼쪽 눈썹 글(써 보기 안내는 deploy-prep의 .web-guide가 따로 맡는다).
-   등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 lightOf와 같은 곡선으로 쓴다) */
-html.stage-on body .web-info{position:fixed;inset:0;left:0;right:0;bottom:0;width:auto;z-index:40;display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto 1fr auto;column-gap:clamp(16px,2vw,32px);row-gap:0;
-  padding:clamp(28px,5vh,44px) max(32px,env(safe-area-inset-right,0px)) clamp(32px,7vh,64px) max(32px,env(safe-area-inset-left,0px));
-  color:var(--nt-ink);pointer-events:none}
-html.stage-on body .web-info .wi-ey{grid-column:1/-1;grid-row:1;display:flex;justify-content:space-between;gap:12px;margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
-html.stage-on body .web-info .wi-ey>span:first-child{display:flex;align-items:center;gap:8px;color:var(--nt-2)}
-html.stage-on body .web-info .wi-body{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0}
-html.stage-on body .web-info .wi-name{margin:0 0 4px;font:500 clamp(36px,min(4.2vw,6.4vh),64px)/.9 var(--f-disp);letter-spacing:-.04em;color:var(--soft);text-wrap:balance}
-html.stage-on body .web-info .wi-ko{margin:0;font:400 12.5px/1.5 var(--f-ko);letter-spacing:-.02em;color:var(--nt-3)}
-html.stage-on body .web-info .wi-line{margin:0;font-size:clamp(14px,1.05vw,16px);line-height:1.5;color:var(--nt-2);text-wrap:pretty;max-width:22em}
-html.stage-on body .web-info .wi-meta{display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(16px,2vw,32px);width:100%;margin-top:10px}
-html.stage-on body .web-info .wi-dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:11px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
-html.stage-on body .web-info .wi-dl dt{color:var(--nt-3);margin-bottom:6px}
-html.stage-on body .web-info .wi-dl dd{margin:0}
-html.stage-on body .web-info .wi-go{margin-top:6px;display:inline-flex;align-items:center;gap:7px;color:var(--nt-ink);text-decoration:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;pointer-events:auto}
-html.stage-on body .web-info .wi-go svg{width:11px;height:11px}
-html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
-/* 프로젝트 목록: 1칸, 눈썹 글 바로 아래. 두 묶음(Work·Live) 메뉴. 이름은 제목 서체로 크게, 선은 없이 간격만.
-   선택은 밝기 한 축: 지금 화면에 떠 있는 것만 온전한 잉크, 올리면 중간, 나머지 옅게 */
-html.stage-on body .web-info .wi-list{grid-column:1;grid-row:2;align-self:start;list-style:none;margin:clamp(16px,3.2vh,40px) 0 0;padding:0;display:flex;flex-direction:column}
-html.stage-on body .web-info .wi-gh{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:10px;line-height:1;letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
-html.stage-on body .web-info .wi-gh~.wi-gh{margin-top:clamp(14px,2.4vh,22px)}
-html.stage-on body .web-info .wi-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#3ddc84}
-html.stage-on body .web-info .wi-item{all:unset;box-sizing:border-box;display:block;padding:clamp(3px,.55vh,5px) 0;cursor:pointer;pointer-events:auto;
-  color:rgba(234,235,245,.4);transition:color .2s}
-html.stage-on body .web-info .wi-iname{font:500 clamp(17px,min(1.45vw,2.4vh),21px)/1.15 var(--f-disp);letter-spacing:-.025em;white-space:nowrap}
-html.stage-on body .web-info .wi-sub{padding-left:16px}
-html.stage-on body .web-info .wi-sub .wi-iname{font-size:clamp(14px,min(1.1vw,1.9vh),16px);letter-spacing:-.015em}
-html.stage-on body .web-info .wi-item:hover{color:var(--nt-2)}
-html.stage-on body .web-info .wi-item[aria-current]{color:var(--nt-ink)}
-html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft);outline-offset:3px;border-radius:2px}
+/* 왼쪽 패널(10-29 로제 컨셉 v2 19판, 구현명세 2절 19판 단락): 카메라에 붙은 화면 층. 주인공은 맥북 화면이라 글은 무채색으로 물러선다.
+   머리 줄(Selected work) 아래 글 기둥 하나(x 128, 폭 384)에 읽는 순서대로 이름 → 중심 문장 → 탭+본문 → 메타를 위에서부터 쌓는다(가운데 정렬 없음: 작업을 바꿔도 이름 자리가 그대로).
+   위끝은 맥북 화면 유리 위끝(--scr-t) + 4, 크기는 k배(--k = 유리 높이 ÷ 474). 둘 다 macbook.js가 잰다. px 값은 1440×900(k = 1) 기준이다.
+   대표님 「좌측 컨텐츠 전체적으로 좀만 내려줘」(19판 확인 때): 머리 줄과 글 기둥을 함께 24 내렸다(--dn). OURZ\ 아래끝이 덮개 아래끝(598) 안에 든다.
+   등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 쓴다) */
+html.stage-on body .web-info{--dn:calc(24px * var(--k,1));position:fixed;inset:0;width:auto;z-index:40;display:block;margin:0;padding:0;color:var(--nt-ink);pointer-events:none}
+html.stage-on body .web-info .wi-ey{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) - calc(45px * var(--k,1)) + var(--dn));width:calc(384px * var(--k,1));height:calc(24px * var(--k,1));margin:0;
+  display:flex;align-items:center;font:500 calc(11px * var(--k,1))/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+html.stage-on body .web-info .wi-kind{display:flex;align-items:center;gap:calc(8px * var(--k,1))}
+html.stage-on body .web-info .wi-kind i{width:calc(5px * var(--k,1));height:calc(5px * var(--k,1));border-radius:50%;background:var(--dot)}
+html.stage-on body .web-info .wi-body{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) + calc(4px * var(--k,1)) + var(--dn));width:calc(384px * var(--k,1));display:flex;flex-direction:column;align-items:stretch;min-width:0}
+html.stage-on body .web-info .wi-name{margin:0 0 calc(16px * var(--k,1));font:500 calc(28px * var(--k,1))/1 var(--f-disp);letter-spacing:-.03em;color:var(--nt-ink)}
+html.stage-on body .web-info .wi-big{margin:0 0 calc(32px * var(--k,1));font:500 calc(18px * var(--k,1))/1.6 var(--f-ko);letter-spacing:-.02em;color:var(--nt-hi);word-break:keep-all;text-wrap:balance}
+html.stage-on body .web-info .wi-more{display:flex;flex-direction:column;gap:calc(16px * var(--k,1));width:100%}
+html.stage-on body .web-info .wi-tabs{display:flex;gap:calc(20px * var(--k,1));margin-bottom:calc(18px * var(--k,1));box-shadow:inset 0 -1px 0 var(--nt-line);pointer-events:auto}   /* 탭 선↔본문 34(= 16 + 18): 승인된 18·19판 화면 실측과 같다 */
+html.stage-on body .web-info .wi-tab{all:unset;box-sizing:border-box;cursor:pointer;position:relative;padding:0 0 calc(12px * var(--k,1));font:500 calc(12px * var(--k,1))/1 var(--f-en);letter-spacing:0;color:var(--nt-2);white-space:nowrap;transition:color .2s}
+/* 19판 로컬 피드백(대표님 「조금 더 강조되어야 클릭해서 넘어갈 수 있구나가 느껴질 것」, 밑줄 모양은 그대로): 안 고른 탭 --nt-3 → --nt-2, 고른 탭과 막대 --nt-2 → --nt-ink,
+   올리면 --nt-ink + 손가락 커서 */
+html.stage-on body .web-info .wi-tab[aria-selected="true"]{color:var(--nt-ink)}
+html.stage-on body .web-info .wi-tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--nt-ink)}
+html.stage-on body .web-info .wi-tab:hover{color:var(--nt-ink)}
+html.stage-on body .web-info .wi-tab:focus{outline:none}
+html.stage-on body .web-info .wi-tab:focus-visible{outline:2px solid var(--nt-2);outline-offset:4px;border-radius:2px}
+/* 탭 본문: 문단 여럿(사이 8). 높이는 그 작업 네 칸 중 가장 긴 칸(macbook.js fitPanel이 잰다)이라 탭을 바꿔도 아래 메타가 들썩이지 않는다. 재기 전에는 4줄 */
+html.stage-on body .web-info .wi-more{position:relative}
+html.stage-on body .web-info .wi-panel p{margin:0}
+html.stage-on body .web-info .wi-panel p+p{margin-top:calc(8px * var(--k,1))}
+html.stage-on body .web-info .wi-probe{position:absolute;left:0;right:0;top:0;height:auto!important;visibility:hidden;pointer-events:none}
+html.stage-on body .web-info .wi-panel{height:calc(calc(13px * var(--k,1)) * 1.7 * 4);overflow:hidden;font:500 calc(13px * var(--k,1))/1.7 var(--f-ko);letter-spacing:-.015em;color:var(--nt-body);word-break:keep-all}
+/* 메타: 위 1px 선 + 16 안쪽, 「머리글 72 | 값」 한 줄씩. 작고 옅게 맨 아래 */
+html.stage-on body .web-info .wi-meta{margin:calc(32px * var(--k,1)) 0 0;padding-top:calc(16px * var(--k,1));border-top:1px solid var(--nt-line);display:grid;grid-template-columns:calc(72px * var(--k,1)) minmax(0,1fr);gap:calc(6px * var(--k,1)) calc(16px * var(--k,1));align-items:baseline}
+html.stage-on body .web-info .wi-meta>div{display:contents}
+html.stage-on body .web-info .wi-meta>[hidden]{display:none}
+html.stage-on body .web-info .wi-meta dt{font:500 calc(10px * var(--k,1))/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+html.stage-on body .web-info .wi-meta dd{margin:0;font:500 calc(12px * var(--k,1))/1.5 var(--f-en);letter-spacing:0;color:rgba(234,235,245,.5)}
+html.stage-on body .web-info .wi-go{color:inherit;text-transform:none;letter-spacing:0;pointer-events:auto;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:calc(3px * var(--k,1));text-decoration-color:rgba(234,235,245,.24);transition:color .2s,text-decoration-color .2s}
+html.stage-on body .web-info .wi-go:hover{color:var(--nt-ink);text-decoration-color:currentColor}
+html.stage-on body .web-info .wi-go:focus{outline:none}
+html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--nt-2);outline-offset:3px;border-radius:2px}
+/* 독(19판 → 10-29 19판 로컬 피드백): 브라우저 화면 가로 가운데, 위끝 = 유리 아래끝 + 222(1440에서 y 797). 맥북 화면 열 개를 같은 크기 칸(88×55)으로 펼친다(1440에서 1020×71).
+   macOS 27 글래스: 밝은 반투명 바탕 + 흐림·채도, 위 가장자리 빛 한 줄과 1px 밝은 테로 검은 키보드 위에서 띠가 분명히 떨어져 보이게 한다. 움직임은 투명도·테두리 .2초뿐이다.
+   독 폭은 k배라 화면 폭의 약 71%로 늘 들어가서 넘김이 필요 없다(이름 알약이 독 위로 나오도록 넘침을 자르지 않는다). 세로 휠은 가로채지 않는다.
+   창 높이가 낮으면(브라우저 막대를 뺀 1440×790 등) 트랙패드 자리가 화면 아래로 나가므로, 독 아래끝을 화면 아래 11(k배) 위에서 멈춘다 */
+html.stage-on body .web-info .wi-dock{position:absolute;left:50%;top:min(calc(var(--scr-b,575px) + calc(222px * var(--k,1))), calc(100vh - calc(82px * var(--k,1))));transform:translateX(-50%);box-sizing:border-box;
+  display:flex;gap:calc(12px * var(--k,1));padding:calc(8px * var(--k,1)) calc(16px * var(--k,1));border-radius:calc(20px * var(--k,1));
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.1));-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),0 calc(18px * var(--k,1)) calc(44px * var(--k,1)) rgba(5,4,14,.5),0 calc(2px * var(--k,1)) calc(6px * var(--k,1)) rgba(5,4,14,.3);
+  pointer-events:auto;touch-action:pan-x;overscroll-behavior-x:contain}
+html.stage-on body .web-info .wd-c{position:relative;flex:none;width:calc(88px * var(--k,1))}
+html.stage-on body .web-info .wd-k{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:calc(88px * var(--k,1));height:calc(55px * var(--k,1));border-radius:calc(8px * var(--k,1));overflow:hidden;opacity:.6;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14);outline:1.5px solid transparent;outline-offset:calc(2px * var(--k,1));transition:opacity .2s,outline-color .2s}
+html.stage-on body .web-info .wd-k img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+html.stage-on body .web-info .wd-k:hover{opacity:.9}
+html.stage-on body .web-info .wd-k[aria-selected="true"]{opacity:1;outline-color:var(--nt-ink)}
+html.stage-on body .web-info .wd-k:focus-visible{outline-color:var(--nt-2)}
+/* 이름 알약: 칸에 올리면 칸 위 14에 */
+html.stage-on body .web-info .wd-tip{position:absolute;left:50%;bottom:calc(100% + calc(14px * var(--k,1)));transform:translate(-50%,4px);white-space:nowrap;padding:calc(4px * var(--k,1)) calc(8px * var(--k,1));border-radius:99px;
+  background:rgba(16,14,30,.86);box-shadow:inset 0 0 0 1px var(--nt-line);font:500 calc(11px * var(--k,1))/1 var(--f-en);color:var(--nt-ink);opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+html.stage-on body .web-info .wd-c:hover .wd-tip{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){html.stage-on body .web-info :is(.wi-tab,.wi-go,.wd-k,.wd-tip){transition:none}}
 @media (max-width:820px){
-  /* 가로 한 줄: 세로 화면은 위쪽 글 자리가 좁아 세로로 쌓을 수 없다. 옆으로 밀어 넘기고, 묶음은 머리 대신 간격으로 나눈다 */
-  html.stage-on body .web-info .wi-list{grid-column:1/-1;flex-direction:row;align-items:baseline;gap:18px;margin-top:10px;overflow-x:auto;scrollbar-width:none;
-    pointer-events:auto;margin-right:-20px;padding-right:20px;--fl:0px;--fr:64px;
-    -webkit-mask:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
-  html.stage-on body .web-info .wi-list::-webkit-scrollbar{display:none}
-  html.stage-on body .web-info .wi-gh{display:none}
-  html.stage-on body .web-info .wi-live+li{margin-left:14px}
-  html.stage-on body .web-info .wi-item{padding:6px 0 7px;flex:none}
-  html.stage-on body .web-info .wi-sub{padding-left:0}
-  html.stage-on body .web-info .wi-iname,html.stage-on body .web-info .wi-sub .wi-iname{font-size:16px}
-}
-@media (max-width:820px){
-  /* 10-21 대표님 「맥북 유지 + 써 보기 전체 화면」(16 4항): 카메라가 덮개에 붙어 화면이 폭의 92%로 아래쪽에 선다(scene-web.js 모바일 베젤).
-     글은 그 위 빈자리에 둔다: 눈썹은 위 끝, 목록(가로 한 줄)과 이름·한 줄 소개는 화면 바로 위에 모은다(--scr-top = 메뉴 막대 위끝, 그 위 안내 글 한 줄 자리를 비운다).
-     범위·연도는 접는다(이름과 한 줄 소개만, 원 사이트 링크는 남긴다) */
-  /* 10-21 조율: 눈썹 글은 목록 바로 위에 붙이고, 글 묶음 전체를 화면 위 빈자리의 세로 가운데에 둔다(위 빈 어둠이 1/4쯤 남던 것).
-     맥북은 힌지~키보드 첫 줄 자름이 화면 아래끝이라 바닥에 선다 */
-  /* 19 세로 구도(10-21 대표님 승인): 맥북이 위, 글은 몸체 앞 끝 아래 책상 위(--txt-top = scene-web.js가 잰 몸체 앞 끝 + 간격) */
-  html.stage-on body .web-info{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto 1fr;align-content:start;
-    padding:var(--txt-top,60dvh) 20px 0}
-  html.stage-on body .web-info .wi-ey{grid-row:1}
-  html.stage-on body .web-info .wi-list{grid-row:2;margin-top:10px}
-  html.stage-on body .web-info .wi-body{grid-column:1/-1;grid-row:3;align-self:start;margin-top:clamp(10px,2dvh,20px);gap:8px}
-  html.stage-on body .web-info .wi-meta{display:none}
-  html.stage-on body .web-info .wi-name{font-size:clamp(32px,9vw,40px)}
-  html.stage-on body .web-info .wi-line{font-size:13.5px}
-  html.stage-on body .web-info .wi-go{margin-top:2px}
+  /* 휴대폰은 이번 범위 밖(사이트가 막아 둔다): 좁은 창에서 깨지지 않게 머리 줄과 이름·중심 문장만 맥북 몸체 아래(--txt-top, scene-web.js)에 쌓는다 */
+  html.stage-on body .web-info{--k:1;padding:var(--txt-top,60dvh) 20px 0}
+  html.stage-on body .web-info .wi-ey,html.stage-on body .web-info .wi-body{position:static;width:auto;height:auto}
+  html.stage-on body .web-info .wi-body{margin-top:12px;gap:12px}
+  html.stage-on body .web-info :is(.wi-meta,.wi-more,.wi-dock){display:none}
+  html.stage-on body .web-info .wi-name{margin:0}
 }
 
-/* 데스크톱 여백(10-21 대표님 「왼쪽은 글들이 너무 붙어서 여백이 없다」): 바깥 여백 8vw(1440 약 115, 1728 약 138). 맥북 덮개 오른쪽 끝도 같은 거리(scene-web.js 베젤 카메라).
-   목록 줄·묶음 사이와 아래 설명 묶음의 아래 여백을 넓혀 화면 끝에 붙어 보이지 않게 한다 */
-@media (min-width:821px){
-  html.stage-on body .web-info{padding:clamp(36px,6vh,64px) max(8vw,env(safe-area-inset-right,0px)) clamp(56px,8vh,112px) max(8vw,env(safe-area-inset-left,0px))}
-  html.stage-on body .web-info .wi-list{margin-top:clamp(24px,4vh,56px)}
-  html.stage-on body .web-info .wi-item{padding-block:clamp(4px,.6vh,9px)}
-  html.stage-on body .web-info .wi-gh{margin-bottom:10px}
-  html.stage-on body .web-info .wi-gh~.wi-gh{margin-top:clamp(20px,3vh,40px)}
-  html.stage-on body .web-info .wi-body{gap:18px}
-  html.stage-on body .web-info .wi-meta{margin-top:14px}
-}
+/* 도착 알약(구현명세 3절): 맥북 화면 가운데 아래(1440 기준 x 943 가운데, y 512 = 유리 위끝에서 유리 높이의 86.7%). 화면 요소 안에 있어 화면과 함께 움직인다.
+   화면 요소는 카메라 배율로 줄어 보이므로 크기를 유리 높이 단위(--hi ÷ 474)로 적는다: 보이는 크기가 왼쪽 패널과 같은 k배가 된다.
+   이 장면에서 꽉 찬 칠과 움직임은 이것 하나다. 누르기는 아래 화면이 받는다 */
+html.stage-on .mb .mb-arrive{--u:calc(var(--hi,792px) / 474);position:absolute;left:50%;top:86.7%;z-index:3;transform:translateX(-50%);margin:0;pointer-events:none;
+  display:flex;align-items:center;gap:calc(8 * var(--u));height:calc(40 * var(--u));box-sizing:border-box;padding:0 calc(20 * var(--u)) 0 calc(16 * var(--u));border-radius:99px;white-space:nowrap;
+  font:600 calc(14 * var(--u))/1 var(--f-en);letter-spacing:0;color:var(--nt);background:var(--nt-ink);
+  box-shadow:0 calc(8 * var(--u)) calc(28 * var(--u)) rgba(8,6,20,.45),0 0 0 calc(6 * var(--u)) rgba(255,255,255,.14);
+  opacity:0;transition:opacity .2s}
+html.stage-on .mb .mb-arrive.on{opacity:1;transition-duration:.3s}
+html.stage-on .mb .mb-arrive svg{width:calc(16 * var(--u));height:calc(16 * var(--u));flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (prefers-reduced-motion:reduce){html.stage-on .mb .mb-arrive{transition:none}}
 
 /* 끝 화면(10-21 대표님 결정 6, macbook.js .end-info): 히어로와 수미상관. 아래를 「Thanks for watching.」 한 줄이 글 영역 폭 그대로 가로지른다(크기는 macbook.js가 폭에 맞춰 넣는다).
    높이는 보이는 높이(macbook.js가 visualViewport로 재는 --vvh)라 휴대폰 Safari 아래 주소 막대 뒤로 큰 줄이 숨지 않는다.
    서체·색·행간·자간은 히어로 「Chanjun Kwon」(.tmark)과 같다. 그 바로 위에 작은 줄과 연락처(16px, 누르면 복사). 맥북과 명함은 그 위 가운데에 남는다 */
 .end-info{position:fixed;left:0;right:0;top:0;height:100vh;height:var(--vvh,100svh);box-sizing:border-box;z-index:40;display:grid;grid-template-rows:1fr auto auto;padding:0 32px calc(28px + env(safe-area-inset-bottom,0px));color:var(--nt-ink);pointer-events:none;opacity:0;will-change:opacity}
-.end-info .ei-body{grid-row:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(14px,2.2vh,28px)}
+.end-info .ei-body{grid-row:2;display:flex;flex-direction:column;margin-bottom:clamp(40px,6.2vh,56px)}
+/* 두 층(10-29 대표님 「A 목적별 두 층」, 구현명세 5절): 위층은 연락하기, 얇은 선 아래층은 다시 보기. 아래층은 연락처 머리글과 같은 11px 대문자 한 문법이고,
+   링크는 연보라 없이 같은 색에 밑줄로만 알린다(Back to start는 ↑로) */
+.end-info .ei-up{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:1px solid var(--nt-line)}
+.end-info .ei-dn{display:flex;justify-content:space-between;align-items:center;gap:12px 24px;padding-top:16px;font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
+.end-info .ei-see{display:flex;align-items:center;gap:16px;margin:0}
+.end-info .ei-see i{font-style:normal}
+.end-info .ei-a{color:var(--nt-2);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:rgba(234,235,245,.24);transition:color .2s,text-decoration-color .2s}
+.end-info .ei-a:hover{color:var(--nt-ink);text-decoration-color:currentColor}
+.end-info .ei-a:focus{outline:none}
+.end-info .ei-a:focus-visible{outline:2px solid var(--nt-2);outline-offset:4px;border-radius:2px}
+.end-info .ei-top{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.end-info .ei-top svg{width:11px;height:11px}
+.end-info.on .ei-a{pointer-events:auto}
 .end-info .ei-lead{margin:0;font:500 clamp(18px,1.5vw,22px)/1.1 var(--f-disp);letter-spacing:-.02em;color:var(--nt-ink)}
 .end-info .ei-list{display:flex;gap:clamp(24px,3vw,48px);margin:0;padding:0;list-style:none}
 .end-info .ei-item{display:grid;gap:6px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:copy}
@@ -654,27 +700,21 @@ html.stage-on body .web-info .wi-item:focus-visible{outline:2px solid var(--soft
 .end-info .ei-item:hover .ei-v{color:var(--soft)}
 .end-info .ei-item:focus-visible{outline:2px solid var(--soft);outline-offset:4px;border-radius:2px}
 .end-info .ei-mark{grid-row:3;margin:0;font-family:var(--f-disp);font-weight:500;line-height:.78;letter-spacing:-.055em;color:var(--soft);white-space:nowrap;width:max-content}
+/* 두 층 묶음과 큰 줄 사이 56은 글자 윗선(대문자 T 위끝)부터 잰다(구현명세 5절, 1440×900 묶음 y 620–704). 글자 윗선은 줄 상자 위끝보다 0.063em 아래라,
+   그만큼 큰 줄의 행 높이를 줄여 묶음을 내린다. 큰 줄 자체는 바닥에 붙어 있어 자리가 그대로다 */
+.end-info .ei-mark{margin-top:-.063em}
 .end-info .ei-mark .mk{display:inline-block;text-align:center;transform-origin:50% 80%}
 .end-info .ei-live{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media (max-width:820px){
   .end-info{padding:0 20px calc(22px + env(safe-area-inset-bottom,0px))}
-  .end-info .ei-body{flex-direction:column;align-items:flex-start;gap:16px}
+  .end-info .ei-up{flex-direction:column;align-items:flex-start;gap:16px}
+  .end-info .ei-dn{flex-wrap:wrap;row-gap:12px}
   .end-info .ei-list{flex-direction:column;gap:10px}
   .end-info .ei-item{grid-template-columns:84px auto;align-items:baseline;gap:0}
   .end-info .ei-v{font-size:15px}
 }
 html:not(.stage-on) .end-info{display:none}
-/* 끝 화면의 맨 위로 버튼: 큰 줄 위, 연락처 줄 끝에 맞춘다(아래끝 높이는 macbook.js가 잰다). 데스크톱은 연락처 목록이 버튼 자리를 비운다 */
-html.end-on .totop{bottom:var(--ei-top-b,20px)}
-@media (min-width:821px){ .end-info .ei-list{margin-right:168px} html.end-on .totop{right:32px} }
-/* 끝까지 본 사람이 처음으로 돌아가는 단추(10-21 대표님): 맺음에서는 맨 위로 단추 위에 연락처 칸과 같은 머리글을 단다. */
-html.end-on .totop::after{content:"Back to start";position:absolute;right:0;bottom:calc(100% + 12px);white-space:nowrap;pointer-events:none;
-  font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3);transition:color .2s}
-html.end-on .totop:hover::after{color:var(--nt-ink)}
-/* 데스크톱: 단추는 머리글·값 두 줄 높이라 머리글을 단추 왼쪽 가운데에 둔다(위에 두면 연락처 머리글보다 한 줄 높이 뜬다) */
-@media (min-width:821px){ html.end-on .totop::after{bottom:auto;top:50%;right:calc(100% + 14px);translate:0 -50%} }
-/* 820 이하(10-21 조율 19): 머리글이 연락처 값 열 옆에 붙어 흐릿하게 겹쳐 보였다. 글은 빼고 단추만 「Let's make something.」 줄 오른쪽 끝에 둔다 */
-@media (max-width:820px){ html.end-on .totop{bottom:var(--ei-lead-b,var(--ei-top-b,20px))} html.end-on .totop::after{content:none} }
+@media (prefers-reduced-motion:reduce){.end-info .ei-a{transition:none}}
 </style>
 
 <!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
@@ -743,7 +783,7 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   <div class="table">
     <div class="tbar">
       <span class="ey"><i></i>Selected work · Instagram</span>
-      <span class="r"><button class="sort ghost" id="flipAll" type="button" aria-pressed="false" aria-label="Flip all" title="Flip all"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.25" y="4" width="7.5" height="16" rx="1.4"/><path d="M5 10.3c-1.3.5-2 1.1-2 1.7 0 1.9 4 3.5 9 3.5s9-1.6 9-3.5c0-.6-.7-1.2-2-1.7M19 10.3l.4 2.4M19 10.3l-2.3.7"/></svg></button><button class="sort ghost" id="shuffle" type="button" aria-label="Shuffle" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c4.5 0 4.5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.6 0 2.6-1.3 3.4-3M13.1 10c.8-1.7 1.8-3 3.4-3H20M17 4l3 3-3 3"/></svg></button><button class="sort" id="sort" type="button" aria-pressed="false" aria-label="Sort" title="Sort"><svg class="i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><svg class="i-scatter" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="7" height="7" rx="1.2" transform="rotate(-14 7 8.5)"/><rect x="13" y="3.5" width="7" height="7" rx="1.2" transform="rotate(10 16.5 7)"/><rect x="8" y="13" width="7" height="7" rx="1.2" transform="rotate(6 11.5 16.5)"/></svg></button></span>
+      <span class="r"><span class="cg" role="group" aria-label="Card controls"><button class="cg-b cg-pri" id="flipAll" type="button" aria-pressed="false" aria-label="Flip all"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="10" height="13" rx="2"/><path d="M10.5 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-5"/><path d="M5 5.5A4.5 4.5 0 0 1 9.5 3M9.5 3 8 1.6M9.5 3 8 4.4"/></svg><span class="cg-t">Show details</span></button><span class="cg-div" aria-hidden="true"></span><button class="cg-b" id="shuffle" type="button" aria-label="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3.5c4.5 0 4.5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.6 0 2.6-1.3 3.4-3M13.1 10c.8-1.7 1.8-3 3.4-3H20M17 4l3 3-3 3"/></svg><span class="cg-t">Shuffle</span></button><button class="cg-b" id="sort" type="button" aria-pressed="false" aria-label="Sort"><svg class="i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><svg class="i-scatter" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="7" height="7" rx="1.2" transform="rotate(-14 7 8.5)"/><rect x="13" y="3.5" width="7" height="7" rx="1.2" transform="rotate(10 16.5 7)"/><rect x="8" y="13" width="7" height="7" rx="1.2" transform="rotate(6 11.5 16.5)"/></svg><span class="cg-t">Sort</span></button></span></span>
     </div>
     <div class="tfoot">
       <p class="tmeta"><span>20 posts · 2026</span><a href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="dt"/></svg>@chanjun.kwon ↗</a></p>
@@ -906,13 +946,18 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
   function tween(to, dur, ease = easeIO){
     tw = { from: x, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000, ease };
   }
-  // 입력: 모든 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
-  function input(px){
-    if (holds.size || !px) return;
+  // 입력: 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
+  // stop: 휠 쓸기 하나가 정거장을 지나치면 그 정거장에서 멈추고 true를 돌려준다(남은 관성은 onWheel이 버린다)
+  function input(px, stop = false){
+    if (holds.size || !px) return false;
     tw = null;
-    target = advance(target, px); state.dir = Math.sign(px);
+    const t0 = target, dir = Math.sign(px), n = dir > 0 ? Math.floor(t0 + 1e-6) + 1 : Math.ceil(t0 - 1e-6) - 1;
+    let t1 = advance(t0, px), hit = false;
+    if (stop && n >= 0 && n <= last() && (dir > 0 ? t1 >= n : t1 <= n)) { t1 = n; hit = true; }
+    target = t1; state.dir = dir;
     lastInput = performance.now(); state.input = true;
     clearTimeout(snapTimer); snapTimer = setTimeout(settleCheck, config.snapIdleMs);
+    return hit;
   }
   // 손을 놓고 450ms: 끝 너머면 되돌리고, 가던 방향의 정거장이 가까우면 마저 붙고, 아니면 그 자리에 둔다(장면 중간 정지 허용).
   // 반대 방향으로는 절대 끌지 않는다: 천천히 한 칸씩 굴리는 사람이 첫 장면에 붙잡히지 않게
@@ -936,7 +981,12 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
 
   // 휠·트랙패드: 노치 휠 한 칸은 진행값의 작은 걸음(약 100px)이고, 트랙패드는 손과 관성이 그대로 p를 민다.
   // ctrl/⌘ + 휠(트랙패드 핀치, 마우스 가로 휠에 확대를 건 설정)과 순수 가로 휠은 무대 입력이 아니고 막지도 않는다: 브라우저 확대가 그대로 돈다(10-21 대표님 제보)
-  let lastWheelT = 0;
+  // 쓸기 단위 멈춤(10-30 대표님: 트랙패드가 의도와 달리 자꾸 넘어가고 안 멈춘다): 쓸기 하나(관성 포함)가 정거장을 지나치면 거기서 멈추고,
+  // 같은 쓸기의 남은 델타는 버린다. 새 쓸기 = 휠이 swipeGapMs 넘게 끊김 · 방향이 바뀜 · 잦아들던 델타가 다시 커짐(관성 위에 새로 쓸기)
+  // 「다시 커짐」은 멈춘 뒤 델타가 한 번이라도 줄어든 다음(관성 구간)부터 센다: 손가락이 아직 가속 중일 때 멈추면 그 가속을 새 쓸기로 읽지 않게
+  let lastWheelT = 0, wheelDir = 0, parked = false, prevA = 0, floor = Infinity;
+  const swipeGapMs = 180;
+  const newSwipe = (d, gap) => gap > swipeGapMs || Math.sign(d) !== wheelDir || (Math.abs(d) > 10 && Math.abs(d) >= floor * 1.5);
   const ownWheel = e => !holds.size && !e.ctrlKey && !e.metaKey && Math.abs(e.deltaY) >= Math.abs(e.deltaX);
   function onWheel(e){
     if (holds.size && !e.buttons) dropGrips();   // 아무것도 누르지 않은 휠인데 잡기 잠금이 남아 있으면 남은 것이다
@@ -945,7 +995,12 @@ html.end-on .totop:hover::after{color:var(--nt-ink)}
     const now = performance.now(), gap = now - lastWheelT; lastWheelT = now;
     const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
     const notch = e.deltaMode === 1 || (gap > 60 && Math.abs(d) >= 50 && Number.isInteger(e.deltaY) && e.deltaY % 25 === 0);
-    input(notch ? d * config.notchGain : d);
+    const a = Math.abs(d);
+    if (parked && newSwipe(d, gap)) parked = false;
+    if (parked && a < prevA) floor = Math.min(floor, a);
+    wheelDir = Math.sign(d); prevA = a;
+    if (parked) return;
+    if (input(notch ? d * config.notchGain : d, true)) { parked = true; floor = Infinity; }
   }
 
   // 터치(아이폰): 끌 수 있는 요소([data-stage-ignore]) 위에서 시작한 손가락은 무대 입력이 아니다.
@@ -1215,7 +1270,11 @@ window.ticker = (() => {
   const restack = () => order.forEach((o, k) => { o.el.style.zIndex = k + 1; });
   const raise = c => { order = order.filter(o => o !== c); order.push(c); restack(); };
   const wake = () => ticker.wake('cards');            // 카드가 움직일 일이 생기면 루프를 깨운다(멈춰 있으면 잠든다)
+  // 버튼 글(10-29 카드 버튼): 보이는 이름만 바꾼다. 카드가 처음 뒷면으로 넘어가면 카드 안내 1단계가 2단계로 넘어간다(아래 tips)
+  const label = (b, t) => { const e = b && b.querySelector('.cg-t'); if (e) e.textContent = t; };
+  let tips = null;
   const setFlip = (c, on) => {
+    if (tips) { if (on) tips.flipped(c); else tips.unflipped(c); }
     c.flT = on ? 180 : 0; c.el.classList.toggle('flipped', on); wake();
     c.back.setAttribute('aria-hidden', on ? 'false' : 'true'); c.link.tabIndex = on ? 0 : -1;
     if (reduce) { c.fl = c.flT; c.flipEl.style.transform = `rotateY(${c.fl}deg)`; }
@@ -1423,11 +1482,12 @@ window.ticker = (() => {
 
   sortBtn.addEventListener('click', () => {
     sorted = !sorted; dealt = true; touched = true;
-    sortBtn.ariaLabel = sortBtn.title = sorted ? 'Scatter' : 'Sort'; sortBtn.setAttribute('aria-pressed', sorted);
+    sortBtn.ariaLabel = sorted ? 'Scatter' : 'Sort'; label(sortBtn, sorted ? 'Scatter' : 'Sort'); sortBtn.setAttribute('aria-pressed', sorted);
     if (sorted) {
       const g = sortedGrid(); table.style.height = g.h + 'px'; TH = g.h; K = g.k; wake();
       order = cards.slice().reverse(); restack();
       cards.forEach((c, i) => { c.home = g.at[i]; setFlip(c, false); });
+      flipAllBtn.setAttribute('aria-pressed', 'false'); label(flipAllBtn, 'Show details');
     } else {
       scatterH();
       const spots = scatterSpots(); order = spots.zc; restack();
@@ -1439,7 +1499,7 @@ window.ticker = (() => {
   flipAllBtn.addEventListener('click', () => {
     touched = true; dealt = true;
     const to = !cards.every(c => c.flT === 180);
-    flipAllBtn.setAttribute('aria-pressed', to);
+    flipAllBtn.setAttribute('aria-pressed', to); label(flipAllBtn, to ? 'Show covers' : 'Show details');
     cards.slice().sort((a, b) => (a.x + a.y * 0.35) - (b.x + b.y * 0.35))
       .forEach((c, k) => setTimeout(() => setFlip(c, to), reduce ? 0 : k * 38));
   });
@@ -1447,11 +1507,12 @@ window.ticker = (() => {
   const shuffleBtn = document.getElementById('shuffle');
   shuffleBtn.addEventListener('click', () => {
     touched = true; dealt = true;
-    if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
+    if (sorted) { sorted = false; sortBtn.ariaLabel = 'Sort'; label(sortBtn, 'Sort'); sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
     seed++;
     const perm = cards.map((c, i) => [rnd(i, 9), c]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
     order = perm; restack();
     const cx = TW / 2, cy = MOB() ? Math.max(BAR + ch, Math.min(TH - ch, Stage.camera.Tz || TH / 2)) : BAR + (TH - BAR) * 0.48;   // 모바일은 지금 보고 있는 화면 가운데에서 섞는다
+    flipAllBtn.setAttribute('aria-pressed', 'false'); label(flipAllBtn, 'Show details');
     perm.forEach((c, k) => { setFlip(c, false); c.toss = 0; c.home = { x: cx - (N - 1 - k) * 1.2, y: cy + (N - 1 - k) * 1.6, r: (rnd(k, 4) - 0.5) * 0.08 }; });
     setTimeout(() => {
       dealFromTop(scatterSpots(), 120, 45);
@@ -1488,7 +1549,7 @@ window.ticker = (() => {
     const dropPending = () => { clearTimeout(drag.gt); clearTimeout(drag.ft); try { c.el.releasePointerCapture(drag.id); } catch (_) {} drag = null; c.el.classList.remove('held'); wake(); };
     c.el.addEventListener('pointerdown', ev => {
       if (ev.button > 0 || ev.target.closest('a') || uiAt(ev.clientX, ev.clientY)) return;
-      ev.preventDefault();
+      ev.preventDefault(); if (tips) tips.touched(c);
       const touchDesk = MOB() && ev.pointerType !== 'mouse';
       if (!touchDesk && window.Stage && Stage.enabled && !Stage.held(stageHold)) stageHold = Stage.hold('card');   // 잡은 동안 무대 입력 멈춤
       const [px, py] = local(ev), dx = px - c.x, dy = py - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
@@ -1621,11 +1682,87 @@ window.ticker = (() => {
         put(c, '_glint', (0.2 + c.lift * 0.35).toFixed(3), v => st.setProperty('--glint', v));
       }
     });
+    if (tips) tips.follow(!busy);
     if (busy) return true;
     scheduleHint(now);                                  // 모두 멈췄다: 잠들되, 남은 힌트 시각에는 다시 깨어난다
     return false;
   }
   ticker.add('cards', frame);
+
+  // 카드 안내(10-29 21판 B, 구현명세 4절 끝): 카드에 붙는 두 단계. 카드 모션·휠·Stage는 건드리지 않고 덮개 층(.ctips)만 카드 자리를 따라간다.
+  //  1단계: 쏟아진 카드가 멈추면 화면 가운데에 가장 가까운(다른 카드에 덮이지 않은) 카드 하나의 아래쪽에 점, 그 위에 꼬리표 「Drag, throw, or click to flip」,
+  //         점에서 바깥으로 던지는 궤적 하나. 처음 뒤집으면 사라진다(한 장이든 Show details든)
+  //  2단계: 처음 뒤집힌 카드의 ↗ 오른쪽 24에 「← Opens the post on Instagram」. ↗을 누르거나 다른 카드를 만지면 사라진다
+  // 꼬리표는 카드 가운데에 맞춰 카드 면 위에 둔다(검은 칠 + 흰 테 2px라 검은 카드·흰 카드 어디서나 떨어져 보인다). 휴대폰(820 이하)은 이번 범위 밖이라 띄우지 않는다
+  if (!reduce) {
+    const HAND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v5m0-1a2 2 0 0 1 4 0v2m0 0a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3l-3-5a2 2 0 0 1 3-2l2 2"/></svg>';
+    const layer = document.createElement('div'); layer.className = 'ctips'; layer.setAttribute('aria-hidden', 'true');
+    layer.innerHTML = `<svg class="ct-throw"><path class="u"/><path class="d"/></svg><b class="ct-dot"></b><p class="ct-tag ct-1">${HAND}<span>Drag, throw, or click to flip</span></p><p class="ct-tag ct-2"><span>← Opens the post on Instagram</span></p>`;
+    table.appendChild(layer);
+    const [svg, dot, t1, t2] = [layer.querySelector('.ct-throw'), layer.querySelector('.ct-dot'), layer.querySelector('.ct-1'), layer.querySelector('.ct-2')];
+    const paths = svg.querySelectorAll('path');
+    let step = 1, target = null, linkCard = null, k1 = '', k2 = '', viaAll = false;
+    // 카드 안 한 점(카드 가운데 기준 lx, ly)의 테이블 좌표: 카드 회전·크기를 따른다
+    const at = (c, lx, ly) => { const s = (c.ks || 1) * (c.sz || 1), co = Math.cos(c.r), si = Math.sin(c.r); return { x: c.x + (lx * co - ly * si) * s, y: c.y + (lx * si + ly * co) * s }; };
+    const inside = (c, p) => { const s = (c.ks || 1) * (c.sz || 1), dx = p.x - c.x, dy = p.y - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
+      return Math.abs(dx * co - dy * si) < cw * s / 2 + 8 && Math.abs(dx * si + dy * co) < ch * s / 2 + 8; };
+    const ANCHOR = () => ch * 0.36;                      // 점: 카드 아래쪽(가운데에서 높이의 36% 아래)
+    const pick = () => {
+      const cx = TW / 2, cy = BAR + (TH - BAR) * 0.48; let best = null, bd = Infinity;
+      order.forEach((c, k) => {
+        const p = at(c, 0, ANCHOR()); if (order.slice(k + 1).some(o => inside(o, p))) return;   // 위 카드에 덮인 점은 쓰지 않는다
+        const d = Math.hypot(c.x - cx, c.y - cy); if (d < bd) { bd = d; best = c; }
+      });
+      return best || order[order.length - 1];
+    };
+    const show = (el, on) => el.classList.toggle('on', on);
+    const place1 = () => {
+      const p = at(target, 0, ANCHOR()), s = (target.ks || 1) * (target.sz || 1);
+      const key = [p.x, p.y].map(v => v.toFixed(1)).join(); if (key === k1) return; k1 = key;
+      dot.style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px)`;
+      // 꼬리표: 카드 가로 가운데, 아래끝이 점보다 24 위. 테이블 밖으로 나가지 않게 가둔다
+      const w = t1.offsetWidth, h = t1.offsetHeight, x = Math.max(8, Math.min(TW - w - 8, target.x - w / 2)), y = p.y - 24 - h;
+      t1.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+      // 궤적: 점에서 카드 바깥쪽(화면 가운데에서 먼 쪽이 아니라 빈 쪽: 왼쪽 카드는 오른쪽으로)으로 위로 휘었다가 내려앉는 곡선
+      const dir = target.x < TW * 0.6 ? 1 : -1, ex = p.x + dir * cw * s * 0.82, ey = p.y + 8, qx = p.x + dir * cw * s * 0.41, qy = p.y - ch * s * 0.27;
+      const d = `M${p.x.toFixed(1)} ${p.y.toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)}, ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+      paths.forEach(q => q.setAttribute('d', d));
+    };
+    const place2 = () => {
+      const c = linkCard, s = (c.ks || 1) * (c.sz || 1), p = at(c, cw / 2 - 29, ch / 2 - 25);   // ↗ 단추 가운데(뒷면 오른쪽 아래, 26px 원)
+      const key = [p.x, p.y].map(v => v.toFixed(1)).join(); if (key === k2) return; k2 = key;
+      const w = t2.offsetWidth, h = t2.offsetHeight, x = Math.min(TW - w - 8, p.x + 13 * s + 24), y = p.y - h / 2;
+      t2.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+    };
+    const off = () => MOB() || !dealt;
+    tips = {
+      // 프레임마다(카드가 움직이는 동안) 고른 카드를 따라가고, 모두 멈추면 1단계 카드를 다시 고른다(섞기·끌기 뒤 덮였을 수 있다)
+      follow(settled){
+        if (off()) { show(layer, false); return; }
+        if (step === 1) {
+          if (settled) { const c = pick(); if (c !== target) { target = c; k1 = ''; } }
+          if (!target) return;
+          place1(); show(layer, settled || layer.classList.contains('on'));
+        } else if (step === 2 && linkCard) { place2(); show(layer, true); }
+      },
+      flipped(c){
+        if (step !== 1) return;
+        step = 2; linkCard = viaAll && target ? target : c;   // Show details: 1단계 카드, 한 장: 그 카드
+        layer.classList.add('s2'); k2 = ''; wake();
+      },
+      unflipped(c){ if (step === 2 && c === linkCard) this.done(); },   // 그 카드를 다시 앞면으로 돌리면 가리킬 ↗이 없다
+      touched(c){ if (step === 2 && c !== linkCard) this.done(); },
+      done(){ step = 3; show(layer, false); },
+    };
+    cards.forEach(c => c.link.addEventListener('click', () => { if (step === 2) tips.done(); }));
+    // 섞기·정렬·모으기는 모든 카드를 앞면으로 돌린다: 2단계 꼬리표가 가리킬 ↗이 없어진다
+    [shuffleBtn, sortBtn].forEach(b => b.addEventListener('click', () => { if (step === 2) tips.done(); }));
+    // Show details는 카드를 차례로(setTimeout) 뒤집는다: 위 단추 처리기가 aria-pressed를 먼저 바꿔 둔다
+    flipAllBtn.addEventListener('click', () => { if (step === 1 && flipAllBtn.getAttribute('aria-pressed') === 'true') viaAll = true; });
+    // 무대에서 카드 정거장을 떠나면(맥북 쪽으로 어두워지는 동안) 감춘다. 흰 테 꼬리표가 어둠 속에 혼자 떠 보이지 않게
+    if (STAGE) { const W0 = Stage.config.stations.findIndex(x => x.name === 'work'); let aw = null;
+      Stage.ticker.add(() => { const a = Math.abs(Stage.state.p - W0) > 0.3; if (a !== aw) { aw = a; layer.classList.toggle('away', a); } }); }
+  }
   // 모바일 세로 책상: 화면 밖(카메라가 보는 책상 범위 위아래로 카드 한 장 이상 떨어진) 카드는 감춘다. 책상을 내려가는 동안만(p 0.9~1.22) 따지고, 그 밖에서는 모두 보인다
   if (STAGE) { let offKey = ''; Stage.ticker.add(() => {
     const p = Stage.state.p, on = MOB() && p > 0.9 && p < 1.22, tz = Stage.camera.Tz || 0, half = innerHeight / 2 + ch * 1.1;
@@ -1634,10 +1771,33 @@ window.ticker = (() => {
   }); }
   checkDeal();
   // 장면(scene-hero·scene-table)이 부르는 손잡이. 모으기는 정렬도 풀고 모두 앞면으로 돌린다
+  const unsort = () => { if (sorted) { sorted = false; sortBtn.ariaLabel = 'Sort'; label(sortBtn, 'Sort'); sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
+    flipAllBtn.setAttribute('aria-pressed', 'false'); label(flipAllBtn, 'Show details'); };
+  // 스크롤로 모으기(10-30 대표님: 카드가 너무 확 접힌다): u 0→1을 따라 카드가 펼친 자리에서 한 벌 자리로 옮겨 간다. 물리 스프링을 쓰지 않아 쓸기 속도대로 접히고,
+  // 되감으면 같은 길로 다시 펼쳐진다. 한 벌에서 시작한 되감기(해시로 들어온 뒤 등)는 흩은 자리를 새로 뽑아 펼친다. u가 0이나 1에 닿으면 끝난다
+  let fold = null;
+  const pileSpots = () => { const o = order.slice().reverse(), m = new Map(); o.forEach((c, k) => m.set(c, { x: TW / 2 - k * 1.2, y: gatherY() + k * 1.6, r: (k ? c.j1 * 3 : 0) * Math.PI / 180 })); return m; };
+  const foldTo = u => {
+    if (drag) return;
+    if (!fold) {
+      if (u <= 0 || u >= 1) return;
+      const to = pileSpots(), from = new Map();
+      if (dealt) { unsort(); cards.forEach(c => { setFlip(c, false); from.set(c, { x: c.x, y: c.y, r: c.r }); }); }
+      else { const sp = scatterSpots(); order.slice().reverse().forEach((c, k) => from.set(c, MOB() ? sp[c.i] : sp.seq[k])); }
+      fold = { from, to }; dealt = true;
+    }
+    const e = u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u);
+    cards.forEach(c => { const a = fold.from.get(c), b = fold.to.get(c); let dr = b.r - a.r; dr = Math.atan2(Math.sin(dr), Math.cos(dr));
+      c.x = a.x + (b.x - a.x) * e; c.y = a.y + (b.y - a.y) * e; c.r = a.r + dr * e; c.vx = c.vy = c.vr = 0; c.home = null; c.toss = 0; });
+    if (u >= 1) { fold = null; regather(); }
+    else if (u <= 0) { fold = null; dealtAt = performance.now(); }
+    wake();
+  };
   window.Table = {
     deal(){ if (sorted) return; deal(); wake(); },
-    gather(){ if (drag) return; if (sorted) { sorted = false; sortBtn.ariaLabel = sortBtn.title = 'Sort'; sortBtn.setAttribute('aria-pressed', 'false'); scatterH(); }
-      flipAllBtn.setAttribute('aria-pressed', 'false'); regather(); wake(); },
+    gather(){ if (drag) return; fold = null; unsort(); regather(); wake(); },
+    fold: foldTo,
+    get folding(){ return !!fold; },
     get dealt(){ return dealt; },
     get pileAt(){ return { x: TW / 2, y: pileY() }; },          // 한 벌이 놓이는 자리(테이블 좌표)
   };
@@ -2657,7 +2817,11 @@ window.ticker = (() => {
     // 맺음 앞 꼬리(카메라가 맺음 자리에 닿은 e-0.65부터 끝까지)는 화면이 멈춘 채 맥북이 잠들고 글만 떠오른다. 2.5장 빠르기로는 휠 1.6장이 거의 정지 화면이라
     // 끝에서 올려도 안 움직이는 것처럼 보였다(10-21 대표님: 끝 화면에서 스크롤 업이 안 된다). 0.5장으로 줄인다
     const E = Stage.config.stations.length - 1;
-    Stage.config.split = (a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : [[1, BR, 0.3]]).concat([[E - 0.65, E, 0.5]]);
+    // 히어로 앞 정지(0~0.18, 명함 흔들림과 집게만 움직인다)는 데스크톱에서 화면 0.15장으로 줄인다(10-30 대표님: 히어로에서 내려갈 때 딜레이)
+    // 맥북에서 물러나는 앞쪽(web~web+0.35, 카메라가 맺음 자리로 가고 패널이 사라진다)은 데스크톱에서 화면 1.6장(원래 0.875장)으로 늘린다(10-30 대표님: 조금만 쓸어도 마무리로 넘어간다)
+    // 카드가 접히는 1.04~1.15(scene-table)는 화면 0.6장으로 늘린다(10-30 대표님: 카드가 너무 확 접힌다). 앞뒤 조각은 원래 빠르기(0.25에 0.3장)
+    const fold = [[1, 1.04, 0.048], [1.04, 1.15, 0.6], [1.15, BR, 0.12]];
+    Stage.config.split = (W.mobile ? [] : [[0, 0.18, 0.15]]).concat(a ? [[1, 1 + a, (W.Dt - W.H) / W.H], [1 + a, BR, 0.3]] : fold).concat(W.mobile ? [] : [[E - 1, E - 0.65, 1.6]]).concat([[E - 0.65, E, 0.5]]);
   }
   // 정거장별 카메라(08 2절 표). 장면 파일도 이 값을 경계에서 그대로 쓴다
   const P = () => Stage.camera.P();
@@ -2722,6 +2886,7 @@ window.ticker = (() => {
   const DEAL = [0.5, 1.04];
   function cards(p){
     const T = window.Table; if (!T) return;
+    if (p > DEAL[1] + pan() && p < DEAL[1] + pan() + 0.11) return;   // 접히는 동안은 scene-table이 진행값으로 옮긴다
     const want = p >= DEAL[0] && p <= DEAL[1] + pan();
     if (want !== T.dealt) want ? T.deal() : T.gather();
   }
@@ -2788,25 +2953,107 @@ window.ticker = (() => {
   // 덮개: 몸체 윗면 높이의 힌지에 112° 열린 채 서 있다. scene-web이 덮개에 쓰는 top·rotateX는 힌지 기준으로 그대로 맞는다
   if (!lid.parentElement.classList.contains('mb-hinge')) { const hg = el('div', 'mb-hinge'); lid.before(hg); hg.appendChild(lid); }
 
-  // 글 격자: 카메라에 붙은 화면 층이라 무대 밖(body 바로 아래)에 둔다. 요소는 그대로 두고(scene-web이 쥐고 있다) 안쪽만 4칸 문법으로 짠다.
-  // 내용은 web-live.js가 서비스마다 같은 클래스(.wi-name 등)에 채운다
+  // 왼쪽 패널(10-29 로제 컨셉 v2 19판, 구현명세 2절 19판 단락): 카메라에 붙은 화면 층이라 무대 밖(body 바로 아래)에 둔다. 요소는 그대로 두고(scene-web이 쥐고 있다) 안쪽만 짠다.
+  // 머리 줄(Selected work) 아래 글 기둥 하나에 읽는 순서대로 이름 → 중심 문장 → 탭+본문 → 메타(선 아래 「머리글 | 값」 한 줄씩)를 위에서부터 쌓는다.
+  // 작업 고르기는 트랙패드 위 독(.wi-dock)이 맡는다. 글은 web-live.js가 작업마다 채우고(setInfo), 탭은 여기서 그린다(info.wiTabs)
   let info = document.querySelector('.web-info');
   if (!info) { info = el('aside', 'web-info'); info.setAttribute('aria-live', 'polite'); info.style.visibility = 'hidden'; document.body.appendChild(info); }
   if (!info.querySelector('.wi-body')) {
-    const arrow = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    info.innerHTML = `<p class="wi-ey"><span><i></i><span class="wi-kind">Live service</span></span></p>` +
-      `<div class="wi-body"><h2 class="wi-name"></h2><p class="wi-ko" lang="ko"></p><p class="wi-line"></p>` +
-      `<div class="wi-meta"><dl class="wi-dl"><dt>Scope</dt><dd class="wi-role"></dd></dl><dl class="wi-dl"><dt>Year</dt><dd class="wi-year"></dd></dl></div>` +
-      `<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ${arrow}</a></div>`;
+    const row = (k, label, v = '') => `<div data-k="${k}"><dt>${label}</dt><dd>${v}</dd></div>`;
+    info.innerHTML = `<p class="wi-ey"><span class="wi-kind"><i></i>Selected work</span></p>` +
+      `<div class="wi-body"><h2 class="wi-name"></h2><p class="wi-big" lang="ko"></p>` +
+      `<div class="wi-more"><div class="wi-tabs" role="tablist" aria-label="About this work"></div><div class="wi-panel" id="wi-panel" role="tabpanel" lang="ko"></div></div>` +
+      `<dl class="wi-meta">` + row('role', 'Role') + row('type', 'Type') + row('scope', 'Scope') + row('timeline', 'Timeline') +
+      row('site', 'Site', '<a class="wi-go" href="#" target="_blank" rel="noopener">Open site ↗</a>') + row('award', 'Award') + `</dl></div>`;
   }
+  // 탭: What · Why · Perspective · Looking back(일곱 작업 공통). 작업이 바뀌면 What으로 돌아간다. 좌우 화살표로 옮긴다
+  const TABS = ['What', 'Why', 'Perspective', 'Looking back'];
+  const tabList = info.querySelector('.wi-tabs'), panel = info.querySelector('.wi-panel');
+  let tabText = [], tabI = 0;
+  tabList.innerHTML = TABS.map((t, i) => `<button type="button" role="tab" class="wi-tab" id="wi-tab-${i}" aria-controls="wi-panel" aria-selected="false" tabindex="-1">${t}</button>`).join('');
+  const tabs = [...tabList.children];
+  // 탭 본문은 문단 여럿(빈 줄로 나뉜 원고, 탭원고 3판)이다. 높이는 그 작업 네 칸 중 가장 긴 칸에 맞춰 두어 탭을 바꿔도 아래 메타가 들썩이지 않는다
+  const fill = (box, text) => { box.replaceChildren(...String(text || '').split(/\n\s*\n/).map(t => { const p = el('p'); p.textContent = t.trim(); return p; })); };
+  const probe = el('div', 'wi-panel wi-probe'); probe.setAttribute('aria-hidden', 'true'); panel.after(probe);
+  const fitPanel = () => {
+    let h = 0; tabText.forEach(t => { fill(probe, t); h = Math.max(h, probe.offsetHeight); }); probe.replaceChildren();
+    if (h) panel.style.height = h + 'px';
+  };
+  const showTab = (i, focus) => {
+    tabI = i;
+    tabs.forEach((b, k) => { b.setAttribute('aria-selected', k === i); b.tabIndex = k === i ? 0 : -1; });
+    panel.setAttribute('aria-labelledby', tabs[i].id); fill(panel, tabText[i]);
+    if (focus) tabs[i].focus();
+  };
+  info.wiTabs = list => { tabText = list; fitPanel(); showTab(0); };
+  document.fonts.ready.then(fitPanel, () => {});
+  tabList.addEventListener('click', e => { const b = e.target.closest('.wi-tab'); if (b) showTab(tabs.indexOf(b)); });
+  tabList.addEventListener('keydown', e => {
+    const b = e.target.closest('.wi-tab'); if (!b) return;
+    const n = tabs.length, i = tabs.indexOf(b);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); showTab((i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n, true); }
+    else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); e.stopPropagation(); showTab(e.key === 'Home' ? 0 : n - 1, true); }
+    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); showTab(i); }   // 막아 두지 않으면 무대가 스페이스를 다음 정거장으로 받는다
+  });
+
+  // 독(19판 → 10-29 19판 로컬 피드백): 맥북 화면 열 개(BizCopilot 셋·Monthlens 둘 포함)를 같은 크기 칸으로 펼친다. 누르면 그 화면이 켜진다(Stage.web.select).
+  // 자리는 브라우저 화면 가로 가운데, 키보드와 구분되게 밝은 글래스 띠(6-macbook.css). 칸에 올리면 위에 이름 알약.
+  // ←/→: 독에 초점이 있을 때, 그리고 맥북 정거장에 와 있기만 해도(아래 keydown) 앞뒤 화면으로, 끝에서 처음으로 돈다. 세로 휠은 가로채지 않는다(정거장 이동 그대로)
+  const DOCK = [['ourz', 'OURZ\\', 'ourz'], ['bewhysee', 'bewhysee', 'bewhysee'],
+    ['bizcopilot', 'BizCopilot', 'biz'], ['bizcopilot-story', 'BizCopilot · Brand Story', 'biz_story'], ['bizcopilot-system', 'BizCopilot · Brand System', 'biz_system'],
+    ['picketing', 'Picketing', 'picketing'], ['bible', 'Bible Typing', 'bible'], ['chuck', 'CHUCK MODE', 'chuck'],
+    ['monthlens', 'Monthlens · Chat', 'ml_chat'], ['monthlens-dark', 'Monthlens · Dark', 'ml_dark']];
+  const th = f => `macbook/thumbs/${f}.jpg`;
+  const dock = el('div', 'wi-dock'); dock.setAttribute('role', 'tablist'); dock.setAttribute('aria-label', 'Works');
+  dock.innerHTML = DOCK.map(([id, name, f]) => `<div class="wd-c" data-id="${id}"><span class="wd-tip" aria-hidden="true">${name}</span>` +
+    `<button type="button" class="wd-k" role="tab" aria-selected="false" tabindex="-1" aria-label="${name}" data-go="${id}"><img src="${th(f)}" alt="" draggable="false" decoding="async"></button></div>`).join('');
+  info.appendChild(dock);
+  const cols = [...dock.querySelectorAll('.wd-c')];
+  const pickId = id => { const w = Stage.web; if (w && w.select) w.select(id); };
+  const stepDock = (d, focus) => {
+    const i = Math.max(0, cols.findIndex(c => c.classList.contains('on'))), n = cols[(i + d + cols.length) % cols.length];
+    pickId(n.dataset.id); if (focus) n.querySelector('.wd-k').focus();
+  };
+  dock.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) pickId(b.dataset.go); });
+  dock.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') { if ((e.key === ' ' || e.key === 'Enter') && e.target.closest('[data-go]')) { e.preventDefault(); e.target.click(); } return; }
+    e.preventDefault(); e.stopPropagation(); stepDock(e.key === 'ArrowRight' ? 1 : -1, true);
+  });
+  // 맥북 정거장에 와 있으면(정거장 이름이 web, 써 보기 중이 아님) ←/→로 앞뒤 화면. 무대(stage.js)는 ←/→를 쓰지 않아서 휠·스크롤·정거장 이동과 겹치지 않는다.
+  // 탭·독은 자기 ←/→를 먼저 받아 여기로 올려 보내지 않는다. 글 입력 칸과 보조 키가 눌린 경우는 건드리지 않는다
+  addEventListener('keydown', e => {
+    if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const w = Stage.web; if (!w || w.using || Stage.state.station !== 'web') return;
+    e.preventDefault(); stepDock(e.key === 'ArrowRight' ? 1 : -1, false);
+  });
+  // 고른 칸 표시: 지금 화면 칸 하나
+  const markDock = sid => {
+    cols.forEach(c => { const own = c.dataset.id === sid, k = c.querySelector('.wd-k'); c.classList.toggle('on', own); k.setAttribute('aria-selected', own); k.tabIndex = own ? 0 : -1; });
+  };
+  addEventListener('web:select', e => markDock(e.detail ? e.detail.id : Stage.web.hash));
+
+  // 맥북 높이 맞춤(17·18판): 글 기둥 위끝을 맥북 화면 유리(.mb-screen) 위끝에 두고, 글자·간격은 k = 유리 높이 ÷ 474(1440×900의 유리 높이)를 곱한다.
+  // 유리는 맥북 정거장에 멈춰 있을 때 잰다. 재기 전(처음 다가오는 동안·창 크기를 바꾼 직후)은 두 화면 실측(1440×900, 1728×1117)에 맞춘 식으로 어림한다:
+  // 유리 세로 가운데 = 화면 높이의 0.3756, 유리 높이 = 화면 폭의 0.3298(scene-web 베젤 카메라가 화면 폭을 뷰포트 폭에 맞춘다)
+  const scrEl = mb.querySelector('.mb-screen');
+  let infoKey = '';
+  const setGlass = (t, h) => {
+    info.style.setProperty('--scr-t', t.toFixed(1) + 'px'); info.style.setProperty('--scr-b', (t + h).toFixed(1) + 'px'); info.style.setProperty('--k', (h / 474).toFixed(4));
+    fitPanel();   // 글자 크기(k)가 바뀌면 본문 높이도 다시 잰다
+  };
+  const guessGlass = () => { const h = 0.3298 * innerWidth; setGlass(0.3756 * innerHeight - h / 2, h); };
+  guessGlass(); addEventListener('resize', () => { infoKey = ''; guessGlass(); });
+  Stage.ticker.add(() => {
+    const key = innerWidth + 'x' + innerHeight, s = Stage.state, WEB = Stage.config.stations.findIndex(x => x.name === 'web');
+    if (key === infoKey || !s.settled || Math.abs(s.p - WEB) > 0.002 || (Stage.web && Stage.web.useK > 0)) return;
+    const r = scrEl.getBoundingClientRect(); if (r.height < 40) return;
+    infoKey = key; setGlass(r.top, r.height);
+  });
 
   // 화면 빛 색: 지금 화면에 떠 있는 서비스의 바탕색을 따라 방이 물든다(11 5절). 어두운 화면은 빛도 약하다. macbook3d.js가 --glow·--gk를 읽는다
   const GLOW = { bewhysee: ['132,138,186', 0.32], ourz: ['143,117,158', 0.4], bizcopilot: ['244,245,248', 1], 'bizcopilot-story': ['244,245,248', 1], 'bizcopilot-system': ['244,245,248', 1],
     bible: ['246,242,234', 1], chuck: ['236,238,244', 1], monthlens: ['238,240,252', 1], 'monthlens-dark': ['168,174,214', 0.45] };
-  // 작업 성격(목록 묶음과 읽기 이름). 운영 중인 서비스만 Live service, 리브랜딩 사례는 Case study, BizCopilot은 시안·브랜드 문서.
-  // 눈썹 글은 목록 제목(Selected work)이 된다
-  const KIND = { bewhysee: 'Case study', ourz: 'Case study', bizcopilot: 'Product concept', 'bizcopilot-story': 'Brand story', 'bizcopilot-system': 'Brand system', picketing: 'Brand system' };
-  const kind = info.querySelector('.wi-kind'); if (kind) kind.textContent = 'Selected work';
   // 화면이 잠든다(맺음, 대표님 결정): 카메라가 물러나는 동안(마지막 정거장 앞 1 → 0.65) 켜져 있다가,
   // 실제 맥처럼 먼저 30%로 어둡게 내려앉고(0.65 → 0.52) 잠깐 머문 뒤(→ 0.42) 검게 꺼진다(→ 0.36). 그 뒤 명함이 앞면으로 넘어간다(scene-hero, 0.25 → 0.05).
   // 화면 빛(macbook3d.js의 면광원)도 같은 값으로 꺼진다. p의 순수 함수라 되감으면 다시 켜진다
@@ -2819,63 +3066,10 @@ window.ticker = (() => {
   });
   window.Macbook = { get on(){ return onOf(Stage.state.p); }, onOf };
 
-  // 프로젝트 목록(10-21 대표님 결정: 스크롤로 넘기지 않고 맥북 정거장 하나에서 고른다). 정거장·선택·화면 전환은 web-live.js(Stage.web.select),
-  // 이 목록은 고르는 손잡이와 선택 표시만 맡는다. 선택이 바뀌면 web-live가 'web:select'를 보낸다
-  const LABEL = { 'monthlens-dark': 'Monthlens Dark' };
-  let list = null;
-  function buildList(){
-    const w = Stage.web; if (list || !w || !w.services) return;
-    // 표(행마다 선·대문자 분류 반복)가 아니라 고르는 메뉴로 읽히게 두 묶음으로 나눈다(10-21 대표님 지적):
-    // Brand work = 사례·시안(BizCopilot 브랜드 문서 둘은 그 아래 한 단 들여), Live services = 운영 중인 서비스(머리에 초록 점 하나).
-    // 분류 글자는 묶음 머리로 올리고, 선택은 밝기 한 축으로만 표시한다
-    list = el('ol', 'wi-list'); list.setAttribute('aria-label', 'Projects');
-    let grp = '';
-    w.services.forEach((sv, i) => {
-      const g = KIND[sv.id] ? 'Brand work' : 'Live services';
-      if (g !== grp) { grp = g; const h = el('li', 'wi-gh' + (KIND[sv.id] ? '' : ' wi-live'), g); h.setAttribute('aria-hidden', 'true'); list.appendChild(h); }
-      const li = el('li'), b = el('button', 'wi-item' + (/^bizcopilot-/.test(sv.id) ? ' wi-sub' : ''));
-      b.type = 'button'; b.dataset.i = i; b.dataset.id = sv.id;
-      b.setAttribute('aria-label', `${LABEL[sv.id] || sv.name}, ${KIND[sv.id] || 'Live service'}`);
-      b.innerHTML = `<span class="wi-iname">${LABEL[sv.id] || sv.name}</span>`;
-      li.appendChild(b); list.appendChild(li);
-    });
-    info.querySelector('.wi-ey').after(list);
-    // 모바일 가로 목록: 넘친 쪽 끝만 흐리게(더 있다는 표시). 끝까지 밀면 그쪽 흐림이 걷힌다(10-21 배포본 점검 4)
-    const edge = () => { const m = list.scrollWidth - list.clientWidth - list.scrollLeft;
-      list.style.setProperty('--fl', list.scrollLeft > 2 ? '40px' : '0px'); list.style.setProperty('--fr', m > 2 ? '64px' : '0px'); };
-    list.addEventListener('scroll', edge, { passive: true }); addEventListener('resize', edge); requestAnimationFrame(edge);
-    const pick = i => { const w = Stage.web; if (w && w.select && w.index !== i) w.select(i); };
-    list.addEventListener('click', e => { const b = e.target.closest('.wi-item'); if (b) pick(+b.dataset.i); });
-    list.addEventListener('keydown', e => {
-      const b = e.target.closest('.wi-item'); if (!b) return;
-      const n = w.services.length, i = +b.dataset.i;
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && innerWidth <= 820) {
-        e.preventDefault(); e.stopPropagation();
-        const j = (i + (e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : n - 1)) % n;
-        list.querySelectorAll('.wi-item')[j].focus(); pick(j);
-      } else if (e.key === 'Enter') {
-        e.preventDefault(); e.stopPropagation(); pick(i); if (Stage.web.enterUse) Stage.web.enterUse();
-      }
-    });
-    mark(w.index);
-  }
-  function mark(i){
-    if (!list) return;
-    list.querySelectorAll('.wi-item').forEach((b, k) => { if (k === i) { b.setAttribute('aria-current', 'true'); } else b.removeAttribute('aria-current'); });
-    // 모바일 가로 목록: 고른 항목이 보이게 민다
-    const cur = list.querySelector('[aria-current]');
-    if (cur && innerWidth <= 820) {   // 고른 항목을 목록 가운데 쪽으로(offsetLeft는 목록이 기준 상자가 아니라 어긋났다)
-      const x = cur.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
-      list.scrollTo({ left: Math.max(0, x - (list.clientWidth - cur.offsetWidth) / 2), behavior: 'smooth' });
-    }
-  }
-  addEventListener('web:select', e => { buildList(); mark(e.detail ? e.detail.index : Stage.web.index); });
-
   let gi = -1;
   Stage.ticker.add(() => {
     const w = Stage.web; if (!w) return;
-    if (!list) buildList();
-    const i = w.index; if (i === gi) return; gi = i; mark(i);
+    const i = w.index; if (i === gi) return; gi = i; markDock(w.services[i].id);
     const g = GLOW[w.services[i].id] || GLOW.bible;
     mb.style.setProperty('--glow', g[0]); mb.style.setProperty('--gk', g[1]);
   });
@@ -2886,12 +3080,18 @@ window.ticker = (() => {
   if (!endInfo) {
     endInfo = el('aside', 'end-info'); endInfo.setAttribute('aria-label', 'Contact'); endInfo.inert = true;
     const rows = [['Email', 'kwoncj1025@gmail.com', 'kwoncj1025@gmail.com'], ['Phone', '010-6343-4110', '010-6343-4110'], ['Instagram', '@chanjun.kwon', 'https://instagram.com/chanjun.kwon']];
-    endInfo.innerHTML = `<div class="ei-body"><p class="ei-lead">Let's make something.</p><ul class="ei-list">` +
+    // 아래 줄 두 층(10-29 대표님 「A 목적별 두 층」, 구현명세 5절): 위층은 연락하기, 얇은 선 아래층은 다시 보기(See again — Cards · MacBook, Back to start ↑)
+    const up = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    endInfo.innerHTML = `<div class="ei-body"><div class="ei-up"><p class="ei-lead">Let's make something.</p><ul class="ei-list">` +
       rows.map(([k, v, c]) => `<li><button type="button" class="ei-item" data-copy="${c}" aria-label="${k} ${v} 복사"><span class="ei-k"><span class="ei-kt">${k}</span><span class="ei-ok" aria-hidden="true">Copied</span></span><span class="ei-v">${v}</span></button></li>`).join('') +
-      `</ul></div><p class="ei-mark" aria-label="Thanks for watching.">Thanks for watching.</p><span class="ei-live" role="status" aria-live="polite"></span>`;
+      `</ul></div><div class="ei-dn"><p class="ei-see">See again <i aria-hidden="true">—</i> <a class="ei-a" href="#work" data-go="work">Cards</a> <i aria-hidden="true">·</i> <a class="ei-a" href="#web" data-go="web">MacBook</a></p>` +
+      `<a class="ei-a ei-top" href="#" data-go="top">Back to start ${up}</a></div></div><p class="ei-mark" aria-label="Thanks for watching.">Thanks for watching.</p><span class="ei-live" role="status" aria-live="polite"></span>`;
     document.body.appendChild(endInfo);
     const live = endInfo.querySelector('.ei-live');
     endInfo.addEventListener('click', e => {
+      // 다시 보기: 그 정거장으로(이동 시간·곡선은 Stage 기본값). Back to start는 맨 위로 단추(totop.js)와 같은 동작
+      const g = e.target.closest('.ei-a');
+      if (g) { e.preventDefault(); const to = g.dataset.go; if (to === 'top') Stage.go(0); else Stage.go(to); return; }
       const b = e.target.closest('.ei-item'); if (!b) return;
       const done = () => { b.classList.add('ok'); live.textContent = 'Copied'; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); live.textContent = ''; }, 1600); };
       const t = b.dataset.copy;
@@ -2906,14 +3106,11 @@ window.ticker = (() => {
     const cs = getComputedStyle(endInfo), wAvail = endInfo.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     eMark.style.fontSize = '100px'; const w100 = eMark.offsetWidth; if (!w100 || !wAvail) return;
     eMark.style.fontSize = (wAvail / (w100 / 100)).toFixed(2) + 'px';
-    // 맨 위로 버튼(totop.js, 끝에서 보인다)이 큰 줄 끝 마침표를 덮지 않게, 끝 화면에서는 연락처 줄 높이로 올린다(6-macbook.css html.end-on .totop)
-    const eb = endInfo.querySelector('.ei-body'), ev = eb.querySelector('.ei-list li:last-child .ei-v');
-    document.documentElement.style.setProperty('--ei-top-b', Math.round(innerHeight - (ev || eb).getBoundingClientRect().bottom - 4) + 'px');
-    // 820 이하: 머리글 없이 단추만 「Let's make something.」 줄 오른쪽 끝에 맞춘다(단추 40px의 세로 가운데 = 그 줄 가운데, 10-21 조율 19)
-    const lr = eb.querySelector('.ei-lead').getBoundingClientRect();
-    document.documentElement.style.setProperty('--ei-lead-b', Math.round(innerHeight - (lr.top + lr.bottom) / 2 - 20) + 'px');
+    // 끝 화면에서는 떠 있는 맨 위로 원을 숨기고 아래층 「Back to start ↑」가 맡는다(3-night.css html.end-on .totop)
   };
   fitMark(); addEventListener('resize', fitMark); if (window.visualViewport) visualViewport.addEventListener('resize', fitMark); document.fonts.load('500 1em "Funnel Display"').then(fitMark, () => {});
+  // 실제 GPU로 처음 열면 서체가 다 적용되기 전에 재서 큰 줄이 화면 밖으로 넘쳤다(10-29, 1440에서 171.8px → 맞는 값 154.6px). 모든 서체가 준비된 뒤 한 번 더 잰다
+  document.fonts.ready.then(fitMark, () => {});
   const endOf = p => { const e = Stage.config.stations.length - 1; return Math.max(0, Math.min(1, (p - (e - 0.35)) / 0.25)); };
   let endStr = '', endV = 0;
   if (window.Hero && Hero.weightText) Hero.weightText(eMark, () => endV > 0.01);
@@ -2945,7 +3142,7 @@ window.ticker = (() => {
   // BizCopilot 셋은 원본끼리 서로 잇는 링크가 없는 독립 문서라 화면도 셋으로 나눴다(하나로 묶으면 둘째·셋째 장으로 갈 길이 없다)
   // site: 글 격자 「Open」이 여는 주소(없으면 url). bewhysee는 비핸스 원 게시물
   const services = [
-    { id: 'ourz', name: 'OURZ\\', ko: '', url: 'web/ourz/',
+    { id: 'ourz', name: 'OURZ\\', ko: '', url: 'web/ourz/', site: 'https://www.behance.net/gallery/257627663/OURZ-Brand-Identity',
       line: 'A rebrand for OURZ\\, a platform that helps foreigners belong to real apartment life in Korea.', role: 'Brand identity · Motion', year: '2026' },
     { id: 'bewhysee', name: 'bewhysee', ko: '비와이씨', url: 'web/bewhysee/',
       site: 'https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29',
@@ -2968,6 +3165,20 @@ window.ticker = (() => {
     { id: 'monthlens-dark', name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_메인.html',
       line: 'Landing page template: dark UI.', role: 'Landing template', year: '2026' },
   ];
+  // 작업 일곱(10-29 구현명세 2절·탭원고 3판): 왼쪽 패널의 메타 다섯 칸, 중심 문장, 탭 넷(What · Why · Perspective · Looking back).
+  // BizCopilot 브랜드 문서 둘과 Monthlens Dark는 그 작업의 하위 화면이라 같은 작업 글을 보인다(트랙패드 위 독의 작은 칸으로 고른다, 19판)
+  // 원고 글자는 탭원고.md 3판 그대로다(탭 칸마다 두 문단, 빈 줄로 나눈다. 하이픈은 줄바꿈 없는 하이픈 U+2011)
+  const WORKS = {
+    "ourz": {"role": "Solo, 100%", "timeline": "10 weeks, 2026", "type": "Personal project, non‑design major", "scope": "Naming, identity, app UI, campaign", "award": "Grand Prize, DIAD Branding 17th", "big": "한국의 비주얼은 조선도, 한복도, 고궁도 아니에요. 초고층 프리미엄 아파트 단지의 야경이에요.", "tabs": ["외국인을 한국 아파트의 실제 삶에 연결하는 주거 호스피탈리티 플랫폼의 브랜드예요. 로고·컬러·서체·모티프·코드 문법을 설계하고, 그 문법 하나로 앱 UI·소셜·옥외 광고까지 이었어요.\n\n기획·네이밍·아이덴티티·디자인 시스템·모션까지 100% 혼자 했어요. 8월 DIAD 발표판의 뼈대는 그대로 두고, 10월 리브랜딩에서 색을 「지금 한국의 색」으로 바꾸고 글자에서 뽑은 모티프를 모든 매체의 시스템으로 넓혔어요.", "「한국다운 브랜드」가 늘 조선·고궁·한복 같은 과거로만 설명되는 게 답답해서 시작했어요. 비행기가 한국에 들어서면 창밖으로 가장 먼저 보이는 건 아파트 단지인데, 「한국적인 것」을 찾으면 아직 조선이 나와요.\n\n배달·새벽 배송·택시 앱·단지 커뮤니티처럼, 한국은 이미 시스템으로 돌아가고 그 시스템이 곧 한국의 일상이에요. 그런데 외국인은 그 단지 안의 진짜 일상에 인증 벽으로 막혀 들어오지 못하고 있었어요.", "그래서 초고층 아파트 단지를 브랜드의 가장 강력한 시각 자산으로 삼았어요. 낡은 아파트가 아니라 송도·강남·판교의 신축 프리미엄 단지를 무대로 골랐어요.\n\n좁고 높은 로고 글자는 초고층 동이 늘어선 스카이라인으로, 모티프는 옥상에서 내려다본 단지와 중정에서 올려다본 층, 멀리서 본 동으로 그렸어요. 색도 전통색이 아니라 콘크리트 회색과 보랏빛 밤, 핑크빛 노을이에요. 「한국을 새로 짓지 않는다」는 기준 하나에서 이 모든 결정이 갈라져 나왔어요.", "규제가 많은 한국에서 실제로 운영되기는 어렵고, 플랫폼이 실제로 돌아가는 구조와 운영사 입장의 사업 모델도 가설 단계에서 더 나아가지 못했어요. 발표 뒤에는 옛 문법 그대로는 촌스럽고, 모노크롬 위의 레드가 강조가 아니라 「거부」로 읽힌다는 걸 보고 리브랜딩에서 색을 다시 잡았어요.\n\n그래도 이미 있는 한국을 다른 각도로 보고 거기서 사업을 그려 보는 것, 그게 제가 기획하는 방식이에요."]},
+    "bewhysee": {"role": "Solo, 100%", "timeline": "Sep 2026", "type": "Personal project, concept rebrand", "scope": "Naming, identity, packaging, web", "big": "보이지 않는 옷이 보이는 이유가 된다.", "tabs": ["1946년부터 이어 온 속옷 브랜드 BYC를 bewhysee로 다시 짠 컨셉 리브랜딩이에요. 네이밍·워드마크·브랜드 구조·소재 브랜드·패키지·캠페인·웹까지 설계했어요.\n\n이름을 정하기 전에 옛 이름부터 팠어요. 1946년 창립부터의 연표를 정리하고, 특허정보원에서 1975년 상표 출원 기록까지 찾아냈어요. 연표 조사부터 웹까지 100% 혼자 했어요.", "BYC는 우리나라 어딘가에 늘 매장으로 있는, 우리 추억 같은 브랜드예요. 올드하지만 일상에 늘 있어 온 이 브랜드를 「우리나라의 유니클로」 같은 브랜드로 탈바꿈시키고 싶어서 시작했어요.\n\n80년 동안 가장 많이 입혔지만 가장 안 보이는 브랜드였어요(worn the most, seen the least). 최근의 리브랜딩도 모델만 바꿔서 젊은 층에게는 닿지 못했어요.", "80년의 헤리티지는 지키면서 변화는 확실하게 줄 수 있는 지점을 찾다가, 세 글자를 소리 나는 대로 적은 bewhysee를 찾아냈어요. 새 이름을 지은 게 아니라 옛 이름 안에 접혀 있던 문장을 발견한 거라, 소리는 남기고 글자만 바꿀 수 있었어요. be·why·see 세 단어의 뜻도 브랜드와 그대로 맞아떨어졌어요.\n\n그 위에 구조를 짰어요. 앞면에는 bewhysee 하나만, 묻혀 있던 소재 이름(모시메리·에어메리·보디히트)은 뒤·안·옆에 한 줄로 성분 브랜드가 되고, 1957년 상표 백양은 제 이름으로 남아요. 허리밴드에서 가져온 빨간 띠 하나가 상자에서 옥외 광고, 웹사이트까지 이어져요.", "실제 회사와 무관한 컨셉이라 시장에서 검증하지는 못했어요. 상표도 예비 조사까지만 했고(같은 표기는 국내외 0건), 실제로 출원한다면 변리사의 정식 유사 조사가 남아 있어요.\n\n그래도 비주얼로 젊은 세대에게 다가가면서 브랜드의 고유한 가치는 살리는 방법을 찾았고, 헤리티지는 그대로 두고 바꿀 것은 확실하게 바꾼다는 기준만큼은 끝까지 지켰어요."]},
+    "bizcopilot": {"role": "Solo, 100%", "timeline": "Oct 2026", "type": "Freelance proposal", "scope": "Brand identity, website redesign", "big": "브랜딩이 먼저 서야 광고도 살아요.", "tabs": ["아이디어 한 줄로 오늘 출원일을 확보하는 AI 특허 출원 서비스의 리브랜딩 제안이에요. 광고는 협업사가 맡고, 저는 브랜드 아이덴티티와 웹사이트 리디자인을 맡았어요. 방향이 다른 네 시안을 따로 짰고, 여기 보이는 건 그중 시안 C와 그 브랜드 스토리·시스템이에요.\n\n시안 C는 지금 사이트와 새 첫 화면을 나란히 놓았고, Brand Story는 발표 10분 전 대기실에서 시작해 왜 날개·빈칸·네이비인지를 시간 순서로 풀었어요. Brand System은 빈칸에서 거리 광고까지 한 체계로 정리했어요.", "서비스는 있는데 브랜드가 없었어요. 무엇을 하는 회사인지, 왜 지금 이 서비스여야 하는지를 한 번에 말해 주는 얼굴과 목소리가 없었어요.\n\n사이트는 네 가지 사업을 같은 크기로 늘어놓고 있어서, 처음 온 사람이 어디부터 봐야 할지 알 수 없었어요. 사용자가 쉽고 편하게 쓸 수 있으려면 브랜드와 함께 사이트도 다시 짜야 했어요.", "먼저 사용자를 정확히 좁혔어요. 발표 10분 전 아이디어가 새어 나갈까 걱정하는 창업자요. 그 페르소나에게 필요한 건 서비스 설명이 아니라 「오늘 날짜를 먼저 찍어 두라」는 한 마디라서, 창업자가 사업을 몰고 BizCopilot은 옆자리 부조종사처럼 날짜와 서류를 챙긴다는 한 장면으로 브랜드를 묶었어요.\n\n고객이 이미 아는 세 줄 날개는 새로 그리지 않고 다듬었어요. 바깥선을 4px 안쪽으로만 옮기고 띠 굵기를 85에서 110으로 키웠고, 거기서 빈칸·계단·오늘 날짜라는 세 장치를 끌어내 사이트와 광고 소재에 똑같이 썼어요. 브랜드가 먼저 서야 광고도 소재로 이어진다고 봤거든요.", "비용 판단으로 제안은 진행되지 않았어요. 브랜딩이 먼저 서야 광고도 살고, 사이트가 바뀌어야 사용자가 편해진다고 설득했지만, 지금은 그 비용을 들일 때가 아니라는 결정이었어요.\n\n그래도 페르소나 한 사람에서 출발해 브랜드와 광고, 사이트까지 한 줄로 이어지는 제안이었다는 건 지금 봐도 자신 있어요."]},
+    "picketing": {"role": "Solo, 100%", "timeline": "Sep–Oct 2026", "type": "Client work, ad‑AI startup", "scope": "Branding, website, design system", "big": "이름에서 단서를 찾았어요.", "tabs": ["네이버·메타·구글 광고 성과를 한 화면에서 보는 서비스 픽켓팅의 일을 세 겹으로 맡았어요. 회사 브랜딩, 리뉴얼 전 공개 사이트를 대신할 새 웹사이트 빌드, 그리고 개발 중인 소프트웨어의 디자인 시스템 설계예요.\n\n회사 브랜딩·캐릭터·웹사이트 빌드·소프트웨어 디자인 시스템까지 100% 혼자 했어요. 워드마크는 대문자는 회사, 소문자는 제품으로 두 벌을 나눠 회사와 제품의 자리를 갈랐어요.", "브랜딩이 없는 회사였어요. 이름은 있는데, 그 이름이 무엇을 뜻하고 어떤 얼굴과 목소리로 보여야 하는지가 정해져 있지 않았어요. 이름은 Pick과 Marketing을 합친 단어 조합이라, 그것만으로는 브랜드를 붙잡을 이야기가 없었어요.\n\n회사 사이트와 제품 화면을 하나로 묶어 줄 기준도 없었어요. 게다가 광고비와 성과를 매일 들여다보는 사람은 제품 화면을 하루 종일 켜 두니, 화면은 조용히 물러나 있고 봐야 할 곳만 또렷해야 했어요.", "이름을 바꾸지 않고 다시 읽으니, 같은 글자 안에 picket, 보초병이 있었어요. 미어캣은 무리가 돌아가며 쉬고 일하고 보초를 서서 끊김 없이 지키는 동물이라, 미어캣 픽켓을 브랜드의 얼굴로 세웠어요. 그리고 픽켓을 마스코트에 그치게 하지 않고, 제품 안에서 고객의 광고 계정을 24시간 쉬지 않고 지켜보는 AI 에이전트 그 자체로 만들었어요.\n\n그래서 Picketing은 회사 이름이자 서비스 자체로 「픽켓이 하는 일」이라는 뜻이 됐어요. 워드마크의 초록 「ti」는 picket과 -ing가 만나는 바로 그 자리를 표시하고, 캐릭터는 굴에서 올라와 서서 살피고 앉는 데까지만 움직여요.", "아무것도 없는 데서 시작하는 일이라, 무엇을 자산으로 삼고 무엇을 기준으로 삼을지, 그리고 하루 종일 이 화면을 켜 두는 사용자에게 어떻게 다가갈지를 가장 오래 고민했어요. 이름은 바꾸지 않기로 했으니, 답은 이미 있던 이름 안에서 찾아야 했어요.\n\n화면 쪽의 답은 조용함이었어요. 파란색은 누르는 것과 읽어야 할 숫자에만 남기고 주 버튼은 화면마다 하나로 둬서, 하루 종일 켜 둬도 화면은 물러나 있고 봐야 할 곳만 또렷하게 했어요."]},
+    "bible": {"role": "Solo, 100%", "timeline": "Since Jun 2026", "type": "Live personal service", "scope": "Planning, design, development", "big": "어떤 화면에도, 어떤 작업 환경에도 이질감 없이 띄워 놓을 수 있다.", "tabs": ["킹제임스 성경을 한 절씩 따라 치는 필사 웹 서비스예요. 영어 한 줄 옆에 한국어 번역이 붙고, 누구나 무료로 광고 없이 쓸 수 있으며 오프라인에서도 돌아가요. 기획·디자인·개발·배포·운영까지 100% 혼자 해요.\n\n최근 한 달 약 2,000명이 방문해요(2026년 10월 29일 기준). 생각보다 많은 분이 이런 서비스를 기다리고 있었고, 주변 반응도 좋았어요.", "처음엔 제가 쓰려고 만들었어요. 성경을 따라 치는 웹은 이미 여럿 있었는데, 매일 열어 두고 싶은 화면은 찾기 어려웠거든요. 그래서 먼저 디자인이 좋은 필사 서비스부터 만들기로 했어요.\n\n만들다 보니 질문이 하나 더 생겼어요. 하루 대부분은 공부하고 일하는 화면 앞에서 보내는데, 그 옆에 띄운 필사 창이 혼자 튀면 결국 닫게 되잖아요. 예쁜 것만으로는 부족하고, 어떤 화면 옆에서도 녹아들어야 했어요. 스쳐 읽는 게 아니라 손끝으로 따라 치며 새기는 경험이라 더 그랬어요.", "그래서 기획을 「예쁜 필사 서비스」에서 「어느 화면 옆에 놓여도 어울리는 서비스」로 넓혔어요. 코드 에디터처럼, 손으로 쓰는 노트처럼, 엑셀처럼 보이는 테마 10종을 만들어, 쓰는 사람이 지금 띄워 둔 화면에 맞춰 고르게 했어요.\n\n테마는 다양성 자랑이 아니라 그 답이에요. 물리 키보드로 치는 서비스라 PC·맥·태블릿을 주 환경으로 설계했어요.", "저작권 문제 때문에 무료로만 배포할 수 있어요. 무료·광고 없음은 처음부터 고른 방침이라기보다 지켜야 하는 조건이었어요.\n\n대신 누구나 부담 없이 화면 한쪽에 띄워 둘 수 있으니, 처음 그리던 모습과는 오히려 잘 맞아요."]},
+    "chuck": {"role": "Solo, 100%", "timeline": "Since Sep 2026", "type": "Live personal service", "scope": "Planning, design, development", "big": "사람은 판단의 자리에만 있으면 돼요.", "tabs": ["켜 두기만 하면 일이 알아서 돌아가는 것처럼 보이는 업무 화면이에요. 메신저·결재·배포 같은 앱 창이 실제로 열리고, 한 창의 결재가 다른 창에 그대로 반영돼요. 지금은 AI 에이전트가 일하고 사람은 검토·승인만 하는 구조로 개편하고 있어요.\n\n화면을 그리기 전에 회사 하나를 먼저 설계했어요. 직원 60명을 두고 누가 누구에게 메시지를 보내는지, 결재가 누구 손을 거쳐 올라가는지까지 정했고, 앱 창 15종이 그 설계를 따라 맞물려 움직여요. 화면 뒤에 깔린 데이터만 14,003건이에요.", "회사원인 동생과 처형에게서 같은 이야기를 들었어요. 평소엔 야근이 잦을 만큼 바쁜데, 꼭 일이 없는 날이 있대요. 그렇다고 빈둥거릴 수도, 다른 걸 할 수도 없고요. 사람이 늘 생산적일 수는 없잖아요. 그래서 그런 날을 위해 일하는 척 해 주는 화면이 있으면 좋겠다 싶었어요.\n\n해외에는 비슷한 사이트가 몇 있었지만, 실제 업무 화면이라고 믿기엔 어려웠어요. 그리고 국내에는 아직 이런 서비스가 없었어요. 실제 업무 화면처럼 보이려면 메신저가 있어야 하고 무언가 바쁘게 굴러가는 모습이 보여야 해서, 제대로 만들어 보기로 했어요.", "만들다 보니 질문이 바뀌었어요. AI 에이전트가 일하는 흐름이 대세가 되면, 사람에게 남는 일은 무엇일까요? 저는 사람은 판단의 자리에만 남는다고 봤어요.\n\n그래서 지금은 모든 업무와 자동화를 AI 에이전트가 맡고, 사용자는 검토하고 승인만 하는 구조로 개편하고 있어요. 디자인도 피그마에서 디자인 시스템부터 설계해, 대시보드 하나로 다시 짜고 있어요.", "백엔드까지는 제가 직접 다룰 수 없어서, 실제 서비스로 개발하는 일은 개발자의 몫으로 남아 있어요.\n\n그래서 제 몫을 분명히 했어요. 무엇을 에이전트에게 맡기고 어디서 사람이 판단할지 정하고, 그 구조를 디자인 시스템부터 화면까지 설계해 두는 데까지가 제 일이에요."]},
+    "monthlens": {"role": "Solo, 100%", "timeline": "Oct 2026", "type": "Client work, ad‑AI startup", "scope": "Two brand landing pages", "big": "설명하는 대신, 함께 일하는 경험을 먼저 보여 줘요.", "tabs": ["한 회사의 브랜드 페이지를 두 가지 방식으로 설계했어요. 하나는 첫 화면 뒤 바로 채팅으로 이어지는 랜딩, 하나는 제품이 움직이는 대시보드를 따라 내려가는 스크롤 랜딩이에요.\n\n두 랜딩 모두 다크·라이트 모드와 한국어·영어 전환을 갖췄고, 설계·디자인·구현까지 100% 혼자 했어요. 여기서는 월 구독형 사진 스튜디오라는 가상 브랜드로 문구를 바꿔 보여 드려요.", "고객이 회사 홈페이지에 들어왔을 때 정말 궁금한 건 회사 소개나 자랑이 아니라, 「그래서 이 회사와 일하면 어떤 건데?」라고 봤어요. 그래서 그 답을 글로 설명하지 않고, 화면 안에서 직접 겪어 보게 하고 싶었어요.\n\n회사의 제품은 AI 에이전트들이 한 팀이 되어 일하고 사람은 고르고 승인만 하는 구조라, 말로 설명하면 오히려 멀게 느껴져요. 처음 온 사람이 그 흐름을 한 번에 체감할 방법이 필요했어요.", "하나의 의도를 두 방식으로 풀었어요. 채팅형은 첫 화면에서 「우리는 누구」를 한 줄로 말하고 바로 채팅으로 넘어가요. 브랜드를 입력하면 에이전트 팀이 분석해 제안을 내놓고, 고객은 그중 하나를 고르기만 하면 다음 단계로 이어져요. 모든 단계가 옆의 작업 기록에 남아요.\n\n스크롤형은 제품이 실제로 어떻게 돌아가는지를 대시보드 화면의 모션과 인터랙션으로 넣어, 내려가며 에이전트들이 일하는 흐름을 지켜보게 했어요. 12칸 격자 하나로 모든 절의 크기와 무게 순서를 같게 맞췄어요.", "두 랜딩의 첫 흐름까지 만들고, 세부 페이지 설계까지는 가지 못한 채 의뢰처 사정으로 작업이 마무리됐어요.\n\n그래도 첫 화면에서 회사 소개 대신 함께 일하는 장면부터 보여 준다는 방향은 두 랜딩 모두에 끝까지 남아 있어요."]}
+  };
+  const PARENT = { 'bizcopilot-story': 'bizcopilot', 'bizcopilot-system': 'bizcopilot', 'monthlens-dark': 'monthlens' };
+  const workOf = sv => PARENT[sv.id] || sv.id;
   const WEB = Stage.config.stations.findIndex(x => x.name === 'web'), END = Stage.config.stations.length - 1;
   const ALIAS = { cases: 'bewhysee' };             // 옛 해시
   // 띠에 서비스 칸을 깐다
@@ -3056,34 +3267,39 @@ window.ticker = (() => {
   addEventListener('hashchange', () => { const i = idxOf(location.hash); if (i >= 0) select(i, { noHash: true }); });
   function setInfo(sv){
     // 덮개 턱에는 서비스 이름을 쓰지 않는다(실물에 없는 표시, 10-21 조율 결정)
+    // 왼쪽 패널(macbook.js가 짠 골격)에 작업 글을 채운다. 탭은 macbook.js가 그린다(작업이 바뀌면 What으로)
     if (!info) return;
-    info.querySelector('.wi-name').textContent = sv.name;
-    info.querySelector('.wi-ko').textContent = sv.ko;
-    info.querySelector('.wi-line').textContent = sv.line;
-    info.querySelector('.wi-role').textContent = sv.role;
-    info.querySelector('.wi-year').textContent = sv.year;
+    const wid = workOf(sv), w = WORKS[wid], main = services.find(x => x.id === wid) || sv;
+    if (!w || !info.querySelector('.wi-meta')) return;
+    info.querySelector('.wi-name').textContent = main.name;
+    ['role', 'timeline', 'type', 'scope', 'award'].forEach(k => { const d = info.querySelector(`[data-k="${k}"]`); if (!d) return; d.hidden = !w[k]; d.querySelector('dd').textContent = w[k] || ''; });
+    info.querySelector('.wi-big').textContent = w.big;
     const u = sv.site || sv.url, a = info.querySelector('.wi-go'); a.href = u.startsWith('http') ? u : new URL(u, location.href).href;
+    if (info.wiTabs) info.wiTabs(w.tabs);
   }
 
   // 사용 안내(10-21 대표님 판정: 오른쪽 위 구석 글은 위치도 설명도 애매하다): 안내는 손이 가는 자리에 둔다.
-  //  · 마우스: 커서가 화면 위에 오면 커서 바로 옆에 「클릭해서 직접 사용해 보기」가 따라다닌다(.web-tip)
+  //  · 마우스: 쓰기 전 안내는 도착 알약(영어) 하나다. 커서 옆을 따라다니던 한국어 안내(.web-tip)는 19판에서 뺐다
   //  · 쓰는 동안: 화면 바로 아래에 나가는 법(.web-note). 터치 기기는 화면 바로 위에 두고, 쓰기 전에는 「탭해서 직접 사용해 보기」
   //  · 글자만 쓴다(알약·상자 없음). 안내 글은 누르기를 통과시킨다: 화면 밖을 누르면 나가기 그대로
   // 쓰는 동안에는 화면 밖(베젤·책상·설명 글)이 살짝 어두워진다: 무대 위 고정 층에 화면 자리만 뚫은 그림자(조상 opacity를 쓰지 않는다)
   const HOVER = matchMedia('(hover: hover) and (pointer: fine)');
   const mk = c => { const e = document.createElement('div'); e.className = c; e.setAttribute('aria-hidden', 'true'); return e; };
-  const note = mk('web-note'), tip = mk('web-tip'), dim = mk('web-dim');
-  tip.textContent = '클릭해서 직접 사용해 보기';
-  document.body.append(dim, note, tip);
+  const note = mk('web-note'), dim = mk('web-dim');
+  document.body.append(dim, note);
   if (!hit.getAttribute('aria-label')) hit.setAttribute('aria-label', '클릭해서 직접 사용해 보기');
+  // 도착 알약(10-29 구현명세 3절): 맥북 정거장에 처음 닿아 멈추면 화면 가운데 아래에 「Click the screen to try it」. 화면(.mb-screen)에 붙어 화면과 함께 움직이고,
+  // 누르기는 통과한다. 처음 화면을 눌러 써 보기에 들어가면 사라지고, 이 방문 동안 다시 띄우지 않는다(sessionStorage, 읽기·쓰기가 막혀도 동작)
+  const pill = document.createElement('p'); pill.className = 'mb-arrive'; pill.setAttribute('aria-hidden', 'true');
+  pill.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v5m0-1a2 2 0 0 1 4 0v2m0 0a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3l-3-5a2 2 0 0 1 3-2l2 2"/></svg>Click the screen to try it';
+  mb.querySelector('.mb-screen').appendChild(pill);
+  const PILL_KEY = 'cj-arrive-done';
+  let pillDone = false; try { pillDone = sessionStorage.getItem(PILL_KEY) === '1'; } catch (_) {}
+  const pillGone = () => { if (pillDone) return; pillDone = true; pill.classList.remove('on'); try { sessionStorage.setItem(PILL_KEY, '1'); } catch (_) {} };
+  // 정착(settle)과 같은 조건을 매 프레임 본다: 해시로 맥북 정거장에 바로 들어오면 settle 이벤트가 오지 않는다
+  Stage.ticker.add(() => { if (!pillDone && !pill.classList.contains('on') && Stage.state.settled && Stage.state.station === 'web' && Math.abs(Stage.state.p - WEB) < 0.02) pill.classList.add('on'); });
   const noteText = () => { note.textContent = using ? (!HOVER.matches ? '화면 밖을 탭하면 나가기' : using.sv.external ? '화면 밖을 클릭하면 나가기' : 'Esc 또는 화면 밖을 클릭하면 나가기') : '탭해서 직접 사용해 보기'; note.classList.toggle('is-using', !!using); };
   note.addEventListener('animationend', () => note.classList.remove('is-cue'));
-  // 커서 옆 안내: 화면 위에서만, 쓰는 동안에는 없다. 위치는 transform 한 곳만 쓴다
-  let tipOn = false;
-  const tipAt = e => { tip.style.transform = `translate3d(${e.clientX + 16}px,${e.clientY + 18}px,0)`; };
-  hit.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse' || using) return; tipAt(e); tipOn = true; tip.classList.add('on'); });
-  hit.addEventListener('pointermove', e => { if (tipOn) tipAt(e); });
-  hit.addEventListener('pointerleave', () => { tipOn = false; tip.classList.remove('on'); });
   let dimKey = '';
   function placeDim(){
     const k = useK.v; if (k <= 0.001) { if (dimKey !== '0') { dimKey = '0'; dim.style.opacity = '0'; dim.style.visibility = 'hidden'; } return; }
@@ -3134,12 +3350,13 @@ window.ticker = (() => {
   });
   function enterUse(){
     const x = panes[sel]; if (!x || using || !usable(Stage.state.p)) return;
+    pillGone();
     if (ARTIFACT && x.sv.external) { window.open(x.sv.url, '_blank', 'noopener'); return; }
     if (!x.frame) mount(x);
     using = x; hold = Stage.hold('web');
     x.pane.inert = false; x.frame.tabIndex = 0; mb.classList.add('using'); document.documentElement.classList.add('web-using');
     if (narrow()) { if (!fs) fsBegin(x); else fs.x = x; }
-    tipOn = false; tip.classList.remove('on'); noteText(); note.classList.remove('is-cue'); void note.offsetWidth; note.classList.add('is-cue');
+    noteText(); note.classList.remove('is-cue'); void note.offsetWidth; note.classList.add('is-cue');
     animUse(1, narrow() ? 560 : 600);
     setTimeout(() => { if (using === x && x.frame) x.frame.focus(); }, 60);
   }
@@ -3182,7 +3399,6 @@ window.ticker = (() => {
   Stage.ticker.add(() => {
     const p = Stage.state.p; if (p !== lp || anim) { lp = p; update(p); }
     if (hit.hidden === usable(p)) hit.hidden = !usable(p);   // 범위 밖에서는 덮개를 치워 누름이 책상·명함으로 간다
-    if (tipOn && (p < WEB - 0.4 || p > END - 0.75)) { tipOn = false; tip.classList.remove('on'); }
     placeNote(p); placeDim();
   });
 })();
@@ -3255,12 +3471,12 @@ window.ticker = (() => {
 <script>
 (() => {
   // 장면 table (주인 deploy-prep). 진행값 구간 [1, 2]: S1 카드 테이블 → 맥북 앞. 규칙은 06_장면인터페이스, 공간은 08_공간설계 2·4절.
-  //  t 0~0.15  카드가 한 벌로 모인다(물리 목표만 바꾼다. 되감으면 다시 쏟아진다)
+  //  t 0.04~0.15  카드가 진행값을 따라 한 벌로 모인다(되감으면 같은 길로 다시 펼쳐진다)
   //  t 0.15~0.25  숨: 아무것도 움직이지 않는다(큰 순간 앞의 정지)
   //  그 뒤 카메라·조명은 scene-web(맥북으로 고개를 든다)과 world.js(불이 낮아지고 카드 테이블이 어둠에 잠긴다)가 맡는다
   // S1 직접 조작(던지기·정렬·섞기·전체 뒤집기)은 table.js 그대로이고, 이 장면은 진행값으로 모으기·나눠 주기만 부른다.
   if (!window.Stage || !Stage.enabled) return;
-  const GATHER = 0.04;
+  const GATHER = 0.04, FOLD = 0.11;   // 모으기: 1.04에서 시작해 1.15에 한 벌이 된다
   Stage.add('table', {
     range: [1, 2],
     wake(){},
@@ -3270,8 +3486,10 @@ window.ticker = (() => {
     progress(t){
       const T = window.Table; if (!T) return;
       const g = GATHER + (Stage.world && Stage.world.pan ? Stage.world.pan() : 0);   // 모바일 세로 책상은 책상을 다 내려간 뒤에 모은다
-      if (t > g) { if (T.dealt) T.gather(); }     // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다)
-      else if (!T.dealt) T.deal();
+      // 카드 상태는 p의 순수 함수(world.js가 순간 이동 뒤에도 맞춘다). g~g+FOLD에서는 진행값을 따라 접힌다(10-30)
+      if (t > g + FOLD) { if (T.folding) T.fold(1); else if (T.dealt) T.gather(); }
+      else if (t > g) T.fold((t - g) / FOLD);
+      else { if (T.folding) T.fold(0); if (!T.dealt) T.deal(); }
     },
   });
 })();
