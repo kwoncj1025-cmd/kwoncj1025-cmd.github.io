@@ -1691,8 +1691,8 @@ window.ticker = (() => {
 
   // 카드 안내(10-29 21판 B, 구현명세 4절 끝): 카드에 붙는 두 단계. 카드 모션·휠·Stage는 건드리지 않고 덮개 층(.ctips)만 카드 자리를 따라간다.
   //  1단계: 쏟아진 카드가 멈추면 화면 가운데에 가장 가까운(다른 카드에 덮이지 않은) 카드 하나의 아래쪽에 점, 그 위에 꼬리표 「Drag, throw, or click to flip」,
-  //         점에서 바깥으로 던지는 궤적 하나. 처음 뒤집으면 사라진다(한 장이든 Show details든)
-  //  2단계: 처음 뒤집힌 카드의 ↗ 오른쪽 24에 「← Opens the post on Instagram」. ↗을 누르거나 다른 카드를 만지면 사라진다
+  //         점에서 바깥으로 던지는 궤적 하나. 처음 뒤집거나 카드를 처음 잡으면 사라지고 다시 붙지 않는다(10-30 대표님: 옮긴 카드에 엉뚱하게 붙어 다닌다)
+  //  2단계: 처음 뒤집힌 카드의 ↗ 오른쪽 24에 「← Opens the post on Instagram」. ↗을 누르거나 아무 카드나(그 카드도) 잡으면 사라진다
   // 꼬리표는 카드 가운데에 맞춰 카드 면 위에 둔다(검은 칠 + 흰 테 2px라 검은 카드·흰 카드 어디서나 떨어져 보인다). 휴대폰(820 이하)은 이번 범위 밖이라 띄우지 않는다
   if (!reduce) {
     const HAND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v5m0-1a2 2 0 0 1 4 0v2m0 0a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3l-3-5a2 2 0 0 1 3-2l2 2"/></svg>';
@@ -1701,7 +1701,7 @@ window.ticker = (() => {
     table.appendChild(layer);
     const [svg, dot, t1, t2] = [layer.querySelector('.ct-throw'), layer.querySelector('.ct-dot'), layer.querySelector('.ct-1'), layer.querySelector('.ct-2')];
     const paths = svg.querySelectorAll('path');
-    let step = 1, target = null, linkCard = null, k1 = '', k2 = '', viaAll = false;
+    let step = 1, target = null, linkCard = null, k1 = '', k2 = '', viaAll = false, held1 = false;   // held1: 1단계 중에 카드를 잡았다(1단계 표시만 끝, 첫 뒤집기는 여전히 2단계로)
     // 카드 안 한 점(카드 가운데 기준 lx, ly)의 테이블 좌표: 카드 회전·크기를 따른다
     const at = (c, lx, ly) => { const s = (c.ks || 1) * (c.sz || 1), co = Math.cos(c.r), si = Math.sin(c.r); return { x: c.x + (lx * co - ly * si) * s, y: c.y + (lx * si + ly * co) * s }; };
     const inside = (c, p) => { const s = (c.ks || 1) * (c.sz || 1), dx = p.x - c.x, dy = p.y - c.y, co = Math.cos(-c.r), si = Math.sin(-c.r);
@@ -1740,6 +1740,7 @@ window.ticker = (() => {
       follow(settled){
         if (off()) { show(layer, false); return; }
         if (step === 1) {
+          if (held1) { show(layer, false); return; }
           if (settled) { const c = pick(); if (c !== target) { target = c; k1 = ''; } }
           if (!target) return;
           place1(); show(layer, settled || layer.classList.contains('on'));
@@ -1747,11 +1748,11 @@ window.ticker = (() => {
       },
       flipped(c){
         if (step !== 1) return;
-        step = 2; linkCard = viaAll && target ? target : c;   // Show details: 1단계 카드, 한 장: 그 카드
+        step = 2; linkCard = viaAll && target && !held1 ? target : c;   // Show details: 1단계 카드(이미 잡아 감췄으면 처음 넘어간 카드), 한 장: 그 카드
         layer.classList.add('s2'); k2 = ''; wake();
       },
       unflipped(c){ if (step === 2 && c === linkCard) this.done(); },   // 그 카드를 다시 앞면으로 돌리면 가리킬 ↗이 없다
-      touched(c){ if (step === 2 && c !== linkCard) this.done(); },
+      touched(c){ if (step === 1) held1 = true; else if (step === 2) this.done(); },   // 2단계: 그 카드를 끌어도 ↗ 자리가 움직이니 끝낸다
       done(){ step = 3; show(layer, false); },
     };
     cards.forEach(c => c.link.addEventListener('click', () => { if (step === 2) tips.done(); }));
