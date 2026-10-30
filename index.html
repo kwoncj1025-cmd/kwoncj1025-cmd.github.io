@@ -605,16 +605,16 @@ html.stage-on .mb .mb-chin{z-index:5;color:rgba(255,255,255,.22);font-size:max(9
 html.stage-on .mb .mb-back{display:none}
 
 /* 왼쪽 패널(10-29 로제 컨셉 v2 19판, 구현명세 2절 19판 단락): 카메라에 붙은 화면 층. 주인공은 맥북 화면이라 글은 무채색으로 물러선다.
-   머리 줄(Selected work) 아래 글 기둥 하나(x 128, 폭 384)에 읽는 순서대로 이름 → 중심 문장 → 탭+본문 → 메타를 위에서부터 쌓는다(가운데 정렬 없음: 작업을 바꿔도 이름 자리가 그대로).
+   머리 줄(Selected work) 아래 글 기둥 하나(x 128, 폭 352, 10-30 대표님 「우측을 살짝 줄여」로 384에서 줄임)에 읽는 순서대로 이름 → 중심 문장 → 탭+본문 → 메타를 위에서부터 쌓는다(가운데 정렬 없음: 작업을 바꿔도 이름 자리가 그대로).
    위끝은 맥북 화면 유리 위끝(--scr-t) + 4, 크기는 k배(--k = 유리 높이 ÷ 474). 둘 다 macbook.js가 잰다. px 값은 1440×900(k = 1) 기준이다.
    대표님 「좌측 컨텐츠 전체적으로 좀만 내려줘」(19판 확인 때): 머리 줄과 글 기둥을 함께 24 내렸다(--dn). OURZ\ 아래끝이 덮개 아래끝(598) 안에 든다.
    등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 쓴다) */
 html.stage-on body .web-info{--dn:calc(24px * var(--k,1));position:fixed;inset:0;width:auto;z-index:40;display:block;margin:0;padding:0;color:var(--nt-ink);pointer-events:none}
-html.stage-on body .web-info .wi-ey{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) - calc(45px * var(--k,1)) + var(--dn));width:calc(384px * var(--k,1));height:calc(24px * var(--k,1));margin:0;
+html.stage-on body .web-info .wi-ey{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) - calc(45px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));height:calc(24px * var(--k,1));margin:0;
   display:flex;align-items:center;font:500 calc(11px * var(--k,1))/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 html.stage-on body .web-info .wi-kind{display:flex;align-items:center;gap:calc(8px * var(--k,1))}
 html.stage-on body .web-info .wi-kind i{width:calc(5px * var(--k,1));height:calc(5px * var(--k,1));border-radius:50%;background:var(--dot)}
-html.stage-on body .web-info .wi-body{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) + calc(4px * var(--k,1)) + var(--dn));width:calc(384px * var(--k,1));display:flex;flex-direction:column;align-items:stretch;min-width:0}
+html.stage-on body .web-info .wi-body{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) + calc(4px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));display:flex;flex-direction:column;align-items:stretch;min-width:0}
 html.stage-on body .web-info .wi-name{margin:0 0 calc(16px * var(--k,1));font:500 calc(28px * var(--k,1))/1 var(--f-disp);letter-spacing:-.03em;color:var(--nt-ink)}
 html.stage-on body .web-info .wi-big{margin:0 0 calc(32px * var(--k,1));font:500 calc(18px * var(--k,1))/1.6 var(--f-ko);letter-spacing:-.02em;color:var(--nt-hi);word-break:keep-all;text-wrap:balance}
 html.stage-on body .web-info .wi-more{display:flex;flex-direction:column;gap:calc(16px * var(--k,1));width:100%}
@@ -1362,7 +1362,7 @@ window.ticker = (() => {
     const hang = mobile ? cw * 0.15 : 0;   // 좁은 화면은 카드가 양옆으로 15%까지 걸쳐 나가게 해서 겹침을 줄인다
     // 왼쪽에는 세운 「Selected Work」가 있다: 쉬는 자리는 그 오른쪽에서 시작한다(좁은 화면은 카드 폭의 30%까지 걸친다). 던지면 그 위로도 지나간다
     const mk = tfoot.querySelector('.tmark'), mkR = mk ? mk.offsetLeft + mk.offsetHeight : 0;
-    const xMin = mob ? cw * 0.5 - hang : Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + (mobile ? hang : cw * 0.12));   // 오른쪽은 넓은 화면에서도 끝에 걸치게 둔다(명함처럼 화면 밖으로 조금 나간다)
+    const xMin = mob ? cw * 0.5 - hang : Math.max(cw * 0.5 + 6 - hang, mkR + cw * (mobile ? 0.2 : 0.5) + 10), xMax = Math.max(xMin, TW - cw * 0.5 - 6 + (mobile ? hang : -104));   // 넓은 화면은 오른쪽 정거장 점(오른쪽 10px + 28px) 앞에서 40px 넘게 떨어져 멈춘다(10-30 대표님 「점 쓰기 불편」, 전에는 카드 폭의 12%만큼 화면 밖으로 걸쳤다)
     const yMin = mob && mk ? mk.offsetTop + mk.offsetHeight + ch * 0.5 + 10 : BAR + ch * 0.5 + 4, yMax = Math.max(yMin, TH - ch * 0.5 - (mob ? FOOT - 4 : 6));
     const OV = mob ? 0.5 : 0.45, CV = mob ? 0.65 : 0.6, TRY = mob ? 14 : 5;   // 모바일은 큰 카드 몇 장이라 조금 더 겹치고, 후보를 더 뽑아 고르게 놓는다
     const ov = (a, b) => Math.max(0, cw - Math.abs(a.x - b.x)) * Math.max(0, ch - Math.abs(a.y - b.y)) / (cw * ch);
@@ -1434,10 +1434,10 @@ window.ticker = (() => {
   const gridSpots = (k = 1) => {
     const cwk = cw * k, chk = ch * k;
     // 격자가 놓이는 띠: 세운 「Selected Work」 오른쪽부터, 명함(오른쪽 귀퉁이) 왼쪽까지. 폭 제한을 푼 뒤 격자가 왼쪽 끝부터 깔려 워드마크를 덮고 명함이 3행을 가렸다(10-21 대표님)
-    let xL = 24, xR = TW - 24;
+    let xL = 24, xR = TW - 24 - (STAGE && !MOB() ? 80 : 0);   // 데스크톱은 오른쪽 정거장 점 자리를 비운다
     if (STAGE && !MOB()) {
       const mk = tfoot.querySelector('.tmark'); if (mk) xL = Math.max(xL, mk.offsetLeft + mk.offsetHeight + 24);
-      const sp = window.Hero && Hero.desk && Hero.desk.spot; if (sp) { const nx = sp.x - table.offsetLeft; if (nx < TW + cw) xR = Math.min(xR, nx - cw * 1.04 * 0.5 - 20); }
+      const sp = window.Hero && Hero.desk && Hero.desk.spot; if (sp) { const nx = sp.x - table.offsetLeft; if (nx < TW / 2) xL = Math.max(xL, nx + cw * 1.04 * 0.5 + 20); else if (nx < TW + cw) xR = Math.min(xR, nx - cw * 1.04 * 0.5 - 20); }   // 명함이 왼쪽 귀퉁이면(데스크톱, 10-30) 격자는 명함 오른쪽에서 시작한다
     }
     const gap = (mobile ? 14 : 28) * k, cols = Math.max(2, Math.floor((xR - xL + gap) / (cwk + gap))), w = cols * cwk + (cols - 1) * gap;
     const x0 = xL + Math.max(0, (xR - xL - w) / 2) + cwk / 2;
@@ -2064,9 +2064,12 @@ window.ticker = (() => {
   // 세로 화면(820 이하)은 책상이 화면보다 길고, 맨 아래 「@chanjun.kwon」 줄 위에 명함 자리가 비어 있다(table.js). 데스크톱과 같이 그 줄 바로 위에 멈춘다.
   // 더미(맨 위 화면 안)를 친 뒤 책상을 따라 길게 미끄러져 내려가고, 카메라가 책상을 내려가면(p 1~1.18) 그 자리에서 다시 만난다
   // 세로 화면(10-21 조율, 19 세로 구도): 책상이 화면 폭과 같아 오른쪽 끝에 걸치면 반 넘게 잘린다. 기울어진 명함의 가로 반폭만큼 들여 오른쪽 끝이 화면 안 16px에 들게
+  // 데스크톱(10-30 대표님 「오른쪽으로 보내는 걸 그대로 반대로」): 오른쪽 귀퉁이는 정거장 점(오른쪽 10px + 28px)과 겹쳐 누르기 어려웠다.
+  // 좌우를 뒤집어 왼쪽 귀퉁이로 보내되, 세운 「Selected Work」 인쇄(.tmark, 세운 글이라 offsetHeight가 화면 폭) 오른쪽 24px 밖에 기울어진 반폭만큼 들여 둔다. 깊이는 그대로
+  const SPIN = () => innerWidth > 820 ? -0.14 - 2 * (186 * Math.PI / 180 - Math.PI) : 0.14;   // 귀퉁이로 밀리며 도는 각도. 데스크톱은 오른쪽(186° + 0.14)의 거울각(180° 기준)에 닿게 반대로 돈다
   const sideCorner = g => {
-    if (innerWidth > 820) return { x: g.tl + g.TW - 0.1 * g.hw, z: g.zMeta };
-    const a = desk.b + 0.14, bh = g.hw * Math.abs(Math.cos(a)) + g.hh * Math.abs(Math.sin(a));
+    const a = desk.b + SPIN(), bh = g.hw * Math.abs(Math.cos(a)) + g.hh * Math.abs(Math.sin(a));
+    if (innerWidth > 820) { const mk = document.querySelector('#work .tmark'), r = mk ? mk.offsetLeft + mk.offsetHeight : 0; return { x: g.tl + r + 24 + bh, z: g.zMeta }; }
     return { x: g.tl + g.TW - 16 - bh, z: g.zMeta };
   };
   const target = g => {
@@ -2076,7 +2079,7 @@ window.ticker = (() => {
     // 맺음 자리(10-21 대표님 결정): 맥북과 떼어 맥북 왼쪽 책상 여백에 둔다. 맥북 구간에서 어둠에 잠긴 동안 옮겨 두므로 움직임은 보이지 않는다
     const e = desk.ek && endSpot(g);
     if (e) return { x: e.x, z: e.z, b: desk.b + 0.14 };
-    return { x: desk.x + (cx - desk.x) * k, z: desk.z + (cz - desk.z) * k, b: desk.b + 0.14 * k };
+    return { x: desk.x + (cx - desk.x) * k, z: desk.z + (cz - desk.z) * k, b: desk.b + SPIN() * k };
   };
   // 데스크톱: 맥북 왼쪽 옆(몸체 왼쪽 끝에서 덮개 폭의 0.16만큼, 10-21 끝 화면에서 둘을 한 덩어리로 모으며 0.3에서 좁힘 떨어지고, 깊이는 키보드면 가운데 줄).
   // 세로 화면(820 이하): 옆에 두면 맥북이 잘리므로 맥북 앞 책상(몸체 앞 끝에서 덮개 폭의 0.18 앞, 가운데에서 살짝 왼쪽)
