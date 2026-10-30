@@ -225,6 +225,22 @@ body{background:color-mix(in oklab,var(--bg),var(--nt) calc(var(--dk,0) * 100%))
 @media (prefers-reduced-motion:reduce){.totop{transition:opacity .2s}}
 /* 끝 화면에서는 아래층 글자 링크 「Back to start ↑」가 맡으므로 떠 있는 원은 숨긴다(10-29 대표님 승인) */
 html.end-on .totop{opacity:0;pointer-events:none}
+/* 정거장 점(10-30 대표님 「오른쪽 점 네 개」, stations.js): 오른쪽 가장자리 세로 가운데. 점은 6px, 지금 장면은 6×18로 길고 밝다.
+   누르는 칸은 점 둘레 28px, 칸 사이 10이라 점과 점 사이가 32(10-30 대표님 「점 간격 너무 타이트」: 22 → 32). 이름은 올리거나 초점이 올 때만 점 왼쪽에 옅게. 흰 방에서는 먹색, 밤색 방에서는 밤 글자색 */
+.stn{display:none}
+html.stage-on .stn{display:flex;flex-direction:column;gap:10px;position:fixed;z-index:44;right:calc(10px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);
+  --c:var(--ink-3);--c-on:var(--ink);--c-t:var(--ink-2);transition:opacity .25s}
+html.stage-on .stn.night{--c:var(--nt-3);--c-on:var(--nt-ink);--c-t:var(--nt-2)}
+.stn button{position:relative;display:grid;place-items:center;width:28px;height:28px;margin:0;padding:0;border:0;background:none;cursor:pointer;border-radius:99px}
+.stn i{display:block;width:6px;height:6px;border-radius:3px;background:var(--c);opacity:.7;transition:height .3s cubic-bezier(.2,.8,.2,1),background-color .3s,opacity .2s}
+.stn button[aria-current] i{height:18px;background:var(--c-on);opacity:1}
+.stn button:hover i{opacity:1}
+.stn-t{position:absolute;right:30px;top:50%;transform:translate(4px,-50%);white-space:nowrap;pointer-events:none;
+  font:500 12px/1 var(--f-en);letter-spacing:.02em;color:var(--c-t);opacity:0;transition:opacity .2s,transform .2s}
+.stn button:hover .stn-t,.stn button:focus-visible .stn-t{opacity:1;transform:translate(0,-50%)}
+.stn button:focus-visible{outline:2px solid var(--soft);outline-offset:-2px}
+html.web-using .stn,html.stage-on.gate .stn{opacity:0;pointer-events:none}   /* 맥북 화면을 써 보는 동안과 휴대폰 안내 중에는 비킨다 */
+@media (prefers-reduced-motion:reduce){.stn i,.stn-t{transition:none}}
 
 /* 카드 버튼(10-29 로제 컨셉 v2 18판, 구현명세 4절): 둥근 틀 하나에 Show details · 구분선 · Shuffle · Sort. 막대 전체가 무채색이고 카드보다 한 단계 물러선다.
    주 동작(Show details)은 진한 굵은 글자로만, 켜진 상태(Sort → Scatter)는 옅은 바탕 한 가지로 구분한다. 초점 테두리는 키보드일 때만 */
@@ -627,27 +643,41 @@ html.stage-on body .web-info .wi-go{color:inherit;text-transform:none;letter-spa
 html.stage-on body .web-info .wi-go:hover{color:var(--nt-ink);text-decoration-color:currentColor}
 html.stage-on body .web-info .wi-go:focus{outline:none}
 html.stage-on body .web-info .wi-go:focus-visible{outline:2px solid var(--nt-2);outline-offset:3px;border-radius:2px}
-/* 독(19판 → 10-29 19판 로컬 피드백): 브라우저 화면 가로 가운데, 위끝 = 유리 아래끝 + 222(1440에서 y 797). 맥북 화면 열 개를 같은 크기 칸(88×55)으로 펼친다(1440에서 1020×71).
-   macOS 27 글래스: 밝은 반투명 바탕 + 흐림·채도, 위 가장자리 빛 한 줄과 1px 밝은 테로 검은 키보드 위에서 띠가 분명히 떨어져 보이게 한다. 움직임은 투명도·테두리 .2초뿐이다.
-   독 폭은 k배라 화면 폭의 약 71%로 늘 들어가서 넘김이 필요 없다(이름 알약이 독 위로 나오도록 넘침을 자르지 않는다). 세로 휠은 가로채지 않는다.
-   창 높이가 낮으면(브라우저 막대를 뺀 1440×790 등) 트랙패드 자리가 화면 아래로 나가므로, 독 아래끝을 화면 아래 11(k배) 위에서 멈춘다 */
-html.stage-on body .web-info .wi-dock{position:absolute;left:50%;top:min(calc(var(--scr-b,575px) + calc(222px * var(--k,1))), calc(100vh - calc(82px * var(--k,1))));transform:translateX(-50%);box-sizing:border-box;
-  display:flex;gap:calc(12px * var(--k,1));padding:calc(8px * var(--k,1)) calc(16px * var(--k,1));border-radius:calc(20px * var(--k,1));
-  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.1));-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),0 calc(18px * var(--k,1)) calc(44px * var(--k,1)) rgba(5,4,14,.5),0 calc(2px * var(--k,1)) calc(6px * var(--k,1)) rgba(5,4,14,.3);
+/* 독(19판 → 10-29 19판 로컬 피드백 → 10-30 로제 새 판, 구현명세 8절): 브라우저 화면 가로 가운데, 위끝 = 유리 아래끝 + 222(1440에서 y 797). 맥북 화면 열 개를 같은 크기 칸(80×50)으로 펼친다(1440에서 984×74).
+   macOS 27 글래스: 어두운 반투명 바탕 + 흐림·채도, 위 가장자리 빛 한 줄과 1px 테로 검은 키보드 위에서 띠가 떨어져 보이게 한다. 고른 칸은 테두리 대신 칸 아래 점, 올린 칸은 3 뜨고 1.08배.
+   작업 묶음(BizCopilot 세 칸, Picketing, Monthlens 두 칸) 앞에는 칸 사이를 10 더 벌리고 세로 구분선을 둔다(가상 요소라 마크업은 그대로).
+   독 폭은 k배라 화면 폭의 약 68%로 늘 들어가서 넘김이 필요 없다(이름 알약이 독 위로 나오도록 넘침을 자르지 않는다). 세로 휠은 가로채지 않는다.
+   창 높이가 낮으면(브라우저 막대를 뺀 1440×790 등) 트랙패드 자리가 화면 아래로 나가므로, 독 아래끝을 화면 아래 12(k배) 위에서 멈춘다 */
+html.stage-on body .web-info .wi-dock{position:absolute;left:50%;top:min(calc(var(--scr-b,575px) + calc(222px * var(--k,1))), calc(100vh - calc(86px * var(--k,1))));transform:translateX(-50%);box-sizing:border-box;
+  display:flex;gap:calc(14px * var(--k,1));padding:calc(10px * var(--k,1)) calc(14px * var(--k,1)) calc(14px * var(--k,1));border-radius:calc(22px * var(--k,1));
+  background:linear-gradient(180deg,rgba(36,34,54,.42),rgba(20,18,34,.54));-webkit-backdrop-filter:blur(30px) saturate(1.5);backdrop-filter:blur(30px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.30),
+    0 calc(10px * var(--k,1)) calc(30px * var(--k,1)) rgba(5,4,14,.34),0 calc(1px * var(--k,1)) calc(2px * var(--k,1)) rgba(5,4,14,.22);
   pointer-events:auto;touch-action:pan-x;overscroll-behavior-x:contain}
-html.stage-on body .web-info .wd-c{position:relative;flex:none;width:calc(88px * var(--k,1))}
-html.stage-on body .web-info .wd-k{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:calc(88px * var(--k,1));height:calc(55px * var(--k,1));border-radius:calc(8px * var(--k,1));overflow:hidden;opacity:.6;
-  box-shadow:0 0 0 1px rgba(255,255,255,.14);outline:1.5px solid transparent;outline-offset:calc(2px * var(--k,1));transition:opacity .2s,outline-color .2s}
+html.stage-on body .web-info .wd-c{position:relative;flex:none;width:calc(80px * var(--k,1))}
+/* 구분선: 칸 사이를 10 더 벌리고 그 가운데에 세로 선 */
+html.stage-on body .web-info .wd-c:is([data-id="bizcopilot"],[data-id="picketing"],[data-id="monthlens"]){margin-left:calc(10px * var(--k,1))}
+html.stage-on body .web-info .wd-c:is([data-id="bizcopilot"],[data-id="picketing"],[data-id="monthlens"])::before{content:"";position:absolute;
+  left:calc(-12px * var(--k,1));top:calc(9px * var(--k,1));width:1px;height:calc(32px * var(--k,1));background:rgba(255,255,255,.22)}
+html.stage-on body .web-info .wd-k{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:calc(80px * var(--k,1));height:calc(50px * var(--k,1));border-radius:calc(9px * var(--k,1));overflow:hidden;opacity:.82;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 calc(2px * var(--k,1)) calc(6px * var(--k,1)) rgba(5,4,14,.28);
+  outline:2px solid transparent;outline-offset:calc(2px * var(--k,1));transform-origin:50% 100%;
+  transition:opacity .18s,transform .18s cubic-bezier(.2,.8,.2,1)}
 html.stage-on body .web-info .wd-k img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-html.stage-on body .web-info .wd-k:hover{opacity:.9}
-html.stage-on body .web-info .wd-k[aria-selected="true"]{opacity:1;outline-color:var(--nt-ink)}
+html.stage-on body .web-info .wd-k:hover{opacity:1;transform:translateY(calc(-3px * var(--k,1))) scale(1.08)}
+html.stage-on body .web-info .wd-k[aria-selected="true"]{opacity:1;outline-color:transparent}
 html.stage-on body .web-info .wd-k:focus-visible{outline-color:var(--nt-2)}
-/* 이름 알약: 칸에 올리면 칸 위 14에 */
-html.stage-on body .web-info .wd-tip{position:absolute;left:50%;bottom:calc(100% + calc(14px * var(--k,1)));transform:translate(-50%,4px);white-space:nowrap;padding:calc(4px * var(--k,1)) calc(8px * var(--k,1));border-radius:99px;
-  background:rgba(16,14,30,.86);box-shadow:inset 0 0 0 1px var(--nt-line);font:500 calc(11px * var(--k,1))/1 var(--f-en);color:var(--nt-ink);opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+/* 고른 칸 점: 칸 아래끝에서 5 아래에 4×4 */
+html.stage-on body .web-info .wd-c::after{content:"";position:absolute;left:50%;bottom:calc(-9px * var(--k,1));width:calc(4px * var(--k,1));height:calc(4px * var(--k,1));margin-left:calc(-2px * var(--k,1));
+  border-radius:50%;background:rgba(240,241,250,.95);box-shadow:0 0 0 1px rgba(10,8,20,.28);opacity:0;transition:opacity .2s}
+html.stage-on body .web-info .wd-c.on::after{opacity:1}
+/* 이름 알약: 칸에 올리면 칸 위 16에 옅은 유리 알약 */
+html.stage-on body .web-info .wd-tip{position:absolute;left:50%;bottom:calc(100% + calc(16px * var(--k,1)));transform:translate(-50%,4px);white-space:nowrap;padding:calc(5px * var(--k,1)) calc(10px * var(--k,1));border-radius:99px;
+  background:rgba(28,26,44,.72);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 calc(4px * var(--k,1)) calc(12px * var(--k,1)) rgba(5,4,14,.3);
+  font:500 calc(11px * var(--k,1))/1 var(--f-en);letter-spacing:.01em;color:var(--nt-ink);opacity:0;pointer-events:none;transition:opacity .15s,transform .18s cubic-bezier(.2,.8,.2,1)}
 html.stage-on body .web-info .wd-c:hover .wd-tip{opacity:1;transform:translate(-50%,0)}
-@media (prefers-reduced-motion:reduce){html.stage-on body .web-info :is(.wi-tab,.wi-go,.wd-k,.wd-tip){transition:none}}
+@media (prefers-reduced-motion:reduce){html.stage-on body .web-info :is(.wi-tab,.wi-go,.wd-k,.wd-tip){transition:none}html.stage-on body .web-info .wd-k:hover{transform:none}html.stage-on body .web-info .wd-c::after{transition:none}}
 @media (max-width:820px){
   /* 휴대폰은 이번 범위 밖(사이트가 막아 둔다): 좁은 창에서 깨지지 않게 머리 줄과 이름·중심 문장만 맥북 몸체 아래(--txt-top, scene-web.js)에 쌓는다 */
   html.stage-on body .web-info{--k:1;padding:var(--txt-top,60dvh) 20px 0}
@@ -883,6 +913,7 @@ html:not(.stage-on) .end-info{display:none}
   const state = { p: 0, target: 0, v: 0, dir: 1, station: 'hero', settled: true, input: false };
   let x = 0, target = 0, lastInput = -1e9, snapTimer = 0;
   let tw = null;                                     // 진행 중인 이동 { from, to, t0, dur } (키보드·Stage.go·스냅·고무줄 되돌림)
+  let fly = 0;                                       // 정거장 점 이동(go follow) 중의 속도 상한(화면 장/초). 0이면 스크롤 기본값(maxScreensPerSec)
 
   const scenes = [];
   const listeners = { settle: [], station: [] };
@@ -943,14 +974,17 @@ html:not(.stage-on) .end-info{display:none}
     return t;
   }
 
+  // a에서 b까지 스크롤 화면 장 수(조각마다 진행값 1의 px가 다르다)
+  const screensBetween = (a, b) => { const lo = Math.min(a, b), hi = Math.max(a, b); let n = 0; pieces().forEach(([p0, p1, L]) => { const o = Math.min(hi, p1) - Math.max(lo, p0); if (o > 0) n += o * L; }); return n / innerHeight; };
   function tween(to, dur, ease = easeIO){
+    fly = 0;
     tw = { from: x, to, t0: performance.now(), dur: Math.max(0.05, dur) * 1000, ease };
   }
   // 입력: 델타(트랙패드 관성 포함)를 target에 연속으로 더한다. 진행 중인 이동은 그 자리에서 손에 넘긴다
   // stop: 휠 쓸기 하나가 정거장을 지나치면 그 정거장에서 멈추고 true를 돌려준다(남은 관성은 onWheel이 버린다)
   function input(px, stop = false){
     if (holds.size || !px) return false;
-    tw = null;
+    tw = null; fly = 0;
     const t0 = target, dir = Math.sign(px), n = dir > 0 ? Math.floor(t0 + 1e-6) + 1 : Math.ceil(t0 - 1e-6) - 1;
     let t1 = advance(t0, px), hit = false;
     if (stop && n >= 0 && n <= last() && (dir > 0 ? t1 >= n : t1 <= n)) { t1 = n; hit = true; }
@@ -969,13 +1003,16 @@ html:not(.stage-on) .end-info{display:none}
     const lim = Math.min(config.snapWithin, config.snapMaxScreens * innerHeight / pieceLen(n, state.dir > 0 ? -1 : 1));
     if (d > 1e-4 && d <= lim) tween(n, config.snapSec);
   }
-  function go(to, { instant = false, sec = 0, ease = 'io' } = {}){   // sec·ease: 부르는 쪽이 이동 시간과 곡선을 정할 때(스크롤 화살표)
+  // follow: tween 대신 스크롤과 같은 길(target만 옮기고 지수 보간 + 속도 상한이 p를 끌고 간다). 정거장 점(stations.js)이 쓴다.
+  //  상한은 speed(기본: 스크롤 기본값)에서 시작해, 멀어서 maxSec 안에 못 닿을 때만 그만큼 올린다(끝의 지수 보간 꼬리 약 0.6초를 뺀 시간으로 나눈다)
+  function go(to, { instant = false, sec = 0, ease = 'io', follow = false, maxSec = 3.5, speed = config.maxScreensPerSec } = {}){   // sec·ease: 부르는 쪽이 이동 시간과 곡선을 정할 때(스크롤 화살표)
     const i = typeof to === 'number' ? to : config.stations.findIndex(s => s.name === to);
     if (i < 0 || root.classList.contains('gate')) return;   // 휴대폰 안내 중에는 첫 화면에 머문다
     clearTimeout(snapTimer); state.input = false;
     const t = clamp(i, 0, last()); state.dir = Math.sign(t - x) || state.dir;
     if (instant) { tw = null; x = target = t; return; }
     const dist = Math.abs(t - x); if (dist < 1e-4) return;
+    if (follow) { tw = null; fly = Math.max(speed, screensBetween(x, t) / Math.max(0.5, maxSec - 0.6)); target = t; return; }
     tween(t, sec || clamp(config.goSec[0] + (config.goSec[1] - config.goSec[0]) * (dist - 1) / 2, config.goSec[0], config.goSec[1]), EASE[ease] || easeIO);
   }
 
@@ -1038,12 +1075,12 @@ html:not(.stage-on) .end-info{display:none}
 
   // 주소: 정착하면 replaceState, 처음 불러올 때와 사용자가 해시를 바꿀 때는 그 정거장으로
   const stationOfHash = h => { h = (h || '').replace(/^#/, ''); return h ? config.stations.findIndex(s => s.hash === h || (s.alias && s.alias.includes(h))) : 0; };
-  let lastHash = location.hash.replace(/^#/, '');
+  // 지금 주소와 비교한다(10-30 해시 버그: web-live가 서비스를 고르며 주소를 직접 바꾸면, 여기 기억해 둔 값과 어긋나 정착해도 옛 해시가 남았다)
   const writeHash = () => {
-    const h = hashOf(x); if (h === lastHash) return; lastHash = h;
+    const h = hashOf(x); if (h === location.hash.replace(/^#/, '')) return;
     history.replaceState(history.state, '', h ? '#' + h : location.pathname + location.search);
   };
-  addEventListener('hashchange', () => { const i = stationOfHash(location.hash); lastHash = location.hash.replace(/^#/, ''); if (i >= 0) go(i); });
+  addEventListener('hashchange', () => { const i = stationOfHash(location.hash); if (i >= 0) go(i); });
   // 처음 들어온 해시는 남겨 둔다: 정착하면서 주소가 정거장 해시로 바뀌기 전에 web-live가 서비스 선택에 쓴다
   config.startHash = location.hash.replace(/^#/, '');
   { const i = stationOfHash(location.hash); if (i > 0) { x = target = i; } }
@@ -1078,9 +1115,10 @@ html:not(.stage-on) .end-info{display:none}
       let step = (target - x) * k;
       // 속도 제한(마우스·트랙패드만): 세게 쓸어도 p는 스크롤 화면 maxScreensPerSec장/초보다 빨리 가지 않는다(10-21 대표님: 장면 전환이 휙휙).
       // 조각마다 진행값 1의 px가 달라, 화면이 멈춘 짧은 조각은 빨리 지나고 장면이 움직이는 긴 조각만 천천히 흐른다. 손가락은 1:1이라 걸지 않는다
-      if (FINE.matches) { const cap = config.maxScreensPerSec * innerHeight * dt / pieceLen(x, Math.sign(step)); if (Math.abs(step) > cap) step = Math.sign(step) * cap; }
+      if (FINE.matches || fly) { const cap = (fly || config.maxScreensPerSec) * innerHeight * dt / pieceLen(x, Math.sign(step)); if (Math.abs(step) > cap) step = Math.sign(step) * cap; }
       x += step;
       if (Math.abs(target - x) < 1e-4) x = target;
+      if (x === target) fly = 0;
     }
     const moving = x !== px;
     state.v = moving && dt ? (x - (isNaN(px) ? x : px)) / dt : 0;
@@ -2755,6 +2793,32 @@ window.ticker = (() => {
   // 해시로 맺음에 바로 들어오거나 한 번에 건너뛰면 scroll 이벤트가 정착 전에 끝난다: 정착할 때 한 번 더 따진다
   if (STAGE) Stage.on('settle', topBtn);
   tone();
+})();
+</script>
+<script>
+(() => {
+  // 정거장 점(10-30 대표님 「오른쪽 점 네 개」): 어느 장면에서든 홈·카드·맥북·맺음으로 바로 간다. 화면 오른쪽 가장자리 세로 가운데에 점 넷,
+  // 지금 장면 점만 조금 길고 밝다. 올리거나 초점이 오면 점 왼쪽에 이름이 옅게 뜨고, 누르면 Stage.go(스크롤과 같은 길, 아래 go)
+  if (!(window.Stage && Stage.enabled)) return;
+  const NAMES = { hero: 'Home', work: 'Cards', web: 'Work', end: 'Contact' };
+  const nav = document.createElement('nav'); nav.className = 'stn'; nav.setAttribute('aria-label', 'Sections');
+  nav.innerHTML = Stage.config.stations.map((s, i) => `<button type="button" data-i="${i}" aria-label="${NAMES[s.name] || s.name}"><span class="stn-t" aria-hidden="true">${NAMES[s.name] || s.name}</span><i aria-hidden="true"></i></button>`).join('');
+  document.body.appendChild(nav);
+  const btns = [...nav.querySelectorAll('button')];
+  // 점 이동은 스크롤과 같은 길로 간다(10-30 대표님 「스크롤처럼 연속된 움직임이 아니라 휙 가버림」): Stage.go follow. 가까우면 1.15화면/초(스크롤 0.9보다 조금 빠르게, 10-30 대표님 「굼떠 아주 살짝」),
+  // 멀면 3초 안에 닿을 만큼만 상한을 올린다. 키보드·스크롤·goSec 기본값은 그대로
+  const go = b => { const i = +b.dataset.i; if (Math.abs(i - Stage.state.p) < 1e-3) return; Stage.go(i, { follow: true, maxSec: 3, speed: 1.15 }); };
+  nav.addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b); });
+  // 무대 키보드(stage.js)가 스페이스를 다음 정거장으로 쓰므로, 점에 초점이 있을 때의 스페이스·엔터는 여기서 받고 무대로 넘기지 않는다
+  nav.addEventListener('keydown', e => { if (e.key !== ' ' && e.key !== 'Enter') return; const b = e.target.closest('button'); if (!b) return; e.preventDefault(); e.stopPropagation(); go(b); });
+  // 지금 장면(가장 가까운 정거장)과 밤색 방 여부를 프레임마다 보되, 바뀔 때만 쓴다
+  let key = '';
+  Stage.ticker.add(() => {
+    const s = Stage.state, cur = Math.max(0, Math.min(btns.length - 1, Math.round(s.p))), night = s.dk > 0.5, k = cur + '|' + night;
+    if (k === key) return; key = k;
+    btns.forEach((b, i) => { if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    nav.classList.toggle('night', night);
+  });
 })();
 </script>
 <script>
