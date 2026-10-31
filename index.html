@@ -663,9 +663,6 @@ html.stage-on body .web-info .wd-k{all:unset;box-sizing:border-box;cursor:pointe
   box-shadow:0 0 0 1px rgba(255,255,255,.1),0 calc(2px * var(--k,1)) calc(6px * var(--k,1)) rgba(5,4,14,.28);
   outline:2px solid transparent;outline-offset:calc(2px * var(--k,1));transform-origin:50% 100%;
   transition:opacity .18s,transform .18s cubic-bezier(.2,.8,.2,1)}
-/* 케이스 스터디 칸: 문서라는 표시로 오른쪽 아래 PDF 꼬리표 */
-html.stage-on body .web-info .wd-case .wd-k{position:relative}
-html.stage-on body .web-info .wd-pdf{position:absolute;right:calc(4px * var(--k,1));bottom:calc(4px * var(--k,1));padding:calc(1px * var(--k,1)) calc(4px * var(--k,1));border-radius:calc(4px * var(--k,1));font-size:calc(8px * var(--k,1));font-weight:600;line-height:1.3;letter-spacing:.04em;color:#fff;background:rgba(10,9,20,.72)}
 html.stage-on body .web-info .wd-k img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 html.stage-on body .web-info .wd-k:hover{opacity:1;transform:translateY(calc(-3px * var(--k,1))) scale(1.08)}
 html.stage-on body .web-info .wd-k[aria-selected="true"]{opacity:1;outline-color:transparent}
@@ -881,7 +878,7 @@ html:not(.stage-on) .end-info{display:none}
       { name: 'hero', hash: '' },
       { name: 'work', hash: 'work' },
       { name: 'web', hash: 'web', hashFn: () => (window.Stage && Stage.web && Stage.web.hash) || 'web',
-        alias: ['ourz', 'bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'picketing', 'bible', 'chuck', 'monthlens', 'monthlens-dark'] },
+        alias: ['ourz', 'bewhysee', 'cases', 'bizcopilot', 'bizcopilot-story', 'bizcopilot-system', 'picketing', 'bible', 'chuck', 'chuck-case', 'monthlens', 'monthlens-dark'] },
       { name: 'end', hash: 'contact' },              // 맺음(기존 #contact 유지)
     ],
     split: null,             // 구간 안 일부 범위만 다른 스크롤 거리로: [[시작 p, 끝 p, 화면 수], …]. 모바일 책상 내려가기·모으기 뒤 숨(world.js가 정한다). 나머지는 seg 빠르기
@@ -3072,17 +3069,14 @@ window.ticker = (() => {
   // ←/→: 독에 초점이 있을 때, 그리고 맥북 정거장에 와 있기만 해도(아래 keydown) 앞뒤 화면으로, 끝에서 처음으로 돈다. 세로 휠은 가로채지 않는다(정거장 이동 그대로)
   const DOCK = [['ourz', 'OURZ\\', 'ourz'], ['bewhysee', 'bewhysee', 'bewhysee'],
     ['bizcopilot', 'BizCopilot', 'biz'], ['bizcopilot-story', 'BizCopilot · Brand Story', 'biz_story'], ['bizcopilot-system', 'BizCopilot · Brand System', 'biz_system'],
-    ['picketing', 'Picketing', 'picketing'], ['bible', 'Bible Typing', 'bible'], ['chuck', 'CHUCK MODE', 'chuck'],
+    ['picketing', 'Picketing', 'picketing'], ['bible', 'Bible Typing', 'bible'], ['chuck', 'CHUCK MODE', 'chuck'], ['chuck-case', 'CHUCK MODE · Case study', 'chuck_case'],
     ['monthlens', 'Monthlens · Chat', 'ml_chat'], ['monthlens-dark', 'Monthlens · Dark', 'ml_dark']];
   const th = f => `macbook/thumbs/${f}.jpg`;
   const dock = el('div', 'wi-dock'); dock.setAttribute('role', 'tablist'); dock.setAttribute('aria-label', 'Works');
-  // 케이스 스터디(10-31): 패널 메타 한 줄로는 잘 못 찾아서 독에 따로 둔다. 척모드 칸 바로 뒤에 붙이고, 화면을 바꾸지 않고 새 탭에서 PDF를 연다. ←/→ 순환에는 넣지 않는다
-  const CASE = `<div class="wd-c wd-case"><span class="wd-tip" aria-hidden="true">CHUCK MODE · Case study</span>` +
-    `<a class="wd-k" href="macbook/case/chanjun-kwon-chuckmode.pdf" target="_blank" rel="noopener" aria-label="CHUCK MODE case study (PDF)"><img src="${th('chuck_case')}" alt="" draggable="false" decoding="async"><span class="wd-pdf" aria-hidden="true">PDF</span></a></div>`;
   dock.innerHTML = DOCK.map(([id, name, f]) => `<div class="wd-c" data-id="${id}"><span class="wd-tip" aria-hidden="true">${name}</span>` +
-    `<button type="button" class="wd-k" role="tab" aria-selected="false" tabindex="-1" aria-label="${name}" data-go="${id}"><img src="${th(f)}" alt="" draggable="false" decoding="async"></button></div>` + (id === 'chuck' ? CASE : '')).join('');
+    `<button type="button" class="wd-k" role="tab" aria-selected="false" tabindex="-1" aria-label="${name}" data-go="${id}"><img src="${th(f)}" alt="" draggable="false" decoding="async"></button></div>`).join('');
   info.appendChild(dock);
-  const cols = [...dock.querySelectorAll('.wd-c:not(.wd-case)')];
+  const cols = [...dock.querySelectorAll('.wd-c')];
   const pickId = id => { const w = Stage.web; if (w && w.select) w.select(id); };
   const stepDock = (d, focus) => {
     const i = Math.max(0, cols.findIndex(c => c.classList.contains('on'))), n = cols[(i + d + cols.length) % cols.length];
@@ -3233,6 +3227,9 @@ window.ticker = (() => {
       line: 'A quiet place to type the King James Bible, one verse a day.', role: 'Product · Design · Build', year: '2026' },
     { id: 'chuck', name: 'CHUCK MODE', ko: '척모드', url: 'https://chuckmode.com/app/', external: true,
       line: 'A website that keeps you looking busy at your desk.', role: 'Product · Design · Build', year: '2026' },
+    // 척모드 케이스 스터디(10-31): 제출 PDF를 그림으로 이은 문서. 척모드의 하위 화면이라 같은 작업 글을 보인다
+    { id: 'chuck-case', name: 'Case study', ko: '척모드 케이스 스터디', url: 'web/chuck-case/', site: 'https://chuckmode.com/app/',
+      line: 'The CHUCK MODE case study.', role: 'Case study', year: '2026' },
     { id: 'monthlens', name: 'Monthlens', ko: '먼스렌즈', url: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용.html',
       urlNarrow: 'web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용_모바일.html',
       line: 'Interactive landing template: the page opens as a chat.', role: 'Landing template', year: '2026' },
@@ -3251,7 +3248,7 @@ window.ticker = (() => {
     "chuck": {"pdf": "macbook/case/chanjun-kwon-chuckmode.pdf", "role": "Solo, 100%", "timeline": "Since Sep 2026", "type": "Live personal service", "scope": "Planning, design, development", "big": "사람은 판단의 자리에만 있으면 된다.", "tabs": ["AI 에이전트가 계획하고 코드를 쓰고 배포까지 맡는 팀의 관제 화면이다. 사람은 에이전트가 올린 일을 검토하고 승인만 한다. 화면은 오늘 홈, 승인함, 배포, 비용까지 아홉 개다.\n\n승인 한 번은 표와 숫자, 사이드바, 홈, 활동 기록까지 화면 아홉 곳에 함께 남는다. 10분 안에는 되돌릴 수 있다. 켜 두기만 해도 화면은 실제로 돌아간다. 새 승인 요청이 들어오고 다른 사람 차례였던 일이 내 차례로 넘어온다.", "첫 판은 일하는 척해 주는 업무 화면이었다. 회사원인 동생과 처형에게서 일이 없는 날이 꼭 있다는 이야기를 듣고 만들었다. 직원 60명이 있는 회사를 먼저 설계했다. 앱 창 15종은 그 설계에 맞물려 움직였다.\n\n만들다 보니 질문이 바뀌었다. AI 에이전트가 일하는 방식이 보편화되면 사람에게는 어떤 일이 남을까. 사람은 판단의 자리에만 남는다고 보았다. 그래서 같은 회사를 에이전트가 일하고 사람은 승인만 하는 구조로 다시 짰다.", "부품은 다 맞았는데 화면이 틀렸다. 처음 화면은 컨셉이 맞았지만 양이 넘쳤다. 그래서 화면마다 주인공을 하나만 두고 나머지는 주인공을 받치도록 덜어냈다.\n\n규칙은 셋으로 줄였다. 주인공은 하나만 둔다. 핑크는 주인공 데이터에만 쓴다. 테두리는 누를 수 있는 것에만 단다. 이 규칙으로 아홉 화면을 짠 뒤 디자인 시스템과 대조해 어긋난 181곳을 시스템 쪽에서 고쳤다.", "백엔드는 직접 다룰 수 없어서 실제 서비스로 개발하는 일은 개발자의 몫으로 남아 있다. 지금 화면의 데이터는 브라우저 안에서만 돌아간다.\n\n그래서 담당할 범위를 분명히 정했다. 무엇을 에이전트에게 맡기고 어디서 사람이 판단할지 가르는 일, 그 구조를 디자인 시스템부터 움직이는 화면까지 설계해 두는 일까지가 내 몫이다."]},
     "monthlens": {"role": "Solo, 100%", "timeline": "Oct 2026", "type": "Client work, ad‑AI startup", "scope": "Two brand landing pages", "big": "설명하는 대신 함께 일하는 경험을 먼저 보여 준다.", "tabs": ["한 회사의 브랜드 페이지를 두 가지 방식으로 설계했다. 첫 화면 다음에 바로 채팅으로 이어지는 랜딩과, 제품이 움직이는 대시보드를 따라 내려가는 스크롤 랜딩이다.\n\n두 랜딩 모두 다크·라이트 모드와 한국어·영어 전환을 갖췄다. 설계와 디자인, 구현까지 100% 혼자 작업했다. 여기서는 월 구독형 사진 스튜디오라는 가상 브랜드로 문구를 바꿔서 보여 준다.", "회사 홈페이지에 들어온 고객은 회사 소개나 자랑보다 「그래서 이 회사와 일하면 어떤 건데?」를 정말 궁금해한다고 판단했다. 그래서 그 답을 글로 설명하지 않고 화면 안에서 직접 경험하게 하고 싶었다.\n\n이 회사의 제품은 AI 에이전트들이 한 팀으로 일하고 사람은 고르고 승인만 하는 구조라서, 말로 설명하면 오히려 어렵게 느껴진다. 처음 온 사람이 그 흐름을 한 번에 체감할 방법이 필요했다.", "같은 의도를 두 가지 방식으로 구현했다. 채팅형은 첫 화면에서 「우리는 누구」를 한 줄로 말하고 바로 채팅으로 넘어간다. 브랜드를 입력하면 에이전트 팀이 분석해 제안을 내놓고, 고객이 그중 하나를 고르면 다음 단계로 이어진다. 모든 단계는 옆의 작업 기록에 남는다.\n\n스크롤형은 제품이 실제로 작동하는 모습을 대시보드 화면의 모션과 인터랙션으로 보여 주어, 스크롤을 내리며 에이전트들이 일하는 흐름을 지켜보게 했다. 12칸 격자 하나로 모든 절의 크기와 무게 순서를 맞췄다.", "두 랜딩의 첫 흐름까지 만든 뒤 의뢰처의 사정으로 작업이 끝나서, 세부 페이지 설계까지는 진행하지 못했다.\n\n그래도 첫 화면에서 회사 소개 대신 함께 일하는 장면부터 보여 준다는 방향은 두 랜딩 모두에 끝까지 남았다."]}
   };
-  const PARENT = { 'bizcopilot-story': 'bizcopilot', 'bizcopilot-system': 'bizcopilot', 'monthlens-dark': 'monthlens' };
+  const PARENT = { 'bizcopilot-story': 'bizcopilot', 'bizcopilot-system': 'bizcopilot', 'monthlens-dark': 'monthlens', 'chuck-case': 'chuck' };
   const workOf = sv => PARENT[sv.id] || sv.id;
   const WEB = Stage.config.stations.findIndex(x => x.name === 'web'), END = Stage.config.stations.length - 1;
   const ALIAS = { cases: 'bewhysee' };             // 옛 해시
