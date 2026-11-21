@@ -543,24 +543,16 @@ html.stage-on .mb.fs .mb-screen{z-index:6}
   html.stage-on.web-fs :is(.peek,.totop){visibility:hidden}
 }
 
-/* 휴대폰 안내(10-22 대표님 「모바일에서는 그냥 안 되게. 웹에서 보는 용이니까」, 참고 joannaseok.com): 폭 820 이하에서는 장면이 넘어가지 않고
-   첫 화면에 머문다. 사원증(누르면 연락처·QR)과 큰 이름은 그대로, 소개 글 자리에 데스크톱 안내와 링크 복사. 잠금은 stage.js가 건다 */
+/* 휴대폰 판(10-22 대표님 「모바일에서는 그냥 안 되게. 웹에서 보는 용이니까」 → 11-21 「3D는 없애면 안 돼」로 고침): 폭 820 이하에서는 장면이 넘어가지 않고
+   첫 화면에 머문다. 사원증(누르면 연락처·QR)과 큰 이름은 그대로, 소개 글 자리에 문의·작업 보기 단추(.gate-note). 단추·작업 시트의 모양은 7-mobile.css, 동작은 mobile.js. 잠금은 stage.js가 건다 */
 .gate-note{display:none}
 @media (max-width:820px){
   html.gate,html.gate body{overflow:hidden;height:100%}
   html.gate .copy .intro,html.gate .copy .meta,html.gate .peek,html.gate .totop{display:none}
   html.gate .gate-note{display:grid;grid-column:1;grid-row:5 / 7;align-self:start;align-content:start;justify-items:start;gap:8px;max-width:21em}
   html.gate .gate-note>*{margin:0}   /* .copy 문단 여백(눈썹·소개용)을 물려받지 않게 */
-  html.gate .gate-note .gn-copy{margin-top:8px}
   html.gate .copy{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}   /* 작업 카드 더미(.peek)가 없으니 그 몫을 줄여 이름부터 아래로 내린다. 사원증 크기는 hero.js가 이름 자리까지의 높이로 정하므로 함께 커진다(10-22 대표님 실기기 판정) */
   html.gate .copy .mark .mk.sp~.mk{translate:.035em 0}   /* 시각 보정: 둘째 줄 「Kwon」의 K가 첫 줄 C보다 왼쪽으로 보여서 오른쪽으로 민다 */
-  .gn-en{font-family:var(--f-disp);font-weight:500;font-size:22px;line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
-  .gn-ko{font-family:var(--f-ko);font-size:12.5px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
-  .gn-copy{margin-top:6px;display:inline-flex;align-items:center;gap:10px;border:0;background:none;padding:0;cursor:pointer;
-    font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-  .gn-copy i{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
-  .gn-copy i svg{width:12px;height:12px}
-  .gn-copy:focus-visible{outline:2px solid var(--dot);outline-offset:4px;border-radius:14px}
 }
 /* 맥북(card-drop, 10-21 조율 합의): 몸체·덮개·힌지는 macbook3d.js가 WebGL로 그리고(MahdiEdits 3D 모델), CSS 무대에는 화면(iframe)만 남는다.
    캔버스는 무대 바로 아래 고정 층이라, 덮개 자리의 CSS 면은 투명하게 두고 iframe만 모델 화면 자리에 얹는다.
@@ -745,6 +737,60 @@ html.stage-on .mb .mb-arrive svg{width:calc(16 * var(--u));height:calc(16 * var(
 }
 html:not(.stage-on) .end-info{display:none}
 @media (prefers-reduced-motion:reduce){.end-info .ei-a{transition:none}}
+/* ── 휴대폰 판(11-21 대표님 「3D 없애면 안 돼」 → 사원증 3D는 그대로, 그 아래 길을 연다) ──
+   폭 820 이하: 첫 화면(사원증·큰 이름)은 지금처럼 머물고, 옛 「컴퓨터에서 열어 주세요」 자리에 문의·작업 보기 단추를 둔다.
+   「작업 보기」나 위로 쓸기로 밤색 시트(.m-sheet)가 올라와 작업 목록·맡는 일·연락처를 세로로 보여 준다(mobile.js). 데스크톱은 건드리지 않는다 */
+.copy h1{word-break:keep-all}
+/* 데스크톱 첫 화면의 문의 링크: 상태 줄(Available for new projects) 옆. .copy가 누르기를 통과시키므로 링크만 되살린다 */
+.copy .meta{flex-wrap:wrap;justify-content:flex-end;row-gap:10px}
+.meta .meta-go{flex-basis:100%;text-align:right;padding:4px 0;color:var(--ink);font-family:var(--f-ko);font-weight:700;letter-spacing:0;text-transform:none;font-size:12.5px;
+  text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;pointer-events:auto}   /* 상태 줄 아래 한 줄: 옆에 붙이면 좁은 데스크톱에서 사원증 뒤로 들어간다 */
+.meta .meta-go:hover{color:var(--dot)}
+.meta .meta-go:focus-visible{outline:2px solid var(--dot);outline-offset:4px;border-radius:4px}
+.m-sheet{display:none}
+@media (max-width:820px){
+  html.gate .meta .meta-go{display:none}
+  .copy h1{max-width:9.7em;line-height:1.12}   /* 세 줄로 접어 목줄 왼쪽에 둔다: 목줄은 제목 오른쪽을 지난다(hero.js) */
+  .gn-ko{font-family:var(--f-ko);font-size:12.5px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
+  .gn-act{display:flex;gap:8px;margin-top:6px;pointer-events:auto}
+  .gn-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;margin:0;border:0;border-radius:22px;cursor:pointer;text-decoration:none;
+    font:700 13px/1 var(--f-ko);color:var(--ink);background:none;box-shadow:inset 0 0 0 1px rgba(14,14,18,.18);-webkit-tap-highlight-color:transparent}
+  .gn-btn.gn-pri{background:var(--ink);color:#fff;box-shadow:none}
+  .gn-btn svg{width:12px;height:12px}
+  .gn-btn:focus-visible{outline:2px solid var(--dot);outline-offset:3px}
+
+  html.gate .m-sheet{display:block;position:fixed;inset:0;z-index:60;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    background:var(--nt);color:var(--nt-ink);font-family:var(--f-ko);
+    padding:0 20px calc(40px + env(safe-area-inset-bottom,0px));
+    transform:translateY(100%);visibility:hidden;transition:transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s .55s}
+  html.gate .m-sheet[hidden]{display:none}
+  html.gate.m-open .m-sheet{transform:none;visibility:visible;transition:transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s}
+  .m-sheet :where(h2,p,ul){margin:0;padding:0}
+  .m-sheet :where(ul){list-style:none}
+  .ms-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;margin:0 -20px;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 10px;background:linear-gradient(var(--nt) 78%,rgba(17,15,33,0))}   /* 위 여백까지 머리 줄이 덮어, 넘기는 그림이 그 위로 비치지 않는다 */
+  .ms-ey{display:flex;align-items:center;gap:8px;font:500 11px/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-2)}
+  .ms-ey i{width:5px;height:5px;border-radius:50%;background:var(--soft)}
+  .ms-x{display:grid;place-items:center;width:44px;height:44px;margin:0 -10px 0 0;padding:0;border:0;border-radius:50%;background:none;color:var(--nt-ink);cursor:pointer}
+  .ms-x svg{width:14px;height:14px}
+  .ms-x:focus-visible,.m-sheet a:focus-visible{outline:2px solid var(--soft);outline-offset:3px}
+  .ms-h{font:500 21vw/.8 var(--f-disp);letter-spacing:-.055em;color:var(--soft);margin:10px 0 26px -.04em}
+  .ms-list{display:grid;gap:28px}
+  .ms-list a{display:grid;gap:12px;color:inherit;text-decoration:none}
+  .ms-list img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:12px;background:#1b1930;box-shadow:0 0 0 1px var(--nt-line)}
+  .ms-b{display:grid;gap:5px}
+  .ms-b em{font-style:normal;font-weight:700;font-size:11.5px;letter-spacing:.01em;color:var(--soft)}
+  .ms-b b{font:500 28px/1.05 var(--f-disp);letter-spacing:-.03em}
+  .ms-b b::after{content:" ↗";font-size:.6em;color:var(--nt-3);vertical-align:.25em}
+  .ms-b span{font-size:12.5px;line-height:1.5;color:var(--nt-2);word-break:keep-all}
+  .ms-svc,.ms-ct{margin-top:52px;padding-top:22px;border-top:1px solid var(--nt-line)}
+  .ms-svc ul{margin-top:16px;display:grid;gap:8px;font-weight:500;font-size:17px;line-height:1.35;letter-spacing:-.01em}
+  .ms-big{font:500 13.4vw/.92 var(--f-disp);letter-spacing:-.05em;margin:16px 0 22px -.03em}
+  .ms-btn{display:flex;align-items:center;justify-content:center;height:52px;margin-top:10px;border-radius:26px;text-decoration:none;font-weight:700;font-size:14px;
+    color:var(--nt-ink);box-shadow:inset 0 0 0 1px var(--nt-3)}
+  .ms-btn.ms-pri{background:var(--nt-ink);color:var(--nt);box-shadow:none}
+  .ms-tel{display:block;margin-top:18px;text-align:center;font:500 13px/1 var(--f-en);letter-spacing:.04em;color:var(--nt-2);text-decoration:none;padding:8px}
+  .ms-foot{margin-top:36px;text-align:center;font-size:11.5px;color:var(--nt-3)}
+}
 </style>
 
 <!-- MacBook 3D model: MahdiEdits (ko-fi.com/s/d30d0dee5c) -->
@@ -793,10 +839,10 @@ html:not(.stage-on) .end-info{display:none}
 <main class="page">
   <section class="copy">
     <p class="eyebrow"><i></i>Chanjun Kwon · Studio</p>
-    <h1>Meet the designer<span>behind the work.</span></h1>
-    <p class="intro"><span class="en" lang="en">I'm Chanjun Kwon, a designer who builds brands and websites and uses AI to change how they get made. My work lives on Instagram.</span><span class="ko">브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준입니다. 작업은 인스타그램에 모아 두었습니다.</span></p>
-    <p class="meta"><i></i>Available for new projects</p>
-    <div class="gate-note"><p class="gn-en" lang="en">Built for the desktop.</p><p class="gn-ko">이 포트폴리오는 데스크톱 화면에서 보도록 만들었습니다. 컴퓨터에서 열어 주세요.</p><button class="gn-copy" type="button" data-link="https://kwoncj1025-cmd.github.io/"><span>Copy link</span><i aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4.2M9 3V7.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i></button></div>
+    <h1 lang="ko">브랜드와 웹사이트를<span>기획부터 구현까지 혼자 만듭니다.</span></h1>
+    <p class="intro"><span class="en" lang="en">I'm Chanjun Kwon, a designer who builds brands and websites and uses AI to change how they get made. Open for new projects by email or Instagram DM.</span><span class="ko">브랜드와 웹을 만들고, AI로 만드는 방식을 바꾸는 디자이너 권찬준입니다. 프로젝트 문의는 메일이나 인스타그램 DM으로 받습니다.</span></p>
+    <p class="meta"><i></i>Available for new projects<a class="meta-go" href="mailto:kwoncj1025@gmail.com?subject=%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EB%AC%B8%EC%9D%98">프로젝트 문의 ↗</a></p>
+    <div class="gate-note"><p class="gn-ko">브랜드 아이덴티티 · 웹사이트 · AI 콘텐츠 작업을 맡습니다.</p><div class="gn-act"><a class="gn-btn gn-pri" href="mailto:kwoncj1025@gmail.com?subject=%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EB%AC%B8%EC%9D%98">프로젝트 문의</a><button class="gn-btn" id="mOpen" type="button" aria-controls="mSheet" aria-expanded="false">작업 보기<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
     <p class="mark" aria-hidden="true">Chanjun Kwon</p>
   </section>
 
@@ -859,6 +905,28 @@ html:not(.stage-on) .end-info{display:none}
 </aside>
 <button class="peek" id="peek" type="button" aria-label="다음 장면 보기"><span class="peek-t" aria-hidden="true"><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg><svg viewBox="0 0 20 10"><path d="M2 1.5l8 7 8-7"/></svg></span></button>
 <button class="totop" id="toTop" type="button" aria-label="맨 위로"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+<!-- 휴대폰 작업 시트(11-21): 폭 820 이하에서 첫 화면의 「작업 보기」나 위로 쓸기로 올라온다. 데스크톱의 카드 테이블·맥북 장면을 대신하는 세로 목록(7-mobile.css, mobile.js) -->
+<section class="m-sheet" id="mSheet" aria-label="작업과 연락처" data-stage-ignore hidden>
+  <header class="ms-top"><span class="ms-ey"><i></i>Selected work</span><button class="ms-x" id="mClose" type="button" aria-label="닫기"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></header>
+  <h2 class="ms-h" lang="en">Work</h2>
+  <ul class="ms-list">
+    <li><a href="web/picketing/v2/" target="_blank" rel="noopener"><img src="macbook/thumbs/picketing.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>클라이언트 작업</em><b lang="en">Picketing</b><span>브랜딩 · 웹사이트 · 디자인 시스템</span></span></a></li>
+    <li><a href="https://www.behance.net/gallery/257627663/OURZ-Brand-Identity" target="_blank" rel="noopener"><img src="macbook/thumbs/ourz.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>DIAD 브랜딩 17기 대상</em><b lang="en">OURZ\</b><span>네이밍 · 아이덴티티 · 앱 UI · 캠페인</span></span></a></li>
+    <li><a href="https://kingjesus.kr/" target="_blank" rel="noopener"><img src="macbook/thumbs/bible.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>운영 중 · 월 방문 약 2,000명</em><b lang="en">Bible Typing</b><span>기획 · 디자인 · 개발</span></span></a></li>
+    <li><a href="web/monthlens/PickAds_랜딩/결과물/monthlens_상호작용_모바일.html" target="_blank" rel="noopener"><img src="macbook/thumbs/ml_chat.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>클라이언트 작업</em><b lang="en">Monthlens</b><span>브랜드 랜딩 페이지 2종</span></span></a></li>
+    <li><a href="https://www.behance.net/gallery/257308573/bewhysee-BYC-rebranding-%28concept-project%29" target="_blank" rel="noopener"><img src="macbook/thumbs/bewhysee.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>컨셉 리브랜딩</em><b lang="en">bewhysee</b><span>네이밍 · 아이덴티티 · 패키지 · 웹</span></span></a></li>
+    <li><a href="web/bizcopilot/c/" target="_blank" rel="noopener"><img src="macbook/thumbs/biz.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>프리랜서 제안</em><b lang="en">BizCopilot</b><span>브랜드 아이덴티티 · 웹사이트 리디자인</span></span></a></li>
+    <li><a href="https://chuckmode.com/app/" target="_blank" rel="noopener"><img src="macbook/thumbs/chuck.jpg" alt="" width="640" height="400" loading="lazy"><span class="ms-b"><em>운영 중</em><b lang="en">CHUCK MODE</b><span>기획 · 디자인 · 개발</span></span></a></li>
+  </ul>
+  <div class="ms-svc"><p class="ms-ey"><i></i>Services</p><ul><li>브랜드 아이덴티티</li><li>웹사이트 기획 · 디자인 · 구현</li><li>AI 콘텐츠</li></ul></div>
+  <div class="ms-ct"><p class="ms-ey"><i></i>Contact</p><p class="ms-big" lang="en">Let's make something.</p>
+    <a class="ms-btn ms-pri" href="mailto:kwoncj1025@gmail.com?subject=%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EB%AC%B8%EC%9D%98">메일로 문의하기</a>
+    <a class="ms-btn" href="https://instagram.com/chanjun.kwon" target="_blank" rel="noopener">인스타그램 DM ↗</a>
+    <a class="ms-tel" href="tel:010-6343-4110">010-6343-4110</a>
+  </div>
+  <p class="ms-foot">이 사이트의 3D 장면 전체는 데스크톱에서 볼 수 있습니다.</p>
+</section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/Observer.min.js"></script>
@@ -1170,7 +1238,7 @@ html:not(.stage-on) .end-info{display:none}
     refresh(){ dispatch(true); },      // 치수가 바뀌었을 때 현재 p로 장면 progress를 다시 부른다(카메라·조명 다시 쓰기)
     go, on(k, f){ (listeners[k] || (listeners[k] = [])).push(f); },
   };
-  // 휴대폰 안내(10-22 대표님 「모바일에서는 안 되게, 웹에서 보는 용」): 폭 820 이하면 무대를 첫 화면에 붙잡아 둔다. 손잡이 잠금(gate)은 dropGrips가 풀지 않는다.
+  // 휴대폰 판(10-22 대표님 「모바일에서는 안 되게, 웹에서 보는 용」, 11-21부터 작업은 시트로 보여 준다: mobile.js): 폭 820 이하면 무대를 첫 화면에 붙잡아 둔다. 손잡이 잠금(gate)은 dropGrips가 풀지 않는다.
   // 화면을 돌려 넓어지면 풀린다. 주소(#work 등)로 들어와도 첫 화면에서 시작한다
   const GATE = matchMedia('(max-width: 820px)'); let gateTok = 0;
   const gate = () => {
@@ -1178,10 +1246,6 @@ html:not(.stage-on) .end-info{display:none}
     else { root.classList.remove('gate'); if (gateTok) { Stage.release(gateTok); gateTok = 0; } }
   };
   GATE.addEventListener('change', gate); gate();
-  document.querySelectorAll('.gn-copy').forEach(b => b.addEventListener('click', () => {
-    const l = b.querySelector('span'), done = t => { l.textContent = t; setTimeout(() => { l.textContent = 'Copy link'; }, 1400); };
-    (navigator.clipboard ? navigator.clipboard.writeText(b.dataset.link) : Promise.reject()).then(() => done('Copied'), () => done(b.dataset.link.replace(/^https:\/\//, '')));
-  }));
 })();
 </script>
 <script>
@@ -2796,6 +2860,58 @@ window.ticker = (() => {
   // 해시로 맺음에 바로 들어오거나 한 번에 건너뛰면 scroll 이벤트가 정착 전에 끝난다: 정착할 때 한 번 더 따진다
   if (STAGE) Stage.on('settle', topBtn);
   tone();
+})();
+</script>
+<script>
+// 휴대폰 작업 시트(11-21): 폭 820 이하에서 첫 화면의 「작업 보기」 단추나 위로 쓸기로 .m-sheet를 올린다. 닫기는 × 단추, Esc, 맨 위에서 아래로 끌기.
+// 사원증(#badge)에서 시작한 손가락은 사원증을 끄는 것이므로 쓸기로 읽지 않는다. 데스크톱(820 초과)에서는 아무 일도 하지 않는다
+(() => {
+  const root = document.documentElement, sheet = document.getElementById('mSheet'), openB = document.getElementById('mOpen'), closeB = document.getElementById('mClose');
+  if (!sheet || !openB || !closeB) return;
+  const NARROW = matchMedia('(max-width: 820px)');
+  let back = null, timer = 0;
+  const isOpen = () => root.classList.contains('m-open');
+  const show = () => {
+    if (!NARROW.matches || !root.classList.contains('gate') || isOpen()) return;
+    clearTimeout(timer); back = document.activeElement;
+    sheet.hidden = false; sheet.scrollTop = 0; sheet.offsetWidth;   // 숨김을 푼 뒤 한 번 그려야 올라오는 전환이 돈다
+    root.classList.add('m-open'); openB.setAttribute('aria-expanded', 'true');
+    closeB.focus({ preventScroll: true });
+  };
+  const hide = () => {
+    if (!isOpen()) return;
+    root.classList.remove('m-open'); openB.setAttribute('aria-expanded', 'false');
+    timer = setTimeout(() => { if (!isOpen()) sheet.hidden = true; }, 600);
+    if (back && back.focus) back.focus({ preventScroll: true });
+  };
+  openB.addEventListener('click', show);
+  closeB.addEventListener('click', hide);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) { e.preventDefault(); hide(); } });
+  NARROW.addEventListener('change', () => { if (!NARROW.matches) hide(); });
+
+  // 첫 화면에서 위로 쓸기 → 열기
+  const hero = document.getElementById('hero');
+  let sx = 0, sy = 0, on = false;
+  if (hero) {
+    hero.addEventListener('touchstart', e => {
+      const t = e.target;
+      on = e.touches.length === 1 && !(t.closest && t.closest('#badge, a, button'));
+      if (on) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }
+    }, { passive: true });
+    hero.addEventListener('touchend', e => {
+      if (!on) return; on = false;
+      const c = e.changedTouches[0], dy = sy - c.clientY, dx = Math.abs(sx - c.clientX);
+      if (dy > 56 && dy > dx * 1.5) show();
+    }, { passive: true });
+  }
+  // 시트 맨 위에서 아래로 끌기 → 닫기
+  let py = null;
+  sheet.addEventListener('touchstart', e => { py = sheet.scrollTop <= 0 && e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+  sheet.addEventListener('touchend', e => {
+    if (py === null) return;
+    const dy = e.changedTouches[0].clientY - py; py = null;
+    if (dy > 96 && sheet.scrollTop <= 0) hide();
+  }, { passive: true });
 })();
 </script>
 <script>
