@@ -178,7 +178,7 @@ const nop = { H: NOOP }, lv = k => LV[k] || nop;
   const tl = gsap.timeline({ delay: .15 });
   tl.fromTo(kan, { clipPath: 'inset(100% 0 0 0)', y: 120, filter: 'blur(18px)' }, { clipPath: 'inset(0% 0 0 0)', y: 0, filter: 'blur(0px)', duration: 1.25, stagger: .22, ease: 'expo.out' })
     .from($$('.dots', s), { opacity: 0, duration: 1.2 }, 0)
-    .from([...nm(s, 'KANA'), ...nm(s, 'macOS character agent'), ...nm(s, '2026'), ...nm(s, '권찬준  Chanjun Kwon'), ...nm(s, '면')], { opacity: 0, y: -12, duration: .6, stagger: .05 }, .2)
+    .from([...nm(s, 'KANA'), ...nm(s, 'macOS character agent'), ...nm(s, '2026'), ...nm(s, '작가 이름'), ...nm(s, '면')], { opacity: 0, y: -12, duration: .6, stagger: .05 }, .2)
     .from(kana, { y: 160, opacity: 0, duration: 1.1, ease: 'expo.out' }, .35)
     .from(nm(s, '카나'), { yPercent: 40, opacity: 0, duration: .7, ease: 'back.out(1.6)' }, .8)
     .add(() => L && L.H.hop(.7), .95)
