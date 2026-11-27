@@ -1,0 +1,90 @@
+/* 카나 판매·정책 페이지 공통. 연보라 판·코발트·라임, 흰 테두리 스티커, 검은 테두리 알약.
+   글자 크기는 세 단계만: --t-big(제목), --t-body(본문), --t-small(작은 글) */
+:root{
+  --lav:#e8e4fb;--cob:#2b3bea;--lime:#dcfb4a;--ink:#0d0d12;--red:#e2432f;--mute:#4a4866;--line:#c9c4e6;
+  --t-big:clamp(40px,5.6vw,76px);--t-body:18px;--t-small:14px;
+  --sans:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+  --ko-d:'Black Han Sans',var(--sans);--en-d:'Anton',var(--sans);--kj:'Dela Gothic One',var(--sans);
+  --gut:clamp(16px,4vw,56px);--r:30px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--ink);font:500 var(--t-body)/1.5 var(--sans);word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html[data-lang=ko] [lang=en],html[data-lang=en] [lang=ko]{display:none!important}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+p,li,dd{text-wrap:pretty}
+a{color:inherit}
+.nb{white-space:nowrap}
+img{max-width:100%;display:block}
+.small{font-size:var(--t-small);line-height:1.45}
+/* 큰 제목: 한국어는 Black Han Sans, 영어는 Anton 대문자 */
+.big{font:400 var(--t-big)/1.2 var(--ko-d);letter-spacing:-.01em}
+html[data-lang=en] .big{font-family:var(--en-d);text-transform:uppercase;letter-spacing:.005em;line-height:1.08}
+
+/* 둥근 판 */
+.pan{position:relative;margin:8px 8px 0;border-radius:var(--r);overflow:hidden;background:var(--lav)}
+@media (max-width:760px){:root{--r:22px}.pan{margin:6px 6px 0}}
+.in{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+
+/* 스티커: 흰 테두리 + 그림자 */
+.stk{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 10px 14px rgba(13,13,18,.25))}
+
+/* 흐름 띠 */
+.tick{height:36px;background:var(--lime);overflow:hidden;display:flex;align-items:center}
+.tick .tr{display:flex;flex:none;white-space:nowrap;animation:tick 40s linear infinite}
+.tick span{font:400 15px/1 var(--ko-d);padding-right:22px}
+html[data-lang=en] .tick span{font-family:var(--en-d);text-transform:uppercase;letter-spacing:.04em}
+.tick span::after{content:"✦";margin-left:22px}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.tick .tr{animation:none}}
+
+/* 위 띠 */
+.nav{position:absolute;left:20px;right:20px;top:20px;z-index:6;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.nav.solid{position:static;padding:20px 20px 0}
+.logo{width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid var(--ink);display:grid;place-items:center;font:400 20px/1 var(--kj);text-decoration:none;color:var(--ink)}
+.lang{display:inline-flex;border:2px solid var(--ink);border-radius:24px;background:#fff;overflow:hidden}
+.lang button{all:unset;cursor:pointer;padding:11px 16px;font:700 14px/1 var(--sans);color:var(--ink)}
+.lang button[aria-pressed=true]{background:var(--ink);color:#fff}
+.lang button:focus-visible{outline:3px solid var(--cob);outline-offset:-3px}
+
+/* 알약 단추 */
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:30px;border:2px solid var(--ink);font:700 var(--t-body)/1 var(--sans);text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s;background:#fff;color:var(--ink)}
+.pill.dark{background:var(--ink);color:#fff}
+.pill.lime{background:var(--lime);color:var(--ink)}
+.pill:hover{transform:translateY(-2px);box-shadow:0 4px 0 var(--ink)}
+.pill.soon{cursor:default;opacity:.6;transform:none;box-shadow:none}
+.pill:focus-visible{outline:3px solid var(--cob);outline-offset:3px}
+
+/* 아래 띠 */
+.foot{background:var(--ink);color:rgba(255,255,255,.78);padding:48px 0 56px;font-size:var(--t-small);line-height:1.6}
+.foot .in{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:32px}
+.foot .kj{font:400 56px/1 var(--kj);color:var(--lime);margin-bottom:14px}
+.foot b{display:block;color:#fff;font-weight:700;margin-bottom:8px}
+.foot a{color:#fff}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.foot .note{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.14);padding-top:20px;color:rgba(255,255,255,.6)}
+@media (max-width:760px){.foot .in{grid-template-columns:1fr}}
+
+/* 정책 문서 */
+.doc{background:#fff}
+.doc .body{max-width:760px;margin:0 auto;padding:32px var(--gut) 88px}
+.doc h1{font:400 var(--t-big)/1.12 var(--ko-d);margin:8px 0 10px}
+html[data-lang=en] .doc h1{font-family:var(--en-d);text-transform:uppercase}
+.doc .date{color:var(--mute);font-size:var(--t-small)}
+.doc .sum{margin:28px 0 8px;padding:22px 24px;background:var(--lime);border:2px solid var(--ink);border-radius:20px}
+.doc h2{font:800 var(--t-body)/1.4 var(--sans);margin:44px 0 12px;padding-top:20px;border-top:2px solid var(--ink)}
+.doc p+p,.doc p+ul,.doc ul+p{margin-top:12px}
+.doc ul{padding-left:1.2em;margin:0}
+.doc li{margin:6px 0}
+.doc table{width:100%;border-collapse:collapse;font-size:var(--t-small);line-height:1.45;margin-top:12px}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:10px 12px;border-top:1px solid var(--line)}
+.doc th{font-weight:700;background:var(--lav)}
+.doc .back{margin-top:48px}
+@media (max-width:560px){
+  .doc table,.doc tbody,.doc tr,.doc td{display:block}
+  .doc tr:first-child{display:none}
+  .doc td:first-child{font-weight:700;padding:14px 0 2px;border-top:1px solid var(--line)}
+  .doc td+td{border-top:0;padding:4px 0}
+}
+.foot .cr{display:inline;color:#fff;margin:0;font-weight:700}
