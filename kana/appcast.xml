@@ -4,6 +4,15 @@
         <title>Kana</title>
         <item>
             <title>2026.11.27</title>
+            <pubDate>Fri, 27 Nov 2026 21:02:45 +0900</pubDate>
+            <sparkle:version>202611272100</sparkle:version>
+            <sparkle:shortVersionString>2026.11.27</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/kwoncj1025-cmd/kwoncj1025-cmd.github.io/releases/download/kana-updates/Kana-202611272100.dmg" length="92038448" type="application/octet-stream" sparkle:edSignature="h/WhkpxT495FM4Yxhz3L4kLEyzMdq60JmukWcMc1z2T6M6Efh2m6+iWKoG3IS/ZK5cwPKJ7Gu08chWCfqCIzAA=="/>
+        </item>
+        <item>
+            <title>2026.11.27</title>
             <pubDate>Fri, 27 Nov 2026 20:53:57 +0900</pubDate>
             <sparkle:version>202611272051</sparkle:version>
             <sparkle:shortVersionString>2026.11.27</sparkle:shortVersionString>
@@ -19,15 +28,6 @@
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
             <enclosure url="https://github.com/kwoncj1025-cmd/kwoncj1025-cmd.github.io/releases/download/kana-updates/Kana-202611272031.dmg" length="91314890" type="application/octet-stream" sparkle:edSignature="to7NobQBwRONr6XnaAWflToI3B38234F7PtOkrvvSMfXdSmQLUInXT4ILOYigZ7qAQpeb09Ky3yifoQOPwaiAw=="/>
-        </item>
-        <item>
-            <title>2026.11.27</title>
-            <pubDate>Fri, 27 Nov 2026 20:22:23 +0900</pubDate>
-            <sparkle:version>202611272020</sparkle:version>
-            <sparkle:shortVersionString>2026.11.27</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/kwoncj1025-cmd/kwoncj1025-cmd.github.io/releases/download/kana-updates/Kana-202611272020.dmg" length="90855963" type="application/octet-stream" sparkle:edSignature="CsgdinaVpxrPLPnKFySm/7FFottJi6jAauKKNdltxGy0LLROfESjx2kYGVvV6TptnxpDX31tyS8h/uL7zU5pBw=="/>
         </item>
     </channel>
 </rss>
