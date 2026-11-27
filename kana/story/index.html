@@ -98,6 +98,7 @@ html,body{margin:0;background:#15132b}
 html{overflow-x:hidden}main{overflow:hidden;width:100%}
 /* 휴대폰(터치): 유리 흐림(backdrop-filter) 80여 곳이 아이폰 Safari 메모리를 넘겨 페이지를 끊는다 → 흐림만 끄고 반투명은 그대로 */
 @media (pointer:coarse){.art *,.stage *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .touch .art{transform:none;zoom:var(--k)}
 body{-webkit-font-smoothing:antialiased;overflow-x:hidden;text-rendering:optimizeLegibility}
 .s{position:relative;height:calc(var(--h)*var(--k)*1px);overflow:hidden}
