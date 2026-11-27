@@ -60,6 +60,11 @@ html[data-lang=en] .hero h1{font-family:var(--en-d);text-transform:uppercase;lin
 }
 
 html.og .nav,html.og .hero .btns,html.og .hero .note{display:none}html.og .say{animation:none;opacity:1;translate:none}
+.story{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:var(--t-small);color:var(--ink);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.story:hover{text-decoration-color:var(--cob);color:var(--cob)}
+.story:focus-visible{outline:3px solid var(--cob);outline-offset:3px;border-radius:4px}
+.hero .story{margin-top:14px}
+.storyend{text-align:center;margin-top:48px}
 /* ── 실제 화면: 검은 판 ── */
 .real{background:#000;color:#fff;padding:88px 0 0}
 .real .hd{display:flex;justify-content:space-between;align-items:end;gap:24px 56px;flex-wrap:wrap}
@@ -179,6 +184,7 @@ html[data-lang=en] .row{font-family:var(--en-d);text-transform:uppercase}
       <span class="pill soonpill" aria-disabled="true"><span lang="ko">Windows · 곧 만나요</span><span lang="en">Windows · Coming soon</span></span>
     </div>
     <p class="note"><span lang="ko">Claude Code로 일하는 동안, 메일·일정·자료 일은 카나가 맡아요.<br><s>24달러</s> → 출시 할인 <span class="nb">19달러</span> · 한 번 사면 끝</span><span lang="en">While you work in Claude Code, Kana handles mail, calendar and research.<br><s>$24</s> → launch price $19 · pay once</span></p>
+    <a class="story s1" href="https://kwoncj1025-cmd.github.io/kana/story/" target="_blank" rel="noopener"><span lang="ko">카나 이야기 보기 →</span><span lang="en">The story of Kana →</span></a>
   </div>
 </header>
 
@@ -305,6 +311,7 @@ html[data-lang=en] .row{font-family:var(--en-d);text-transform:uppercase}
       <details><summary><span lang="ko">카나의 답은 늘 맞나요?</span><span lang="en">Is Kana always right?</span></summary><div class="a">
         <p><span lang="ko">카나는 AI(Claude)로 움직여서 틀릴 수 있어요. 값은 코드로 셈하고 출처를 남기지만, 중요한 숫자와 사실은 한 번 확인해 주세요.</span><span lang="en">Kana runs on AI (Claude), so she can be wrong. She calculates with code and cites her sources, but please double-check important numbers and facts.</span></p></div></details>
     </div>
+    <p class="storyend"><a class="story s2" href="https://kwoncj1025-cmd.github.io/kana/story/" target="_blank" rel="noopener"><span lang="ko">카나 이야기 보기 →</span><span lang="en">The story of Kana →</span></a></p>
   </div>
 </section>
 </main>
@@ -333,6 +340,7 @@ html[data-lang=en] .row{font-family:var(--en-d);text-transform:uppercase}
 <script>
 /* 흐름 띠: 글을 여러 번 이어 붙여 끊김 없이 돈다. 아래 띠도 같은 글 */
 (() => { const t = document.getElementById('tick'), one = t.innerHTML; t.innerHTML = one.repeat(8); document.querySelectorAll('.tr2').forEach(x => x.innerHTML = t.innerHTML); })();
+document.addEventListener('click', e => { const a = e.target.closest('a.story'); if (a) a.href = 'https://kwoncj1025-cmd.github.io/kana/story/?lang=' + document.documentElement.dataset.lang; });
 if (/[?&]og=1/.test(location.search)) document.documentElement.classList.add('og');
 </script>
 <script src="kana/engine.js"></script>

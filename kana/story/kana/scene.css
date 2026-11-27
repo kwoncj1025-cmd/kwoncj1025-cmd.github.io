@@ -1,0 +1,40 @@
+/* 하루 대사창. 역할 옷을 입었을 때만 선다. 상자는 완전히 불투명하다. */
+@font-face{font-family:"sc명조";src:local("NanumMyeongjoExtraBold"),local("Nanum Myeongjo ExtraBold"),local("AppleMyungjo");font-weight:800}
+@font-face{font-family:"sc바탕";src:local("KoPubWorldBatang_Pro Bold"),local("KoPubWorldBatangPB"),local("KoPubWorldBatang_Pro-Bold"),local("NanumMyeongjoBold"),local("AppleMyungjo");font-weight:700}
+.sc{position:absolute;left:0;top:0;width:560px;pointer-events:auto;cursor:default;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;transform-origin:50% 100%}
+.sc[hidden]{display:none}
+.sc>svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.sc .tx{position:absolute;white-space:pre;font-size:23px;line-height:36px;letter-spacing:-.02em}
+.sc .tx s{text-decoration:none;visibility:hidden}.sc .tx s.v{visibility:visible}
+.sc .nm{position:absolute;display:grid;place-items:center;white-space:nowrap}
+.sc .go{position:absolute;visibility:hidden;overflow:visible}
+.sc.done .go{visibility:visible;animation:sc-go 1s steps(1) infinite}
+@keyframes sc-go{0%{transform:none}37.5%{transform:translateY(2px)}50%{transform:translateY(4px)}75%{transform:translateY(2px)}}
+.sc .sway{transform-box:fill-box;transform-origin:50% 0;animation:sc-sway 2s steps(1) infinite}
+@keyframes sc-sway{0%{transform:none}25%{transform:rotate(2deg)}50%{transform:none}75%{transform:rotate(-2deg)}}
+.sc.still *{animation-play-state:paused!important}
+/* 고딕 */
+.sc.goth .tx{font-family:"sc명조","Nanum Myeongjo",AppleMyungjo,serif;font-weight:800;color:#fbf6f4}
+.sc.goth .nm{left:38px;top:-17px;width:84px;height:36px;font:800 18px/1 "sc명조","Nanum Myeongjo",AppleMyungjo,serif;color:#231a29}
+/* 무녀 */
+.sc.miko .tx{font-family:"sc바탕","KoPubWorldBatang_Pro","Nanum Myeongjo",AppleMyungjo,serif;font-weight:700;color:#2a1c18;letter-spacing:-.035em}
+.sc.miko .nm{left:31px;top:-22px;width:40px;height:94px;font:700 20px/1.22 "sc바탕","KoPubWorldBatang_Pro","Nanum Myeongjo",AppleMyungjo,serif;color:#a1271c;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:.06em;padding-top:8px}
+/* 메이드 */
+.sc.maid .tx{font-family:"NanumSquare Neo","NanumSquare Neo variable",Pretendard,"Apple SD Gothic Neo",sans-serif;font-weight:700;color:#2d2429;font-size:22px;letter-spacing:-.045em}
+.sc.maid .nm{left:40px;top:-19px;width:104px;height:38px;font:800 17px/1 "NanumSquare Neo",Pretendard,"Apple SD Gothic Neo",sans-serif;color:#fff;letter-spacing:-.02em}
+/* 고르는 말 */
+.sc-ch{position:absolute;display:flex;flex-direction:column;align-items:stretch;gap:8px;pointer-events:auto}
+.sc-ch button{-webkit-appearance:none;border:0;margin:0;min-width:150px;height:44px;padding:0 22px;font-size:17.5px;cursor:pointer;outline:none;white-space:nowrap}
+.sc-ch.goth button{font-family:"sc명조","Nanum Myeongjo",serif;font-weight:800;background:#211927;color:#fbf6f4;box-shadow:inset 0 0 0 4px #211927,inset 0 0 0 5px #a892a6}
+.sc-ch.goth button:is(:hover,:focus-visible,.on){background:#f4ebe6;color:#231a29;box-shadow:inset 0 0 0 4px #f4ebe6,inset 0 0 0 5px #54415a}
+.sc-ch.miko button{font-family:"sc바탕","KoPubWorldBatang_Pro","Nanum Myeongjo",serif;font-weight:700;background:#fdfaf3;color:#2a1c18;border:1px solid #cdbfa6;border-right:5px solid #b3301f}
+.sc-ch.miko button:is(:hover,:focus-visible,.on){background:#b3301f;border-color:#b3301f;color:#fffaf0}
+.sc-ch.maid button{font-family:"NanumSquare Neo",Pretendard,"Apple SD Gothic Neo",sans-serif;font-weight:700;background:#fff;color:#2d2429;border-radius:22px;box-shadow:0 0 0 1.4px #3a2f35,inset 0 0 0 3px #fff,inset 0 0 0 4px #d8d0d3}
+.sc-ch.maid button:is(:hover,:focus-visible,.on){background:#3a2f35;color:#fff;box-shadow:0 0 0 1.4px #3a2f35,inset 0 0 0 3px #3a2f35,inset 0 0 0 4px #8d7f86}
+/* 깨짐 */
+.sc-sh{position:absolute;left:0;top:0;perspective:900px;pointer-events:none}
+.sc-sh>div{position:absolute;left:0;top:0;will-change:transform}
+.sc-sh>div>.in{position:absolute;left:0;top:0}
+.sc-sh svg.e{position:absolute;left:0;top:0;overflow:visible}
+.sc-sh .go,.sc-sh .sway{animation:none!important}.sc-sh .go{visibility:hidden!important}
+.sc svg.crack{z-index:5}
