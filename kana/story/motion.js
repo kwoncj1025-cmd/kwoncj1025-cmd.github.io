@@ -10,6 +10,8 @@ const nm = (s, n) => $$(`[data-n="${n}"]`, s);
 
 /* 1920 폭 좌표를 화면 폭으로 */
 let K = 1;
+/* 살아 있는 카나 엔진은 화면 폭 안으로 자리를 묶는다. 판(1920 폭)은 창 폭과 상관없이 같은 비율로 줄어들므로 엔진도 늘 1920 판 좌표로 세게 한다 */
+window.KANA_VW = 1920; window.KANA_VH = 4000;
 const fit = () => { K = document.documentElement.clientWidth / 1920; document.documentElement.style.setProperty('--k', K); };
 fit();
 
@@ -82,7 +84,7 @@ function homeOf(sl, H, ox = 0, oy = 0) {
   const { img, opt: { box } } = sl, bw = box[2] - box[0], bh = box[3] - box[1], w = img.offsetWidth, h = img.offsetHeight;
   const sc = Math.max(w / bw, h / bh), offx = (w - bw * sc) / 2, offy = (h - bh * sc) / 2;
   /* 엔진은 자기 좌표를 화면 폭 안으로 묶으므로, 판(wrap)을 그림 칸 왼쪽 300 바깥에 두고 그 안에서 센다 */
-  H.home({ x: (300 + offx + (778 - box[0]) * sc + ox) / innerWidth, y: (offy + (1376 - box[1]) * sc + oy) / innerHeight, px: 2752 * sc });
+  H.home({ x: (300 + offx + (778 - box[0]) * sc + ox) / window.KANA_VW, y: (offy + (1376 - box[1]) * sc + oy) / window.KANA_VH, px: 2752 * sc });
 }
 async function attach(sl) {
   if (sl.e || !ENG.length) return;
