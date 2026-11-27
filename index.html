@@ -603,11 +603,11 @@ html.stage-on .mb .mb-back{display:none}
    대표님 「좌측 컨텐츠 전체적으로 좀만 내려줘」(19판 확인 때): 머리 줄과 글 기둥을 함께 24 내렸다(--dn). OURZ\ 아래끝이 덮개 아래끝(598) 안에 든다.
    등장은 움직임 없이 화면 빛과 같은 곡선으로 어둠에서 밝아진다(투명도는 scene-web.js가 쓴다) */
 html.stage-on body .web-info{--dn:calc(24px * var(--k,1));position:fixed;inset:0;width:auto;z-index:40;display:block;margin:0;padding:0;color:var(--nt-ink);pointer-events:none}
-html.stage-on body .web-info .wi-ey{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) - calc(45px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));height:calc(24px * var(--k,1));margin:0;
+html.stage-on body .web-info .wi-ey{position:absolute;left:calc(var(--ox,0px) + 128px * var(--k,1));top:calc(var(--scr-t,101px) - calc(45px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));height:calc(24px * var(--k,1));margin:0;
   display:flex;align-items:center;font:500 calc(11px * var(--k,1))/1 var(--f-en);letter-spacing:.08em;text-transform:uppercase;color:var(--nt-3)}
 html.stage-on body .web-info .wi-kind{display:flex;align-items:center;gap:calc(8px * var(--k,1))}
 html.stage-on body .web-info .wi-kind i{width:calc(5px * var(--k,1));height:calc(5px * var(--k,1));border-radius:50%;background:var(--dot)}
-html.stage-on body .web-info .wi-body{position:absolute;left:calc(128px * var(--k,1));top:calc(var(--scr-t,101px) + calc(4px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));display:flex;flex-direction:column;align-items:stretch;min-width:0}
+html.stage-on body .web-info .wi-body{position:absolute;left:calc(var(--ox,0px) + 128px * var(--k,1));top:calc(var(--scr-t,101px) + calc(4px * var(--k,1)) + var(--dn));width:calc(352px * var(--k,1));display:flex;flex-direction:column;align-items:stretch;min-width:0}
 html.stage-on body .web-info .wi-name{margin:0 0 calc(16px * var(--k,1));font:500 calc(28px * var(--k,1))/1 var(--f-disp);letter-spacing:-.03em;color:var(--nt-ink)}
 html.stage-on body .web-info .wi-big{margin:0 0 calc(32px * var(--k,1));font:500 calc(18px * var(--k,1))/1.6 var(--f-ko);letter-spacing:-.02em;color:var(--nt-hi);word-break:keep-all;text-wrap:balance}
 html.stage-on body .web-info .wi-more{display:flex;flex-direction:column;gap:calc(16px * var(--k,1));width:100%}
@@ -3108,6 +3108,11 @@ window.ticker = (() => {
   // 그래서 world.js 뒤, scene-web.js·web-live.js 앞에 둔다
   if (!window.Stage || !Stage.enabled) return;
   const desk = document.querySelector('.stage-camera > .desk'); if (!desk) return;
+  // 맥북 정거장 구도 틀(11-27 대표님 「전체 폭일 때 너무 확대된 느낌」 → 「창 폭 1660쯤일 때 느낌으로」): 폭 = min(창 폭, 1.6 × 창 높이, 1660).
+  // 넓은 창에서는 이 틀을 가운데에 두고 그 안에 맥북·왼쪽 글을 예전 비율대로 놓는다(scene-web.js 베젤 카메라, --ox). 남는 폭은 양옆 여백이 된다.
+  // 1440×900 등 1660 이하·1.6 비율 이하 창은 예전과 같다. 시험할 때 주소에 ?fa=1.45&fw=1800 처럼 붙여 바꿔 볼 수 있다
+  const QS = new URLSearchParams(location.search), FA = +QS.get('fa') || 1.6, FW = +QS.get('fw') || 1660;
+  Stage.frameW = () => innerWidth <= 820 ? innerWidth : Math.min(innerWidth, FA * innerHeight, FW);
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; };
 
   let mb = desk.querySelector('.mb');
@@ -3226,10 +3231,11 @@ window.ticker = (() => {
   const scrEl = mb.querySelector('.mb-screen');
   let infoKey = '';
   const setGlass = (t, h) => {
+    info.style.setProperty('--ox', ((innerWidth - Stage.frameW()) / 2).toFixed(1) + 'px');
     info.style.setProperty('--scr-t', t.toFixed(1) + 'px'); info.style.setProperty('--scr-b', (t + h).toFixed(1) + 'px'); info.style.setProperty('--k', (h / 474).toFixed(4));
     fitPanel();   // 글자 크기(k)가 바뀌면 본문 높이도 다시 잰다
   };
-  const guessGlass = () => { const h = 0.3298 * innerWidth; setGlass(0.3756 * innerHeight - h / 2, h); };
+  const guessGlass = () => { const h = 0.3298 * Stage.frameW(); setGlass(0.3756 * innerHeight - h / 2, h); };
   guessGlass(); addEventListener('resize', () => { infoKey = ''; guessGlass(); });
   Stage.ticker.add(() => {
     const key = innerWidth + 'x' + innerHeight, s = Stage.state, WEB = Stage.config.stations.findIndex(x => x.name === 'web');
@@ -3757,7 +3763,10 @@ window.ticker = (() => {
         return { th: TH, Tx: s.Tx, Ty: s.Ty - dl * Math.cos(a), Tz: s.Tz - dl * Math.sin(a), d: P() };
       }
       // 덮개 오른쪽 끝을 왼쪽 글 격자의 바깥 여백(8vw, 6-macbook.css .web-info)과 같은 거리에 둔다(10-21 대표님: 「맥북은 아주 살짝만 왼쪽으로, 왼쪽 글엔 여백」. 예전 고정 0.16W는 1728에서 덮개가 오른쪽 끝 약 110px)
-      const d = G.Wi * P() / (0.52 * W.Wd), k = d / P(), xc = W.Wd * (1 - 0.08) - G.lidW / (2 * k);
+      // 넓은 창(11-27 대표님 「전체 폭일 때 너무 확대된 느낌」): 폭만 보고 키우면 2560×1200 등에서 덮개 위·키보드가 잘렸다.
+      // 구도 틀 폭 Wr(macbook.js Stage.frameW: 창 폭·1.6×높이·1660 중 작은 값)로 정하고 틀을 가운데에 둔다. 틀 안에서는 예전 비율 그대로(화면 폭 52%, 오른쪽 여백 8%)
+      const Wr = Stage.frameW(), ox = (W.Wd - Wr) / 2;
+      const d = G.Wi * P() / (0.52 * Wr), k = d / P(), xc = ox + Wr * (1 - 0.08) - G.lidW / (2 * k);
       return { th: TH, Tx: s.Tx - (xc - W.Wd / 2) * k, Ty: s.Ty + 0.12 * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d };
     },
     // 맺음: θ 80 내려다보기로 명함(앞면, 왼쪽 위)과 화면이 잠든 맥북(가운데 아래)을 책상 위 평면 배치로 한 화면에 잡는다(card-drop 시험식).
