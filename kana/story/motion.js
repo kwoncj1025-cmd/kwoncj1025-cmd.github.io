@@ -12,7 +12,8 @@ const nm = (s, n) => $$(`[data-n="${n}"]`, s);
 let K = 1;
 /* 살아 있는 카나 엔진은 화면 폭 안으로 자리를 묶는다. 판(1920 폭)은 창 폭과 상관없이 같은 비율로 줄어들므로 엔진도 늘 1920 판 좌표로 세게 한다 */
 window.KANA_VW = 1920; window.KANA_VH = 4000;
-const fit = () => { K = document.documentElement.clientWidth / 1920; document.documentElement.style.setProperty('--k', K); };
+/* 캔버스 해상도도 판 배율만큼만(휴대폰은 판이 1/5로 줄어 1920 해상도로 그리면 메모리만 먹는다) */
+const fit = () => { K = document.documentElement.clientWidth / 1920; document.documentElement.style.setProperty('--k', K); window.KANA_DPR_K = Math.max(.25, K); };
 fit();
 
 /* ── 명장면: Figma의 멈춘 대사창·깨짐 사진 대신 앱 대사창(scene.js)을 그 자리에 세운다 ── */
@@ -60,7 +61,7 @@ const count = (tl, el, to, at, dur = 1, fmt = v => Math.round(v)) => { if (!el) 
 /* 휴대폰·태블릿(터치)은 움직이는 카나를 한 벌만 돌려 보이는 장으로 옮겨 다닌다: 다섯 벌을 한꺼번에 돌리면 아이폰이 메모리 부족으로 페이지를 끊었다(11-27) */
 const TOUCH = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
 const ENG = (TOUCH ? [window.Haru1] : [window.Haru1, window.Haru2, window.Haru3, window.Haru4, window.Haru5]).filter(Boolean).map(H => ({ H, slot: null, canvas: null, busy: null }));
-window.KANA_DPR_K = Math.max(.5, K);
+window.KANA_DPR_K = Math.max(.25, K);
 const P4 = { think: { face: 1 }, work: { face: 1 }, drag: { face: 0 }, rest: { face: 0 } };
 const POSES = Object.fromEntries(['yukata', 'knit', 'cardigan', 'skirt', 'rose', 'office', 'sport', 'pink', 'ribbon', 'uniform', 'miko', 'goth', 'maid'].map(o => [o, { ...P4 }]));
 Object.assign(POSES.yukata, { rest: { face: 0, head: 954, hx: -2 } }); Object.assign(POSES.sport, { rest: { face: 0, head: 945, hx: 16 } }); Object.assign(POSES.cardigan, { rest: { face: 0, head: 1022, hx: 60 } });
@@ -107,7 +108,7 @@ async function attach(sl) {
       sl.wrap.appendChild(e.canvas); homeOf(sl, H, ...(sl.placed ? [] : sl.off));
       await H.init({ canvas: e.canvas, say: document.createElement('div'), outfit: sl.opt.outfit, src: k => `kana/옷/${k}.webp`, poseSrc: (a, p) => `kana/옷/포즈/${a}_${p}.webp` });
       H.poses(POSES); H.touchable(false);
-      addEventListener('resize', () => { window.KANA_DPR_K = Math.max(.5, K); if (e.slot) homeOf(e.slot, H); });
+      addEventListener('resize', () => { if (e.slot) homeOf(e.slot, H); });
     } else {
       sl.wrap.appendChild(e.canvas); H.hush(); H.mode('own'); H.look(null); H.face(FACE0);
       homeOf(sl, H, ...(sl.placed ? [] : sl.off));
