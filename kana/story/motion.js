@@ -57,7 +57,9 @@ const count = (tl, el, to, at, dur = 1, fmt = v => Math.round(v)) => { if (!el) 
    엔진은 한 화면에 하나만 도는 구조라 사본 다섯 벌을 읽어 두고, 화면 가까이 온 장에 빌려준다(멀어진 장에서 거둬 온다).
    보이는 장만 그리고 화면 밖이면 쉰다. 캔버스는 Figma 그림 칸 안에 넣으므로 그 칸의 등장·흔들림 모션을 그대로 탄다.
    눈깜빡임·숨·시선(커서)·입·몸 휨은 엔진 그대로. 엔진이 못 뜨면(WebGL 없음) Figma 그림이 그대로 남는다 */
-const ENG = [window.Haru1, window.Haru2, window.Haru3, window.Haru4, window.Haru5].filter(Boolean).map(H => ({ H, slot: null, canvas: null, busy: null }));
+/* 휴대폰·태블릿(터치)은 움직이는 카나(WebGL 다섯 벌)를 돌리지 않고 그림 그대로 둔다: 폭 1920 축소 화면에서 여러 장이 한꺼번에 가까워져 아이폰이 메모리 부족으로 페이지를 끊었다(11-27) */
+const TOUCH = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
+const ENG = (TOUCH ? [] : [window.Haru1, window.Haru2, window.Haru3, window.Haru4, window.Haru5]).filter(Boolean).map(H => ({ H, slot: null, canvas: null, busy: null }));
 window.KANA_DPR_K = Math.max(.5, K);
 const P4 = { think: { face: 1 }, work: { face: 1 }, drag: { face: 0 }, rest: { face: 0 } };
 const POSES = Object.fromEntries(['yukata', 'knit', 'cardigan', 'skirt', 'rose', 'office', 'sport', 'pink', 'ribbon', 'uniform', 'miko', 'goth', 'maid'].map(o => [o, { ...P4 }]));
