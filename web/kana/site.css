@@ -88,3 +88,10 @@ html[data-lang=en] .doc h1{font-family:var(--en-d);text-transform:uppercase}
   .doc td+td{border-top:0;padding:4px 0}
 }
 .foot .cr{display:inline;color:#fff;margin:0;font-weight:700}
+
+/* FAQ 비교표(카나 vs 다른 AI 앱) */
+.cmp{width:100%;border-collapse:collapse;font-size:var(--t-small,14px);line-height:1.4;margin:4px 0 2px}
+.cmp th,.cmp td{border-top:1.5px solid currentColor;padding:8px 6px;text-align:left;vertical-align:top}
+.cmp thead th{border-top:0;font-weight:700}
+.cmp tbody th{font-weight:700;width:28%}
+@media (max-width:560px){.cmp{font-size:12px}.cmp th,.cmp td{padding:6px 4px}}

@@ -6,18 +6,236 @@
 <meta name="robots" content="noai, noimageai">
 <meta name="copyright" content="© 2026 Chanjun Kwon. All rights reserved.">
 <meta name="author" content="Chanjun Kwon">
-<title>카나 · 맥 바탕화면에 사는 AI 비서</title>
-<meta name="title-ko" content="카나 · 맥 바탕화면에 사는 AI 비서">
-<meta name="title-en" content="Kana · an AI assistant who lives on your Mac desktop">
-<meta name="description" content="Claude Code로 일하는 동안, 귀찮은 일은 카나에게. 메일·일정·파일·웹 일을 맡기면 해 두고, 보내기와 결제 앞에서는 멈춰서 물어요.">
-<meta name="description-ko" content="Claude Code로 일하는 동안, 귀찮은 일은 카나에게. 메일·일정·파일·웹 일을 맡기면 해 두고, 보내기와 결제 앞에서는 멈춰서 물어요.">
-<meta name="description-en" content="While you work in Claude Code, leave the chores to Kana. Mail, calendar, files and web errands get done, and she stops to ask before anything is sent or paid.">
-<meta property="og:title" content="카나 · Kana">
-<meta property="og:description" content="Claude Code로 일하는 동안, 귀찮은 일은 카나에게. / While you work in Claude Code, leave the chores to Kana.">
-<meta property="og:image" content="https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg">
+<!-- SEO:BEGIN (seo/seo.py 가 만듦. 손으로 고치지 말고 seo.py 설정을 고칠 것) -->
+<title>Kana · AI desktop companion for Mac, for Claude Code users</title>
+<meta name="title-ko" content="카나 Kana · 맥 바탕화면에 사는 애니 캐릭터 AI 비서">
+<meta name="title-en" content="Kana · AI desktop companion for Mac, for Claude Code users">
+<meta name="description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta name="description-ko" content="카나는 맥 바탕화면에 사는 애니 캐릭터 AI 에이전트예요. Claude Code로 메일·일정·파일·웹 일을 해 두고, 보내기·결제 앞에서는 멈춰서 물어요. macOS용, 한 번 구매.">
+<meta name="description-en" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta name="keywords" content="AI desktop companion, Mac AI assistant, anime desktop assistant, desktop pet Mac, Claude Code companion, AI agent for Mac, 맥 AI 비서, 바탕화면 캐릭터, 데스크톱 펫, 클로드 코드">
+<link rel="canonical" href="https://kwoncj1025-cmd.github.io/web/kana/">
+<link rel="alternate" hreflang="ko" href="https://kwoncj1025-cmd.github.io/web/kana/ko.html">
+<link rel="alternate" hreflang="en" href="https://kwoncj1025-cmd.github.io/web/kana/en.html">
+<link rel="alternate" hreflang="x-default" href="https://kwoncj1025-cmd.github.io/web/kana/">
+<link rel="alternate" type="text/plain" title="llms.txt" href="https://kwoncj1025-cmd.github.io/llms.txt">
+<link rel="preload" as="image" href="img/yukata.webp" fetchpriority="high">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kana">
+<meta property="og:title" content="Kana · an AI assistant who lives on your Mac desktop">
+<meta property="og:description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
 <meta property="og:url" content="https://kwoncj1025-cmd.github.io/web/kana/">
+<meta property="og:image" content="https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kana, an anime character standing on a Mac desktop">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="img/icon-64.png">
+<meta name="twitter:title" content="Kana · an AI assistant who lives on your Mac desktop">
+<meta name="twitter:description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta name="twitter:image" content="https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Person",
+   "@id": "https://kwoncj1025-cmd.github.io/#chanjun",
+   "name": "Chanjun Kwon",
+   "alternateName": "권찬준",
+   "url": "https://kwoncj1025-cmd.github.io/",
+   "jobTitle": "Designer"
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/#app",
+   "name": "Kana",
+   "alternateName": "카나",
+   "description": "Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.",
+   "applicationCategory": "ProductivityApplication",
+   "applicationSubCategory": "AI assistant",
+   "operatingSystem": "macOS",
+   "softwareRequirements": "macOS 13 or later, Apple silicon (M1 or newer); an Anthropic API key or a Claude Code sign-in",
+   "inLanguage": [
+    "ko",
+    "en"
+   ],
+   "url": "https://kwoncj1025-cmd.github.io/web/kana/",
+   "image": "https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg",
+   "screenshot": "https://kwoncj1025-cmd.github.io/web/kana/img/screen_en.webp",
+   "author": {
+    "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+   },
+   "publisher": {
+    "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+   },
+   "offers": {
+    "@type": "Offer",
+    "price": "19.00",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://buy.polar.sh/polar_cl_nJqAJnexhrIO4zSXpmHUu9UHBG79uT67iyAqO4Axqsh",
+    "seller": {
+     "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+    },
+    "priceSpecification": [
+     {
+      "@type": "UnitPriceSpecification",
+      "price": "19.00",
+      "priceCurrency": "USD"
+     },
+     {
+      "@type": "UnitPriceSpecification",
+      "price": "24.00",
+      "priceCurrency": "USD",
+      "priceType": "https://schema.org/ListPrice"
+     }
+    ]
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/#page",
+   "url": "https://kwoncj1025-cmd.github.io/web/kana/",
+   "name": "Kana · AI desktop companion for Mac, for Claude Code users",
+   "inLanguage": [
+    "ko",
+    "en"
+   ],
+   "about": {
+    "@id": "https://kwoncj1025-cmd.github.io/web/kana/#app"
+   },
+   "isPartOf": {
+    "@type": "WebSite",
+    "url": "https://kwoncj1025-cmd.github.io/",
+    "name": "Chanjun Kwon"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Chanjun Kwon",
+     "item": "https://kwoncj1025-cmd.github.io/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Kana",
+     "item": "https://kwoncj1025-cmd.github.io/web/kana/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/#faq",
+   "inLanguage": "en",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "What is Kana?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana is an anime character AI agent who lives on your Mac desktop. Hand her a task in a speech bubble and she runs mail, calendar, file and web errands through Claude Code, then reports back in one line. Before sending, paying or deleting anything, she always stops at an approval card. For macOS (Apple silicon, macOS 13 or later), one-time purchase."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How is Kana different from other AI apps?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "KanaDesktop pets for coding agentsChat assistant apps Always on the desktopYesYesA window you open Does the errandsMail, calendar, files, webShows status onlyMostly answers Asks before send or payAlways, approval card—Varies PriceOne-time $19–24 + your own AI usageMostly freeSubscription"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Do I pay for the AI separately?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. AI usage is billed separately, to your own Anthropic account, not as part of Kana's price. Kana runs on an Anthropic API key (recommended) or a Claude Code sign-in."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is there a free trial?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Instead, you can get a full refund within 14 days of purchase, no questions asked. Refund policy"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I install it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "After checkout, download Kana-2026.11.27.dmg, open it, and drag Kana into your Applications folder. Enter your license key the first time you open it."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How many Macs can I use it on?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Three per key. When you change Macs, use “Remove key from this Mac” in Kana's settings to free the seat."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Where do my mail and files go?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana has no server of ours. Your request and the pieces it needs go straight from your Mac to your own Anthropic account. We cannot see them. Privacy policy"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What about updates?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Every 1.x version is included at no extra cost."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it run on Windows or Intel Macs?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "For now it runs on Apple silicon Macs (M1 or newer). A Windows version is on the way. We'll let you know when it's ready."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I use my Mac license on Windows?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "A Windows version is on the way. We'll let you know when it's ready."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does Kana speak English?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. She speaks Korean and English."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is Kana always right?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana runs on AI (Claude), so she can be wrong. She calculates with code and cites her sources, but please double-check important numbers and facts."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<!-- SEO:END --><link rel="icon" href="img/icon-64.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -290,6 +508,15 @@ html[data-lang=en] .row{font-family:var(--en-d);text-transform:uppercase}
   <div class="in">
     <h2 class="big" id="h-faq"><span lang="ko">자주 묻는 것</span><span lang="en">Questions</span></h2>
     <div class="list">
+      <details><summary><span lang="ko">카나는 무엇인가요?</span><span lang="en">What is Kana?</span></summary><div class="a">
+        <p><span lang="ko">카나는 맥 바탕화면에 사는 애니 캐릭터 AI 에이전트예요. 말풍선으로 일을 맡기면 Claude Code로 메일·일정·파일·웹 심부름을 하고 한 줄로 보고해요. 보내기·결제·삭제 앞에서는 늘 승인 카드에서 멈춰서 물어요. macOS용(Apple 실리콘, macOS 13 이상), 한 번 사면 끝이에요.</span><span lang="en">Kana is an anime character AI agent who lives on your Mac desktop. Hand her a task in a speech bubble and she runs mail, calendar, file and web errands through Claude Code, then reports back in one line. Before sending, paying or deleting anything, she always stops at an approval card. For macOS (Apple silicon, macOS 13 or later), one-time purchase.</span></p></div></details>
+      <details><summary><span lang="ko">다른 AI 앱과 무엇이 다른가요?</span><span lang="en">How is Kana different from other AI apps?</span></summary><div class="a">
+        <table class="cmp"><thead><tr><th></th><th>Kana</th><th><span lang="ko">코딩 에이전트용 데스크톱 펫</span><span lang="en">Desktop pets for coding agents</span></th><th><span lang="ko">채팅 비서 앱</span><span lang="en">Chat assistant apps</span></th></tr></thead><tbody>
+          <tr><th><span lang="ko">바탕화면에 늘 있음</span><span lang="en">Always on the desktop</span></th><td><span lang="ko">예</span><span lang="en">Yes</span></td><td><span lang="ko">예</span><span lang="en">Yes</span></td><td><span lang="ko">열어야 하는 창</span><span lang="en">A window you open</span></td></tr>
+          <tr><th><span lang="ko">일을 해 둠</span><span lang="en">Does the errands</span></th><td><span lang="ko">메일·일정·파일·웹</span><span lang="en">Mail, calendar, files, web</span></td><td><span lang="ko">상태만 보여 줌</span><span lang="en">Shows status only</span></td><td><span lang="ko">주로 답만</span><span lang="en">Mostly answers</span></td></tr>
+          <tr><th><span lang="ko">보내기·결제 전 확인</span><span lang="en">Asks before send or pay</span></th><td><span lang="ko">늘, 승인 카드</span><span lang="en">Always, approval card</span></td><td>—</td><td><span lang="ko">앱마다 다름</span><span lang="en">Varies</span></td></tr>
+          <tr><th><span lang="ko">값</span><span lang="en">Price</span></th><td><span lang="ko">한 번 19~24달러 + 내 AI 사용료</span><span lang="en">One-time $19–24 + your own AI usage</span></td><td><span lang="ko">대개 무료</span><span lang="en">Mostly free</span></td><td><span lang="ko">구독</span><span lang="en">Subscription</span></td></tr>
+        </tbody></table></div></details>
       <details><summary><span lang="ko">AI 값은 따로 드나요?</span><span lang="en">Do I pay for the AI separately?</span></summary><div class="a">
         <p><span lang="ko">네. AI 요금은 카나 값과 별개로, 당신의 Anthropic 계정에서 따로 나가요. 카나는 Anthropic API 키(권장)나 Claude Code 로그인으로 움직여요.</span><span lang="en">Yes. AI usage is billed separately, to your own Anthropic account, not as part of Kana's price. Kana runs on an Anthropic API key (recommended) or a Claude Code sign-in.</span></p></div></details>
       <details><summary><span lang="ko">무료 체험이 있나요?</span><span lang="en">Is there a free trial?</span></summary><div class="a">

@@ -26,8 +26,15 @@ const KANA = {
       const u = new URL(location.href); u.searchParams.set('lang', l); history.replaceState(null, '', u);
     }
   }
-  setLang(pick(q) || pick(saved) || guess, false);
-  document.addEventListener('click', e => { const b = e.target.closest('[data-setlang]'); if (b) setLang(b.dataset.setlang, true); });
+  /* 정적 한 언어 페이지(ko.html·en.html, seo/seo.py 가 만듦)는 그 언어로 고정, 언어 단추는 다른 쪽 파일로 간다 */
+  const fixed = pick(root.dataset.static);
+  setLang(fixed || pick(q) || pick(saved) || guess, false);
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-setlang]'); if (!b) return;
+    const l = b.dataset.setlang;
+    if (fixed && l !== fixed) { try { localStorage.setItem('kana-lang', l); } catch (err) {} location.href = l + '.html' + location.hash; return; }
+    setLang(l, true);
+  });
 
   /* 사기 단추 */
   document.querySelectorAll('[data-buy]').forEach(a => {

@@ -1,0 +1,25 @@
+# Kana
+
+> Kana (카나) is a paid macOS app: an anime character who lives on your Mac desktop and runs real errands through Claude Code — mail, calendar, files and the web — and stops to ask before anything is sent, paid or deleted. Made by Chanjun Kwon, a designer in Korea. Released 2026-11-27.
+
+Kana is not a desktop pet that only shows status, and not a chat window you open: she stays on the desktop, you hand her a task in a speech bubble, and she reports back in one line. Outward-facing actions wait on an approval card.
+
+## Key facts
+- Platform: macOS 13 or later, Apple silicon (M1 or newer). Windows version in progress (no date).
+- Brain: your own Anthropic API key (recommended) or a Claude Code sign-in. AI usage is billed to your Anthropic account, separately from Kana's price.
+- Price: US$19.00 launch price (regular US$24.00), one-time purchase, no subscription. Up to 3 Macs per license key. All 1.x updates included. 13 outfits.
+- No free trial. Full refund within 14 days, no questions asked. Payment by Polar.
+- Languages: Korean and English.
+- Privacy: Kana has no server of its own; requests go from your Mac straight to your Anthropic account.
+- Safety: sending, paying and deleting always stop at an approval card first.
+
+## Links
+- [Kana — product page (English)](https://kwoncj1025-cmd.github.io/web/kana/en.html)
+- [카나 — 판매 페이지 (한국어)](https://kwoncj1025-cmd.github.io/web/kana/ko.html)
+- [The story of Kana: how it was built](https://kwoncj1025-cmd.github.io/kana/story/index.en.html)
+- [Buy (Polar checkout)](https://buy.polar.sh/polar_cl_nJqAJnexhrIO4zSXpmHUu9UHBG79uT67iyAqO4Axqsh)
+- [Refund policy](https://kwoncj1025-cmd.github.io/web/kana/refund.html), [Privacy policy](https://kwoncj1025-cmd.github.io/web/kana/privacy.html), [Terms](https://kwoncj1025-cmd.github.io/web/kana/terms.html)
+
+## Optional
+- [Full text for AI assistants](https://kwoncj1025-cmd.github.io/llms-full.txt)
+- [Chanjun Kwon — portfolio](https://kwoncj1025-cmd.github.io/)

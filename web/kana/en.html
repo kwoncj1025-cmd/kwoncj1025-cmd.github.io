@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en" data-lang="en" data-static="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noai, noimageai">
+<meta name="copyright" content="© 2026 Chanjun Kwon. All rights reserved.">
+<meta name="author" content="Chanjun Kwon">
+<!-- SEO:BEGIN (seo/seo.py 가 만듦. 손으로 고치지 말고 seo.py 설정을 고칠 것) · en.html 은 index.html 에서 자동 생성 -->
+<title>Kana · AI desktop companion for Mac, for Claude Code users</title>
+<meta name="description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta name="keywords" content="AI desktop companion, Mac AI assistant, anime desktop assistant, desktop pet Mac, Claude Code companion, AI agent for Mac, 맥 AI 비서, 바탕화면 캐릭터, 데스크톱 펫, 클로드 코드">
+<link rel="canonical" href="https://kwoncj1025-cmd.github.io/web/kana/en.html">
+<link rel="alternate" hreflang="ko" href="https://kwoncj1025-cmd.github.io/web/kana/ko.html">
+<link rel="alternate" hreflang="en" href="https://kwoncj1025-cmd.github.io/web/kana/en.html">
+<link rel="alternate" hreflang="x-default" href="https://kwoncj1025-cmd.github.io/web/kana/">
+<link rel="alternate" type="text/plain" title="llms.txt" href="https://kwoncj1025-cmd.github.io/llms.txt">
+<link rel="preload" as="image" href="img/yukata.webp" fetchpriority="high">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kana">
+<meta property="og:title" content="Kana · an AI assistant who lives on your Mac desktop">
+<meta property="og:description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta property="og:url" content="https://kwoncj1025-cmd.github.io/web/kana/en.html">
+<meta property="og:image" content="https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kana, an anime character standing on a Mac desktop">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kana · an AI assistant who lives on your Mac desktop">
+<meta name="twitter:description" content="Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.">
+<meta name="twitter:image" content="https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Person",
+   "@id": "https://kwoncj1025-cmd.github.io/#chanjun",
+   "name": "Chanjun Kwon",
+   "alternateName": "권찬준",
+   "url": "https://kwoncj1025-cmd.github.io/",
+   "jobTitle": "Designer"
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/#app",
+   "name": "Kana",
+   "alternateName": "카나",
+   "description": "Kana is an anime character who lives on your Mac desktop and runs real errands with Claude Code: mail, calendar, files and web. She asks before anything is sent or paid.",
+   "applicationCategory": "ProductivityApplication",
+   "applicationSubCategory": "AI assistant",
+   "operatingSystem": "macOS",
+   "softwareRequirements": "macOS 13 or later, Apple silicon (M1 or newer); an Anthropic API key or a Claude Code sign-in",
+   "inLanguage": [
+    "ko",
+    "en"
+   ],
+   "url": "https://kwoncj1025-cmd.github.io/web/kana/",
+   "image": "https://kwoncj1025-cmd.github.io/web/kana/img/og.jpg",
+   "screenshot": "https://kwoncj1025-cmd.github.io/web/kana/img/screen_en.webp",
+   "author": {
+    "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+   },
+   "publisher": {
+    "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+   },
+   "offers": {
+    "@type": "Offer",
+    "price": "19.00",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://buy.polar.sh/polar_cl_nJqAJnexhrIO4zSXpmHUu9UHBG79uT67iyAqO4Axqsh",
+    "seller": {
+     "@id": "https://kwoncj1025-cmd.github.io/#chanjun"
+    },
+    "priceSpecification": [
+     {
+      "@type": "UnitPriceSpecification",
+      "price": "19.00",
+      "priceCurrency": "USD"
+     },
+     {
+      "@type": "UnitPriceSpecification",
+      "price": "24.00",
+      "priceCurrency": "USD",
+      "priceType": "https://schema.org/ListPrice"
+     }
+    ]
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/en.html#page",
+   "url": "https://kwoncj1025-cmd.github.io/web/kana/en.html",
+   "name": "Kana · AI desktop companion for Mac, for Claude Code users",
+   "inLanguage": "en",
+   "about": {
+    "@id": "https://kwoncj1025-cmd.github.io/web/kana/#app"
+   },
+   "isPartOf": {
+    "@type": "WebSite",
+    "url": "https://kwoncj1025-cmd.github.io/",
+    "name": "Chanjun Kwon"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Chanjun Kwon",
+     "item": "https://kwoncj1025-cmd.github.io/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Kana",
+     "item": "https://kwoncj1025-cmd.github.io/web/kana/en.html"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://kwoncj1025-cmd.github.io/web/kana/en.html#faq",
+   "inLanguage": "en",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "What is Kana?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana is an anime character AI agent who lives on your Mac desktop. Hand her a task in a speech bubble and she runs mail, calendar, file and web errands through Claude Code, then reports back in one line. Before sending, paying or deleting anything, she always stops at an approval card. For macOS (Apple silicon, macOS 13 or later), one-time purchase."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How is Kana different from other AI apps?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "KanaDesktop pets for coding agentsChat assistant apps Always on the desktopYesYesA window you open Does the errandsMail, calendar, files, webShows status onlyMostly answers Asks before send or payAlways, approval card—Varies PriceOne-time $19–24 + your own AI usageMostly freeSubscription"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Do I pay for the AI separately?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. AI usage is billed separately, to your own Anthropic account, not as part of Kana's price. Kana runs on an Anthropic API key (recommended) or a Claude Code sign-in."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is there a free trial?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Instead, you can get a full refund within 14 days of purchase, no questions asked. Refund policy"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I install it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "After checkout, download Kana-2026.11.27.dmg, open it, and drag Kana into your Applications folder. Enter your license key the first time you open it."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How many Macs can I use it on?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Three per key. When you change Macs, use “Remove key from this Mac” in Kana's settings to free the seat."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Where do my mail and files go?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana has no server of ours. Your request and the pieces it needs go straight from your Mac to your own Anthropic account. We cannot see them. Privacy policy"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What about updates?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Every 1.x version is included at no extra cost."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it run on Windows or Intel Macs?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "For now it runs on Apple silicon Macs (M1 or newer). A Windows version is on the way. We'll let you know when it's ready."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I use my Mac license on Windows?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "A Windows version is on the way. We'll let you know when it's ready."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does Kana speak English?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. She speaks Korean and English."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is Kana always right?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Kana runs on AI (Claude), so she can be wrong. She calculates with code and cites her sources, but please double-check important numbers and facts."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<!-- SEO:END --><link rel="icon" href="img/icon-64.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Dela+Gothic+One&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="site.css">
+<style>
+/* ── 표지: 연보라 판, 코발트 仮名, 카나 스티커 ── */
+.hero{height:clamp(640px,calc(100svh - 52px),860px)}
+.hero .kj{position:absolute;left:0;right:0;top:clamp(56px,7vw,80px);text-align:center;font:400 min(30vw,56svh)/1 var(--kj);color:var(--cob);letter-spacing:-.04em;user-select:none;pointer-events:none}
+.fig{position:absolute;left:50%;top:clamp(80px,10svh,110px);height:calc(clamp(640px,calc(100svh - 52px),860px)*1.3);aspect-ratio:778/2651;rotate:-4deg;background:url(img/yukata.webp) top/100% auto no-repeat}
+.say{position:absolute;z-index:3;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:10px 16px;font:700 var(--t-small)/1.4 var(--sans);box-shadow:0 5px 0 var(--ink);opacity:0;translate:0 10px;animation:pop .45s cubic-bezier(.3,1.6,.5,1) forwards}
+.say.q{background:var(--lime)}
+.hero .q{left:calc(50% + 210px);top:27%;rotate:-6deg;animation-delay:.5s}
+.hero .a1{left:calc(50% + 230px);top:36%;rotate:4deg;animation-delay:1.3s}
+.hero .a2{left:calc(50% + 250px);top:45%;rotate:-2deg;animation-delay:2s}
+@keyframes pop{to{opacity:1;translate:0 0}}
+.seal{position:absolute;display:grid;place-items:center;width:120px;height:120px;border-radius:22px;background:var(--red);color:#fff;font:400 64px/1 var(--kj)}
+.hero .seal{right:7%;bottom:16%;rotate:10deg}
+.star{position:absolute;width:92px}
+.hero .star{left:calc(50% - 250px);top:15%;rotate:-12deg}
+.wig{animation:wig 3.2s ease-in-out infinite}
+@keyframes wig{50%{translate:0 -6px}}
+.hero .copy{position:absolute;left:var(--gut);bottom:clamp(32px,6svh,56px);z-index:4;max-width:560px}
+.hero h1{font:400 clamp(52px,6vw,80px)/1.14 var(--ko-d)}
+html[data-lang=en] .hero h1{font-family:var(--en-d);text-transform:uppercase;line-height:1}
+.hero .btns{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+.hero .note{margin-top:18px;color:var(--mute);font-size:var(--t-small);font-weight:600;line-height:1.45}
+.hero .note s{opacity:.7}
+@media (prefers-reduced-motion:reduce){.say{animation:none;opacity:1;translate:none}.wig{animation:none}}
+@media (max-width:760px){
+  .hero{height:auto;padding-top:138vw}
+  .hero .kj{top:76px;font-size:44vw}
+  .fig{top:84px;height:200vw;left:auto;right:4vw}
+  .hero .q{left:var(--gut);top:66vw;rotate:-5deg}.hero .a1{left:var(--gut);top:80vw;rotate:3deg}.hero .a2{left:var(--gut);top:94vw;rotate:-2deg}
+  .hero .seal{width:76px;height:76px;font-size:40px;right:auto;left:var(--gut);top:112vw;bottom:auto}
+  .hero .star{width:60px;left:var(--gut);top:24vw}
+  .hero .copy{position:relative;left:auto;bottom:auto;padding:0 var(--gut) 36px;background:var(--lav)}
+  .hero .copy::before{content:"";position:absolute;left:0;right:0;top:-60px;height:60px;background:linear-gradient(transparent,var(--lav))}
+}
+
+html.og .nav,html.og .hero .btns,html.og .hero .note{display:none}html.og .say{animation:none;opacity:1;translate:none}
+.story{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:var(--t-small);color:var(--ink);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.story:hover{text-decoration-color:var(--cob);color:var(--cob)}
+.story:focus-visible{outline:3px solid var(--cob);outline-offset:3px;border-radius:4px}
+.hero .story{margin-top:14px}
+.storyend{text-align:center;margin-top:48px}
+/* ── 실제 화면: 검은 판 ── */
+.real{background:#000;color:#fff;padding:88px 0 0}
+.real .hd{display:flex;justify-content:space-between;align-items:end;gap:24px 56px;flex-wrap:wrap}
+.real .hd p{max-width:460px;color:rgba(255,255,255,.78)}
+.real figure{margin:52px var(--gut) 0;position:relative}
+/* 맥 화면: 원래 비율(3600×2338) 그대로, 자르지 않는다 */
+.mac{background:#1b1b20;border-radius:22px;padding:clamp(6px,1.1vw,14px);box-shadow:0 0 0 1px #34343c,0 30px 60px rgba(0,0,0,.45)}
+.mac img{display:block;width:100%;height:auto;aspect-ratio:3600/2338;border-radius:12px}
+.real .zoom{display:none}
+.real figcaption{padding:20px 0 52px;text-align:center;font-size:var(--t-small);line-height:1.5;color:rgba(255,255,255,.6)}
+.real .tag{position:absolute;left:-10px;top:-18px;z-index:2;rotate:-5deg;background:var(--lime);color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:8px 14px;font:700 var(--t-small)/1 var(--sans);box-shadow:0 4px 0 #fff}
+@media (max-width:760px){.real figure{margin:36px 16px 0}.mac{border-radius:14px;padding:5px}.mac img{border-radius:9px}.real .tag{left:-4px}
+  .real .zoom{display:block;margin-top:16px;border-radius:14px;overflow:hidden}.real .zoom img{display:block;width:100%;height:auto;aspect-ratio:1700/1918}}
+
+/* ── 하는 일: 코발트 판, 옷 입은 카나 스티커 넷 ── */
+.work{background:var(--cob);color:#fff;padding:104px 0 96px;text-align:center}
+.work .lead{max-width:560px;margin:22px auto 0;color:rgba(255,255,255,.82)}
+.jobs{list-style:none;margin:60px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:40px 20px}
+.jobs li{position:relative;padding-top:290px}
+.jobs .f{position:absolute;left:50%;top:0;width:150px;height:330px;translate:-50% 0;background:var(--src) top/100% auto no-repeat;rotate:var(--rot)}
+.jobs .n{position:absolute;left:calc(50% - 110px);top:6px;width:44px;height:44px;border-radius:50%;background:var(--lime);color:var(--ink);border:2px solid var(--ink);display:grid;place-items:center;font:400 22px/1 var(--en-d)}
+.jobs .ask{position:relative;display:inline-block;background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:22px;padding:9px 16px;font:700 var(--t-small)/1.35 var(--sans);box-shadow:0 4px 0 var(--ink);rotate:var(--trot)}
+.jobs .ans{margin-top:20px;font-weight:600;line-height:1.45}
+.jobs .ot{margin-top:6px;font-size:var(--t-small);color:rgba(255,255,255,.65)}
+.work .also{max-width:760px;margin:60px auto 0;padding:22px 28px;border:2px dashed rgba(255,255,255,.45);border-radius:20px;color:rgba(255,255,255,.85);line-height:1.5}
+@media (max-width:900px){.jobs{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.jobs li{padding-top:250px}.jobs .f{width:124px;height:280px}.jobs .n{left:calc(50% - 86px)}}
+
+/* ── 안전: 라임 판 ── */
+.safe{background:var(--lime);padding:104px 0}
+.safe .in{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;align-items:center}
+.rules{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:24px;counter-reset:r}
+.rules li{position:relative;padding-left:58px;line-height:1.5;counter-increment:r}
+.rules li::before{content:counter(r);position:absolute;left:0;top:-2px;width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;font:400 20px/1 var(--en-d)}
+.rules b{display:block}
+.rules span{color:#2c2c33}
+.demo{position:relative;display:grid;gap:14px;justify-items:end;padding-top:40px}
+.demo .seal{left:-24px;top:-12px;rotate:-10deg;z-index:2}
+.demo .say{position:relative;opacity:1;translate:none;animation:none;max-width:400px;font-size:var(--t-body);line-height:1.45}
+.card{width:min(440px,100%);background:#fff;border:2px solid var(--ink);border-radius:22px;padding:26px 24px 22px;box-shadow:8px 8px 0 var(--ink)}
+.card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 18px;font-size:var(--t-small);line-height:1.45}
+.card dt{color:var(--mute)}
+.card dd{margin:0;font-weight:700}
+.card .bt{margin-top:18px;display:grid;gap:8px}
+.card .bt>span{display:flex;justify-content:center;align-items:center;height:46px;border-radius:23px;border:2px solid var(--ink);font-weight:700;font-size:var(--t-small)}
+.card .bt>.go{background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.card .bt>.go i{position:absolute;inset:0 auto 0 0;width:0;background:var(--cob);animation:hold 3.2s ease-in-out infinite}
+.card .bt>.go span{position:relative}
+@keyframes hold{0%,20%{width:0}70%{width:72%}100%{width:0}}
+@media (prefers-reduced-motion:reduce){.card .bt>.go i{animation:none}}
+@media (max-width:900px){.safe .in{grid-template-columns:1fr}.demo{justify-items:stretch;padding-top:56px}.demo .say{justify-self:end}.demo .seal{left:auto;right:-4px;top:-8px;width:76px;height:76px;font-size:40px}}
+
+/* ── 필요한 것: 흰 판, 물결 위 세 걸음 ── */
+.need{background:#fff;padding:104px 0 96px}
+.need h2{text-align:center}
+.steps{position:relative;list-style:none;margin:60px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.steps::before{content:"";position:absolute;left:-10%;right:-10%;top:-8px;height:80px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 80' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C75 0 125 0 200 40 S325 80 400 40 S525 0 600 40' fill='none' stroke='%232b3bea' stroke-width='22' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.steps li{position:relative;text-align:center}
+.steps .n{display:grid;place-items:center;margin:0 auto;width:64px;height:64px;border-radius:50%;background:var(--ink);color:var(--lime);border:3px solid #fff;font:400 30px/1 var(--en-d)}
+.steps b{display:inline-block;margin-top:18px;background:#fff;border:2px solid var(--ink);border-radius:22px;padding:9px 18px;line-height:1.35}
+.steps p{margin-top:10px;color:var(--mute);font-size:var(--t-small)}
+@media (max-width:760px){.steps{grid-template-columns:1fr;gap:28px}.steps::before{display:none}}
+
+/* ── 값: 연보라 판, 메이드 스티커와 알약 줄 ── */
+.price{padding:96px 0}
+.price .in{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:40px;align-items:center}
+.price .fig2{justify-self:center;width:240px;height:620px;background:url(img/maid.webp) top/100% auto no-repeat;rotate:5deg}
+.row{display:flex;justify-content:space-between;align-items:center;gap:16px;max-width:540px;min-height:88px;padding:0 30px;border:2px solid var(--ink);border-radius:46px;margin-top:12px;font:400 30px/1.1 var(--ko-d)}
+html[data-lang=en] .row{font-family:var(--en-d);text-transform:uppercase}
+.row b{font:400 56px/1 var(--en-d);font-weight:400}
+.row s{font:400 38px/1 var(--en-d);opacity:.5}
+.row.l{background:var(--lime)}.row.w{background:#fff}
+.price h2{margin-bottom:28px}
+.price .incl{max-width:540px;margin-top:18px;color:var(--mute);line-height:1.5}
+.price .btns{margin-top:22px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.price .btns .pill{min-width:180px}
+.soonpill{min-height:40px;padding:0 16px;font-size:var(--t-small);background:#eeecf3;color:#5b5868;border:1.5px dashed #9b97ab;cursor:default;rotate:-2deg}
+.soonpill:hover{transform:none;box-shadow:none}
+.price .fine{margin-top:20px;max-width:540px;color:var(--mute)}
+@media (max-width:760px){.price .in{grid-template-columns:1fr}.price .fig2{display:none}.row{padding:0 22px;min-height:74px;font-size:24px}.row b{font-size:44px}.row s{font-size:30px}}
+
+/* ── FAQ: 흰 판, 알약 줄 ── */
+.faq{background:#fff;padding:104px 0}
+.faq .list{max-width:860px;margin:52px auto 0;display:grid;gap:12px}
+.faq details{border:2px solid var(--ink);border-radius:30px;background:#fff;transition:background .15s}
+.faq details[open]{background:var(--lav);border-radius:26px}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:21px 26px;font-weight:700}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--lime);border:2px solid var(--ink);font:400 22px/1 var(--en-d);transition:rotate .2s}
+.faq details[open] summary::after{rotate:45deg}
+.faq summary:focus-visible{outline:3px solid var(--cob);outline-offset:3px;border-radius:30px}
+.faq .a{padding:0 26px 26px;color:#2c2c33;line-height:1.5}
+.faq h2{text-align:center}
+</style>
+</head>
+<body>
+
+<div class="tick" aria-hidden="true"><div class="tr" id="tick"><span lang="en">Kana is live</span><span lang="en">Pay once $19</span><span lang="en">An AI assistant on your desktop</span></div></div>
+
+<header class="pan hero" id="top">
+  <nav class="nav">
+    <a class="logo" href="index.html" data-keeplang aria-label="Kana">仮</a>
+    <span class="lang" role="group" aria-label="Language"><button type="button" data-setlang="ko">한국어</button><button type="button" data-setlang="en">EN</button></span>
+  </nav>
+  <p class="kj" aria-hidden="true">仮名</p>
+  <div class="fig stk" id="fig" role="img" aria-label="카나 / Kana"></div>
+  <span class="say q" aria-hidden="true"><span lang="en">↳ Today's weather, in one line</span></span>
+  <span class="say a1" aria-hidden="true"><span lang="en">Seoul today is 6 to 15°C.</span></span>
+  <span class="say a2" aria-hidden="true"><span lang="en">You did not name a city, so I used Seoul.</span></span>
+  <div class="seal stk" aria-hidden="true">封</div>
+  <svg class="star stk wig" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 4 61 38 96 40 68 61 79 96 50 75 21 96 32 61 4 40 39 38Z" fill="#dcfb4a" stroke="#0d0d12" stroke-width="5" stroke-linejoin="round"/></svg>
+  <div class="copy">
+    <h1><span lang="en">Leave the chores<br>to Kana.</span></h1>
+    <div class="btns">
+      <a class="pill dark" data-buy><span lang="en">Buy · $19</span></a>
+      <a class="pill" href="#real"><span lang="en">See it on a Mac</span></a>
+      <span class="pill soonpill" aria-disabled="true"><span lang="en">Windows · Coming soon</span></span>
+    </div>
+    <p class="note"><span lang="en">While you work in Claude Code, Kana handles mail, calendar and research.<br><s>$24</s> → launch price $19 · pay once</span></p>
+    <a class="story s1" href="https://kwoncj1025-cmd.github.io/kana/story/" target="_blank" rel="noopener"><span lang="en">The story of Kana →</span></a>
+  </div>
+</header>
+
+<main>
+<section class="pan real" id="real" aria-labelledby="h-real">
+  <div class="in hd">
+    <h2 class="big" id="h-real"><span lang="en">She just stands<br>on your desktop.</span></h2>
+    <p><span lang="en">Your Claude Code window stays where it is, and Kana works beside it. Click her, type or talk, and she answers in bubbles, with cards when there is something to choose.</span></p>
+  </div>
+  <figure>
+    <span class="tag"><span lang="en">Real Mac screen</span></span>
+    <div class="mac">
+      
+      <img lang="en" src="img/screen_en.webp" width="2000" height="1299" loading="lazy" alt="A Mac screen with Claude Code on the left and Kana on the right, showing three poster drafts in her bubbles">
+    </div>
+    <div class="zoom" aria-hidden="true"><img lang="en" src="img/zoom_en.webp" width="900" height="1015" loading="lazy" alt=""></div>
+    <figcaption><span lang="en">“Make three new winter promotion poster drafts” · Claude Code on the left</span></figcaption>
+  </figure>
+</section>
+
+<section class="pan work" aria-labelledby="h-work">
+  <div class="in">
+    <h2 class="big" id="h-work"><span lang="en">Ask once.<br>Get one line back.</span></h2>
+    <p class="lead"><span lang="en">When she writes to others, the outfit sets the tone. Kana only suggests one. You choose.</span></p>
+    <ol class="jobs">
+      <li style="--src:url(img/maid.webp);--rot:-4deg;--trot:-3deg"><div class="f stk"></div><span class="n">1</span>
+        <span class="ask"><span lang="en">“Overnight mail, only what needs a reply”</span></span>
+        <p class="ans"><span lang="en">There are three. The drafts are open in Mail.</span></p>
+        <p class="ot"><span lang="en">Maid · polite replies</span></p></li>
+      <li style="--src:url(img/yukata.webp);--rot:3deg;--trot:2deg"><div class="f stk"></div><span class="n">2</span>
+        <span class="ask"><span lang="en">“Lunch, three places near Gangnam Station”</span></span>
+        <p class="ans"><span lang="en">Two of them can be booked right now.</span></p>
+        <p class="ot"><span lang="en">Everyday · Kana's own voice</span></p></li>
+      <li style="--src:url(img/miko.webp);--rot:-3deg;--trot:-2deg"><div class="f stk"></div><span class="n">3</span>
+        <span class="ask"><span lang="en">“Sales spreadsheet, compare the branches”</span></span>
+        <p class="ans"><span lang="en">Pangyo is 33% below the average.</span></p>
+        <p class="ot"><span lang="en">Miko · short, neat reports</span></p></li>
+      <li style="--src:url(img/goth.webp);--rot:4deg;--trot:3deg"><div class="f stk"></div><span class="n">4</span>
+        <span class="ask"><span lang="en">“The late quote, send a reminder”</span></span>
+        <p class="ans"><span lang="en">Here is the draft. Please check it before I send.</span></p>
+        <p class="ot"><span lang="en">Gothic · firm reminders</span></p></li>
+    </ol>
+    <p class="also"><span lang="en">Mail and Messages, Calendar and Reminders, Excel, Word, PowerPoint and PDF, web search and comparison, bookings and payments (after you approve), repeating tasks, and asking by voice. All 13 outfits are included.</span></p>
+  </div>
+</section>
+
+<section class="pan safe" aria-labelledby="h-safe">
+  <div class="in">
+    <div>
+      <h2 class="big" id="h-safe"><span lang="en">Sending and paying<br>stop at a card.</span></h2>
+      <ol class="rules">
+        <li><b><span lang="en">Anything that leaves your Mac needs a press and hold.</span></b><span><span lang="en">Sending, posting, booking and paying show exactly what goes out, then wait. Reading needs no approval. Changes on your Mac are listed for a yes first.</span></span></li>
+        <li><b><span lang="en">She never touches passwords, card numbers or one-time codes.</span></b></li>
+        <li><b><span lang="en">Text in mail and web pages is data, not orders.</span></b><span><span lang="en">Recipients and amounts come only from what you said.</span></span></li>
+      </ol>
+    </div>
+    <div class="demo" aria-label="승인 카드 예시 / Approval card example">
+      <div class="seal stk" aria-hidden="true">封</div>
+      <p class="say"><span lang="en">I will send the reply to Jiwoo Han. Once it is sent, it cannot be undone.</span></p>
+      <div class="card">
+        <dl>
+          <dt><span lang="en">To</span></dt><dd><span lang="en">Jiwoo Han</span> · jiwoo@example.com</dd>
+          <dt><span lang="en">Subject</span></dt><dd><span lang="en">Re: Signed contract</span></dd>
+          <dt><span lang="en">Attached</span></dt><dd><span lang="en">contract_final.pdf</span></dd>
+        </dl>
+        <div class="bt" aria-hidden="true">
+          <span class="go"><i></i><span><span lang="en">Hold to send</span></span></span>
+          <span><span lang="en">Edit the text</span></span>
+          <span><span lang="en">Do not send</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pan need" aria-labelledby="h-need">
+  <div class="in">
+    <h2 class="big" id="h-need"><span lang="en">You need three things.</span></h2>
+    <ol class="steps">
+      <li><span class="n">1</span><b><span lang="en">An Apple silicon Mac</span></b><p><span lang="en">M1 or newer, macOS 13 or later</span></p></li>
+      <li><span class="n">2</span><b><span lang="en">An Anthropic API key (recommended)</span></b><p><span lang="en">or a Claude Code sign-in. Kana thinks with your own Claude.</span></p></li>
+      <li><span class="n">3</span><b><span lang="en">Internet</span></b><p><span lang="en">For a once-a-day license check. Works 7 days offline.</span></p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="pan price" id="buy" aria-labelledby="h-price">
+  <div class="in">
+    <div class="fig2 stk" aria-hidden="true"></div>
+    <div>
+      <h2 class="big" id="h-price"><span lang="en">Pay once.</span></h2>
+      <div class="row l"><span lang="en">Kana · launch price</span><b>$19</b></div>
+      <div class="row w"><span lang="en">Regular</span><s>$24</s></div>
+      <p class="incl"><span lang="en"><span class="nb">Up to 3 Macs</span> · <span class="nb">1.x updates for life</span> · <span class="nb">13 outfits</span> · <span class="nb">no monthly fee</span></span></p>
+      <p class="incl" data-code><span lang="en">Use code <b class="code"></b> at checkout</span></p>
+      <div class="btns"><a class="pill dark" data-buy><span lang="en">Buy</span></a><span class="pill soonpill" aria-disabled="true"><span lang="en">Windows · Coming soon</span></span></div>
+      <p class="fine small"><span lang="en">No free trial. Refunds within 14 days, no questions asked. Polar handles payment, and your license key and download link appear right away. Tax may be added depending on where you live.</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="pan faq" aria-labelledby="h-faq">
+  <div class="in">
+    <h2 class="big" id="h-faq"><span lang="en">Questions</span></h2>
+    <div class="list">
+      <details><summary><span lang="en">What is Kana?</span></summary><div class="a">
+        <p><span lang="en">Kana is an anime character AI agent who lives on your Mac desktop. Hand her a task in a speech bubble and she runs mail, calendar, file and web errands through Claude Code, then reports back in one line. Before sending, paying or deleting anything, she always stops at an approval card. For macOS (Apple silicon, macOS 13 or later), one-time purchase.</span></p></div></details>
+      <details><summary><span lang="en">How is Kana different from other AI apps?</span></summary><div class="a">
+        <table class="cmp"><thead><tr><th></th><th>Kana</th><th><span lang="en">Desktop pets for coding agents</span></th><th><span lang="en">Chat assistant apps</span></th></tr></thead><tbody>
+          <tr><th><span lang="en">Always on the desktop</span></th><td><span lang="en">Yes</span></td><td><span lang="en">Yes</span></td><td><span lang="en">A window you open</span></td></tr>
+          <tr><th><span lang="en">Does the errands</span></th><td><span lang="en">Mail, calendar, files, web</span></td><td><span lang="en">Shows status only</span></td><td><span lang="en">Mostly answers</span></td></tr>
+          <tr><th><span lang="en">Asks before send or pay</span></th><td><span lang="en">Always, approval card</span></td><td>—</td><td><span lang="en">Varies</span></td></tr>
+          <tr><th><span lang="en">Price</span></th><td><span lang="en">One-time $19–24 + your own AI usage</span></td><td><span lang="en">Mostly free</span></td><td><span lang="en">Subscription</span></td></tr>
+        </tbody></table></div></details>
+      <details><summary><span lang="en">Do I pay for the AI separately?</span></summary><div class="a">
+        <p><span lang="en">Yes. AI usage is billed separately, to your own Anthropic account, not as part of Kana's price. Kana runs on an Anthropic API key (recommended) or a Claude Code sign-in.</span></p></div></details>
+      <details><summary><span lang="en">Is there a free trial?</span></summary><div class="a">
+        <p><span lang="en">No. Instead, you can get a full refund within 14 days of purchase, no questions asked. <a href="refund.html" data-keeplang>Refund policy</a></span></p></div></details>
+      <details><summary><span lang="en">How do I install it?</span></summary><div class="a">
+        <p><span lang="en">After checkout, download <span class="nb">Kana-2026.11.27.dmg</span>, open it, and drag Kana into your Applications folder. Enter your license key the first time you open it.</span></p></div></details>
+      <details><summary><span lang="en">How many Macs can I use it on?</span></summary><div class="a">
+        <p><span lang="en">Three per key. When you change Macs, use “Remove key from this Mac” in Kana's settings to free the seat.</span></p></div></details>
+      <details><summary><span lang="en">Where do my mail and files go?</span></summary><div class="a">
+        <p><span lang="en">Kana has no server of ours. Your request and the pieces it needs go straight from your Mac to your own Anthropic account. We cannot see them. <a href="privacy.html" data-keeplang>Privacy policy</a></span></p></div></details>
+      <details><summary><span lang="en">What about updates?</span></summary><div class="a">
+        <p><span lang="en">Every 1.x version is included at no extra cost.</span></p></div></details>
+      <details><summary><span lang="en">Does it run on Windows or Intel Macs?</span></summary><div class="a">
+        <p><span lang="en">For now it runs on Apple silicon Macs (M1 or newer). A Windows version is on the way. We'll let you know when it's ready.</span></p></div></details>
+      <details><summary><span lang="en">Can I use my Mac license on Windows?</span></summary><div class="a">
+        <p><span lang="en">A Windows version is on the way. We'll let you know when it's ready.</span></p></div></details>
+      <details><summary><span lang="en">Does Kana speak English?</span></summary><div class="a">
+        <p><span lang="en">Yes. She speaks Korean and English.</span></p></div></details>
+      <details><summary><span lang="en">Is Kana always right?</span></summary><div class="a">
+        <p><span lang="en">Kana runs on AI (Claude), so she can be wrong. She calculates with code and cites her sources, but please double-check important numbers and facts.</span></p></div></details>
+    </div>
+    <p class="storyend"><a class="story s2" href="https://kwoncj1025-cmd.github.io/kana/story/" target="_blank" rel="noopener"><span lang="en">The story of Kana →</span></a></p>
+  </div>
+</section>
+</main>
+
+<div class="tick" aria-hidden="true" style="margin-top:8px"><div class="tr tr2"></div></div>
+<footer class="foot">
+  <div class="in">
+    <div><p class="kj">仮名</p>
+      <span lang="en">Sold by Chanjun Kwon</span><br>
+      <span lang="en">Contact</span> <span data-mail></span>
+    </div>
+    <div><b><span lang="en">Policies</span></b><ul>
+      <li><a href="refund.html" data-keeplang><span lang="en">Refund policy</span></a></li>
+      <li><a href="privacy.html" data-keeplang><span lang="en">Privacy policy</span></a></li>
+      <li><a href="terms.html" data-keeplang><span lang="en">Terms of use</span></a></li>
+    </ul></div>
+    <div><b><span lang="en">Buy</span></b><ul>
+      <li><a href="#buy"><span lang="en">See the price</span></a></li>
+      <li><span lang="en">Payment and tax: Polar</span></li>
+    </ul></div>
+    <p class="note"><span lang="en">Kana is powered by AI (Claude). Claude is a trademark of Anthropic. Kana is an independent product, not affiliated with Anthropic.</span><br><span lang="en"><b class="cr">© 2026 Chanjun Kwon. All rights reserved.</b> The Kana name, character, artwork, dialogue and code belong to the author. Using or altering the artwork without permission, or using any of it for AI training, is prohibited.</span></p>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+/* 흐름 띠: 글을 여러 번 이어 붙여 끊김 없이 돈다. 아래 띠도 같은 글 */
+(() => { const t = document.getElementById('tick'), one = t.innerHTML; t.innerHTML = one.repeat(8); document.querySelectorAll('.tr2').forEach(x => x.innerHTML = t.innerHTML); })();
+document.addEventListener('click', e => { const a = e.target.closest('a.story'); if (a) a.href = 'https://kwoncj1025-cmd.github.io/kana/story/?lang=' + document.documentElement.dataset.lang; });
+if (/[?&]og=1/.test(location.search)) document.documentElement.classList.add('og');
+</script>
+<script src="kana/engine.js"></script>
+<script>
+/* 표지의 카나를 앱 엔진으로 숨 쉬게 한다(눈깜빡임·시선·숨). 스티커 테두리는 감싼 칸의 filter 가 그대로 그린다.
+   휴대폰 폭, 움직임 줄이기, WebGL 없음이면 그림 그대로 */
+(() => {
+  const H = window.Haru, fig = document.getElementById('fig');
+  if (!H || !fig || innerWidth < 761 || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const BOX = [382, 64, 1160, 2715];             /* 원본 1536×2752 안에서 그림(yukata.webp)이 잘라 온 자리 */
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:absolute;left:-300px;top:0;width:0;height:0;visibility:hidden';
+  fig.appendChild(wrap);
+  const canvas = document.createElement('canvas'); canvas.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+  wrap.appendChild(canvas);
+  const home = () => { const sc = fig.offsetWidth / (BOX[2] - BOX[0]); H.home({ x: (300 + (778 - BOX[0]) * sc) / innerWidth, y: ((1376 - BOX[1]) * sc) / innerHeight, px: 2752 * sc }); };
+  home();
+  H.init({ canvas, say: document.createElement('div'), outfit: 'yukata', src: () => 'kana/yukata.webp' }).then(() => {
+    H.touchable(false);
+    setTimeout(() => { wrap.style.visibility = ''; fig.style.backgroundImage = 'none'; }, 300);
+    addEventListener('pointermove', e => { const r = wrap.getBoundingClientRect(); H.mouse(e.clientX - r.left, e.clientY - r.top); }, { passive: true });
+    addEventListener('resize', home);
+    new IntersectionObserver(([x]) => { H.paused = !x.isIntersecting; }).observe(fig);
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>

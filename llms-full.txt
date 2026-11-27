@@ -1,0 +1,71 @@
+# Kana
+
+> Kana (카나) is a paid macOS app: an anime character who lives on your Mac desktop and runs real errands through Claude Code — mail, calendar, files and the web — and stops to ask before anything is sent, paid or deleted. Made by Chanjun Kwon, a designer in Korea. Released 2026-11-27.
+
+Kana is not a desktop pet that only shows status, and not a chat window you open: she stays on the desktop, you hand her a task in a speech bubble, and she reports back in one line. Outward-facing actions wait on an approval card.
+
+## Key facts
+- Platform: macOS 13 or later, Apple silicon (M1 or newer). Windows version in progress (no date).
+- Brain: your own Anthropic API key (recommended) or a Claude Code sign-in. AI usage is billed to your Anthropic account, separately from Kana's price.
+- Price: US$19.00 launch price (regular US$24.00), one-time purchase, no subscription. Up to 3 Macs per license key. All 1.x updates included. 13 outfits.
+- No free trial. Full refund within 14 days, no questions asked. Payment by Polar.
+- Languages: Korean and English.
+- Privacy: Kana has no server of its own; requests go from your Mac straight to your Anthropic account.
+- Safety: sending, paying and deleting always stop at an approval card first.
+
+## Links
+- [Kana — product page (English)](https://kwoncj1025-cmd.github.io/web/kana/en.html)
+- [카나 — 판매 페이지 (한국어)](https://kwoncj1025-cmd.github.io/web/kana/ko.html)
+- [The story of Kana: how it was built](https://kwoncj1025-cmd.github.io/kana/story/index.en.html)
+- [Buy (Polar checkout)](https://buy.polar.sh/polar_cl_nJqAJnexhrIO4zSXpmHUu9UHBG79uT67iyAqO4Axqsh)
+- [Refund policy](https://kwoncj1025-cmd.github.io/web/kana/refund.html), [Privacy policy](https://kwoncj1025-cmd.github.io/web/kana/privacy.html), [Terms](https://kwoncj1025-cmd.github.io/web/kana/terms.html)
+
+## Optional
+- [Full text for AI assistants](https://kwoncj1025-cmd.github.io/llms-full.txt)
+- [Chanjun Kwon — portfolio](https://kwoncj1025-cmd.github.io/)
+
+## How Kana compares
+| | Kana | Desktop pets for coding agents | Chat assistant apps | Screen-control agents |
+|---|---|---|---|---|
+| Lives on the desktop | Yes, always | Yes | No, a window you open | No |
+| Does errands (mail, calendar, files, web) | Yes, through Claude Code | No, shows agent status | Answers; limited actions | Yes, by driving the screen |
+| Asks before sending, paying, deleting | Always, approval card | — | Varies | Varies |
+| Price | One-time US$19–24 + your own AI usage | Mostly free | Subscription | Subscription |
+
+## FAQ
+
+### What is Kana?
+Kana is an anime character AI agent who lives on your Mac desktop. Hand her a task in a speech bubble and she runs mail, calendar, file and web errands through Claude Code, then reports back in one line. Before sending, paying or deleting anything, she always stops at an approval card. For macOS (Apple silicon, macOS 13 or later), one-time purchase.
+
+### How is Kana different from other AI apps?
+KanaDesktop pets for coding agentsChat assistant apps Always on the desktopYesYesA window you open Does the errandsMail, calendar, files, webShows status onlyMostly answers Asks before send or payAlways, approval card—Varies PriceOne-time $19–24 + your own AI usageMostly freeSubscription
+
+### Do I pay for the AI separately?
+Yes. AI usage is billed separately, to your own Anthropic account, not as part of Kana's price. Kana runs on an Anthropic API key (recommended) or a Claude Code sign-in.
+
+### Is there a free trial?
+No. Instead, you can get a full refund within 14 days of purchase, no questions asked. Refund policy
+
+### How do I install it?
+After checkout, download Kana-2026.11.27.dmg, open it, and drag Kana into your Applications folder. Enter your license key the first time you open it.
+
+### How many Macs can I use it on?
+Three per key. When you change Macs, use “Remove key from this Mac” in Kana's settings to free the seat.
+
+### Where do my mail and files go?
+Kana has no server of ours. Your request and the pieces it needs go straight from your Mac to your own Anthropic account. We cannot see them. Privacy policy
+
+### What about updates?
+Every 1.x version is included at no extra cost.
+
+### Does it run on Windows or Intel Macs?
+For now it runs on Apple silicon Macs (M1 or newer). A Windows version is on the way. We'll let you know when it's ready.
+
+### Can I use my Mac license on Windows?
+A Windows version is on the way. We'll let you know when it's ready.
+
+### Does Kana speak English?
+Yes. She speaks Korean and English.
+
+### Is Kana always right?
+Kana runs on AI (Claude), so she can be wrong. She calculates with code and cites her sources, but please double-check important numbers and facts.
