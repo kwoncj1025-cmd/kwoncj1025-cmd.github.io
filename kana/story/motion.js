@@ -60,6 +60,8 @@ const count = (tl, el, to, at, dur = 1, fmt = v => Math.round(v)) => { if (!el) 
    눈깜빡임·숨·시선(커서)·입·몸 휨은 엔진 그대로. 엔진이 못 뜨면(WebGL 없음) Figma 그림이 그대로 남는다 */
 /* 휴대폰·태블릿(터치)은 움직이는 카나를 한 벌만 돌려 보이는 장으로 옮겨 다닌다: 다섯 벌을 한꺼번에 돌리면 아이폰이 메모리 부족으로 페이지를 끊었다(11-27) */
 const TOUCH = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
+/* 터치 기기: .art 를 transform 으로 줄이면 아이폰이 1920 원래 크기(×화면 배율)로 장면을 그려 메모리가 터진다 → zoom 으로 처음부터 작게 그린다 */
+if (TOUCH) document.documentElement.classList.add('touch');
 const ENG = (TOUCH ? [window.Haru1] : [window.Haru1, window.Haru2, window.Haru3, window.Haru4, window.Haru5]).filter(Boolean).map(H => ({ H, slot: null, canvas: null, busy: null }));
 window.KANA_DPR_K = Math.max(.25, K);
 const P4 = { think: { face: 1 }, work: { face: 1 }, drag: { face: 0 }, rest: { face: 0 } };

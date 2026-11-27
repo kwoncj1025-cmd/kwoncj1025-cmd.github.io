@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>if(matchMedia('(pointer: coarse)').matches||/iPhone|iPad|Android/i.test(navigator.userAgent))document.documentElement.classList.add('touch')</script>
 <!-- SEO:BEGIN (seo/seo.py 가 만듦. 손으로 고치지 말고 seo.py 설정을 고칠 것) -->
 <title>The story of Kana · a desktop AI agent for Mac, made with Claude Code</title>
 <meta name="description" content="How a designer without a CS background built Kana, an anime AI agent who lives on the Mac desktop, with Claude Code: character, motion and the approval card.">
@@ -30,7 +31,7 @@
    "@type": "Person",
    "@id": "https://kwoncj1025-cmd.github.io/#chanjun",
    "name": "Chanjun Kwon",
-   "alternateName": "권찬준",
+   "alternateName": "YOOANPAPA",
    "url": "https://kwoncj1025-cmd.github.io/",
    "jobTitle": "Designer"
   },
@@ -97,6 +98,7 @@ html,body{margin:0;background:#15132b}
 html{overflow-x:hidden}main{overflow:hidden;width:100%}
 /* 휴대폰(터치): 유리 흐림(backdrop-filter) 80여 곳이 아이폰 Safari 메모리를 넘겨 페이지를 끊는다 → 흐림만 끄고 반투명은 그대로 */
 @media (pointer:coarse){.art *,.stage *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+.touch .art{transform:none;zoom:var(--k)}
 body{-webkit-font-smoothing:antialiased;overflow-x:hidden;text-rendering:optimizeLegibility}
 .s{position:relative;height:calc(var(--h)*var(--k)*1px);overflow:hidden}
 .art{position:absolute;left:0;top:0;width:1920px;height:calc(var(--h)*1px);transform-origin:0 0;transform:scale(var(--k))}

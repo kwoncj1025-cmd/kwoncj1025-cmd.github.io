@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>if(matchMedia('(pointer: coarse)').matches||/iPhone|iPad|Android/i.test(navigator.userAgent))document.documentElement.classList.add('touch')</script>
 <!-- SEO:BEGIN (seo/seo.py 가 만듦. 손으로 고치지 말고 seo.py 설정을 고칠 것) -->
 <title>카나 이야기 · 디자이너가 Claude Code로 만든 맥 바탕화면 AI 에이전트</title>
 <meta name="description" content="비전공 디자이너가 Claude Code와 함께 맥 바탕화면에 사는 애니 캐릭터 AI 에이전트 「카나」를 만든 과정. 캐릭터·움직임·승인 카드 설계.">
@@ -30,7 +31,7 @@
    "@type": "Person",
    "@id": "https://kwoncj1025-cmd.github.io/#chanjun",
    "name": "Chanjun Kwon",
-   "alternateName": "권찬준",
+   "alternateName": "YOOANPAPA",
    "url": "https://kwoncj1025-cmd.github.io/",
    "jobTitle": "Designer"
   },
@@ -97,6 +98,7 @@ html,body{margin:0;background:#15132b}
 html{overflow-x:hidden}main{overflow:hidden;width:100%}
 /* 휴대폰(터치): 유리 흐림(backdrop-filter) 80여 곳이 아이폰 Safari 메모리를 넘겨 페이지를 끊는다 → 흐림만 끄고 반투명은 그대로 */
 @media (pointer:coarse){.art *,.stage *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+.touch .art{transform:none;zoom:var(--k)}
 body{-webkit-font-smoothing:antialiased;overflow-x:hidden;text-rendering:optimizeLegibility}
 .s{position:relative;height:calc(var(--h)*var(--k)*1px);overflow:hidden}
 .art{position:absolute;left:0;top:0;width:1920px;height:calc(var(--h)*1px);transform-origin:0 0;transform:scale(var(--k))}
@@ -141,7 +143,7 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden;text-rendering:optimiz
 <p class="t" data-id="16:3663" data-n="KANA" style="left:72px;top:56px;width:73px;white-space:pre;font-family:'Funnel Display';font-weight:700;font-size:24px;letter-spacing:0.04em;line-height:1.5;color:rgb(255,255,255);">KANA</p>
 <p class="t" data-id="16:3664" data-n="macOS character agent" style="left:172px;top:56px;width:273px;white-space:pre;font-family:'Funnel Display';font-weight:500;font-size:24px;line-height:1.5;color:rgba(255,255,255,0.75);">macOS character agent</p>
 <p class="t" data-id="16:3665" data-n="2026" style="left:932px;top:56px;width:56px;white-space:pre;font-family:'Funnel Display';font-weight:500;font-size:24px;line-height:1.5;color:rgba(255,255,255,0.75);text-align:center;">2026</p>
-<p class="t" data-id="16:3666" data-n="권찬준  Chanjun Kwon" style="left:1622px;top:56px;width:226px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:600;font-size:24px;letter-spacing:-0.02em;line-height:1.5;color:rgb(255,255,255);text-align:right;">권찬준  Chanjun Kwon</p>
+<p class="t" data-id="16:3666" data-n="권찬준  Chanjun Kwon" style="left:1622px;top:56px;width:226px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:600;font-size:24px;letter-spacing:-0.02em;line-height:1.5;color:rgb(255,255,255);text-align:right;">YOOANPAPA  Chanjun Kwon</p>
 <div class="r" data-id="16:3667" data-n="면" style="left:72px;top:108px;width:1776px;height:1px;background:rgba(255,255,255,0.28);"></div>
 <p class="t" data-id="16:3668" data-n="카나" style="left:72px;top:1010px;width:394px;white-space:pre;font-family:'Noto Serif KR';font-weight:900;font-size:210px;letter-spacing:-0.06em;line-height:1;color:rgb(255,255,255);">카나</p>
 <p class="t" data-id="16:3669" data-n="입은 옷의 말투로 말하다가 들키면 자기 말을" style="left:80px;top:1232px;width:461px;white-space:pre;font-family:'Noto Serif KR';font-weight:600;font-size:38px;letter-spacing:-0.04em;line-height:1.42;color:rgb(255,255,255);">Claude Code로 일하는 동안,
@@ -1484,9 +1486,9 @@ Swift · 도구 33개</p>
 <div class="r" data-id="16:4787" data-n="Rectangle" style="left:72px;top:1410px;width:1776px;height:1px;background:rgb(74,70,128);"></div>
 <p class="t" data-id="16:4788" data-n="STAFF" style="left:72px;top:1450px;width:92px;white-space:pre;font-family:'Funnel Display';font-weight:600;font-size:22px;letter-spacing:0.3em;line-height:normal;color:rgb(201,195,230);">STAFF</p>
 <p class="t" data-id="16:4789" data-n="디자인 · 화면 · 움직임 · 앱" style="left:72px;top:1500px;width:181px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:500;font-size:18px;line-height:normal;color:rgb(201,195,230);">디자인 · 화면 · 움직임 · 앱</p>
-<p class="t" data-id="16:4790" data-n="권찬준" style="left:72px;top:1528px;width:70px;white-space:pre;font-family:'Noto Serif KR';font-weight:700;font-size:24px;line-height:normal;color:rgb(255,255,255);">권찬준</p>
+<p class="t" data-id="16:4790" data-n="권찬준" style="left:72px;top:1528px;width:70px;white-space:pre;font-family:'Noto Serif KR';font-weight:700;font-size:24px;line-height:normal;color:rgb(255,255,255);">YOOANPAPA</p>
 <p class="t" data-id="16:4791" data-n="그림" style="left:672px;top:1500px;width:32px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:500;font-size:18px;line-height:normal;color:rgb(201,195,230);">그림</p>
-<p class="t" data-id="16:4792" data-n="Recraft 생성, 권찬준이 고르고 다듬음" style="left:672px;top:1528px;width:400px;white-space:pre;font-family:'Noto Serif KR';font-weight:700;font-size:24px;line-height:normal;color:rgb(255,255,255);">Recraft 생성, 권찬준이 고르고 다듬음</p>
+<p class="t" data-id="16:4792" data-n="Recraft 생성, 권찬준이 고르고 다듬음" style="left:672px;top:1528px;width:400px;white-space:pre;font-family:'Noto Serif KR';font-weight:700;font-size:24px;line-height:normal;color:rgb(255,255,255);">Recraft 생성, YOOANPAPA가 고르고 다듬음</p>
 <p class="t" data-id="16:4793" data-n="코드" style="left:1272px;top:1500px;width:32px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:500;font-size:18px;line-height:normal;color:rgb(201,195,230);">코드</p>
 <p class="t" data-id="16:4794" data-n="Claude Code와 함께" style="left:1272px;top:1528px;width:228px;white-space:pre;font-family:'Noto Serif KR';font-weight:700;font-size:24px;line-height:normal;color:rgb(255,255,255);">Claude Code와 함께</p>
 <p class="t" data-id="16:4795" data-n="두뇌" style="left:72px;top:1590px;width:32px;white-space:pre;font-family:'Pretendard Variable',Pretendard;font-weight:500;font-size:18px;line-height:normal;color:rgb(201,195,230);">두뇌</p>
