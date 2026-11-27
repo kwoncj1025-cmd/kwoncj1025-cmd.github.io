@@ -3108,11 +3108,12 @@ window.ticker = (() => {
   // 그래서 world.js 뒤, scene-web.js·web-live.js 앞에 둔다
   if (!window.Stage || !Stage.enabled) return;
   const desk = document.querySelector('.stage-camera > .desk'); if (!desk) return;
-  // 맥북 정거장 구도 틀(11-27 대표님 「전체 폭일 때 너무 확대된 느낌」 → 「창 폭 1660쯤일 때 느낌으로」): 폭 = min(창 폭, 1.6 × 창 높이, 1660).
+  // 맥북 정거장 구도 틀(11-27 대표님 「전체 폭일 때 너무 확대된 느낌」 → 「창 폭 1660쯤일 때 느낌으로」): 폭 = min(창 폭, 1.6 × 창 높이, max(1660, 1.45 × 창 높이)).
   // 넓은 창에서는 이 틀을 가운데에 두고 그 안에 맥북·왼쪽 글을 예전 비율대로 놓는다(scene-web.js 베젤 카메라, --ox). 남는 폭은 양옆 여백이 된다.
+  // 1.45 × 높이: 2000×1150에서 1660 폭일 때 맥북 전체가 위아래로 들어오는 비율. 키 큰 화면(2560×1440)은 높이에 맞춰 그만큼 커진다(고정 1660이면 작고 아래로 처졌다).
   // 1440×900 등 1660 이하·1.6 비율 이하 창은 예전과 같다. 시험할 때 주소에 ?fa=1.45&fw=1800 처럼 붙여 바꿔 볼 수 있다
-  const QS = new URLSearchParams(location.search), FA = +QS.get('fa') || 1.6, FW = +QS.get('fw') || 1660;
-  Stage.frameW = () => innerWidth <= 820 ? innerWidth : Math.min(innerWidth, FA * innerHeight, FW);
+  const QS = new URLSearchParams(location.search), FA = +QS.get('fa') || 1.6, FW = +QS.get('fw') || 1660, FH = 1.45;
+  Stage.frameW = () => innerWidth <= 820 ? innerWidth : Math.min(innerWidth, FA * innerHeight, Math.max(FW, FH * innerHeight));
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; };
 
   let mb = desk.querySelector('.mb');
@@ -3764,7 +3765,7 @@ window.ticker = (() => {
       }
       // 덮개 오른쪽 끝을 왼쪽 글 격자의 바깥 여백(8vw, 6-macbook.css .web-info)과 같은 거리에 둔다(10-21 대표님: 「맥북은 아주 살짝만 왼쪽으로, 왼쪽 글엔 여백」. 예전 고정 0.16W는 1728에서 덮개가 오른쪽 끝 약 110px)
       // 넓은 창(11-27 대표님 「전체 폭일 때 너무 확대된 느낌」): 폭만 보고 키우면 2560×1200 등에서 덮개 위·키보드가 잘렸다.
-      // 구도 틀 폭 Wr(macbook.js Stage.frameW: 창 폭·1.6×높이·1660 중 작은 값)로 정하고 틀을 가운데에 둔다. 틀 안에서는 예전 비율 그대로(화면 폭 52%, 오른쪽 여백 8%)
+      // 구도 틀 폭 Wr(macbook.js Stage.frameW: 창 폭·1.6×높이·max(1660, 1.45×높이) 중 작은 값)로 정하고 틀을 가운데에 둔다. 틀 안에서는 예전 비율 그대로(화면 폭 52%, 오른쪽 여백 8%)
       const Wr = Stage.frameW(), ox = (W.Wd - Wr) / 2;
       const d = G.Wi * P() / (0.52 * Wr), k = d / P(), xc = ox + Wr * (1 - 0.08) - G.lidW / (2 * k);
       return { th: TH, Tx: s.Tx - (xc - W.Wd / 2) * k, Ty: s.Ty + 0.12 * W.H * k, Tz: s.Tz + 0.03 * W.H * k, d };
